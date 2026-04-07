@@ -1419,11 +1419,33 @@
 
 .simpleTopicItemMeta {
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
   color: var(--paper-muted);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+}
+
+.simpleTopicFeatured {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  background: rgba(13, 123, 115, 0.12);
+  color: #0d7b73;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme='dark'] .simpleTopicFeatured {
+  background: rgba(82, 198, 188, 0.14);
+  color: #8ce6dd;
 }
 
 .simpleTopicItemTitle {
