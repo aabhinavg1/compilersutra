@@ -232,6 +232,14 @@ This section serves as a **technical knowledge base** containing conceptual arti
 <td>Coming Soon</td>
 </tr>
 
+<tr>
+<td>Where GCC and Clang Diverge: A Pass-Level Trace of the 2D Stencil Loop</td>
+<td><a href="./where_gcc_and_clang_diverge_stencil_pass_trace">Article</a></td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
   </tbody>
 </table>
 
