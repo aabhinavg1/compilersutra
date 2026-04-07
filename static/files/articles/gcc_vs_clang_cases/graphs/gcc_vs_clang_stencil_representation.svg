@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">GCC vs Clang stencil loop representation</title>
+  <desc id="desc">Comparison diagram showing Clang keeping an idx to GEP representation and GCC after ivopts using pointer induction variables and MEM offsets.</desc>
+  <rect width="980" height="520" fill="#ffffff"/>
+  <text x="60" y="44" font-size="28" font-weight="700" fill="#111827">GCC vs Clang: Stencil Loop Representation</text>
+  <text x="60" y="72" font-size="15" fill="#6b7280">Pass-level mental model for where the stencil loop first diverges</text>
+
+  <rect x="60" y="110" width="220" height="84" rx="14" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="170" y="143" text-anchor="middle" font-size="20" font-weight="700" fill="#111827">Source Stencil</text>
+  <text x="170" y="168" text-anchor="middle" font-size="14" fill="#4b5563">idx, idx±1, idx±n</text>
+
+  <line x1="170" y1="194" x2="170" y2="236" stroke="#9ca3af" stroke-width="3"/>
+  <polygon points="170,250 162,236 178,236" fill="#9ca3af"/>
+
+  <rect x="40" y="250" width="410" height="210" rx="18" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="245" y="286" text-anchor="middle" font-size="24" font-weight="700" fill="#1d4ed8">Clang</text>
+  <text x="245" y="312" text-anchor="middle" font-size="14" fill="#1e3a8a">Loop shape stays index-based in the checked passes</text>
+
+  <rect x="78" y="338" width="334" height="82" rx="12" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="245" y="368" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">idx → idx+offset → GEP → load/store</text>
+  <text x="245" y="392" text-anchor="middle" font-size="14" fill="#374151">one logical index drives all neighbor accesses</text>
+
+  <rect x="530" y="250" width="410" height="210" rx="18" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="735" y="286" text-anchor="middle" font-size="24" font-weight="700" fill="#c2410c">GCC after tree-ssa-loop-ivopts</text>
+  <text x="735" y="312" text-anchor="middle" font-size="14" fill="#9a3412">Loop shape becomes pointer-induction based</text>
+
+  <rect x="568" y="338" width="334" height="82" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="735" y="366" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">pointer IV → MEM[offset]</text>
+  <text x="735" y="392" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">pointer += 4</text>
+
+  <line x1="280" y1="152" x2="530" y2="152" stroke="#9ca3af" stroke-width="3" stroke-dasharray="8 8"/>
+  <text x="405" y="142" text-anchor="middle" font-size="13" fill="#6b7280">same source loop, different compiler representation</text>
+
+  <text x="60" y="490" font-size="14" fill="#374151">Clang side: idx-centered IR with GEPs</text>
+  <text x="540" y="490" font-size="14" fill="#374151">GCC side: pointer PHIs and MEM[offset] after ivopts</text>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" role="img" aria-labelledby="title desc">
+  <title id="title">GCC vs Clang stencil pass divergence</title>
+  <desc id="desc">Pass diagram showing Clang retaining idx to GEP form and GCC diverging at tree-ssa-loop-ivopts to pointer induction and MEM offset form.</desc>
+  <rect width="980" height="560" fill="#ffffff"/>
+  <text x="60" y="44" font-size="28" font-weight="700" fill="#111827">GCC vs Clang: First Pass-Level Divergence on Stencil</text>
+  <text x="60" y="72" font-size="15" fill="#6b7280">The boundary where GCC changes loop form and Clang does not</text>
+
+  <rect x="390" y="102" width="200" height="64" rx="14" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="490" y="132" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">Source Loop</text>
+  <text x="490" y="154" text-anchor="middle" font-size="14" fill="#4b5563">idx = i*n + j</text>
+
+  <line x1="490" y1="166" x2="250" y2="220" stroke="#9ca3af" stroke-width="3"/>
+  <line x1="490" y1="166" x2="730" y2="220" stroke="#9ca3af" stroke-width="3"/>
+
+  <rect x="70" y="220" width="360" height="250" rx="18" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="250" y="252" text-anchor="middle" font-size="24" font-weight="700" fill="#1d4ed8">Clang Pass Path</text>
+  <text x="250" y="282" text-anchor="middle" font-size="15" fill="#1e3a8a">No proven loop-form break in the checked loop passes</text>
+  <text x="110" y="324" font-size="16" fill="#111827">LoopDistribute</text>
+  <text x="110" y="356" font-size="16" fill="#111827">LoopVectorize</text>
+  <text x="110" y="388" font-size="16" fill="#111827">SLPVectorizer</text>
+  <text x="110" y="420" font-size="16" fill="#111827">LoopUnroll</text>
+  <rect x="250" y="320" width="140" height="110" rx="12" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="320" y="362" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">idx → GEP</text>
+  <text x="320" y="388" text-anchor="middle" font-size="15" fill="#374151">load/store</text>
+
+  <rect x="550" y="220" width="360" height="250" rx="18" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="730" y="252" text-anchor="middle" font-size="24" font-weight="700" fill="#c2410c">GCC Pass Path</text>
+  <text x="730" y="282" text-anchor="middle" font-size="15" fill="#9a3412">First loop-form break appears at tree-ssa-loop-ivopts</text>
+  <text x="590" y="316" font-size="16" fill="#111827">vect</text>
+  <text x="590" y="348" font-size="16" fill="#111827">dce6 / pcom / cunroll / slp1</text>
+  <text x="590" y="390" font-size="16" font-weight="700" fill="#c2410c">tree-ssa-loop-ivopts</text>
+  <rect x="710" y="320" width="160" height="110" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="790" y="358" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">pointer IV</text>
+  <text x="790" y="384" text-anchor="middle" font-size="15" fill="#374151">MEM[offset]</text>
+  <text x="790" y="406" text-anchor="middle" font-size="15" fill="#374151">pointer += 4</text>
+
+  <line x1="650" y1="390" x2="710" y2="390" stroke="#c2410c" stroke-width="3"/>
+  <polygon points="710,390 696,382 696,398" fill="#c2410c"/>
+
+  <text x="60" y="520" font-size="14" fill="#374151">Clang side stays in idx-centered addressing in the checked pass range.</text>
+  <text x="560" y="520" font-size="14" fill="#374151">GCC side first switches to pointer-based induction at ivopts.</text>
+</svg>
