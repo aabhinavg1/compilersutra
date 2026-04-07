@@ -108,6 +108,7 @@ const site = {
         'coa/basic_terminology_in_coa',
         'coa/intro_to_coa',
         'coa/cpu_execution',
+        'coa/measuring_throughput_cache_misses_cpu_behavior_cpp',
       ],
     },
   ],

@@ -49,7 +49,7 @@ export default function BooksTopicPage() {
   return (
     <Layout
       title="Books Topic"
-      description="Browse books for a specific CompilerSutra topic."
+      description="Browse books and official references for a specific CompilerSutra topic."
     >
       <Head>
         <meta property="og:title" content="CompilerSutra Books Topic" />
