@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { FaYoutube } from "react-icons/fa";
 import styles from "./FloatingSubscribe.module.css";
 
-const DISMISS_KEY = "compilersutra-floating-subscribe-dismissed";
-const DISMISS_TTL_MS = 1000 * 60 * 60 * 24;
+const COLLAPSED_KEY = "compilersutra-floating-subscribe-collapsed";
 
 export default function FloatingSubscribe() {
   const [visible, setVisible] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return undefined;
     }
 
-    const dismissedAt = Number(window.localStorage.getItem(DISMISS_KEY) || 0);
-    if (dismissedAt && Date.now() - dismissedAt < DISMISS_TTL_MS) {
-      return undefined;
-    }
+    setCollapsed(window.localStorage.getItem(COLLAPSED_KEY) === "true");
 
     const timer = window.setTimeout(() => {
       setVisible(true);
@@ -24,20 +22,35 @@ export default function FloatingSubscribe() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const handleClose = () => {
+  const setCollapsedState = (value) => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      window.localStorage.setItem(COLLAPSED_KEY, String(value));
     }
-    setVisible(false);
+    setCollapsed(value);
+    setVisible(true);
   };
 
   if (!visible) return null;
 
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        className={styles.placeholder}
+        onClick={() => setCollapsedState(false)}
+        aria-label="Open subscription prompt"
+      >
+        <FaYoutube className={styles.placeholderIcon} />
+      </button>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <button
+        type="button"
         className={styles.close}
-        onClick={handleClose}
+        onClick={() => setCollapsedState(true)}
         aria-label="Close subscription prompt"
       >
         ✕
@@ -54,6 +67,7 @@ export default function FloatingSubscribe() {
           target="_blank"
           rel="noopener noreferrer"
           className={styles.button}
+          onClick={() => setCollapsedState(true)}
         >
           ▶ Subscribe
         </a>

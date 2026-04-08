@@ -1,0 +1,150 @@
+.wrapper {
+  position: fixed;
+  left: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 9998;
+}
+
+.placeholder {
+  position: fixed;
+  left: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 9998;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(18, 140, 126, 0.24);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.placeholder:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(18, 140, 126, 0.3);
+  filter: saturate(1.05);
+}
+
+.placeholderIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.floatingLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 60px;
+  padding: 0.75rem 1rem 0.75rem 0.8rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 16px 36px rgba(18, 140, 126, 0.28);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.floatingLink:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 42px rgba(18, 140, 126, 0.34);
+  filter: saturate(1.05);
+}
+
+.floatingLink:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.textWrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.subLabel {
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  opacity: 0.9;
+}
+
+.close {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.24);
+}
+
+.close:hover {
+  background: #020617;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .placeholder {
+    left: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 52px;
+    height: 52px;
+  }
+
+  .floatingLink {
+    width: 100%;
+    justify-content: center;
+    border-radius: 18px;
+  }
+
+  .close {
+    right: 6px;
+  }
+
+  .subLabel {
+    display: none;
+  }
+}

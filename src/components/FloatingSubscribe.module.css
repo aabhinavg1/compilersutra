@@ -13,6 +13,39 @@
   animation: slideUp 0.4s ease;
 }
 
+.placeholder {
+  position: fixed;
+  right: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.28);
+  z-index: 9999;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.placeholder:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(220, 38, 38, 0.34);
+  filter: saturate(1.05);
+}
+
+.placeholderIcon {
+  width: 24px;
+  height: 24px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -67,6 +100,13 @@
     right: 12px;
     bottom: max(12px, env(safe-area-inset-bottom));
     width: auto;
+  }
+
+  .placeholder {
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 52px;
+    height: 52px;
   }
 }
 

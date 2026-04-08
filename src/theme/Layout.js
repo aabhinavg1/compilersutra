@@ -4,9 +4,11 @@ import OriginalLayout from "@theme-original/Layout";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import AdSenseScript from "@site/src/components/AdSenseScript";
 import { getSocialImageForPath, SOCIAL_IMAGE_VERSION } from "@site/src/utils/socialImage";
 
 const FloatingSubscribe = lazy(() => import("@site/src/components/FloatingSubscribe"));
+const FloatingWhatsApp = lazy(() => import("@site/src/components/FloatingWhatsApp"));
 
 export default function Layout(props) {
   const location = useLocation();
@@ -62,13 +64,6 @@ export default function Layout(props) {
         <link rel="canonical" href={canonicalUrl} />
         <meta name="robots" content="index, follow, max-image-preview:large" />
         <meta name="author" content="CompilerSutra" />
-        <script
-          id="compilersutra-adsense"
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3213090090375658"
-          crossOrigin="anonymous"
-          data-overlays="bottom"
-        />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
@@ -91,6 +86,8 @@ export default function Layout(props) {
         <BrowserOnly fallback={null}>
           {() => (
             <Suspense fallback={null}>
+              <AdSenseScript />
+              <FloatingWhatsApp />
               <FloatingSubscribe />
             </Suspense>
           )}
