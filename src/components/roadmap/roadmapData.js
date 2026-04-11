@@ -275,7 +275,7 @@ export const PHASES = [
       { label: 'GPU Programming TOC', to: '/docs/gpu/gpu_programming/gpu_programming_toc/' },
       { label: 'ML Compilers Track', to: '/docs/tracks/ml-compilers/' },
       { label: 'MLIR Introduction', to: '/docs/MLIR/intro/' },
-      { label: 'TVM Introduction', to: '/docs/tvm/intro-to-tvm/' },
+      { label: 'TVM Introduction', to: '/docs/tvm/' },
     ],
     progressMarker:
       'You stop sounding like a learner and start sounding like an engineer who can work on real infrastructure.',
