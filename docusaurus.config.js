@@ -43,6 +43,16 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-vercel-analytics',
+      {
+        debug: false,
+        mode: 'auto',
+      },
+    ],
+  ],
+
   themes: ['@docusaurus/theme-mermaid'],
 
   markdown: {
