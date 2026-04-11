@@ -113,6 +113,19 @@ const site = {
     },
   ],
 
+  mlCompilersSidebar: [
+    {
+      type: 'category',
+      label: 'ML Compilers',
+      collapsed: false,
+      items: [
+        'tracks/ml-compilers',
+        'ml-compilers/index',
+        'ml-compilers/introduction-roadmap',
+      ],
+    },
+  ],
+
   articlesidebar: [
     {
       type: 'category',
