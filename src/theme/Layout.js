@@ -6,6 +6,7 @@ import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import AdSenseScript from "@site/src/components/AdSenseScript";
 import { getSocialImageForPath, SOCIAL_IMAGE_VERSION } from "@site/src/utils/socialImage";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const FloatingSubscribe = lazy(() => import("@site/src/components/FloatingSubscribe"));
 const FloatingWhatsApp = lazy(() => import("@site/src/components/FloatingWhatsApp"));
@@ -82,6 +83,7 @@ export default function Layout(props) {
         noNavbar={isReaderRoute || props.noNavbar}
         noFooter={isReaderRoute || props.noFooter}
       />
+      <SpeedInsights />
       {!isReaderRoute && (
         <BrowserOnly fallback={null}>
           {() => (
