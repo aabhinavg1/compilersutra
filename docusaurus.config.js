@@ -1,9 +1,5 @@
 // @ts-check
 /** @type {import('@docusaurus/types').Config} */
-const productionScripts = [
-  { src: '/js/google-tag-manager.js', async: true, defer: true },
-  { src: '/js/google-analytics.js', async: true, defer: true },
-];
 const SOCIAL_IMAGE_VERSION = '20260328-og-refresh';
 
 const config = {
@@ -58,6 +54,12 @@ const config = {
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */ ({
+      mermaid: {
+        theme: {
+          light: 'neutral',
+          dark: 'dark',
+        },
+      },
       colorMode: {
         defaultMode: 'dark',
         respectPrefersColorScheme: false,
@@ -147,6 +149,7 @@ const config = {
               { label: 'Compilers', to: '/docs/compilers/compiler' },
               { label: 'LLVM', to: '/docs/llvm/intro-to-llvm' },
               { label: 'MLIR', to: '/docs/MLIR/intro' },
+              { label: 'ML Compilers', to: '/docs/ml-compilers' },
               { label: 'TVM', to: '/docs/tvm/intro-to-tvm' },
               { label: 'OpenCL', to: '/docs/gpu/opencl' },
               { label: 'GPU Programming', to: '/docs/gpu/gpu_programming/gpu_programming_toc' },
@@ -244,19 +247,10 @@ const config = {
               { label: 'Contact Us', href: 'https://www.linkedin.com/in/abhinavcompilerllvm/' },
             ],
           },
-          {
-            title: 'Cookies',
-            items: [
-              { label: 'Accept Cookies', href: '#', id: 'acceptCookies' },
-              { label: 'Revoke Consent', href: '#', id: 'revokeCookies' },
-            ],
-          },
         ],
         copyright: `Copyright © ${new Date().getFullYear()} CompilerSutra.`,
       },
     }),
-
-  scripts: productionScripts,
 
   customFields: {
     adsenseClient: 'ca-pub-3213090090375658',
