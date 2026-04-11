@@ -88,16 +88,11 @@ import TabItem from '@theme/TabItem';
 <details>
 <summary> Social Media </summary>
 
-
-  <TabItem value="social" label="📣 Social Media">
-
-    - [🐦 Twitter - CompilerSutra](https://twitter.com/CompilerSutra)  
-    - [💼 LinkedIn - Abhinav](https://www.linkedin.com/in/abhinavcompilerllvm/)  
-    - [📺 YouTube - CompilerSutra](https://www.youtube.com/@compilersutra)  
-    - [📘 Facebook - CompilerSutra](https://www.facebook.com/profile.php?id=61577245012547)  
-    - [📝 Quora - CompilerSutra](https://compilersutra.quora.com/)  
-
-  </TabItem>
+- [🐦 Twitter - CompilerSutra](https://twitter.com/CompilerSutra)  
+- [💼 LinkedIn - Abhinav](https://www.linkedin.com/in/abhinavcompilerllvm/)  
+- [📺 YouTube - CompilerSutra](https://www.youtube.com/@compilersutra)  
+- [📘 Facebook - CompilerSutra](https://www.facebook.com/profile.php?id=61577245012547)  
+- [📝 Quora - CompilerSutra](https://compilersutra.quora.com/)  
 
 </details>
 
