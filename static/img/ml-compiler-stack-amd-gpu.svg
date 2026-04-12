@@ -1,0 +1,189 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Seeing the ML Compiler Stack Live on AMD GPU</title>
+  <desc id="desc">A five-stage infographic showing Triton source lowering through TTIR, TTGIR, LLVM IR, AMDGCN assembly, and HSACO on an AMD Radeon RX 9060 XT.</desc>
+  <defs>
+    <linearGradient id="bg" x1="120" y1="50" x2="1490" y2="880" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F8FB"/>
+      <stop offset="1" stop-color="#DEE9F1"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF4F8"/>
+    </linearGradient>
+    <linearGradient id="accentBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2E6B9A"/>
+      <stop offset="1" stop-color="#5C9CC8"/>
+    </linearGradient>
+    <linearGradient id="accentPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7B5AA6"/>
+      <stop offset="1" stop-color="#B29AD2"/>
+    </linearGradient>
+    <linearGradient id="accentGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#4B8A72"/>
+      <stop offset="1" stop-color="#80BEA6"/>
+    </linearGradient>
+    <linearGradient id="accentOrange" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#C15A1B"/>
+      <stop offset="1" stop-color="#F2A365"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#30506B" flood-opacity="0.14"/>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#D4E0E8" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1600" height="900" fill="url(#grid)" opacity="0.28"/>
+
+  <g opacity="0.2" stroke="#A7BDCC" stroke-width="6" stroke-linecap="round">
+    <path d="M40 74H120L145 100H240"/>
+    <path d="M1310 88H1410L1440 118H1540"/>
+    <path d="M56 184H106L140 218H188"/>
+    <path d="M1334 186H1392L1418 214H1510"/>
+    <circle cx="143" cy="100" r="10" fill="#A7BDCC" stroke="none"/>
+    <circle cx="1440" cy="118" r="10" fill="#A7BDCC" stroke="none"/>
+    <circle cx="140" cy="218" r="10" fill="#A7BDCC" stroke="none"/>
+    <circle cx="1418" cy="214" r="10" fill="#A7BDCC" stroke="none"/>
+  </g>
+
+  <rect x="20" y="24" width="1560" height="852" rx="28" fill="rgba(255,255,255,0.55)" stroke="#7E9AAF" stroke-width="3"/>
+
+  <text x="800" y="88" text-anchor="middle" fill="#142738" font-size="30" font-weight="800" font-family="Arial, Helvetica, sans-serif">
+    SEEING THE ML COMPILER STACK LIVE ON AMD GPU
+  </text>
+  <text x="800" y="126" text-anchor="middle" fill="#334D61" font-size="18" font-weight="600" font-family="Arial, Helvetica, sans-serif">
+    One Triton vector-add kernel on Radeon RX 9060 XT, lowered stage by stage into machine code
+  </text>
+
+  <g transform="translate(40 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="272" height="560" rx="18" fill="url(#panel)" stroke="#7C9AAE" stroke-width="2"/>
+    <text x="136" y="44" text-anchor="middle" fill="#21384A" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">STAGE 1</text>
+    <text x="136" y="76" text-anchor="middle" fill="#21384A" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif">TRITON SOURCE → TTIR</text>
+    <rect x="28" y="110" width="92" height="170" rx="14" fill="#F7FAFD" stroke="#B9CBD8"/>
+    <text x="74" y="170" text-anchor="middle" fill="#244A68" font-size="26" font-weight="800" font-family="Arial, Helvetica, sans-serif">Python</text>
+    <text x="74" y="200" text-anchor="middle" fill="#4E697D" font-size="16" font-weight="600" font-family="Arial, Helvetica, sans-serif">@triton.jit</text>
+    <text x="74" y="228" text-anchor="middle" fill="#4E697D" font-size="16" font-family="Courier New, monospace">tl.load</text>
+    <text x="74" y="252" text-anchor="middle" fill="#4E697D" font-size="16" font-family="Courier New, monospace">a + b</text>
+    <text x="74" y="276" text-anchor="middle" fill="#4E697D" font-size="16" font-family="Courier New, monospace">tl.store</text>
+    <path d="M132 194H162" stroke="#406D90" stroke-width="5" stroke-linecap="round"/>
+    <path d="M156 186L170 194L156 202" fill="none" stroke="#406D90" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="168" y="126" width="76" height="138" rx="14" fill="url(#accentBlue)"/>
+    <text x="206" y="162" text-anchor="middle" fill="white" font-size="18" font-weight="800" font-family="Arial, Helvetica, sans-serif">TTIR</text>
+    <text x="206" y="196" text-anchor="middle" fill="#EAF4FB" font-size="14" font-family="Courier New, monospace">%pid</text>
+    <text x="206" y="220" text-anchor="middle" fill="#EAF4FB" font-size="14" font-family="Courier New, monospace">%offsets</text>
+    <text x="206" y="244" text-anchor="middle" fill="#EAF4FB" font-size="14" font-family="Courier New, monospace">%mask</text>
+    <text x="206" y="268" text-anchor="middle" fill="#EAF4FB" font-size="14" font-family="Courier New, monospace">tt.load/store</text>
+    <rect x="28" y="318" width="216" height="148" rx="14" fill="#FBFDFF" stroke="#C3D2DC"/>
+    <text x="40" y="350" fill="#27455C" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">What the compiler still knows</text>
+    <text x="40" y="384" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• tensor shape and types</text>
+    <text x="40" y="412" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• offset math and masks</text>
+    <text x="40" y="440" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• abstract memory operations</text>
+    <text x="40" y="512" fill="#263C4D" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">“What does this kernel compute?”</text>
+  </g>
+
+  <g transform="translate(344 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="272" height="560" rx="18" fill="url(#panel)" stroke="#7C9AAE" stroke-width="2"/>
+    <text x="136" y="44" text-anchor="middle" fill="#21384A" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">STAGE 2</text>
+    <text x="136" y="76" text-anchor="middle" fill="#21384A" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif">TTIR → TTGIR</text>
+    <rect x="28" y="110" width="216" height="170" rx="16" fill="url(#accentPurple)"/>
+    <text x="136" y="146" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">GPU Execution Plan</text>
+    <g transform="translate(52 170)">
+      <rect x="0" y="0" width="34" height="34" fill="#DCC9EE" stroke="#FFF6" />
+      <rect x="40" y="0" width="34" height="34" fill="#CDB6E8" stroke="#FFF6" />
+      <rect x="80" y="0" width="34" height="34" fill="#B899E0" stroke="#FFF6" />
+      <rect x="120" y="0" width="34" height="34" fill="#A57FD4" stroke="#FFF6" />
+      <rect x="0" y="40" width="34" height="34" fill="#DCC9EE" stroke="#FFF6" />
+      <rect x="40" y="40" width="34" height="34" fill="#CDB6E8" stroke="#FFF6" />
+      <rect x="80" y="40" width="34" height="34" fill="#B899E0" stroke="#FFF6" />
+      <rect x="120" y="40" width="34" height="34" fill="#A57FD4" stroke="#FFF6" />
+    </g>
+    <text x="136" y="268" text-anchor="middle" fill="#F4EEFA" font-size="15" font-family="Arial, Helvetica, sans-serif">#blocked layout, wave32, 4 warps/CTA</text>
+    <rect x="28" y="318" width="216" height="148" rx="14" fill="#FBFDFF" stroke="#C3D2DC"/>
+    <text x="40" y="350" fill="#27455C" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">Compiler decisions become visible</text>
+    <text x="40" y="384" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• thread layout is committed</text>
+    <text x="40" y="412" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• AMD-aware buffer ops appear</text>
+    <text x="40" y="440" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• abstract math becomes GPU scheduling</text>
+    <text x="40" y="512" fill="#263C4D" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">“How should lanes share the work?”</text>
+  </g>
+
+  <g transform="translate(648 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="272" height="560" rx="18" fill="url(#panel)" stroke="#7C9AAE" stroke-width="2"/>
+    <text x="136" y="44" text-anchor="middle" fill="#21384A" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">STAGE 3</text>
+    <text x="136" y="76" text-anchor="middle" fill="#21384A" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif">TTGIR → LLVM IR</text>
+    <rect x="32" y="110" width="208" height="182" rx="16" fill="url(#accentGreen)"/>
+    <text x="136" y="146" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">LLVM IR</text>
+    <text x="46" y="184" fill="#EEF9F4" font-size="14" font-family="Courier New, monospace">target triple =</text>
+    <text x="46" y="206" fill="#EEF9F4" font-size="14" font-family="Courier New, monospace">"amdgcn-amd-amdhsa"</text>
+    <text x="46" y="238" fill="#EEF9F4" font-size="14" font-family="Courier New, monospace">@llvm.amdgcn.workitem.id.x()</text>
+    <text x="46" y="262" fill="#EEF9F4" font-size="14" font-family="Courier New, monospace">buffer.load.v4f32</text>
+    <text x="46" y="286" fill="#EEF9F4" font-size="14" font-family="Courier New, monospace">&lt;4 x float&gt;</text>
+    <rect x="28" y="318" width="216" height="148" rx="14" fill="#FBFDFF" stroke="#C3D2DC"/>
+    <text x="40" y="350" fill="#27455C" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">What changes here</text>
+    <text x="40" y="384" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• LLVM intrinsics replace Triton ops</text>
+    <text x="40" y="412" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• address spaces become explicit</text>
+    <text x="40" y="440" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• vectorized memory traffic is obvious</text>
+    <text x="40" y="512" fill="#263C4D" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">“How does LLVM model the kernel?”</text>
+  </g>
+
+  <g transform="translate(952 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="272" height="560" rx="18" fill="url(#panel)" stroke="#7C9AAE" stroke-width="2"/>
+    <text x="136" y="44" text-anchor="middle" fill="#21384A" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">STAGE 4</text>
+    <text x="136" y="76" text-anchor="middle" fill="#21384A" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif">LLVM IR → AMDGCN</text>
+    <rect x="32" y="110" width="208" height="182" rx="16" fill="url(#accentOrange)"/>
+    <text x="136" y="146" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">AMDGCN ISA</text>
+    <text x="48" y="184" fill="#FFF4EB" font-size="14" font-family="Courier New, monospace">s_load_b128  s[0:3], ...</text>
+    <text x="48" y="208" fill="#FFF4EB" font-size="14" font-family="Courier New, monospace">v_cmp_gt_i32  vcc_lo, ...</text>
+    <text x="48" y="232" fill="#FFF4EB" font-size="14" font-family="Courier New, monospace">buffer_load_b128 v[0:3], ...</text>
+    <text x="48" y="256" fill="#FFF4EB" font-size="14" font-family="Courier New, monospace">v_add_f32     v4, v0, v1</text>
+    <text x="48" y="280" fill="#FFF4EB" font-size="14" font-family="Courier New, monospace">buffer_store_b128 ...</text>
+    <rect x="28" y="318" width="216" height="148" rx="14" fill="#FBFDFF" stroke="#C3D2DC"/>
+    <text x="40" y="350" fill="#27455C" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">Hardware-facing behavior</text>
+    <text x="40" y="384" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• scalar vs vector register split</text>
+    <text x="40" y="412" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• mask becomes compare + condition bits</text>
+    <text x="40" y="440" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• 128-bit loads expose real bandwidth intent</text>
+    <text x="40" y="512" fill="#263C4D" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">“What exact instructions execute?”</text>
+  </g>
+
+  <g transform="translate(1256 160)" filter="url(#shadow)">
+    <rect x="0" y="0" width="272" height="560" rx="18" fill="url(#panel)" stroke="#7C9AAE" stroke-width="2"/>
+    <text x="136" y="44" text-anchor="middle" fill="#21384A" font-size="20" font-weight="800" font-family="Arial, Helvetica, sans-serif">STAGE 5</text>
+    <text x="136" y="76" text-anchor="middle" fill="#21384A" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif">AMDGCN → HSACO</text>
+    <rect x="32" y="110" width="208" height="182" rx="16" fill="#FFF2E6" stroke="#F1B27A"/>
+    <rect x="78" y="136" width="116" height="78" rx="12" fill="#D56F2A"/>
+    <text x="136" y="168" text-anchor="middle" fill="white" font-size="22" font-weight="800" font-family="Arial, Helvetica, sans-serif">HSACO</text>
+    <text x="136" y="194" text-anchor="middle" fill="#FFF1E6" font-size="14" font-family="Arial, Helvetica, sans-serif">ELF code object</text>
+    <path d="M136 232V268" stroke="#B95C20" stroke-width="5" stroke-linecap="round"/>
+    <rect x="108" y="268" width="56" height="42" rx="10" fill="#6FA57B"/>
+    <text x="136" y="294" text-anchor="middle" fill="#133021" font-size="16" font-weight="800" font-family="Arial, Helvetica, sans-serif">GPU</text>
+    <rect x="28" y="318" width="216" height="148" rx="14" fill="#FBFDFF" stroke="#C3D2DC"/>
+    <text x="40" y="350" fill="#27455C" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">Final runtime artifact</text>
+    <text x="40" y="384" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• binary plus launch metadata</text>
+    <text x="40" y="412" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• what ROCm actually loads</text>
+    <text x="40" y="440" fill="#426175" font-size="15" font-family="Arial, Helvetica, sans-serif">• readable text disappears here</text>
+    <text x="40" y="512" fill="#263C4D" font-size="16" font-weight="700" font-family="Arial, Helvetica, sans-serif">“What binary does the runtime launch?”</text>
+  </g>
+
+  <g fill="#5E7B90" font-size="14" font-weight="700" font-family="Arial, Helvetica, sans-serif">
+    <text x="324" y="446" transform="rotate(-90 324 446)">Lowering</text>
+    <text x="628" y="446" transform="rotate(-90 628 446)">Layout + LLVM handoff</text>
+    <text x="932" y="446" transform="rotate(-90 932 446)">Instruction selection</text>
+    <text x="1236" y="446" transform="rotate(-90 1236 446)">Packaging</text>
+  </g>
+
+  <g stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M316 438H338" stroke="#5B7C96"/>
+    <path d="M330 428L342 438L330 448" stroke="#5B7C96"/>
+    <path d="M620 438H642" stroke="#7D64A8"/>
+    <path d="M634 428L646 438L634 448" stroke="#7D64A8"/>
+    <path d="M924 438H946" stroke="#568D75"/>
+    <path d="M938 428L950 438L938 448" stroke="#568D75"/>
+    <path d="M1228 438H1250" stroke="#C46A28"/>
+    <path d="M1242 428L1254 438L1242 448" stroke="#C46A28"/>
+  </g>
+
+  <rect x="80" y="756" width="1440" height="92" rx="22" fill="#17344A"/>
+  <text x="108" y="798" fill="#F6FBFE" font-size="24" font-weight="800" font-family="Arial, Helvetica, sans-serif">Same kernel. Different levels of commitment.</text>
+  <text x="108" y="828" fill="#BCD1E0" font-size="17" font-family="Arial, Helvetica, sans-serif">Vector add starts as tensor math, gains thread layout in TTGIR, becomes AMDGPU intrinsics in LLVM IR, turns into scalar/vector ISA in AMDGCN, and ends as an HSACO code object ROCm can launch.</text>
+</svg>
