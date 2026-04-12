@@ -56,10 +56,29 @@ ML compilers sit between machine learning models and real hardware. They transfo
 ## Best Entry Points
 
 - [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
+- [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
 - [ML Compilers Track](/docs/tracks/ml-compilers)
 - [MLIR Intro](/docs/MLIR/intro)
 - [TVM Intro](/docs/tvm/intro-to-tvm)
 - [GPU Compilers Track](/docs/tracks/gpu-compilers)
+
+## Master Article Table
+
+| Article | Type | Focus | Best For |
+|---|---|---|---|
+| [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap) | Foundation | End-to-end mental model for ML compiler stacks | Readers starting from zero or mapping the field |
+| [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack) | Systems Walkthrough | Triton -> TTIR -> TTGIR -> LLVM IR -> AMD ISA -> HSACO | Readers who want to see the stack materialize on real hardware |
+| [MLIR Intro](/docs/MLIR/intro) | Infrastructure | Why multi-level IR exists and how MLIR structures staged lowering | Readers moving from LLVM into MLIR |
+| [TVM Intro](/docs/tvm/intro-to-tvm) | Deployment + Scheduling | Scheduling, model lowering, and deployment workflow | Readers exploring model compilation in practice |
+| [GPU Compilers Track](/docs/tracks/gpu-compilers) | Adjacent Track | GPU execution model, kernels, and hardware-aware compilation | Readers who need stronger GPU compiler intuition |
+
+## Recommended Reading Order
+
+1. [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
+2. [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
+3. [MLIR Intro](/docs/MLIR/intro)
+4. [TVM Intro](/docs/tvm/intro-to-tvm)
+5. [GPU Compilers Track](/docs/tracks/gpu-compilers)
 
 ## How It Differs From Other Topics
 
