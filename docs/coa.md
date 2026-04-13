@@ -109,6 +109,7 @@ If you are new to COA, read these first before going deeper into ISA, cache, or 
 - [Computer Organization vs Computer Architecture](/docs/coa/intro_to_coa)
 - [Basic Terminology in COA Everyone Should Know](/docs/coa/basic_terminology_in_coa)
 - [How CPU Executes Binary: Fetch-Decode-Execute Explained](/docs/coa/cpu_execution)
+- [Memory Hierarchy Explained: Cache, RAM, and Storage](/docs/coa/memory-hierarchy)
 
 * A perfectly valid instruction sequence may **stall a CPU pipeline**.
 * A poorly scheduled loop may **destroy instruction-level parallelism**.
@@ -216,41 +217,48 @@ They become **direct tools for shaping how hardware executes programs**.
 
 <tr>
   <td>5</td>
+  <td>Memory Hierarchy Explained: Cache, RAM, and Storage</td>
+  <td>[link](/docs/coa/memory-hierarchy)</td>
+  <td>Coming Soon</td>
+</tr>
+
+<tr>
+  <td>6</td>
   <td>Measuring Throughput, Cache Misses, and CPU Behavior in C++</td>
   <td>[link](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>6</td>
+  <td>7</td>
   <td>Machine Code, Assembly, and Compilers</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>7</td>
+  <td>8</td>
   <td>Basic CPU Components (ALU, Control Unit, Registers)</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>8</td>
+  <td>9</td>
   <td>Instruction Execution Overview</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>9</td>
+  <td>10</td>
   <td>Clock Cycle, Latency, and Throughput</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>10</td>
+  <td>11</td>
   <td>Why Hardware Knowledge Matters for Compiler Engineers</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
