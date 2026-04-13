@@ -49,6 +49,32 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import AdBanner from '@site/src/components/AdBanner';
 
+
+📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+
+<div
+  style={{
+    width: '100%',
+    maxWidth: '900px',
+    margin: '1rem auto',
+  }}
+>
+  <iframe
+    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
+    style={{
+      width: '100%',
+      minHeight: '620px',
+      border: '0',
+      borderRadius: '12px',
+      background: '#fff',
+    }}
+    loading="lazy"
+  >
+    Loading...
+  </iframe>
+</div>
+
+
 # Memory Hierarchy for Compiler Engineers: Why Your Code Misses Cache
 
 If you work on compilers, runtimes, kernels, storage engines, or low-level application code, the useful question is not "what is cache?" The useful question is "what kind of miss did I just create, what hardware can hide it, and what code shape would have avoided it?"
