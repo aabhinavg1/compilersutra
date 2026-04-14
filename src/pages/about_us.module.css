@@ -1,0 +1,292 @@
+.page {
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 85, 0.09), transparent 22rem),
+    radial-gradient(circle at 86% 12%, rgba(90, 118, 255, 0.08), transparent 24rem),
+    linear-gradient(180deg, #08111f 0%, #0c1728 30%, #0d1b2f 100%);
+  color: #e9f0fb;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 5.5rem 0 3rem;
+}
+
+.heroShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.eyebrow,
+.kicker {
+  margin: 0 0 0.9rem;
+  color: #8fa8cf;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 12ch;
+  margin: 0;
+  color: #f7fbff;
+  font-size: clamp(3rem, 8vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.lead,
+.sectionLead {
+  margin: 1.2rem 0 0;
+  max-width: 44rem;
+  color: #bdd0ec;
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.actions,
+.communityActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+}
+
+.primaryAction,
+.secondaryAction,
+.ghostAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.85rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.primaryAction {
+  border: 1px solid rgba(249, 115, 85, 0.2);
+  background: linear-gradient(135deg, #f97355, #ff9b75);
+  color: #07101d;
+  box-shadow: 0 18px 40px rgba(249, 115, 85, 0.18);
+}
+
+.secondaryAction,
+.ghostAction {
+  border: 1px solid rgba(219, 229, 245, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #eef4ff;
+  backdrop-filter: blur(12px);
+}
+
+.primaryAction:hover,
+.secondaryAction:hover,
+.ghostAction:hover {
+  color: inherit;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.summaryPanel {
+  display: grid;
+  gap: 1rem;
+}
+
+.summaryCard,
+.miniCard,
+.principleCard,
+.listPanel,
+.communityPanel {
+  border: 1px solid rgba(220, 228, 244, 0.12);
+  background: linear-gradient(180deg, rgba(10, 18, 33, 0.85), rgba(8, 15, 29, 0.68));
+  box-shadow: 0 24px 60px rgba(3, 7, 18, 0.28);
+  backdrop-filter: blur(16px);
+}
+
+.summaryCard {
+  padding: 1.35rem;
+  border-radius: 28px;
+}
+
+.summaryCard h2,
+.principleCard h3,
+.listPanel h2,
+.communityPanel h2 {
+  color: #f6f9ff;
+}
+
+.summaryCard p,
+.principleCard p,
+.listPanel p,
+.communityPanel p {
+  margin-bottom: 0;
+  color: #adc2e1;
+}
+
+.summaryIcon,
+.principleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(249, 115, 85, 0.18), rgba(88, 107, 255, 0.18));
+  color: #ffb79f;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.miniCard {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 22px;
+}
+
+.miniCard strong {
+  color: #f5f8ff;
+  font-size: 0.96rem;
+}
+
+.miniCard span {
+  color: #aabddb;
+  line-height: 1.65;
+}
+
+.section {
+  padding: 1rem 0 3rem;
+}
+
+.sectionShell {
+  display: grid;
+  gap: 1.3rem;
+}
+
+.sectionHeader {
+  max-width: 50rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  max-width: 16ch;
+  color: #f7fbff;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.principleCard {
+  padding: 1.25rem;
+  border-radius: 28px;
+}
+
+.principleCard h3 {
+  margin: 1rem 0 0.55rem;
+  font-size: 1.1rem;
+}
+
+.detailBand {
+  padding-top: 0.5rem;
+}
+
+.dualGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.listPanel {
+  padding: 1.4rem;
+  border-radius: 28px;
+}
+
+.list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.2rem 0 0;
+  padding-left: 1.2rem;
+  color: #d7e3f6;
+}
+
+.list li::marker {
+  color: #ff9b75;
+}
+
+.communityPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1.2rem;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: 30px;
+}
+
+.communityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(220, 228, 244, 0.12);
+  border-radius: 999px;
+  color: #dbe7f8;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 996px) {
+  .heroShell,
+  .principles,
+  .dualGrid,
+  .communityPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .title,
+  .sectionTitle {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 4.25rem 0 2.4rem;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions,
+  .communityActions {
+    display: grid;
+  }
+
+  .primaryAction,
+  .secondaryAction,
+  .ghostAction {
+    width: 100%;
+  }
+
+  .summaryCard,
+  .principleCard,
+  .listPanel,
+  .communityPanel {
+    border-radius: 24px;
+  }
+}
