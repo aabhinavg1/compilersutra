@@ -250,6 +250,14 @@ const tutorials = {
         },
         {
           type: 'category',
+          label: 'LLVM Passes',
+          items: [
+            'llvm/Intermediate/What_Is_LLVM_Passes',
+            'llvm/llvm_pass_tracker/llvm_pass',
+          ],
+        },
+        {
+          type: 'category',
           label: 'LEVEL 0 - Compiler-Specific DSA Foundations',
           items: [
             'llvm/llvm_Curriculum/level0/Static_Single_Assignment',

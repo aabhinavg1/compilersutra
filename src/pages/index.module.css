@@ -288,14 +288,108 @@
   font-size: 0.9rem;
 }
 
+.aboutSection {
+  position: relative;
+  padding: 3.25rem 0 1rem;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(249, 115, 85, 0.08), transparent 18rem),
+    radial-gradient(circle at 85% 10%, rgba(76, 108, 255, 0.08), transparent 20rem),
+    linear-gradient(180deg, #0b1424 0%, #0d1728 100%);
+}
+
+.aboutShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.aboutIntro,
+.aboutCard {
+  padding: 1.35rem;
+  border: 1px solid rgba(215, 224, 244, 0.12);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(12, 20, 36, 0.8), rgba(8, 15, 29, 0.68));
+  box-shadow: 0 24px 60px rgba(3, 7, 18, 0.2);
+  backdrop-filter: blur(16px);
+}
+
+.aboutEyebrow {
+  margin: 0 0 0.85rem;
+  color: #91a4c8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.aboutTitle {
+  margin: 0;
+  max-width: 14ch;
+  color: #f4f8ff;
+  font-size: clamp(2rem, 4.3vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.aboutText {
+  margin: 1rem 0 0;
+  max-width: 42rem;
+  color: #b4c6e3;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.aboutLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.35rem;
+  padding: 0.82rem 1.05rem;
+  border-radius: 999px;
+  border: 1px solid rgba(249, 115, 85, 0.18);
+  background: linear-gradient(135deg, #f97355, #ff9b75);
+  color: #08111f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.aboutLink:hover {
+  color: #08111f;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.aboutCards {
+  display: grid;
+  gap: 1rem;
+}
+
+.aboutCard h3 {
+  margin: 0 0 0.55rem;
+  color: #f2f7ff;
+  font-size: 1.02rem;
+}
+
+.aboutCard p {
+  margin: 0;
+  color: #aebdd8;
+  line-height: 1.75;
+}
+
 @media (max-width: 996px) {
   .heroBanner {
     padding-top: 4.5rem;
   }
 
   .heroPanels,
-  .stats {
+  .stats,
+  .aboutShell {
     grid-template-columns: 1fr;
+  }
+
+  .aboutTitle {
+    max-width: none;
   }
 }
 
@@ -322,9 +416,20 @@
   }
 
   .signalPanel,
-  .frameworkPanel {
+  .frameworkPanel,
+  .aboutIntro,
+  .aboutCard {
     padding: 1rem;
     border-radius: 22px;
+  }
+
+  .aboutSection {
+    padding-top: 2.5rem;
+  }
+
+  .aboutLink {
+    width: 100%;
+    justify-content: center;
   }
 }
 

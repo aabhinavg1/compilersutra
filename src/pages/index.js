@@ -7,6 +7,7 @@ import Head from '@docusaurus/Head';
 import {
   FaArrowRight,
   FaCodeBranch,
+  FaCompass,
   FaMicrochip,
   FaQuestionCircle,
   FaRocket,
@@ -62,6 +63,19 @@ const HERO_PILLARS = [
     icon: <FaSitemap aria-hidden="true" />,
     title: 'Tracks that sequence the work',
     text: 'Learn in deliberate layers instead of getting lost in an unstructured docs tree.',
+  },
+];
+
+const ABOUT_POINTS = [
+  {
+    title: 'Structured learning over random article hopping',
+    description:
+      'CompilerSutra is organized to help learners move from fundamentals into LLVM, GPU systems, and performance reasoning without losing the thread.',
+  },
+  {
+    title: 'Systems intuition stays in the loop',
+    description:
+      'The site treats compilers as part of a larger execution story, so hardware behavior, IR decisions, and tooling are explained together.',
   },
 ];
 
@@ -191,6 +205,41 @@ function HomepageHeader() {
   );
 }
 
+function AboutSection() {
+  return (
+    <section className={styles.aboutSection}>
+      <div className={clsx('container', styles.aboutShell)}>
+        <div className={styles.aboutIntro}>
+          <p className={styles.aboutEyebrow}>About CompilerSutra</p>
+          <Heading as="h2" className={styles.aboutTitle}>
+            Built for learners who want compilers explained like engineering, not trivia.
+          </Heading>
+          <p className={styles.aboutText}>
+            CompilerSutra focuses on compiler engineering, LLVM, GPU systems, and
+            performance-oriented learning paths. The aim is to make hard topics feel
+            navigable by sequencing the material, keeping execution context visible, and
+            connecting theory to real tools and artifacts.
+          </p>
+
+          <Link className={styles.aboutLink} to="/about_us">
+            <FaCompass aria-hidden="true" />
+            Read the full story
+          </Link>
+        </div>
+
+        <div className={styles.aboutCards}>
+          {ABOUT_POINTS.map((item) => (
+            <article key={item.title} className={styles.aboutCard}>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const pageUrl = 'https://www.compilersutra.com/';
   const socialImage = 'https://www.compilersutra.com/img/compilersutra-social-card.png';
@@ -246,6 +295,7 @@ export default function Home() {
       </Head>
       <HomepageHeader />
       <main>
+        <AboutSection />
         <Suspense fallback={null}>
           <HomepageFeatures />
         </Suspense>
