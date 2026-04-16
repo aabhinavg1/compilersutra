@@ -1,0 +1,673 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, #0b0f1a 0%, #0d1320 54%, #101826 100%);
+  color: #eff4ff;
+  transition: all 0.3s ease;
+}
+
+.hero.scrolled {
+  min-height: 80vh;
+}
+
+/* Background */
+.background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* CPU and GPU Paths */
+.cpuPath,
+.gpuPath {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 16;
+  animation: dashFlow 20s linear infinite;
+}
+
+.cpuPath {
+  stroke: url(#heroCpu);
+  opacity: 0.7;
+}
+
+.gpuPath {
+  stroke: url(#heroGpu);
+  opacity: 0.6;
+  animation: dashFlow 25s linear infinite reverse;
+}
+
+/* Nodes and Cores */
+.cpuNode {
+  fill: #00F0FF;
+  opacity: 0.6;
+  animation: pulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px #00F0FF);
+}
+
+.gpuCore {
+  fill: rgba(138, 43, 226, 0.4);
+  stroke: #8A2BE2;
+  stroke-width: 1;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.gpuParticleNode {
+  fill: #00F0FF;
+  animation: moveParticle 3s linear infinite;
+}
+
+/* Particle Field */
+.particleField {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.particleTrack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: visible;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: slideParticle 6s linear infinite;
+}
+
+.cpuParticle {
+  background: #00F0FF;
+  box-shadow: 0 0 10px #00F0FF;
+}
+
+.gpuParticle {
+  background: #8A2BE2;
+  box-shadow: 0 0 10px #8A2BE2;
+  width: 5px;
+  height: 5px;
+}
+
+/* Data pulses */
+.dataPulse {
+  fill: #00F0FF;
+  opacity: 0;
+  animation: dataPulse 4s ease-out infinite;
+}
+
+.pulseGroup circle {
+  fill: #00F0FF;
+}
+
+/* Floating nodes */
+.floatingNode {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Glow effects */
+.edgeGlowLeft {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 8% 24%, rgba(0, 240, 255, 0.15), transparent 28%);
+  filter: blur(32px);
+  animation: pulseGlow 6s ease-in-out infinite;
+}
+
+.edgeGlowRight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 92% 22%, rgba(138, 43, 226, 0.2), transparent 30%);
+  filter: blur(36px);
+  animation: pulseGlow 7s ease-in-out infinite reverse;
+}
+
+.centerCalm {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 15, 26, 0.02) 0%, rgba(11, 15, 26, 0.85) 34%, rgba(11, 15, 26, 0.9) 66%, rgba(11, 15, 26, 0.02) 100%);
+}
+
+/* Code overlay */
+.codeOverlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+}
+
+.codeWindow {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  overflow: hidden;
+  width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideInRight 0.8s ease-out;
+}
+
+.codeHeader {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.codeDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.codeTitle {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #8ba0c0;
+  font-family: monospace;
+}
+
+.codeContent, .codeOutput {
+  padding: 0.75rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.codeOutput {
+  color: #8A2BE2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.codePrompt {
+  color: #00f0ff;
+  margin-right: 0.5rem;
+}
+
+.codeCommand {
+  color: #f8fbff;
+}
+
+/* Content styles */
+.shell {
+  position: relative;
+  z-index: 10;
+  width: min(100%, 78rem);
+  margin: 0 auto;
+  padding: 6rem 1.5rem;
+}
+
+.content {
+  max-width: 48rem;
+  display: grid;
+  gap: 1.2rem;
+}
+
+/* Badge group */
+.badgeGroup {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.8rem;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #00f0ff;
+}
+
+/* Eyebrow */
+.eyebrow {
+  margin: 0;
+  color: rgba(194, 208, 232, 0.9);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eyebrowIcon {
+  font-size: 1.1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Title */
+.title {
+  margin: 0;
+  color: #f7fbff;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.titleBreak {
+  display: block;
+  font-size: clamp(2.5rem, 5.5vw, 4rem);
+  color: #bddcff;
+}
+
+.titleCursor {
+  display: inline-block;
+  width: 4px;
+  height: 1em;
+  background: #00f0ff;
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+/* Subtitle */
+.subtitle {
+  margin: 0.5rem 0 0;
+  max-width: 42rem;
+  color: rgba(228, 236, 250, 0.88);
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  line-height: 1.8;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statIcon {
+  font-size: 0.9rem;
+  color: #00f0ff;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #b8c8e5;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 3.4rem;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryAction {
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  background: linear-gradient(135deg, #00f0ff, #00c4d4);
+  color: #07101b;
+  box-shadow: 0 8px 20px rgba(0, 240, 255, 0.2);
+}
+
+.primaryAction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 240, 255, 0.35);
+}
+
+.secondaryAction {
+  border: 1px solid rgba(219, 229, 245, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eef4ff;
+  backdrop-filter: blur(12px);
+}
+
+.secondaryAction:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  transition: transform 0.3s ease;
+}
+
+.primaryAction:hover .actionIcon {
+  transform: translateX(4px);
+}
+
+/* Terminal hint */
+.terminalHint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  width: fit-content;
+  border-left: 3px solid #00f0ff;
+}
+
+.terminalPrompt {
+  color: #00f0ff;
+}
+
+.terminalText {
+  color: #8ba0c0;
+}
+
+.terminalBlink {
+  color: #00f0ff;
+  animation: blink 1s step-end infinite;
+}
+
+/* Scroll indicator */
+.scrollIndicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.scrollIndicator:hover {
+  opacity: 1;
+}
+
+.scrollText {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8ba0c0;
+}
+
+.scrollMouse {
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  position: relative;
+}
+
+.scrollWheel {
+  width: 4px;
+  height: 8px;
+  background: #00f0ff;
+  border-radius: 2px;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scrollWheel 1.5s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes dashFlow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes slideParticle {
+  0% {
+    left: -20px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% + 20px);
+    opacity: 0;
+  }
+}
+
+@keyframes dataPulse {
+  0% {
+    r: 2px;
+    opacity: 0;
+  }
+  50% {
+    r: 8px;
+    opacity: 0.6;
+  }
+  100% {
+    r: 14px;
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    r: 6px;
+  }
+  50% {
+    opacity: 1;
+    r: 9px;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.3;
+    stroke-width: 1px;
+  }
+  50% {
+    opacity: 0.7;
+    stroke-width: 2px;
+  }
+}
+
+@keyframes moveParticle {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(60px);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes scrollWheel {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  80% {
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(15px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(15px);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .codeOverlay {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+  }
+  
+  .shell {
+    padding: 5rem 1.25rem 4rem;
+  }
+  
+  .title {
+    font-size: clamp(2.5rem, 10vw, 3.8rem);
+  }
+  
+  .titleBreak {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+  }
+  
+  .stats {
+    gap: 0.8rem;
+  }
+  
+  .scrollIndicator {
+    display: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cpuPath,
+  .gpuPath,
+  .particle,
+  .floatingNode,
+  .scrollWheel,
+  .titleCursor,
+  .terminalBlink,
+  .primaryAction,
+  .secondaryAction,
+  .cpuNode,
+  .gpuCore,
+  .dataPulse {
+    animation: none;
+  }
+  
+  .particle {
+    opacity: 0.15;
+  }
+  
+  .cpuNode {
+    opacity: 0.6;
+  }
+}
