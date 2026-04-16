@@ -1,0 +1,109 @@
+.background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.38;
+}
+
+.cpuPath,
+.gpuPath,
+.connectorPath {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  stroke-dasharray: 8 18;
+  vector-effect: non-scaling-stroke;
+}
+
+.cpuPath {
+  stroke: url(#cpuGlow);
+  opacity: 0.22;
+}
+
+.gpuPath {
+  stroke: url(#gpuGlow);
+  opacity: 0.18;
+}
+
+.connectorPath {
+  stroke: url(#cpuGlow);
+  opacity: 0.1;
+}
+
+.edgeGlowLeft,
+.edgeGlowRight,
+.centerFade,
+.particleLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.particleLayer {
+  z-index: 1;
+  filter: blur(0.2px);
+}
+
+.particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  offset-rotate: 0deg;
+  transform: translate(-50%, -50%);
+  will-change: offset-distance, opacity, transform;
+}
+
+.cpuParticle {
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.9), rgba(0, 240, 255, 0.08) 72%, transparent 76%);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.24);
+}
+
+.gpuParticle {
+  width: 0.42rem;
+  height: 0.42rem;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.9), rgba(138, 43, 226, 0.08) 72%, transparent 76%);
+  box-shadow: 0 0 16px rgba(138, 43, 226, 0.22);
+}
+
+.connectorParticle {
+  width: 0.34rem;
+  height: 0.34rem;
+  background: radial-gradient(circle, rgba(180, 244, 255, 0.86), rgba(180, 244, 255, 0.05) 72%, transparent 76%);
+  box-shadow: 0 0 12px rgba(180, 244, 255, 0.14);
+}
+
+.edgeGlowLeft {
+  background:
+    radial-gradient(circle at 8% 26%, rgba(0, 240, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 14% 76%, rgba(0, 240, 255, 0.08), transparent 22%);
+  filter: blur(26px);
+}
+
+.edgeGlowRight {
+  background:
+    radial-gradient(circle at 92% 28%, rgba(138, 43, 226, 0.13), transparent 26%),
+    radial-gradient(circle at 88% 74%, rgba(138, 43, 226, 0.09), transparent 24%);
+  filter: blur(30px);
+}
+
+.centerFade {
+  background:
+    linear-gradient(90deg, rgba(11, 15, 26, 0.08) 0%, rgba(11, 15, 26, 0.76) 34%, rgba(11, 15, 26, 0.8) 66%, rgba(11, 15, 26, 0.08) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle {
+    opacity: 0.08;
+  }
+}
