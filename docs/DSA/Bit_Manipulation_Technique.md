@@ -424,7 +424,7 @@ public class BitManipulation {
 <details>
 <summary> 
 
-**Code Explaination**
+**Code Explanation**
 
 </summary>
 
