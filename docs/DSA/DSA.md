@@ -79,7 +79,7 @@ Gain **practical knowledge, expert tips, and hands-on experience** to improve yo
 4. **[Bit Manipulation Techniques](./Bit_Manipulation_Technique.md)**
 
 ### 🔵 **Data Structures - A Complete Guide**
-5. **[Arrays and Strings](./arrays-and-strings)**
+5. **[Arrays and Strings](./DSA/arrays-and-strings)**
 6. **[Linked Lists](#linked-lists)**
 7. **[Stacks and Queues](#stacks-and-queues)**
 8. **[Hashing and Hash Tables](#hashing-and-hash-tables)**
