@@ -128,7 +128,7 @@ Welcome to your journey in Compiler Development! Here are some essential resourc
 
 ## Recommended Online Courses
 
-1. **Compilers**: [Course - Stanford University](hhttps://online.stanford.edu/courses/soe-ycscs1-compilers)
+1. **Compilers**: [Course - Stanford University](https://online.stanford.edu/courses/soe-ycscs1-compilers)
    - A comprehensive course covering all aspects of compiler design, including lexical analysis, parsing, and optimization.
 
 2. **Programming Languages**: [edX - Harvard University](https://www.edx.org/course/cs50s-introduction-to-artificial-intelligence-with-python)
