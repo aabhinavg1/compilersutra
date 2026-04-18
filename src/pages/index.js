@@ -50,6 +50,17 @@ const START_PATHS = [
     chips: ['Execution', 'Latency', 'Throughput'],
   },
   {
+    title: 'AI Systems',
+    description:
+      'Start with the AI systems master page linking math, tensors, model formats, compilers, papers, books, and hardware execution.',
+    tag: 'New topic',
+    to: '/docs/AI',
+    cta: 'Start AI Systems',
+    tone: 'mlir',
+    coverLabel: 'Math -> Tensors -> Hardware',
+    chips: ['AI', 'ONNX', 'MLIR'],
+  },
+  {
     title: 'MLIR / ML Compilers',
     description:
       'Move into MLIR, staged lowering, and the compiler stack behind modern AI systems.',
@@ -76,13 +87,16 @@ const START_PATHS = [
     description:
       'Build the C++ foundation needed for systems work, compiler internals, and performance-oriented programming.',
     tag: 'Implementation base',
-    to: '/docs/c++/CppTutorial',
+    to: '/docs/c++/cpp-learning-roadmap/',
     cta: 'Start C++',
     tone: 'cpp',
     coverLabel: 'Language for implementation',
     chips: ['C++', 'Memory', 'Tooling'],
   },
 ];
+
+const FEATURED_PATHS = START_PATHS.slice(0, 2);
+const SECONDARY_PATHS = START_PATHS.slice(2);
 
 const CATALOGUE_ITEMS = [
   {
@@ -199,6 +213,52 @@ const WHY_STAY = [
   },
 ];
 
+const PREMIUM_SIGNALS = [
+  {
+    label: 'Depth',
+    value: 'LLVM to GPU',
+    description: 'Compiler internals, execution models, MLIR, and hardware-aware systems work in one connected path.',
+  },
+  {
+    label: 'Style',
+    value: 'Editorial + Practical',
+    description: 'Roadmaps, core articles, benchmark reports, books, and papers built to reinforce each other.',
+  },
+  {
+    label: 'Goal',
+    value: 'Source to Hardware',
+    description: 'The site is designed to explain not just what tools do, but how computation actually reaches silicon.',
+  },
+];
+
+function PremiumSignalSection() {
+  return (
+    <section className={styles.signalSection}>
+      <div className={clsx('container', styles.signalShell)}>
+        <div className={styles.signalIntro}>
+          <p className={styles.sectionEyebrow}>Why This Homepage Feels Different</p>
+          <Heading as="h2" className={styles.sectionTitle}>
+            A sharper entry point into serious systems learning
+          </Heading>
+          <p className={styles.sectionText}>
+            CompilerSutra should feel less like a docs maze and more like a guided technical publication. The homepage now prioritizes the strongest paths first, then lets you branch into papers, benchmarks, books, and practice.
+          </p>
+        </div>
+
+        <div className={styles.signalGrid}>
+          {PREMIUM_SIGNALS.map((item) => (
+            <article key={item.label} className={clsx(styles.signalCard, styles.revealItem)} data-reveal>
+              <p className={styles.signalLabel}>{item.label}</p>
+              <h3>{item.value}</h3>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HomepageHeader() {
   return <Hero newsletterUrl={NEWSLETTER_URL} />;
 }
@@ -210,15 +270,47 @@ function StartHereSection() {
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>Start Here</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            Choose your learning path
+            Start with the strongest paths
           </Heading>
           <p className={styles.sectionText}>
-            Pick one path and go deeper. CompilerSutra should guide you to the right starting point, then keep you moving.
+            Begin with a featured path, then expand into adjacent systems only when you need them. The goal is momentum, not overwhelm.
           </p>
         </div>
 
+        <div className={styles.featuredPathGrid}>
+          {FEATURED_PATHS.map((item) => (
+            <Link
+              key={item.title}
+              to={item.to}
+              className={clsx(styles.pathCard, styles.pathCardFeatured, styles.revealItem)}
+              data-track={item.cta}
+              data-reveal
+            >
+              <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
+                <div className={styles.cardCoverInner}>
+                  <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
+                  <div className={styles.cardChipRow}>
+                    {item.chips.map((chip) => (
+                      <span key={chip} className={styles.cardChip}>
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <span className={styles.pathTag}>{item.tag}</span>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <span className={styles.pathLink}>
+                {item.cta}
+                <FaArrowRight aria-hidden="true" />
+              </span>
+            </Link>
+          ))}
+        </div>
+
         <div className={styles.pathGrid}>
-          {START_PATHS.map((item) => (
+          {SECONDARY_PATHS.map((item) => (
             <Link
               key={item.title}
               to={item.to}
@@ -284,10 +376,10 @@ function CatalogueSection() {
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>Browse CompilerSutra</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            Pick how you want to learn
+            Choose the mode, not just the page
           </Heading>
           <p className={styles.sectionText}>
-            You can start with a guided path, read a deep article, explore benchmarks, study papers, or practice with MCQs.
+            Different sessions need different depth. Sometimes you want a roadmap. Sometimes you want a benchmark report, a paper shelf, or one focused article.
           </p>
         </div>
 
@@ -322,10 +414,10 @@ function PopularResourcesSection() {
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>Best First Reads</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            Start with what readers open most
+            Editorial picks worth opening first
           </Heading>
           <p className={styles.sectionText}>
-            These are the strongest starting pages if you want a quick way into the site.
+            These are the pages that best represent the standard the rest of the site is aiming for: clarity, systems depth, and useful progression.
           </p>
         </div>
 
@@ -488,6 +580,7 @@ export default function Home() {
 
       <HomepageHeader />
       <main>
+        <PremiumSignalSection />
         <StartHereSection />
         <WhyStaySection />
         <CatalogueSection />

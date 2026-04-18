@@ -251,7 +251,7 @@
 
 .sectionBlock,
 .sectionBlockAlt {
-  padding: 3.5rem 0;
+  padding: 4.6rem 0;
 }
 
 .sectionBlock {
@@ -266,7 +266,60 @@
 .trustShell,
 .leadMagnetShell {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.8rem;
+}
+
+.signalSection {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(249, 115, 85, 0.08), transparent 18rem),
+    linear-gradient(180deg, #0a111f 0%, #0f172a 100%);
+  padding: 2.8rem 0 1.2rem;
+}
+
+.signalShell {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.signalIntro {
+  max-width: 48rem;
+}
+
+.signalGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.signalCard {
+  padding: 1.2rem 1.2rem 1.15rem;
+  border-radius: 20px;
+  border: 1px solid rgba(216, 225, 244, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 16px 40px rgba(3, 7, 18, 0.14);
+}
+
+.signalLabel {
+  margin: 0 0 0.55rem;
+  color: #8ea6cf;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.signalCard h3 {
+  margin: 0 0 0.55rem;
+  color: #f7fbff;
+  font-size: 1.22rem;
+  letter-spacing: -0.03em;
+}
+
+.signalCard p:last-child {
+  margin: 0;
+  color: #afbed8;
+  line-height: 1.65;
 }
 
 .sectionHeader {
@@ -288,6 +341,7 @@
 }
 
 .pathGrid,
+.featuredPathGrid,
 .catalogueGrid,
 .resourceGrid,
 .whyGrid,
@@ -298,6 +352,10 @@
 
 .pathGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.featuredPathGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .catalogueGrid {
@@ -337,6 +395,14 @@
 .pathCard {
   position: relative;
   overflow: hidden;
+  min-height: 100%;
+}
+
+.pathCardFeatured {
+  border-color: rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 18px 42px rgba(3, 7, 18, 0.16);
 }
 
 .whyCard {
@@ -362,6 +428,11 @@
   transform: translateY(-4px);
 }
 
+.pathCardFeatured:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+}
+
 .pathTag,
 .catalogueTag,
 .resourceTag {
@@ -385,7 +456,8 @@
 .whyCard h3 {
   margin: 0.75rem 0 0.45rem;
   color: #f5f8ff;
-  font-size: 1.06rem;
+  font-size: 1.08rem;
+  letter-spacing: -0.025em;
 }
 
 .pathCard p,
@@ -395,7 +467,7 @@
 .whyCard p {
   margin: 0;
   color: #aebdd8;
-  line-height: 1.6;
+  line-height: 1.66;
 }
 
 .pathLink,
@@ -409,7 +481,7 @@
 }
 
 .cardCover {
-  min-height: 9.4rem;
+  min-height: 10.2rem;
   margin: -1.25rem -1.25rem 1rem;
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -582,6 +654,8 @@
 }
 
 @media (max-width: 996px) {
+  .signalGrid,
+  .featuredPathGrid,
   .heroShell,
   .leadMagnetCard {
     grid-template-columns: 1fr;
@@ -615,7 +689,7 @@
 
   .sectionBlock,
   .sectionBlockAlt {
-    padding: 2.6rem 0;
+    padding: 3rem 0;
   }
 
   .pathGrid,
