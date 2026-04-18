@@ -1,3 +1,4 @@
+import { aiPapers, aiTopic } from './ai';
 import { coaPapers, coaTopic } from './coa';
 import { compilersutraMaterialPapers, compilersutraMaterialTopic } from './compilersutraMaterial';
 import { gpuPapers, gpuPapersTopic } from './gpuPapers';
@@ -6,6 +7,7 @@ import { machineLearningPapers, machineLearningTopic } from './machineLearning';
 import { mlirPapers, mlirTopic } from './mlir';
 
 export const LIBRARY_TOPICS = [
+  aiTopic,
   coaTopic,
   gpuPapersTopic,
   llvmTopic,
@@ -15,6 +17,7 @@ export const LIBRARY_TOPICS = [
 ];
 
 export const LIBRARY_PAPERS = [
+  ...aiPapers,
   ...coaPapers,
   ...gpuPapers,
   ...llvmPapers,

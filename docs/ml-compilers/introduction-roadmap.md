@@ -590,7 +590,7 @@ At this stage, you are studying the decisions that sit in the middle of the stac
 
 Once the concepts are stable, study actual stacks:
 
-- [TVM](/docs/tvm/intro-to-tvm): a good first system for seeing the full compiler pipeline, from graph optimization to operator lowering and hardware-aware scheduling
+- [TVM](/docs/tvm-for-beginners): a good first system for seeing the full compiler pipeline, from graph optimization to operator lowering and hardware-aware scheduling
 - [MLIR](/docs/MLIR/intro): the clearest entry point for multi-level IR, dialects, and staged lowering
 - [TPU-MLIR](/library/topic?topic=mlir): a deployment-oriented MLIR-based toolchain that shows model import, lowering, quantization, and target-specific binaries
 - [XLA](https://www.tensorflow.org/xla): a compiler pipeline used in several ML execution stacks
@@ -832,14 +832,14 @@ Recompilation happens when the old plan is no longer safe or useful. Dynamic sha
 
 Start with tensors, shapes, memory layout, and the basic fact that Python is not what the GPU executes. Then learn the execution pipeline, fusion, lowering, and one real system such as TVM or MLIR. Skip the tool-name collecting phase. It wastes time.
 
-If you want a sensible first exercise for Monday morning, open the [TVM Intro](/docs/tvm/intro-to-tvm), take one tiny expression such as `matmul -> add -> relu`, and follow it all the way down. Look at the graph. Look at what gets fused. Look at what kernels come out. Count the reads and writes. That one exercise will teach you more than ten vague summaries of "AI compilers."
+If you want a sensible first exercise for Monday morning, open the [TVM Intro](/docs/tvm-for-beginners), take one tiny expression such as `matmul -> add -> relu`, and follow it all the way down. Look at the graph. Look at what gets fused. Look at what kernels come out. Count the reads and writes. That one exercise will teach you more than ten vague summaries of "AI compilers."
 
 ## More Articles
 
 - [ML Compilers Topic](/docs/ml-compilers)
 - [ML Compilers Track](/docs/tracks/ml-compilers)
 - [MLIR Intro](/docs/MLIR/intro)
-- [TVM Intro](/docs/tvm/intro-to-tvm)
+- [TVM Intro](/docs/tvm-for-beginners)
 - [GPU Compilers Track](/docs/tracks/gpu-compilers)
 
 

@@ -146,6 +146,7 @@ const config = {
             position: 'left',
             items: [
               { label: 'All Articles', to: '/docs/articles' },
+              { label: 'AI Systems', to: '/docs/AI' },
               { label: 'Benchmarks', to: '/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter' },
               { label: 'Tech Blog', to: '/docs/AI/is_gpt_is_opensource' },
               { label: 'How-To Guides', to: '/docs/how-about' },
@@ -156,6 +157,7 @@ const config = {
             label: 'Topics',
             position: 'left',
             items: [
+              { label: 'AI Systems', to: '/docs/AI' },
               { label: 'Compilers', to: '/docs/compilers/compiler' },
               { label: 'LLVM', to: '/docs/llvm/intro-to-llvm' },
               { label: 'MLIR', to: '/docs/MLIR/intro' },

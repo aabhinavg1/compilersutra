@@ -1,5 +1,6 @@
 export { LIBRARY_PAPERS, LIBRARY_TOPICS } from './collections';
 
+export { aiPapers, aiTopic } from './ai';
 export { coaPapers, coaTopic } from './coa';
 export {
   compilersutraMaterialPapers,

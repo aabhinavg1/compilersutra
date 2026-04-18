@@ -42,8 +42,9 @@ const site = {
         {
           type: 'category',
           label: 'Tech Blog on AI',
-          collapsed: true,
+          collapsed: false,
           items: [
+            'AI',
             'AI/is_gpt_is_opensource',
           ],
         },
@@ -143,8 +144,9 @@ const site = {
         {
           type: 'category',
           label: 'Tech Blog',
-          collapsed: true,
+          collapsed: false,
           items: [
+            'AI',
             'AI/is_gpt_is_opensource',
           ],
         },
