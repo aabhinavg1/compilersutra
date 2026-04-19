@@ -1,0 +1,26 @@
+---
+id: mlir-track-quiz
+title: "MLIR MCQs Quiz"
+slug: /mcq/questions/domain/compilers/mlir/quiz
+description: "An MLIR quiz covering dialects, lowering, canonicalization, and multi-level compiler design."
+displayed_sidebar: mlirTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# MLIR MCQs Quiz
+
+<Question question="1). What is the main idea behind MLIR?" options={['A framework for multiple levels of intermediate representation', 'One fixed IR for every compiler problem', 'A debugger for GPU kernels only', 'A replacement for all frontends']} answer="A framework for multiple levels of intermediate representation" />
+<Question question="2). Why is multi-level IR useful?" options={['It preserves higher-level program structure before lowering', 'It removes all optimization choices early', 'It replaces runtime systems', 'It only helps linkers']} answer="It preserves higher-level program structure before lowering" />
+<Question question="3). In MLIR, a dialect mainly groups:" options={['Related operations, types, and attributes', 'Operating system calls', 'Only machine instructions', 'Only parser errors']} answer="Related operations, types, and attributes" />
+<Question question="4). Which statement best fits MLIR operations?" options={['They can model higher-level semantics than machine instructions', 'They are rigidly fixed like one ISA', 'They only exist after register allocation', 'They cannot carry attributes']} answer="They can model higher-level semantics than machine instructions" />
+<Question question="5). Why is staged lowering useful?" options={['It preserves more domain structure before lowering to low-level forms', 'It forces one-pass compilation only', 'It removes all optimization choices early', 'It prevents analysis']} answer="It preserves more domain structure before lowering to low-level forms" />
+
+<AdBanner />
+
+<Question question="6). A dialect conversion pass usually:" options={['Moves IR from one abstraction level or dialect to another', 'Runs the linker', 'Allocates CPU caches', 'Parses Markdown']} answer="Moves IR from one abstraction level or dialect to another" />
+<Question question="7). Why is MLIR especially useful for ML and accelerator stacks?" options={['It can preserve tensor and domain-level structure across lowering stages', 'It removes the need for kernels', 'It only targets CPUs', 'It cannot interact with LLVM']} answer="It can preserve tensor and domain-level structure across lowering stages" />
+<Question question="8). Attributes in MLIR are commonly used to store:" options={['Only register names', 'Compile-time metadata attached to IR constructs', 'Runtime heap objects only', 'Linked-list pointers only']} answer="Compile-time metadata attached to IR constructs" />
+<Question question="9). MLIR often lowers into LLVM IR because:" options={['LLVM provides mature lower-level compiler infrastructure and backends', 'MLIR cannot represent control flow', 'LLVM is only a serializer', 'It is required for parsing source code']} answer="LLVM provides mature lower-level compiler infrastructure and backends" />
+<Question question="10). A good mental model for MLIR is:" options={['One more parser', 'A bridge between domain-aware IR and lower-level compiler infrastructure', 'A profiler UI', 'A replacement for every runtime']} answer="A bridge between domain-aware IR and lower-level compiler infrastructure" />

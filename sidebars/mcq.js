@@ -214,10 +214,28 @@ const mcq = {
         },
         {
           type: 'category',
-          label: 'Compiler Design MCQs',
+          label: 'Compiler MCQs',
           collapsed: true,
           items: [
+            'mcq/questions/domain/compilers/compiler-stack-home',
+            'mcq/questions/domain/compilers/compiler/compiler-track-home',
+            'mcq/questions/domain/compilers/compiler/compiler-basics',
+            'mcq/questions/domain/compilers/compiler/compiler-commands',
+            'mcq/questions/domain/compilers/compiler/compiler-ir',
+            'mcq/questions/domain/compilers/compiler/compiler-backend',
+            'mcq/questions/domain/compilers/compiler/compiler-track-quiz',
+            'mcq/questions/domain/compilers/llvm/llvm-track-home',
+            'mcq/questions/domain/compilers/llvm/llvm-track-quiz',
+            'mcq/questions/domain/compilers/mlir/mlir-track-home',
+            'mcq/questions/domain/compilers/mlir/mlir-track-quiz',
+            'mcq/questions/domain/compilers/ai-in-compilers/ai-in-compilers-home',
+            'mcq/questions/domain/compilers/ai-in-compilers/ai-in-compilers-quiz',
+            'mcq/questions/domain/compilers/ai-compiler/compilers-in-ai-home',
+            'mcq/questions/domain/compilers/ai-compiler/compilers-in-ai-quiz',
             'mcq/questions/domain/compiler-dev/compiler-dev-home',
+            'mcq/questions/domain/compiler-dev/compiler-dev-fundamentals',
+            'mcq/questions/domain/compiler-dev/compiler-dev-parsing-ir',
+            'mcq/questions/domain/compiler-dev/compiler-dev-llvm-optimization',
             'mcq/questions/domain/compiler-dev/compiler-dev-quiz',
           ],
         },
@@ -352,6 +370,87 @@ const mcq = {
       items: [
         'mcq/questions/domain/competitive-programming/competitive-programming-home',
         'mcq/questions/domain/competitive-programming/competitive-programming-quiz',
+      ],
+    },
+  ],
+
+  compilerStackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'Compiler MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/compiler-stack-home',
+        'mcq/questions/domain/compilers/compiler/compiler-track-home',
+        'mcq/questions/domain/compilers/llvm/llvm-track-home',
+        'mcq/questions/domain/compilers/mlir/mlir-track-home',
+        'mcq/questions/domain/compilers/ai-in-compilers/ai-in-compilers-home',
+        'mcq/questions/domain/compilers/ai-compiler/compilers-in-ai-home',
+        'mcq/questions/domain/compiler-dev/compiler-dev-home',
+      ],
+    },
+  ],
+
+  compilerTrackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'Compilers MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/compiler/compiler-track-home',
+        'mcq/questions/domain/compilers/compiler/compiler-basics',
+        'mcq/questions/domain/compilers/compiler/compiler-commands',
+        'mcq/questions/domain/compilers/compiler/compiler-ir',
+        'mcq/questions/domain/compilers/compiler/compiler-backend',
+        'mcq/questions/domain/compilers/compiler/compiler-track-quiz',
+      ],
+    },
+  ],
+
+  llvmTrackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'LLVM MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/llvm/llvm-track-home',
+        'mcq/questions/domain/compilers/llvm/llvm-track-quiz',
+      ],
+    },
+  ],
+
+  mlirTrackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'MLIR MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/mlir/mlir-track-home',
+        'mcq/questions/domain/compilers/mlir/mlir-track-quiz',
+      ],
+    },
+  ],
+
+  aiInCompilersTrackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'AI in Compilers MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/ai-in-compilers/ai-in-compilers-home',
+        'mcq/questions/domain/compilers/ai-in-compilers/ai-in-compilers-quiz',
+      ],
+    },
+  ],
+
+  compilersInAiTrackMcqSidebar: [
+    {
+      type: 'category',
+      label: 'Compilers in AI MCQs',
+      collapsed: false,
+      items: [
+        'mcq/questions/domain/compilers/ai-compiler/compilers-in-ai-home',
+        'mcq/questions/domain/compilers/ai-compiler/compilers-in-ai-quiz',
       ],
     },
   ],

@@ -206,8 +206,8 @@ const config = {
                 to: '/docs/mcq/interview_question/cpp_interview_mcqs',
               },
               {
-                label: 'Domain Specific C++ MCQs',
-                to: '/docs/mcq/cpp_mcqs#-domain-specific-c-mcqs',
+                label: 'Domain Specific MCQs',
+                to: '/docs/mcq/questions/domain',
               },
               { label: 'Compiler, Systems and GPU MCQ', to: '/docs/mcq' },
             ],

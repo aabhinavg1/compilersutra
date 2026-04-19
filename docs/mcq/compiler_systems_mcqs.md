@@ -67,7 +67,7 @@ import Link from '@docusaurus/Link';
   </p>
   <div style={{display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.25rem'}}>
     <Link className="button button--lg button--primary" to="/docs/mcq/cpp_mcqs">Start with C++ MCQs</Link>
-    <Link className="button button--lg button--secondary" to="/docs/mcq/questions/domain/compiler-dev">Jump to Compiler MCQs</Link>
+    <Link className="button button--lg button--secondary" to="/docs/mcq/questions/domain/compilers">Jump to Compiler MCQs</Link>
   </div>
 </div>
 
@@ -88,10 +88,10 @@ import Link from '@docusaurus/Link';
     <h3 style={{marginTop: '0.45rem', marginBottom: '0.45rem'}}>C++ Interview Questions</h3>
     <p style={{marginBottom: 0, color: 'var(--ifm-color-emphasis-700)'}}>Targeted question sets for placements, interviews, and high-frequency C++ concepts.</p>
   </Link>
-  <Link to="/docs/mcq/questions/domain/compiler-dev" style={{display: 'block', padding: '1.1rem', borderRadius: '22px', textDecoration: 'none', border: '1px solid var(--ifm-color-emphasis-200)', background: 'linear-gradient(180deg, rgba(52, 211, 153, 0.14), rgba(15, 23, 42, 0.45))'}}>
+  <Link to="/docs/mcq/questions/domain/compilers" style={{display: 'block', padding: '1.1rem', borderRadius: '22px', textDecoration: 'none', border: '1px solid var(--ifm-color-emphasis-200)', background: 'linear-gradient(180deg, rgba(52, 211, 153, 0.14), rgba(15, 23, 42, 0.45))'}}>
     <div style={{fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#6ee7b7'}}>Compiler Core</div>
-    <h3 style={{marginTop: '0.45rem', marginBottom: '0.45rem'}}>Compiler Design MCQs</h3>
-    <p style={{marginBottom: 0, color: 'var(--ifm-color-emphasis-700)'}}>Compiler phases, ASTs, IR, SSA, optimization, parsing, and LLVM-adjacent reasoning.</p>
+    <h3 style={{marginTop: '0.45rem', marginBottom: '0.45rem'}}>Compiler MCQs</h3>
+    <p style={{marginBottom: 0, color: 'var(--ifm-color-emphasis-700)'}}>Compilers, LLVM, MLIR, AI in compilers, and compilers in AI, all under one master page.</p>
   </Link>
 </div>
 
@@ -141,7 +141,7 @@ import Link from '@docusaurus/Link';
 
 | If you are studying | Use these MCQs |
 | --- | --- |
-| Compiler Fundamentals or LLVM | [Compiler Design](/docs/mcq/questions/domain/compiler-dev), [C++ MCQs](/docs/mcq/cpp_mcqs) |
+| Compiler Fundamentals or LLVM | [Compiler MCQs](/docs/mcq/questions/domain/compilers), [C++ MCQs](/docs/mcq/cpp_mcqs) |
 | GPU and OpenCL | [GPU Programming](/docs/mcq/questions/domain/gpu-programming), [HPC and Performance](/docs/mcq/questions/domain/data-science-hpc) |
 | Linux, systems, low-level runtime behavior | [System Programming](/docs/mcq/questions/domain/system-programming), [Embedded Systems](/docs/mcq/questions/domain/embedded) |
 | Interview preparation | [C++ Interview Questions](/docs/mcq/interview_question/cpp_interview_mcqs), [C++ MCQs](/docs/mcq/cpp_mcqs) |
