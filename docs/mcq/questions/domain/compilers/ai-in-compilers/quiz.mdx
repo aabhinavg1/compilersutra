@@ -1,0 +1,24 @@
+---
+id: ai-in-compilers-quiz
+title: "AI in Compilers MCQs Quiz"
+slug: /mcq/questions/domain/compilers/ai-in-compilers/quiz
+description: "An AI-in-compilers quiz covering learned cost models, tuning, search, and compiler guidance."
+displayed_sidebar: aiInCompilersTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# AI in Compilers MCQs Quiz
+
+<Question question="1). AI in compilers usually means:" options={['Using learned or data-driven methods to guide compiler decisions', 'Replacing every compiler pass with a chatbot', 'Removing IR completely', 'Running only on GPUs']} answer="Using learned or data-driven methods to guide compiler decisions" />
+<Question question="2). A learned cost model in a compiler is mainly used to:" options={['Estimate which optimization or schedule may perform better', 'Replace parsing', 'Format source code', 'Link object files']} answer="Estimate which optimization or schedule may perform better" />
+<Question question="3). Autotuning is useful because it can:" options={['Search many implementation choices and keep the best-performing one', 'Remove the need for benchmarking', 'Guarantee one universal schedule for all hardware', 'Replace the backend']} answer="Search many implementation choices and keep the best-performing one" />
+<Question question="4). Why can ML help compiler heuristics?" options={['Some optimization choices depend on patterns that are hard to encode by hand', 'Because compilers no longer use IR', 'Because parsers are random', 'Because linkers need neural networks']} answer="Some optimization choices depend on patterns that are hard to encode by hand" />
+<Question question="5). Profile-guided decisions rely on:" options={['Observed program behavior or measured performance data', 'Markdown metadata only', 'The number of source files only', 'Header include counts only']} answer="Observed program behavior or measured performance data" />
+
+<AdBanner />
+
+<Question question="6). A schedule search space is the set of:" options={['Possible transformation or scheduling choices the compiler can explore', 'Available comments in source code', 'Linker errors', 'AST node colors']} answer="Possible transformation or scheduling choices the compiler can explore" />
+<Question question="7). AI-assisted compilation still needs classic compiler infrastructure because:" options={['The final system still depends on IR, legality checks, and code generation', 'AI directly emits perfect binaries without compilers', 'Parsing is no longer required', 'Hardware does not matter']} answer="The final system still depends on IR, legality checks, and code generation" />
+<Question question="8). A bad learned heuristic can hurt performance because it may:" options={['Choose poor optimization decisions for a given workload or target', 'Eliminate the need for benchmarks', 'Always improve every program', 'Remove the backend completely']} answer="Choose poor optimization decisions for a given workload or target" />

@@ -1,0 +1,26 @@
+---
+id: compiler-ir
+title: "IR MCQs"
+slug: /mcq/questions/domain/compilers/compiler/ir
+description: "Compiler IR MCQs covering intermediate representation, SSA, phi nodes, and middle-end optimization."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# IR MCQs
+
+Use this page to practice the middle of the compiler pipeline.
+
+<Question question="1). IR stands for:" options={['Intermediate Representation', 'Internal Resolver', 'Instruction Renderer', 'Integrated Runtime']} answer="Intermediate Representation" />
+<Question question="2). Why is IR important in modern compilers?" options={['It gives optimizers a structured form to analyze and transform', 'It replaces source code forever', 'It removes the need for parsing', 'It is only for linkers']} answer="It gives optimizers a structured form to analyze and transform" />
+<Question question="3). SSA stands for:" options={['Static Single Assignment', 'Structured Syntax Analyzer', 'Single Stage Assembly', 'Scoped Symbol Access']} answer="Static Single Assignment" />
+<Question question="4). In SSA, a variable is usually assigned:" options={['Once', 'Many times by design', 'Only in loops', 'Only after linking']} answer="Once" />
+<Question question="5). A phi node is used when:" options={['Control-flow paths merge', 'Headers are included', 'Libraries are linked', 'Macros are expanded']} answer="Control-flow paths merge" />
+
+<AdBanner />
+
+<Question question="6). Constant folding means:" options={['Computing constant expressions during compilation', 'Moving constants to RAM', 'Deleting all constants', 'Inlining every function']} answer="Computing constant expressions during compilation" />
+<Question question="7). Dead code elimination removes code that:" options={['Does not affect the final result', 'Contains comments', 'Uses local variables', 'Was written last']} answer="Does not affect the final result" />
+<Question question="8). Middle-end optimizations are usually:" options={['Largely machine-independent', 'Always tied to one CPU ISA', 'Done only by the linker', 'Only useful for assembly formatting']} answer="Largely machine-independent" />

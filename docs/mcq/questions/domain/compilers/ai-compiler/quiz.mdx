@@ -1,0 +1,26 @@
+---
+id: compilers-in-ai-quiz
+title: "Compilers in AI MCQs Quiz"
+slug: /mcq/questions/domain/compilers/compilers-in-ai/quiz
+description: "A compilers-in-AI quiz covering graph lowering, fusion, layout, kernels, and runtime tradeoffs."
+displayed_sidebar: compilersInAiTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Compilers in AI MCQs Quiz
+
+<Question question="1). An AI compiler usually starts from which kind of representation?" options={['A model graph or tensor program representation', 'Only final assembly', 'A linker map file', 'A disk image']} answer="A model graph or tensor program representation" />
+<Question question="2). Operator fusion is useful because it often:" options={['Increases unnecessary memory traffic', 'Reduces kernel launch overhead and intermediate memory movement', 'Eliminates the need for hardware', 'Only helps parsing']} answer="Reduces kernel launch overhead and intermediate memory movement" />
+<Question question="3). Why do tensor layouts matter?" options={['They affect memory access patterns and hardware efficiency', 'They only matter for source formatting', 'They replace scheduling', 'They are only for debugging']} answer="They affect memory access patterns and hardware efficiency" />
+<Question question="4). Lowering in an AI compiler means:" options={['Moving from higher-level tensor or graph semantics toward executable forms', 'Only training a model faster', 'Deleting graph nodes randomly', 'Compressing the dataset']} answer="Moving from higher-level tensor or graph semantics toward executable forms" />
+<Question question="5). Kernel selection depends heavily on:" options={['Target hardware characteristics', 'Markdown frontmatter', 'Git history only', 'Browser cache size']} answer="Target hardware characteristics" />
+
+<AdBanner />
+
+<Question question="6). Why is shape information important in AI compiler pipelines?" options={['It influences legality, scheduling, and memory planning', 'It only changes model names', 'It is only needed by the frontend UI', 'It replaces runtime execution']} answer="It influences legality, scheduling, and memory planning" />
+<Question question="7). A runtime in an AI system is mainly responsible for:" options={['Executing compiled artifacts and managing invocation-time behavior', 'Building the lexer', 'Replacing the optimizer', 'Writing training data']} answer="Executing compiled artifacts and managing invocation-time behavior" />
+<Question question="8). Quantization is often used to:" options={['Change model names', 'Reduce compute and memory cost using lower-precision representations', 'Replace graph lowering entirely', 'Increase tokenization quality']} answer="Reduce compute and memory cost using lower-precision representations" />
+<Question question="9). Which statement best describes the AI compiler stack?" options={['It connects model representation, compiler lowering, kernel generation, and runtime execution', 'It is only a GPU driver', 'It is just one parser pass', 'It only exports PDFs']} answer="It connects model representation, compiler lowering, kernel generation, and runtime execution" />
+<Question question="10). Why do AI compilers care about memory movement so much?" options={['Because data transfer and layout changes can dominate performance', 'Because source files are large', 'Because parsing is slow', 'Because registers do not exist']} answer="Because data transfer and layout changes can dominate performance" />

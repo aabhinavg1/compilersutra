@@ -1,0 +1,26 @@
+---
+id: llvm-track-quiz
+title: "LLVM MCQs Quiz"
+slug: /mcq/questions/domain/compilers/llvm/quiz
+description: "An LLVM quiz covering IR, tools, passes, analyses, and backend lowering."
+displayed_sidebar: llvmTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# LLVM MCQs Quiz
+
+<Question question="1). LLVM is best described as:" options={['A compiler infrastructure project with reusable components', 'Only a debugger', 'Only a linker', 'Only a C++ parser']} answer="A compiler infrastructure project with reusable components" />
+<Question question="2). Why is LLVM IR useful?" options={['It gives optimizers and backends a shared low-level representation', 'It replaces source code comments', 'It removes the need for backends', 'It is only for storing ASTs']} answer="It gives optimizers and backends a shared low-level representation" />
+<Question question="3). Which file extension usually represents human-readable LLVM IR?" options={['.ll', '.o', '.so', '.yaml']} answer=".ll" />
+<Question question="4). In LLVM, an analysis pass mainly:" options={['Produces information without directly changing IR', 'Always emits assembly', 'Allocates disk pages', 'Parses C++ headers']} answer="Produces information without directly changing IR" />
+<Question question="5). A transformation pass is expected to:" options={['Change the IR', 'Only print metadata', 'Only lex the program', 'Replace the linker']} answer="Change the IR" />
+
+<AdBanner />
+
+<Question question="6). Which LLVM tool is commonly used to run optimization passes on IR?" options={['llc', 'opt', 'clangd', 'llvm-ar']} answer="opt" />
+<Question question="7). What does `llc` primarily do?" options={['Link IR modules together', 'Lower LLVM IR toward target assembly or machine code', 'Format source code', 'Run the parser only']} answer="Lower LLVM IR toward target assembly or machine code" />
+<Question question="8). Which tool links multiple LLVM IR modules together?" options={['llvm-link', 'clang-format', 'lldb', 'opt-viewer']} answer="llvm-link" />
+<Question question="9). SSA is useful in LLVM because it:" options={['Makes data dependencies clearer for optimization', 'Eliminates the need for control flow', 'Removes machine registers', 'Turns all code into assembly']} answer="Makes data dependencies clearer for optimization" />
+<Question question="10). Why do LLVM passes often run in pipelines?" options={['Because one transformation can enable later optimizations', 'Because LLVM cannot process one pass at a time', 'Because linking must always happen first', 'Because parsing is repeated after every pass']} answer="Because one transformation can enable later optimizations" />

@@ -1,0 +1,73 @@
+---
+id: compiler-stack-home
+title: "Compiler MCQs"
+slug: /mcq/questions/domain/compilers
+description: "Master page for compiler MCQs covering compilers, LLVM, MLIR, AI in compilers, and compilers in AI."
+displayed_sidebar: compilerStackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import Link from '@docusaurus/Link';
+
+# Compiler MCQs
+
+This master page groups all compiler-related MCQ sections in one place so readers do not have to hunt between `compiler-dev` and newer MCQ pages.
+
+<div style={{position: 'relative', overflow: 'hidden', borderRadius: '26px', padding: '1.6rem', marginBottom: '1.5rem', border: '1px solid var(--ifm-color-emphasis-200)', background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.10), rgba(59, 130, 246, 0.10)), var(--ifm-background-surface-color)', boxShadow: '0 16px 36px rgba(15, 23, 42, 0.08)'}}>
+  <p style={{margin: 0, fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ifm-color-success)'}}>Compiler MCQ hub</p>
+  <h1 style={{marginTop: '0.45rem', marginBottom: '0.7rem'}}>Pick the compiler area you want to practice</h1>
+  <p style={{marginBottom: 0, color: 'var(--ifm-color-emphasis-800)'}}>
+    Each section has its own landing page and its own sidebar. Once you click into a section, the sidebar narrows to only that topic.
+  </p>
+</div>
+
+## Main Sections
+
+<div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1.5rem'}}>
+  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>Compilers</h3>
+    <p>Practice compiler fundamentals, commands, IR, and backend flow without mixing in LLVM-only questions.</p>
+    <Link to="/docs/mcq/questions/domain/compilers/compiler">Open Compilers MCQs</Link>
+  </div>
+  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>LLVM</h3>
+    <p>Focus on LLVM IR, passes, analyses, tools, and backend flow only.</p>
+    <Link to="/docs/mcq/questions/domain/compilers/llvm">Open LLVM MCQs</Link>
+  </div>
+  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>MLIR</h3>
+    <p>Practice dialects, staged lowering, canonicalization, and multi-level IR reasoning.</p>
+    <Link to="/docs/mcq/questions/domain/compilers/mlir">Open MLIR MCQs</Link>
+  </div>
+  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>AI in Compilers</h3>
+    <p>Cover where AI or ML helps compilers with heuristics, tuning, cost models, and search.</p>
+    <Link to="/docs/mcq/questions/domain/compilers/ai-in-compilers">Open AI in Compilers MCQs</Link>
+  </div>
+  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>Compilers in AI</h3>
+    <p>Cover graph lowering, tensor layouts, kernel generation, and runtime execution in AI systems.</p>
+    <Link to="/docs/mcq/questions/domain/compilers/compilers-in-ai">Open Compilers in AI MCQs</Link>
+  </div>
+</div>
+
+## Recommended Use
+
+- Start with `Compilers` if frontend, IR, SSA, and backend flow are still fuzzy.
+- Move into `LLVM` after compiler basics if you already think in passes and `.ll` files.
+- Use `MLIR` when you want to understand staged lowering and dialect design.
+- Use `AI in Compilers` when you care about learned heuristics and AI-assisted compiler decisions.
+- Use `Compilers in AI` when you want the model-to-kernel execution path.
+
+## Older Compiler MCQ Pages Already On The Site
+
+- [Compiler Design MCQs](/docs/mcq/questions/domain/compiler-dev)
+- [Compiler Fundamentals MCQs](/docs/mcq/questions/domain/compiler-dev/compiler-fundamentals)
+- [Parsing and IR MCQs](/docs/mcq/questions/domain/compiler-dev/parsing-and-ir)
+- [LLVM and Optimization MCQs](/docs/mcq/questions/domain/compiler-dev/llvm-and-optimization)
+
+<div style={{padding: '1rem 1.1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)', marginBottom: '1.5rem'}}>
+  <strong>Use this with:</strong> [Compiler Fundamentals Track](/docs/tracks/compiler-fundamentals), [LLVM and IR Track](/docs/tracks/llvm-and-ir), [ML Compilers Track](/docs/tracks/ml-compilers), [AI Systems](/docs/AI)
+</div>
+
+<AdBanner />

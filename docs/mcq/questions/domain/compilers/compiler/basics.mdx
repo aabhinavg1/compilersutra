@@ -1,0 +1,26 @@
+---
+id: compiler-basics
+title: "Basics MCQs"
+slug: /mcq/questions/domain/compilers/compiler/basics
+description: "Basic compiler theory MCQs covering the source-to-binary flow, frontend stages, and core terms."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Basics MCQs
+
+Start here. This page covers the core theory behind how compilers work.
+
+<Question question="1). What is the main job of a compiler?" options={['Translate source code into lower-level code', 'Run the program directly on the CPU', 'Replace the operating system', 'Only build object files']} answer="Translate source code into lower-level code" />
+<Question question="2). Which stage turns raw source characters into tokens?" options={['Lexical analysis', 'Linking', 'Register allocation', 'Loading']} answer="Lexical analysis" />
+<Question question="3). Which stage mainly builds the AST or parse tree?" options={['Parsing', 'Linking', 'Assembly', 'Scheduling']} answer="Parsing" />
+<Question question="4). Semantic analysis is used to check:" options={['Type errors and undeclared names', 'CPU temperature', 'Disk partitions', 'Browser tabs']} answer="Type errors and undeclared names" />
+<Question question="5). Why do compilers use intermediate representation?" options={['To separate source-level work from target-specific code generation', 'To remove the need for optimization', 'To skip parsing completely', 'To avoid machine code']} answer="To separate source-level work from target-specific code generation" />
+
+<AdBanner />
+
+<Question question="6). Which stage usually comes after assembly text is produced?" options={['Assembling into object code', 'Tokenization', 'Macro expansion', 'Name mangling only']} answer="Assembling into object code" />
+<Question question="7). The linker mainly combines:" options={['Object files and libraries', 'Tokens and AST nodes', 'Registers and caches', 'Source comments and macros']} answer="Object files and libraries" />
+<Question question="8). Which compiler part is closest to machine-specific code emission?" options={['Backend', 'Lexer', 'Parser', 'Preprocessor']} answer="Backend" />

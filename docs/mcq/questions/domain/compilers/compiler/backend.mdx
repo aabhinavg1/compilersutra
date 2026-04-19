@@ -1,0 +1,26 @@
+---
+id: compiler-backend
+title: "Backend MCQs"
+slug: /mcq/questions/domain/compilers/compiler/backend
+description: "Backend MCQs covering instruction selection, register allocation, scheduling, and optimization effects."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Backend MCQs
+
+This page covers the part of compilation closest to real machine execution.
+
+<Question question="1). Instruction selection is about:" options={['Mapping IR operations to target machine instructions', 'Expanding macros', 'Building the AST', 'Resolving includes']} answer="Mapping IR operations to target machine instructions" />
+<Question question="2). Register allocation decides how values use:" options={['CPU registers', 'Markdown headings', 'Source file names', 'Header guards']} answer="CPU registers" />
+<Question question="3). Instruction scheduling tries to:" options={['Order instructions well for hardware execution', 'Rename variables alphabetically', 'Group headers by folder', 'Format source code']} answer="Order instructions well for hardware execution" />
+<Question question="4). Why can backend optimization differ across targets?" options={['Different ISAs and microarchitectures have different constraints', 'Because ASTs are target-specific', 'Because macros behave differently', 'Because tokens are hardware-dependent']} answer="Different ISAs and microarchitectures have different constraints" />
+<Question question="5). Which stage is closest to producing assembly or machine code?" options={['Backend code generation', 'Lexical analysis', 'Preprocessing', 'Symbol parsing']} answer="Backend code generation" />
+
+<AdBanner />
+
+<Question question="6). Loop unrolling is mainly used to:" options={['Reduce loop overhead and expose more optimization opportunities', 'Create extra headers', 'Replace the parser', 'Force dynamic linking']} answer="Reduce loop overhead and expose more optimization opportunities" />
+<Question question="7). Inlining is often used to:" options={['Reduce function call overhead in hot paths', 'Replace registers with memory', 'Turn source into tokens', 'Build symbol tables']} answer="Reduce function call overhead in hot paths" />
+<Question question="8). Backend work matters because it directly affects:" options={['Final machine-level performance and code shape', 'Only comments', 'Only SEO metadata', 'Only documentation layout']} answer="Final machine-level performance and code shape" />

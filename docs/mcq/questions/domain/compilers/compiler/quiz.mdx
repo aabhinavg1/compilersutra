@@ -1,0 +1,28 @@
+---
+id: compiler-track-quiz
+title: "Final Review Quiz"
+slug: /mcq/questions/domain/compilers/compiler/quiz
+description: "Mixed review quiz for compiler basics, commands, IR, and backend topics."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Final Review Quiz
+
+This page mixes questions from `Basics`, `Commands`, `IR`, and `Backend`.
+
+<Question question="1). Which stage turns source code into tokens?" options={['Lexical analysis', 'Linking', 'Loading', 'Scheduling']} answer="Lexical analysis" />
+<Question question="2). Which flag is commonly used to see preprocessed output?" options={['-E', '-S', '-c', '-O3']} answer="-E" />
+<Question question="3). Which stage usually builds the AST?" options={['Parsing', 'Linking', 'Register allocation', 'Inlining']} answer="Parsing" />
+<Question question="4). Which flag is commonly used to choose the output filename?" options={['-o', '-E', '-Winvalid', '-std']} answer="-o" />
+<Question question="5). What does SSA stand for?" options={['Static Single Assignment', 'Single Syntax Analyzer', 'Structured Source Assembly', 'Scoped Symbol Allocation']} answer="Static Single Assignment" />
+
+<AdBanner />
+
+<Question question="6). A phi node is most useful when:" options={['Control-flow paths merge', 'Headers are included', 'Object files are linked', 'Source files are preprocessed']} answer="Control-flow paths merge" />
+<Question question="7). Which command is useful for viewing symbols in an object file?" options={['nm', 'pwd', 'mkdir', 'touch']} answer="nm" />
+<Question question="8). Register allocation decides how values use:" options={['CPU registers', 'Markdown links', 'Source filenames', 'Header guards']} answer="CPU registers" />
+<Question question="9). Instruction scheduling is mainly about:" options={['Ordering instructions well for hardware execution', 'Renaming variables', 'Printing ASTs', 'Expanding macros']} answer="Ordering instructions well for hardware execution" />
+<Question question="10). Why do compilers use IR?" options={['To separate source-level analysis from target-specific code generation', 'To skip parsing', 'To avoid backends', 'To remove optimization']} answer="To separate source-level analysis from target-specific code generation" />

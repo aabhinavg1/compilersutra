@@ -1,0 +1,26 @@
+---
+id: compiler-commands
+title: "Commands MCQs"
+slug: /mcq/questions/domain/compilers/compiler/commands
+description: "Compiler command MCQs covering preprocessing, assembly, object files, AST dumps, and LLVM IR emission."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Commands MCQs
+
+This page focuses on the commands people actually run to observe compiler stages.
+
+<Question question="1). Which flag usually shows preprocessed output?" options={['-E', '-S', '-c', '-O2']} answer="-E" />
+<Question question="2). Which flag usually stops after generating assembly text?" options={['-S', '-E', '-c', '-I']} answer="-S" />
+<Question question="3). Which flag usually produces an object file without linking?" options={['-c', '-E', '-v', '-shared']} answer="-c" />
+<Question question="4). Which flag is commonly used to choose the output filename?" options={['-o', '-E', '-Wall', '-g']} answer="-o" />
+<Question question="5). Which command is useful for inspecting symbols in an object file?" options={['nm', 'pwd', 'mkdir', 'touch']} answer="nm" />
+
+<AdBanner />
+
+<Question question="6). Which Clang flags are commonly used to inspect the AST?" options={['-Xclang -ast-dump -fsyntax-only', '-emit-obj', '-Winvalid-pch', '-Winvalid-token']} answer="-Xclang -ast-dump -fsyntax-only" />
+<Question question="7). Preprocessing mainly expands:" options={['Macros and includes', 'Register allocation', 'Instruction scheduling', 'Stack frames']} answer="Macros and includes" />
+<Question question="8). If you run `clang file.c` without `-c` or `-S`, the pipeline usually ends by:" options={['Linking an executable', 'Only tokenizing source', 'Only dumping AST', 'Only preprocessing headers']} answer="Linking an executable" />

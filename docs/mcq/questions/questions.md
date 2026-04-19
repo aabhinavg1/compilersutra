@@ -68,7 +68,7 @@ This page is the master index for the actual question sets inside CompilerSutra.
 - [Specialized C++ MCQs](./specialized/specialized.md)
 
 ### 🟡 Domain Master Pages
-- [Compiler Design MCQs](/docs/mcq/questions/domain/compiler-dev)
+- [Compiler MCQs](/docs/mcq/questions/domain/compilers)
 - [System Programming MCQs](/docs/mcq/questions/domain/system-programming)
 - [GPU Programming MCQs](/docs/mcq/questions/domain/gpu-programming)
 - [Embedded Systems MCQs](/docs/mcq/questions/domain/embedded)
