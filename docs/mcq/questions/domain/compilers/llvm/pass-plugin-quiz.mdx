@@ -1,0 +1,28 @@
+---
+id: llvm-pass-plugin-quiz
+title: "LLVM Pass Plugin MCQ Quiz"
+slug: /mcq/questions/domain/compilers/llvm/pass-plugin-quiz
+description: "A 10-question quiz on building and running an LLVM pass plugin with opt, CMake, registration callbacks, and real beginner troubleshooting cases."
+displayed_sidebar: llvmTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# LLVM Pass Plugin MCQ Quiz
+
+Use this quiz after reading the pass plugin article to check whether the workflow, commands, and failure cases are clear.
+
+<Question question="1). In the article workflow, how is the custom pass delivered to LLVM?" options={['As a shared-library plugin loaded into `opt`', 'As a patch to the Clang parser only', 'As a shell alias', 'As a static binary linked into Bash']} answer="As a shared-library plugin loaded into `opt`" />
+<Question question="2). Which LLVM tool is used in the article to run the custom pass?" options={['opt', 'llc', 'llvm-ar', 'lldb']} answer="opt" />
+<Question question="3). What textual pipeline name does the plugin register?" options={['func-name', 'function-printer', 'print-func', 'pass-name']} answer="func-name" />
+<Question question="4). Which API style does the example pass use?" options={['PassInfoMixin with the new pass manager', 'Only the legacy FunctionPass base class', 'A machine-code pass only', 'A linker script interface']} answer="PassInfoMixin with the new pass manager" />
+<Question question="5). Why does the example return `PreservedAnalyses::all()`?" options={['Because the pass prints information and does not modify IR', 'Because all LLVM passes must return it even after mutations', 'Because the pass runs before parsing', 'Because CMake requires that return value']} answer="Because the pass prints information and does not modify IR" />
+
+<AdBanner />
+
+<Question question="6). If `opt` reports `unknown pass name 'func-name'`, what is the most likely issue?" options={['The registration callback did not map `func-name` to the pass correctly', 'The `.ll` file has too many functions', 'The system compiler is GCC instead of Clang', 'The pass printed to stderr instead of stdout']} answer="The registration callback did not map `func-name` to the pass correctly" />
+<Question question="7). In the article's real debugging session, why did the pass initially print nothing?" options={['The generated IR had the `optnone` attribute, so the pass was skipped', 'The plugin was compiled as Python bytecode', 'The pass name was `main` instead of `func-name`', 'The IR file used spaces instead of tabs']} answer="The generated IR had the `optnone` attribute, so the pass was skipped" />
+<Question question="8). Which flag helped show that the pass was being skipped?" options={['-debug-pass-manager', '-save-temps', '-Winvalid-ir', '-emit-obj']} answer="-debug-pass-manager" />
+<Question question="9). If your logic depends on information from more than one function, what is the simplest next abstraction recommended by the article?" options={['A module pass', 'A shell pipeline', 'A linker plugin', 'An object file section']} answer="A module pass" />
+<Question question="10). Which result means the tutorial succeeded?" options={['`opt` prints function names like `add`, `mul`, and `main`', 'CMake generates an empty build directory', 'Clang emits assembly instead of IR', 'The pass stops loading plugins entirely']} answer="`opt` prints function names like `add`, `mul`, and `main`" />
