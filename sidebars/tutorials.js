@@ -253,6 +253,7 @@ const tutorials = {
           label: 'LLVM Passes',
           items: [
             'llvm/Intermediate/What_Is_LLVM_Passes',
+            '/llvm/llvm_basic/pass/Create_LLVM_Pass_As_A_Plugin',
             'llvm/llvm_pass_tracker/llvm_pass',
           ],
         },
