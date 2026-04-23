@@ -1,0 +1,42 @@
+---
+id: architecture-vs-organization-quiz
+title: "Architecture vs Organization MCQs Quiz"
+slug: /mcq/questions/domain/coa/architecture-vs-organization/quiz
+description: "A multiple-choice quiz on computer architecture vs computer organization, memory ordering, microarchitecture, and CPU performance interpretation."
+displayed_sidebar: coaMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../Question';
+
+# Architecture vs Organization MCQs Quiz
+
+<Question question="1). Computer architecture is best described as:" options={['The internal transistor layout only', 'The software-visible contract of the machine', 'The cooling system of the CPU package', 'The benchmark score of the processor']} answer="The software-visible contract of the machine" />
+<Question question="2). Computer organization is best described as:" options={['The way hardware is arranged internally to implement the architecture', 'The source language grammar', 'The linker command line', 'The operating system shell']} answer="The way hardware is arranged internally to implement the architecture" />
+<Question question="3). Which of the following belongs more directly to architecture?" options={['Branch predictor design', 'Execution port layout', 'ISA-visible registers and memory-ordering guarantees', 'Reorder buffer size']} answer="ISA-visible registers and memory-ordering guarantees" />
+<Question question="4). Which of the following belongs more directly to organization?" options={['Instruction set semantics', 'Calling convention contract', 'Pipeline, cache hierarchy, and issue queues', 'The legal meaning of ADD in the ISA']} answer="Pipeline, cache hierarchy, and issue queues" />
+<Question question="5). Why is the memory model considered part of architecture?" options={['Because software must know the ordering and visibility guarantees it can rely on', 'Because it only affects transistor placement', 'Because it is chosen by the linker', 'Because caches do not exist']} answer="Because software must know the ordering and visibility guarantees it can rely on" />
+<Question question="6). In multithreaded code, `std::atomic` acquire and release ordering matter because:" options={['They help define what one thread is guaranteed to observe from another', 'They make all code single-threaded', 'They remove the need for hardware support', 'They are only documentation comments']} answer="They help define what one thread is guaranteed to observe from another" />
+<Question question="7). A compiler barrier by itself is not always enough because:" options={['Cross-core visibility and hardware ordering guarantees still matter', 'The compiler barrier changes the ISA', 'It automatically increases cache size', 'It removes all branches']} answer="Cross-core visibility and hardware ordering guarantees still matter" />
+<Question question="8). If two CPUs both implement `x86-64`, what can still differ a lot?" options={['The visible meaning of ADD in the ISA', 'The internal microarchitecture and resulting performance', 'Whether machine code exists', 'Whether registers are part of architecture']} answer="The internal microarchitecture and resulting performance" />
+<Question question="9). Skylake, Zen 2, and Cortex-X1 are examples of:" options={['Programming languages', 'Microarchitectures or organizational designs', 'Linker scripts', 'Only memory allocators']} answer="Microarchitectures or organizational designs" />
+<Question question="10). If a simple integer ADD has similar nominal latency on multiple CPUs, program performance can still differ because:" options={['The surrounding frontend, scheduler, cache, and branch machinery can differ', 'Latency is the only thing that ever matters', 'The ISA stops working on some CPUs', 'Registers disappear during execution']} answer="The surrounding frontend, scheduler, cache, and branch machinery can differ" />
+
+<div>
+  <AdBanner />
+</div>
+
+<Question question="11). Which tool is a common first step for seeing organization show up in measurement on Linux?" options={['perf stat', 'tar', 'mkdir', 'clang-format']} answer="perf stat" />
+<Question question="12). If the same binary shows different IPC on two CPUs with the same ISA, the most likely explanation is:" options={['Different organization or microarchitecture', 'The source language changed', 'The ISA no longer defines instructions', 'The compiler forgot what registers are']} answer="Different organization or microarchitecture" />
+<Question question="13). Which of the following is most directly a performance effect of organization?" options={['Whether an ADD instruction is legal', 'Whether branch prediction and cache behavior help or hurt runtime', 'Whether the ISA exposes registers', 'Whether a load instruction exists at all']} answer="Whether branch prediction and cache behavior help or hurt runtime" />
+<Question question="14). Which statement is correct?" options={['Architecture mainly determines correctness, organization strongly affects performance', 'Organization defines ISA legality and architecture only affects aesthetics', 'Architecture and organization are identical terms', 'Only architecture matters for threaded code']} answer="Architecture mainly determines correctness, organization strongly affects performance" />
+<Question question="15). If a compiler violates required atomic ordering for a target, the main risk is:" options={['Broken correctness in multithreaded code', 'A prettier assembly listing', 'Larger font size in docs', 'The CPU will gain extra cache']} answer="Broken correctness in multithreaded code" />
+<Question question="16). Which of the following is an example of architecture-aware compiler work?" options={['Choosing instructions that actually exist on the target ISA', 'Changing the physical cache wiring', 'Redesigning the branch predictor in silicon', 'Increasing reorder buffer entries']} answer="Choosing instructions that actually exist on the target ISA" />
+<Question question="17). Which of the following is an example of organization-aware compiler thinking?" options={['Considering cache behavior, branch prediction, and execution-resource pressure', 'Changing the language syntax', 'Inventing a new ISA during runtime', 'Removing all machine instructions']} answer="Considering cache behavior, branch prediction, and execution-resource pressure" />
+<Question question="18). Why can two processors running the same binary still have different branch-miss or cache-miss behavior?" options={['Because the same architecture can be implemented with different internal organizations', 'Because the binary turns into source code again', 'Because caches belong to the compiler', 'Because program counters are optional']} answer="Because the same architecture can be implemented with different internal organizations" />
+<Question question="19). In this topic, microarchitecture is best understood as:" options={['The detailed internal CPU design used to implement an ISA', 'The file format of an object file', 'A synonym for source code comments', 'A type of shell variable']} answer="The detailed internal CPU design used to implement an ISA" />
+<Question question="20). After understanding architecture vs organization, what is a strong next step?" options={['Study instruction execution, pipelines, and cache behavior', 'Ignore hardware and only read comments', 'Delete the COA section', 'Treat all CPUs as identical']} answer="Study instruction execution, pipelines, and cache behavior" />
+
+<div>
+  <AdBanner />
+</div>

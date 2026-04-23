@@ -1,0 +1,56 @@
+---
+id: architecture-vs-organization-home
+title: "Architecture vs Organization MCQs"
+slug: /mcq/questions/domain/coa/architecture-vs-organization
+description: "Practice COA MCQs on computer architecture vs computer organization, memory model, atomics, microarchitecture, and perf-stat style performance reasoning."
+keywords:
+  - architecture vs organization mcq
+  - computer architecture mcq
+  - computer organization mcq
+  - memory model mcq
+  - microarchitecture quiz
+tags:
+  - COA
+  - Architecture
+  - Microarchitecture
+  - MCQs
+displayed_sidebar: coaMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+
+# Architecture vs Organization MCQs
+
+<div style={{position: 'relative', overflow: 'hidden', borderRadius: '26px', padding: '1.6rem', marginBottom: '1.5rem', border: '1px solid var(--ifm-color-emphasis-200)', background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(59, 130, 246, 0.08)), var(--ifm-background-surface-color)', boxShadow: '0 16px 36px rgba(15, 23, 42, 0.08)'}}>
+  <p style={{margin: 0, fontSize: '0.78rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ifm-color-warning)'}}>COA foundations</p>
+  <h1 style={{marginTop: '0.45rem', marginBottom: '0.7rem'}}>Test architecture, organization, memory model, and microarchitecture reasoning</h1>
+  <p style={{marginBottom: 0, color: 'var(--ifm-color-emphasis-800)'}}>Use this set to lock in the difference between the software-visible machine contract and the hardware structures that determine real performance.</p>
+</div>
+
+This quiz set reinforces the ideas from [Computer Architecture vs Computer Organization](/docs/coa/intro_to_coa).
+
+## What this quiz covers
+
+- architecture as the software-visible contract
+- organization and microarchitecture as internal implementation
+- memory model, atomics, ordering, and fences
+- same ISA, different microarchitectures
+- why `perf stat` can show different IPC on different CPUs
+
+<div style={{padding: '1rem 1.1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)', marginBottom: '1.5rem'}}>
+  <strong>Start with:</strong> [Computer Architecture vs Computer Organization](/docs/coa/intro_to_coa)
+</div>
+
+## Jump to quiz
+
+- [Architecture vs Organization MCQs Quiz](./quiz)
+
+## Why practice this set?
+
+- This is where correctness and performance start to split.
+- Memory model mistakes break threaded code, not just benchmarks.
+- This is the first place many learners connect ISA rules to `perf stat` measurements on real machines.
+
+<div>
+  <AdBanner />
+</div>

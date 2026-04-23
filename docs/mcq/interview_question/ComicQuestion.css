@@ -234,6 +234,56 @@ body:not([data-theme='dark']) {
   font-size: 1rem;
 }
 
+@media (max-width: 768px) {
+  .comic-panel {
+    padding: 1rem;
+    margin: 1.25rem 0;
+    box-shadow: 0 12px 28px var(--shadow-color), 4px 4px 0 var(--border-color);
+  }
+
+  .speech-bubble,
+  .nested-note-block {
+    max-width: 100%;
+  }
+
+  .speech-bubble {
+    padding: 1rem;
+    border-radius: 16px;
+    font-size: 0.98rem;
+  }
+
+  .question-bubble {
+    font-size: 1.1rem;
+  }
+
+  .answer-bubble.show {
+    padding: 1rem;
+  }
+
+  .show-answer-button {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .question-bubble::after,
+  .answer-bubble.show::after {
+    left: 20px;
+  }
+
+  .nested-note-block {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .nested-note-block h5,
+  .nested-code-block h5,
+  .bubble-header,
+  .speaker-header h4 {
+    font-size: 1rem;
+  }
+}
+
 .cpp-features {
   background: #eef7ff;
   border-left: 4px solid #228be6;

@@ -108,6 +108,7 @@ const site = {
         'coa',
         'coa/basic_terminology_in_coa',
         'coa/intro_to_coa',
+        'coa/instruction_flow_modern_cpu',
         'coa/types_of_execution',
         'coa/cpu_execution',
         'coa/memory-hierarchy',

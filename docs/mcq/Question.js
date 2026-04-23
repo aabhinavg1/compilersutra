@@ -13,11 +13,11 @@ export const Question = ({ question, options, answer, code }) => {
   };
 
   return (
-    <div className="comic-panel">
-      <div className="speech-bubble question-bubble">
+    <div className="mcq-panel">
+      <div className="mcq-bubble mcq-question-bubble">
         <h3 className="question-title">{question}</h3>
         {code && (
-          <SyntaxHighlighter language="cpp" style={vscDarkPlus} className="code-block">
+          <SyntaxHighlighter language="cpp" style={vscDarkPlus} className="mcq-code-block">
             {code}
           </SyntaxHighlighter>
         )}
@@ -39,9 +39,9 @@ export const Question = ({ question, options, answer, code }) => {
       </div>
 
       {showAnswer && (
-        <div className="speech-bubble answer-bubble show">
-          <div className="speaker-header">
-            <div className="css-monkey"></div>
+        <div className="mcq-bubble mcq-answer-bubble show">
+          <div className="mcq-speaker-header">
+            <div className="mcq-avatar"></div>
             <h4>Answer</h4>
           </div>
           <p>
@@ -58,7 +58,7 @@ export const Question = ({ question, options, answer, code }) => {
         </div>
       )}
 
-      <div className="comic-divider"></div>
+      <div className="mcq-divider"></div>
     </div>
   );
 };

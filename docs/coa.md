@@ -108,6 +108,7 @@ If you are new to COA, read these first before going deeper into ISA, cache, or 
 
 - [Computer Organization vs Computer Architecture](/docs/coa/intro_to_coa)
 - [Basic Terminology in COA Everyone Should Know](/docs/coa/basic_terminology_in_coa)
+- [How an Instruction Actually Flows Through a Modern CPU](/docs/coa/how-an-instruction-actually-flows-through-a-modern-cpu)
 - [How Modern Processors Execute Code: From Sequential to Speculative Execution](/docs/coa/types_of_execution)
 - [How CPU Executes Binary: Fetch-Decode-Execute Explained](/docs/coa/cpu_execution)
 - [Memory Hierarchy Explained: Cache, RAM, and Storage](/docs/coa/memory-hierarchy)
@@ -213,62 +214,69 @@ They become **direct tools for shaping how hardware executes programs**.
 
 <tr>
   <td>4</td>
+  <td>How an Instruction Actually Flows Through a Modern CPU</td>
+  <td>[link](/docs/coa/how-an-instruction-actually-flows-through-a-modern-cpu)</td>
+  <td>Coming Soon</td>
+</tr>
+
+<tr>
+  <td>5</td>
   <td>How Modern Processors Execute Code: From Sequential to Speculative Execution</td>
   <td>[link](/docs/coa/types_of_execution)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>5</td>
+  <td>6</td>
   <td>How CPU Executes Binary: Fetch–Decode–Execute Explained</td>
   <td>[link](/docs/coa/cpu_execution)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>6</td>
+  <td>7</td>
   <td>Memory Hierarchy Explained: Cache, RAM, and Storage</td>
   <td>[link](/docs/coa/memory-hierarchy)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>7</td>
+  <td>8</td>
   <td>Measuring Throughput, Cache Misses, and CPU Behavior in C++</td>
   <td>[link](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>8</td>
+  <td>9</td>
   <td>Machine Code, Assembly, and Compilers</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>9</td>
+  <td>10</td>
   <td>Basic CPU Components (ALU, Control Unit, Registers)</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>9</td>
+  <td>11</td>
   <td>Instruction Execution Overview</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>10</td>
+  <td>12</td>
   <td>Clock Cycle, Latency, and Throughput</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
-  <td>11</td>
+  <td>13</td>
   <td>Why Hardware Knowledge Matters for Compiler Engineers</td>
   <td>Coming Soon</td>
   <td>Coming Soon</td>
@@ -377,14 +385,14 @@ They become **direct tools for shaping how hardware executes programs**.
 <tr>
   <td>1</td>
   <td>Fetch–Decode–Execute Cycle</td>
-  <td>Coming Soon</td>
+  <td>[link](/docs/coa/cpu_execution)</td>
   <td>Coming Soon</td>
 </tr>
 
 <tr>
   <td>2</td>
-  <td>Pipeline Stages Explained</td>
-  <td>Coming Soon</td>
+  <td>Instruction Flow in a Modern CPU</td>
+  <td>[link](/docs/coa/how-an-instruction-actually-flows-through-a-modern-cpu)</td>
   <td>Coming Soon</td>
 </tr>
 
