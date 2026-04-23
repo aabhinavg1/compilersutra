@@ -1,0 +1,42 @@
+---
+id: instruction-flow-modern-cpu-quiz
+title: "Instruction Flow in a Modern CPU MCQs Quiz"
+slug: /mcq/questions/domain/coa/instruction-flow-modern-cpu/quiz
+description: "A multiple-choice quiz on fetch, decode, rename, dispatch, scheduling, execution, writeback, retirement, frontend/backend limits, and modern CPU instruction flow."
+displayed_sidebar: coaMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../Question';
+
+# Instruction Flow in a Modern CPU MCQs Quiz
+
+<Question question="1). A useful high-level model of instruction flow in a modern CPU is:" options={['Fetch -> Sleep -> Compile -> Link', 'Fetch -> Decode -> Rename -> Dispatch/Schedule -> Execute -> Writeback -> Retire', 'Parse -> Tokenize -> Optimize -> Ship', 'Load -> Save -> Print -> Exit']} answer="Fetch -> Decode -> Rename -> Dispatch/Schedule -> Execute -> Writeback -> Retire" />
+<Question question="2). Which part of the CPU is most associated with fetch and decode?" options={['Frontend', 'Backend only', 'Linker', 'Heap allocator']} answer="Frontend" />
+<Question question="3). Which part of the CPU is most associated with scheduling and execution?" options={['Frontend', 'Backend', 'Preprocessor', 'Source parser']} answer="Backend" />
+<Question question="4). Why is register renaming useful?" options={['It removes all true data dependencies', 'It helps remove false name-based dependencies', 'It changes the ISA at runtime', 'It disables writeback']} answer="It helps remove false name-based dependencies" />
+<Question question="5). What kind of dependency can rename NOT remove?" options={['True data dependency', 'False naming dependency', 'Write-after-write name reuse', 'Write-after-read name reuse']} answer="True data dependency" />
+<Question question="6). The scheduler mainly tries to answer:" options={['Which source file should compile next?', 'Which instructions are ready and which resource can run them now?', 'Which comments should be removed?', 'Which register is largest in memory?']} answer="Which instructions are ready and which resource can run them now?" />
+<Question question="7). Which statement is correct?" options={['Instructions must always execute in source order', 'Instructions may execute out of order but usually retire in order', 'Retirement always happens before execution', 'Decode only happens after writeback']} answer="Instructions may execute out of order but usually retire in order" />
+<Question question="8). Writeback is important mainly because:" options={['It turns source code into assembly', 'It often makes dependent instructions become ready', 'It removes the need for decode', 'It enlarges the instruction cache']} answer="It often makes dependent instructions become ready" />
+<Question question="9). Retirement is the stage where:" options={['The CPU commits results architecturally in safe program order', 'The binary is linked again', 'All branch predictors are disabled', 'The compiler inserts comments']} answer="The CPU commits results architecturally in safe program order" />
+<Question question="10). What is the key difference between execute and retire?" options={['They are the same thing', 'Execute is internal work; retire is architectural commitment', 'Retire happens before fetch', 'Execute belongs to software and retire belongs to the linker']} answer="Execute is internal work; retire is architectural commitment" />
+
+<div>
+  <AdBanner />
+</div>
+
+<Question question="11). If a load instruction misses in cache, what often happens to dependent instructions?" options={['They become faster automatically', 'They may stall waiting for the load result', 'They retire first anyway', 'They change the ISA']} answer="They may stall waiting for the load result" />
+<Question question="12). In an out-of-order CPU, why might an independent multiply execute before an earlier add?" options={['Because program correctness no longer matters', 'Because the multiply may already be ready while the add is waiting on data', 'Because retirement happens randomly', 'Because decode was skipped']} answer="Because the multiply may already be ready while the add is waiting on data" />
+<Question question="13). Which problem is most directly associated with frontend starvation?" options={['The backend is not getting enough instruction supply', 'The CPU forgot its registers', 'The program counter is deleted', 'All loads become stores']} answer="The backend is not getting enough instruction supply" />
+<Question question="14). Which of the following is most likely a frontend bottleneck?" options={['Poor branch prediction and weak fetch/decode supply', 'A true data dependency on a load result', 'A full multiply unit only', 'A long floating-point divide only']} answer="Poor branch prediction and weak fetch/decode supply" />
+<Question question="15). Which of the following is most likely a backend bottleneck?" options={['Decode is permanently impossible', 'A long dependency chain and execution-resource pressure', 'The ISA no longer has instructions', 'The binary lost all bytes']} answer="A long dependency chain and execution-resource pressure" />
+<Question question="16). Which instruction type most directly connects execution flow to the memory hierarchy?" options={['NOP', 'Load', 'Comment', 'Macro']} answer="Load" />
+<Question question="17). A branch misprediction hurts performance because:" options={['Wrong-path work may be fetched and later discarded', 'It permanently changes the architecture', 'It removes all caches', 'It makes rename unnecessary']} answer="Wrong-path work may be fetched and later discarded" />
+<Question question="18). Why can a workload still be slow on a wide CPU?" options={['Width helps only if enough independent and ready work exists', 'Wide CPUs always run one instruction only', 'Width removes retirement', 'Width disables caches']} answer="Width helps only if enough independent and ready work exists" />
+<Question question="19). From a compiler perspective, why does instruction flow matter?" options={['Because code shape affects dependencies, branches, register pressure, and memory behavior', 'Because compilers directly redesign the silicon', 'Because instruction flow only matters for GPUs', 'Because the frontend ignores machine code']} answer="Because code shape affects dependencies, branches, register pressure, and memory behavior" />
+<Question question="20). After learning instruction flow, what should you study next?" options={['Pipelines, memory hierarchy, and performance measurement', 'Ignore CPU behavior completely', 'Delete the MCQ section', 'Assume all instructions cost the same']} answer="Pipelines, memory hierarchy, and performance measurement" />
+
+<div>
+  <AdBanner />
+</div>

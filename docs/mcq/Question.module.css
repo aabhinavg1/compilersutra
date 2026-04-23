@@ -1,4 +1,4 @@
-.comic-panel {
+.mcq-panel {
   --border-color: #333;
   --panel-bg: #f5f7fa;
   --paper-color: #ffffff;
@@ -23,11 +23,11 @@
   width: 90%;
 }
 
-.comic-panel:hover {
+.mcq-panel:hover {
   transform: scale(1.01);
 }
 
-.comic-panel .speech-bubble {
+.mcq-panel .mcq-bubble {
   border: 2px solid var(--border-color);
   padding: 1.5rem;
   border-radius: 20px;
@@ -39,13 +39,13 @@
   font-size: 1rem;
 }
 
-.comic-panel .question-bubble {
+.mcq-panel .mcq-question-bubble {
   font-size: 1.3rem;
   font-weight: bold;
   font-style: normal;
 }
 
-.comic-panel .answer-bubble {
+.mcq-panel .mcq-answer-bubble {
   font-size: 1rem;
   background-color: var(--paper-color);
   font-family: var(--font-family-sans, 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif);
@@ -56,7 +56,7 @@
   transition: all 0.4s ease-in-out;
 }
 
-.comic-panel .answer-bubble.show {
+.mcq-panel .mcq-answer-bubble.show {
   opacity: 1;
   max-height: 1000px;
   margin-top: 1rem;
@@ -64,14 +64,14 @@
   box-shadow: 5px 5px 0 var(--border-color);
 }
 
-.comic-panel .mcq-options {
+.mcq-panel .mcq-options {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.comic-panel .mcq-option {
+.mcq-panel .mcq-option {
   padding: 1rem;
   background-color: var(--option-bg);
   border: 2px solid var(--border-color);
@@ -86,39 +86,39 @@
   font-style: normal;
 }
 
-.comic-panel .mcq-option:hover {
+.mcq-panel .mcq-option:hover {
   background-color: var(--option-hover);
   transform: translateY(-2px);
   box-shadow: 4px 4px 0 var(--border-color);
 }
 
-.comic-panel .mcq-option.selected {
+.mcq-panel .mcq-option.selected {
   background-color: var(--correct-bg);
   border-color: var(--border-color);
   transform: scale(1.03);
 }
 
-.comic-panel .mcq-option.correct {
+.mcq-panel .mcq-option.correct {
   background-color: var(--correct-bg);
   color: black;
 }
 
-.comic-panel .mcq-option.incorrect {
+.mcq-panel .mcq-option.incorrect {
   background-color: var(--wrong-bg);
   color: black;
 }
 
-.comic-panel .correct-answer {
+.mcq-panel .correct-answer {
   color: #2e7d32;
   font-style: normal;
 }
 
-.comic-panel .incorrect-answer {
+.mcq-panel .incorrect-answer {
   color: #c62828;
   font-style: normal;
 }
 
-.comic-panel .speaker-header {
+.mcq-panel .mcq-speaker-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -126,15 +126,15 @@
   font-style: normal;
 }
 
-.comic-panel h3,
-.comic-panel h4,
-.comic-panel p,
-.comic-panel strong {
+.mcq-panel h3,
+.mcq-panel h4,
+.mcq-panel p,
+.mcq-panel strong {
   font-family: var(--font-family-sans, 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif);
   font-style: normal;
 }
 
-.comic-panel .css-monkey {
+.mcq-panel .mcq-avatar {
   width: 40px;
   height: 40px;
   background-color: var(--pen-color);
@@ -143,7 +143,7 @@
   box-shadow: inset -2px -2px 0 #fff;
 }
 
-.comic-panel .code-block {
+.mcq-panel .mcq-code-block {
   background-color: #000;
   color: #f8f8f2;
   padding: 15px;
@@ -156,7 +156,7 @@
   word-wrap: break-word;
 }
 
-.comic-panel .comic-divider {
+.mcq-panel .mcq-divider {
   height: 2px;
   background-color: var(--border-color);
   margin-top: 2rem;
@@ -164,41 +164,41 @@
 
 /* 📱 Scoped Mobile-Friendly Styles */
 @media (max-width: 600px) {
-  .comic-panel {
+  .mcq-panel {
     padding: 1rem;
     margin: 1rem auto;
     width: 95%;
   }
 
-  .comic-panel .speech-bubble {
+  .mcq-panel .mcq-bubble {
     padding: 1rem;
     font-size: 0.95rem;
   }
 
-  .comic-panel .question-bubble {
+  .mcq-panel .mcq-question-bubble {
     font-size: 1.1rem;
   }
 
-  .comic-panel .answer-bubble.show {
+  .mcq-panel .mcq-answer-bubble.show {
     padding: 1rem;
   }
 
-  .comic-panel .mcq-option {
+  .mcq-panel .mcq-option {
     padding: 0.8rem;
     font-size: 0.95rem;
   }
 
-  .comic-panel .code-block {
+  .mcq-panel .mcq-code-block {
     font-size: 13px;
     padding: 10px;
   }
 
-  .comic-panel .css-monkey {
+  .mcq-panel .mcq-avatar {
     width: 32px;
     height: 32px;
   }
 
-  .comic-panel .comic-divider {
+  .mcq-panel .mcq-divider {
     margin-top: 1.5rem;
   }
 }
