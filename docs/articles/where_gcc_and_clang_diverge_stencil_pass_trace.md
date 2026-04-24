@@ -729,7 +729,7 @@ This is a representation transformation performed by `tree-ssa-loop-ivopts`, not
 > [**GCC vs Clang, Part 2A: Assembly Deep-Dive on 3 Key Benchmark Cases**](/docs/articles/gcc_vs_clang_assembly_part2a)
 
 - What GCC and Clang Diverge
-  > [Where GCC and Clang Diverge](/docs/articles/where_gcc_and_clang_diverge_stencil_pass_trace.md)
+  > [Where GCC and Clang Diverge](/docs/articles/where_gcc_and_clang_diverge_stencil_pass_trace)
 
 
 
