@@ -23,8 +23,8 @@ ML compilers sit between machine learning models and real hardware. They transfo
 <div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1.5rem'}}>
   <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
     <h3 style={{marginTop: 0}}>Start Here</h3>
-    <p>Begin with the first core article on what ML compilers are and how to learn them.</p>
-    <Link to="/docs/ml-compilers/introduction-roadmap">Open article</Link>
+    <p>Begin with the most beginner-friendly article on why ML compilers exist beyond LLVM in the first place.</p>
+    <Link to="/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm">Open article</Link>
   </div>
   <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
     <h3 style={{marginTop: 0}}>ML Compilers Track</h3>
@@ -55,6 +55,7 @@ ML compilers sit between machine learning models and real hardware. They transfo
 
 ## Best Entry Points
 
+- [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm)
 - [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
 - [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
 - [ML Compilers Track](/docs/tracks/ml-compilers)
@@ -66,6 +67,7 @@ ML compilers sit between machine learning models and real hardware. They transfo
 
 | Article | Type | Focus | Best For |
 |---|---|---|---|
+| [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm) | Beginner Foundation | Why ML workloads need extra compiler layers before normal low-level codegen | Readers starting from zero and asking why LLVM alone is not the whole answer |
 | [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap) | Foundation | End-to-end mental model for ML compiler stacks | Readers starting from zero or mapping the field |
 | [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack) | Systems Walkthrough | Triton -> TTIR -> TTGIR -> LLVM IR -> AMD ISA -> HSACO | Readers who want to see the stack materialize on real hardware |
 | [MLIR Intro](/docs/MLIR/intro) | Infrastructure | Why multi-level IR exists and how MLIR structures staged lowering | Readers moving from LLVM into MLIR |
@@ -74,11 +76,12 @@ ML compilers sit between machine learning models and real hardware. They transfo
 
 ## Recommended Reading Order
 
-1. [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
-2. [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
-3. [MLIR Intro](/docs/MLIR/intro)
-4. [TVM Intro](/docs/tvm-for-beginners)
-5. [GPU Compilers Track](/docs/tracks/gpu-compilers)
+1. [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm)
+2. [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
+3. [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
+4. [MLIR Intro](/docs/MLIR/intro)
+5. [TVM Intro](/docs/tvm-for-beginners)
+6. [GPU Compilers Track](/docs/tracks/gpu-compilers)
 
 ## How It Differs From Other Topics
 

@@ -140,7 +140,7 @@ Here are some practical projects that demonstrate the power of Python automation
 
 ### 📦 system-specs-collector  
 A lightweight script that gathers hardware and OS information across Windows, macOS, and Linux systems—useful for IT audits, diagnostics, and deployments.  
-[👉 Know More](./automate_boring_stuff/system-specs-collector/system_spec_collector.md))
+[👉 Know More](./automate_boring_stuff/system-specs-collector/system_spec_collector.md)
 
 <!-- You can add more projects similarly below -->
 
@@ -151,4 +151,3 @@ Automatically sorts downloaded files based on file type, creation date, or custo
 -->
 
 ---
-

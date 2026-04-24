@@ -152,11 +152,11 @@ Sharpen your C++ programming skills with our comprehensive set of multiple-choic
 
 ### 🟤 Domain-Specific C++ MCQs
 
-- [C++ for Competitive Programming](./questions/domain/competitive-programming.md)
-- [C++ for System Programming](./questions/domain/system-programming.md)
-- [C++ for Embedded Systems](./questions/domain/embedded.md)
-- [C++ for Compiler Development](./questions/domain/compiler-dev.md)
-- [C++ for Data Science and HPC](./questions/domain/data-science-hpc.md)
+- [C++ for Competitive Programming](/docs/mcq/questions/domain/competitive-programming)
+- [C++ for System Programming](/docs/mcq/questions/domain/system-programming)
+- [C++ for Embedded Systems](/docs/mcq/questions/domain/embedded)
+- [C++ for Compiler Development](/docs/mcq/questions/domain/compiler-dev)
+- [C++ for Data Science and HPC](/docs/mcq/questions/domain/data-science-hpc)
 ---
 
 ## 💡 Why Practice C++ MCQs?
