@@ -327,6 +327,7 @@ const tutorials = {
         'linux/index',
         'linux/intro_to_linux',
         'linux/basic_of_linux',
+        'linux/how_program_runs_from_elf_to_main',
         'linux/What_is_bashrc',
         'linux/Environment_variable_in_linux',
         'linux/Declaring_Variable_In_bash',
