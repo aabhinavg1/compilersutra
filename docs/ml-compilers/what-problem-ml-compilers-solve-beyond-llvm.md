@@ -150,10 +150,9 @@ The math is the same in both cases, but the execution plan is usually much bette
 4. [ML Workloads Start Higher Up](#ml-workloads-start-higher-up)
 5. [Where LLVM Fits And Where It Does Not](#what-llvm-is-good-at)
 6. [The Planning Gap ML Compilers Fill](#the-exact-gap-ai-compilers-fill)
-7. [The Traditional Compiler Bridge](#if-you-come-from-traditional-compilers)
-8. [MLIR, TVM, and XLA In One View](#mlir-tvm-and-xla-in-one-view)
-9. [Papers That Match This Article](#papers-that-match-this-article)
-10. [What To Read Next](#what-to-read-next)
+7. [Keep The Boundary Clear](#keep-the-boundary-clear)
+8. [Papers That Match This Article](#papers-that-match-this-article)
+9. [What To Read Next](#what-to-read-next)
 
 ## Start From The Compiler Idea You Already Know
 
@@ -779,76 +778,19 @@ LLVM can still solve later lower-level backend problems
 
 That is the cleanest way to think about it.
 
-## If You Come From Traditional Compilers
+## Keep The Boundary Clear
 
-If you already know normal compiler ideas, this topic becomes easier if you remap the vocabulary carefully.
+This page is intentionally narrower than the full pipeline article.
 
-<Tabs>
-  <TabItem value="traditional" label="Traditional Compiler View" default>
-    <p>You may be used to AST, CFG, SSA, loops, instruction selection, and register allocation.</p>
-  </TabItem>
-  <TabItem value="ml" label="ML Compiler View">
-    <p>In ML systems, earlier concerns often include graph structure, tensor semantics, fusion, shape reasoning, layout, and kernel formation.</p>
-  </TabItem>
-  <TabItem value="bridge" label="The Bridge">
-    <p>The later compiler stages still matter. The difference is that ML workloads need more serious optimization before the problem is small enough to look like ordinary low-level codegen.</p>
-  </TabItem>
-</Tabs>
+Its job is to establish one boundary:
 
-That is why ML compilers often feel like:
+> LLVM is important, but many decisive ML compilation choices happen before the problem is reduced to LLVM's preferred level.
 
-- compiler engineering
-- plus numerical computing
-- plus hardware-aware systems work
-- plus runtime and memory planning concerns
+If you want the full staged walkthrough, read [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline).
 
-## MLIR, TVM, and XLA In One View
+If you want the taxonomy of MLIR, TVM, XLA, TorchInductor, and related systems, read [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap).
 
-You do not need a perfect taxonomy to keep these names straight.
-Use this:
-
-- **XLA / TVM / TensorRT / Glow / others:** concrete ML compiler systems or compiler-like stacks solving model-to-hardware problems
-- **MLIR:** infrastructure for representing and lowering computations across multiple abstraction levels
-- **LLVM:** lower-level compiler infrastructure that often appears later in the pipeline
-
-| System | Beginner way to think about it |
-| --- | --- |
-| LLVM | strong lower-level backend/compiler infrastructure |
-| MLIR | a way to organize multi-level lowering cleanly |
-| TVM | an ML compiler stack with scheduling and deployment focus |
-| XLA | a tensor-program compiler stack used in ML frameworks |
-
-If you want papers behind those labels, the reference list below follows the same split: concrete systems, infrastructure, and optimization papers.
-
-## Common Beginner Confusions
-
-### "Do I write code directly for an AI compiler?"
-
-Usually not.
-
-In many real systems, you:
-
-- define a model in a framework
-- export, trace, or capture that model
-- let the compiler work on the resulting graph or intermediate form
-
-So the compiler input is often derived from your model, not written by hand as a separate low-level source file.
-
-### "Does every ML stack need its own compiler?"
-
-Not in exactly the same form.
-But serious ML systems usually need compiler-like machinery because the computation-to-hardware gap is too large to ignore.
-
-### "Is this only for training?"
-
-No.
-Inference also benefits heavily from good compilation decisions.
-
-### "So is LLVM still useful?"
-
-Yes.
-Very useful.
-Just not sufficient by itself for the whole early-to-late ML compilation problem.
+If you want live stage dumps and binaries, read [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/seeing-the-ml-compiler-stack-live-on-amd-gpu).
 
 <div>
   <AdBanner />
@@ -906,51 +848,6 @@ If this article made sense, continue in this order:
 2. [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/seeing-the-ml-compiler-stack-live-on-amd-gpu)
 3. [MLIR Intro](/docs/MLIR/intro)
 4. [TVM Intro](/docs/tvm/intro-to-tvm)
-
-## FAQ
-
-**1. Why do ML compilers exist beyond LLVM?**
-
-Because many important ML decisions happen before the computation is in the low-level form LLVM handles best.
-
-**2. What is the simplest way to think about an ML compiler?**
-
-It is the part of the stack that turns high-level tensor computation into a hardware-aware execution plan.
-
-**3. What is a tensor in simple words?**
-
-A tensor is numeric data arranged in a shape.
-
-**4. Do I write source code directly for an ML compiler?**
-
-Usually not.
-You typically define a model in a framework, and the compiler receives a traced, exported, or graph-level representation of that model.
-
-**5. What does the ML compiler actually take as input?**
-
-Usually a model graph, tensor program, shapes, data types, and target information rather than raw user data alone.
-
-**6. What problem does fusion solve?**
-
-Fusion reduces unnecessary writes, reads, temporary buffers, and kernel launches by combining compatible operations.
-
-**7. Why does layout matter so much?**
-
-Because the same numbers can be stored in different memory orders, and some layouts match hardware access patterns much better than others.
-
-**8. Why would one part of a model run on CPU and another on GPU?**
-
-Because different devices may be better at different operations, and some parts may need fallback execution due to operator support, control flow, or memory constraints.
-
-**9. Does MLIR replace LLVM?**
-
-No.
-MLIR helps organize multi-level lowering, while LLVM often remains useful later in the backend pipeline.
-
-**10. Is this only important for training?**
-
-No.
-Inference also depends heavily on good choices around fusion, layout, scheduling, memory planning, and target-specific lowering.
 
 
 

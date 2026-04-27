@@ -79,6 +79,8 @@ less abstraction
 
 *This article is a direct continuation of [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap). That article explained the theory: Python -> Graph -> Optimized Plan -> Kernels -> Hardware. This one makes every stage visible on a real machine.*
 
+If you need the dedicated conceptual pipeline walkthrough first, read [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline). This page stays focused on inspectable Triton, LLVM IR, AMDGCN, and HSACO artifacts rather than re-explaining the whole stack from scratch.
+
 After enough time reading theory, one thing becomes obvious. <br/>
 The diagrams make sense.<br/>
 The pipeline makes sense.<br/>

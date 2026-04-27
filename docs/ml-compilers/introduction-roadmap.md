@@ -185,336 +185,47 @@ If you want the papers behind this article, use the internal library shelves: [M
 
 ## Table of Contents
 
-1. [What ML Compilers Do](#what-ml-compilers-do)
-2. [What Actually Happens When You Run ML Code](#what-actually-happens-when-you-run-ml-code)
-3. [Execution Pipeline](#execution-pipeline)
-4. [ML Compiler Stack](#ml-compiler-stack)
-5. [Conceptual Walkthrough](#conceptual-walkthrough)
-6. [Roadmap](#roadmap)
-7. [A Concrete Fusion Example](#a-concrete-fusion-example)
-8. [Compiler Perspective](#compiler-perspective)
-9. [Common Mistakes](#common-mistakes)
-10. [Best Practices](#best-practices)
-11. [Unsolved Problems](#unsolved-problems)
-12. [FAQ](#faq)
+1. [How To Use This Roadmap](#how-to-use-this-roadmap)
+2. [Choose The Right Next Article](#choose-the-right-next-article)
+3. [Roadmap](#roadmap)
+4. [A Concrete Fusion Example](#a-concrete-fusion-example)
+5. [Compiler Perspective](#compiler-perspective)
+6. [Common Mistakes](#common-mistakes)
+7. [Best Practices](#best-practices)
+8. [Unsolved Problems](#unsolved-problems)
+9. [FAQ](#faq)
 
-## What ML Compilers Do
+## How To Use This Roadmap
 
-An ML compiler takes model-level tensor computation and turns it into an execution plan the hardware can actually run.
+This page is the orientation page for the ML compiler section.
 
-That sounds simple. It is not.
+It is not trying to be the full pipeline explainer again.
+It is trying to answer a narrower question:
 
-In practice, it decides:
+> what should I study first, and in what order, so the rest of the stack stops feeling random?
 
-- which operations can be fused
-- how tensors should be laid out in memory
-- when temporary buffers are needed
-- what kernels should run
-- how execution should be shaped for a CPU, GPU, or accelerator
+If you want the dedicated conceptual walkthrough from model code to hardware, read [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline).
 
-That is why ML compilers exist at all. Model code says what to compute. The compiler decides how to run it on a real machine.
+If you want the argument for why LLVM is not the whole story, read [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm).
 
-This is also where failures show up. I have seen correct models run badly because the stack emitted too many tiny kernels, chose a poor layout, or materialized temporary buffers it never should have allocated in the first place.
-
+If you want to inspect real compiler artifacts on a machine, read [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack).
 
 <div>
   <AdBanner />
 </div>
 
+## Choose The Right Next Article
 
+Use the ML compiler docs this way:
 
-## What Actually Happens When You Run ML Code
+| If your question is... | Read this page |
+|---|---|
+| "What is the full model-to-hardware pipeline?" | [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline) |
+| "Why is LLVM alone not enough?" | [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm) |
+| "What do the real IR and binary stages look like?" | [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack) |
+| "What should I learn first?" | this roadmap |
 
-When you write model code in Python, the GPU does not sit there reading Python like an unusually expensive interpreter.
-
-The system first identifies the real tensor operations.
-
-For example, it may find a matrix multiply, then an add, then a ReLU.
-
-After that, it rewrites those operations into a lower-level execution plan.
-
-Only then does the device run kernels.
-
-So the real flow is closer to:
-
-Python -> model operations -> execution plan -> kernels -> hardware
-
-You do not need a wall of compiler terminology to understand the main idea.
-
-There is always a middle step between the code you write and the work the hardware finally runs.
-
-That middle step is where the running debugging example breaks or gets fixed.
-
-If the system creates too many kernels, launch overhead grows.
-
-If it writes and rereads temporary tensors, bandwidth becomes the problem.
-
-If it fuses and lowers the work sensibly, the same math suddenly looks much more competent.
-
-## Execution Pipeline
-
-A simple mental model is:
-
-Python -> Graph -> Optimized Plan -> Kernels -> Hardware
-
-That is not the exact internal design of every stack, but it is the right starting picture.
-
-**1. Python**
-
-You express the model in a convenient language, often Python. That is the interface you write, not the final thing the device executes.
-
-At this level, you usually think in terms of:
-
-- modules and layers
-- tensor expressions
-- training or inference logic
-- readability and iteration speed
-
-That is useful for humans. It is still far from the form a GPU or accelerator needs.
-
-This is where beginners make the first mistake: they assume the source they wrote is close to the thing the device executes. It usually is not.
-
-**2. Graph**
-
-The system identifies the actual operations involved: matrix multiply, add, relu, reshape, transpose, and so on. That is already closer to the hardware view than raw Python source.
-
-At this stage, the system starts making the computation explicit:
-
-- which ops exist
-- which tensors flow between them
-- what depends on what
-- which values are constants
-- which shapes are known
-
-This is the first level where optimization becomes practical, because the computation is now visible as structure instead of surface syntax.
-
-If capture is wrong here, everything downstream is wrong in a more expensive format.
-
-**3. Optimized Plan**
-
-Before anything runs, the system decides how to make execution better. It may combine operations, remove unnecessary work, simplify shapes, and choose a better way to store or move data.
-
-Typical decisions include:
-
-- operator fusion
-- constant folding
-- dead code elimination
-- layout propagation
-- shape simplification
-- memory planning
-- target-aware scheduling
-- kernel selection strategy
-- buffer reuse
-- launch configuration choices
-
-This is the stage where many of the big performance gains appear. The math is usually unchanged. The execution strategy changes.
-
-This is also where most people stop looking. They should not. Bad fusion, bad layout, and bad buffer planning usually start here.
-
-**4. Kernels**
-
-Once the plan is ready, the system generates or selects kernels. These are the lower-level units of work that actually run on the device.
-
-Here the computation is turned into concrete executable pieces:
-
-- a library matmul kernel
-- a fused pointwise kernel
-- a reduction kernel
-- target-specific generated code
-
-The exact form depends on the backend. Some systems generate kernels. Some mostly select from existing implementations. Many do both.
-
-If the kernel choice is weak, the rest of the pipeline has to live with it.
-
-**5. Hardware**
-
-The runtime launches kernels, manages buffers, and coordinates execution on the real hardware.
-
-At this final stage, the system deals with execution details such as:
-
-- allocating device memory
-- moving inputs and outputs
-- launching kernels in the right order
-- synchronizing when needed
-- handling the CPU, GPU, or accelerator runtime
-
-This is where the compiled plan finally becomes real execution.
-
-This is where sloppy planning turns into stalls, extra copies, and profiler traces nobody enjoys reading on a Monday morning.
-
-Later, when you study real systems, you will see extra layers such as intermediate representations and backend-specific lowering. For now, the key point is simpler: model code becomes an execution plan, and that plan becomes kernels.
-
-### ML Compiler Execution Flow Diagram
-
-This diagram shows the basic path from model code to hardware execution.
-
-Start at the left.
-
-You write model code in Python.
-
-The system figures out which tensor operations are really present.
-
-Then it builds an execution plan.
-
-That is the stage where decisions such as fusion, memory planning, and layout changes happen.
-
-After that, the system generates or selects kernels, and those kernels finally run on the hardware.
-
-```mermaid
-flowchart LR
-    A[Python Model Code] --> B[Tensor Operations]
-    B --> C[Execution Plan]
-    C --> D[Kernels]
-    D --> E[Hardware]
-
-    C --> F[Fusion]
-    C --> G[Memory Planning]
-    C --> H[Layout Changes]
-
-    classDef source fill:#1d4ed8,stroke:#93c5fd,color:#f8fafc,stroke-width:2px;
-    classDef plan fill:#15803d,stroke:#86efac,color:#f8fafc,stroke-width:2px;
-    classDef execution fill:#c2410c,stroke:#fdba74,color:#fff7ed,stroke-width:2px;
-    classDef detail fill:#6d28d9,stroke:#c4b5fd,color:#f8fafc,stroke-width:1.5px;
-
-    class A,B source;
-    class C,D,E execution;
-    class F,G,H detail;
-
-    style C fill:#166534,stroke:#86efac,stroke-width:2.5px,color:#f8fafc;
-```
-
-
-
-
-## ML Compiler Stack
-
-When people say "ML compiler stack", they usually mean the full layered path between model code and hardware execution.
-
-It is called a stack because there is not just one transformation. There are multiple layers, and each one solves a different problem:
-
-- model code expresses the computation at a high level
-- graph or program capture identifies the real tensor operations
-- compiler planning decides fusion, layout, shapes, and memory behavior
-- kernel generation or backend lowering turns that plan into executable work
-- runtime and hardware execute the final kernels on a GPU, CPU, or accelerator
-
-This stack is why model execution feels far more complicated than the source code suggests. The model is only the starting point. Real performance depends on how the entire stack reshapes that model for the target machine.
-
-:::caution You can also read the stack as a sequence of questions:
-
-- model code: what computation did the user describe?
-- graph or capture layer: what tensor operations are really present?
-- compiler planning: which rewrites make execution cheaper?
-- kernel generation: what concrete code or kernel form should run?
-- runtime: when and where should that work launch?
-:::
-
-That view helps because each layer has a separate responsibility. If performance is poor, the problem is usually not "the compiler" in one vague sense. It is often one specific layer making a weak choice.
-
-:::important
-The stack is not just an implementation detail. It is the reason the same model can behave differently across hardware, frameworks, and compiler backends.
-:::
-
-
-<div>
-  <AdBanner />
-</div>
-
-
-### ML Compiler Stack Diagram
-
-This diagram shows the major layers in the ML compiler stack, from model code at the top to hardware execution at the bottom.
-
-```mermaid
-flowchart TD
-    subgraph S1[Model Layer]
-        A[Model Code<br/>Python / Framework API]
-        B[Graph or Program Capture]
-    end
-
-    subgraph S2[Compiler Layer]
-        C[Compiler Planning<br/>Fusion / Shapes / Layout / Memory]
-        D[Kernel Generation or Backend Lowering]
-    end
-
-    subgraph S3[Execution Layer]
-        E[Runtime Execution]
-        F[GPU / CPU / Accelerator]
-    end
-
-    A --> B --> C --> D --> E --> F
-
-    classDef model fill:#1d4ed8,stroke:#93c5fd,color:#f8fafc,stroke-width:2px;
-    classDef compiler fill:#15803d,stroke:#86efac,color:#f8fafc,stroke-width:2px;
-    classDef runtime fill:#c2410c,stroke:#fdba74,color:#fff7ed,stroke-width:2px;
-
-    class A,B model;
-    class C,D compiler;
-    class E,F runtime;
-
-    style S1 fill:#0f172a,stroke:#93c5fd,stroke-width:1.5px,color:#e2e8f0;
-    style S2 fill:#0f1f17,stroke:#86efac,stroke-width:1.5px,color:#e2e8f0;
-    style S3 fill:#1c1917,stroke:#fdba74,stroke-width:1.5px,color:#e2e8f0;
-```
-
-Read the diagram from top to bottom.
-
-The top layers still understand model structure.
-
-The middle layers make optimization decisions.
-
-The bottom layers are about execution.
-
-That is why tools like XLA, TVM, TorchInductor, and MLIR show up in different parts of the conversation. Some focus more on capture and IR. Some focus more on scheduling, code generation, and lowering. Some span several layers at once.
-
-:::tip
-When studying a real system, always ask: which layer of the stack does this tool own, and which layers does it hand off to something else?
-:::
-
-## Conceptual Walkthrough
-
-<Tabs>
-  <TabItem value="simple" label="A Small Example">
-
-```python
-y = relu(Wx + b)
-```
-
-This is a small example. Good. Small examples are honest. They make it harder for a bad compiler decision to hide inside a giant model nobody wants to inspect.
-
-Under the hood, the system breaks it into smaller operations:
-
-- matrix multiply or linear transform
-- bias add
-- ReLU activation
-
-Then it understands the dependency structure:
-
-- input tensor `x`
-- weight tensor `W`
-- bias tensor `b`
-- intermediate result `Wx`
-- intermediate result `Wx + b`
-- final result `relu(Wx + b)`
-
-Once that structure is visible, the system can decide whether to keep operations separate or combine them into a more efficient execution plan. This is the same failure we started with in the intro, just without the profiler screenshot.
-
-  </TabItem>
-
-  <TabItem value="reality" label="What Actually Runs">
-
-What actually runs is not Python line by line. It is closer to:
-
-- launch or call a matmul implementation
-- add bias, possibly in the same fused kernel
-- apply ReLU, ideally without writing and rereading unnecessary temporaries
-
-If the system can combine the bias add and ReLU, memory traffic drops. If it cannot, it creates extra intermediate tensors and then everyone acts surprised when bandwidth becomes the bottleneck.
-
-That is the hidden layer in practice. You wrote one expression, but the hardware sees a sequence of kernels chosen and organized by the compiler side of the stack.
-
-  </TabItem>
-</Tabs>
+The rest of this page stays focused on study order, not on re-teaching every stage in detail.
 
 ## Roadmap
 
