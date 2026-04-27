@@ -126,6 +126,7 @@ const site = {
         'tracks/ml-compilers',
         'ml-compilers/index',
         'ml-compilers/what-problem-ml-compilers-solve-beyond-llvm',
+        'ml-compilers/end-to-end-ml-compiler-pipeline',
         'ml-compilers/introduction-roadmap',
       ],
     },
