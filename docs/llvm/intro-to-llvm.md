@@ -30,8 +30,6 @@ import TabItem from '@theme/TabItem';
 
 
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
 <div
   style={{
     width: '100%',
@@ -62,19 +60,48 @@ import TabItem from '@theme/TabItem';
 This roadmap still works as before. If you want the cleaner section landing page first, go to [LLVM Home](/docs/llvm/).
 :::
 
-## For live Session [click here](#llvm-live-section)
-
 # LLVM Curriculum (From Beginner to Pro)
 
-This page is the learning roadmap for LLVM. If you want a practical order for studying LLVM without getting lost in the ecosystem, start here.
+This page is the learning roadmap for LLVM.
 
-Welcome to your step-by-step **LLVM Curriculum**, designed to guide learners from **absolute beginners in compiler development** to **advanced LLVM engineers**.  
-This roadmap is structured into **10 progressive levels**, starting with compiler fundamentals, moving to LLVM IR and pass development, and culminating in backend, JIT, and advanced compiler research.
+If you are asking:
+
+- where should I start with LLVM?
+- in what order should I study IR, passes, and backend topics?
+- which topics are foundational and which are advanced?
+
+this is the page to use first.
+
+LLVM is a large ecosystem. Beginners often jump straight into:
+
+- pass writing
+- LLVM IR syntax
+- `opt`
+- `llc`
+- backend internals
+
+and then get lost because they do not yet know how those pieces connect.
+
+This roadmap gives you a study order instead of a random list of topics.
+
+It is structured into **10 progressive levels**, starting with compiler fundamentals, moving through LLVM IR and pass development, and later reaching backend, JIT, and advanced compiler engineering topics.
 
 :::important What this curriculum is about?
 This curriculum takes you from **LLVM basics** to **real-world compiler engineering**.  
 It is organized into **10 progressive levels** covering compiler fundamentals, IR mastery, pass development, optimizations, backend, and ecosystem tools.  
 :::
+
+## How to Use This Page
+
+Use this roadmap in a simple way:
+
+1. Start from the lowest level you genuinely understand.
+2. Do not skip the compiler basics if LLVM terms still feel vague.
+3. Treat this page as a study map, not as a page you must finish in one sitting.
+4. Use the linked articles inside each level as the actual learning material.
+
+If you are brand new, start from `LEVEL 0` and `LEVEL 1`.
+If you already understand compiler basics, you can move faster into IR and pass development.
 
 :::caution What to expect
 - Clear explanations of **LLVM internals** (IR, passes, backend).  
@@ -89,11 +116,6 @@ It is organized into **10 progressive levels** covering compiler fundamentals, I
 
 Before diving into LLVM, it’s crucial to master the **data structures and algorithms (DSA)** that compilers rely on.  
 This table lists the **DSA concepts**, their role in compiler engineering, and direct mapping to **LLVM internals**.
-
-Here’s a refined and expanded version of your table, now organized with bullet points for clearer readability and including additional data structures used in compilers:  
-
-
-
 >> ***Compiler Design: Key Data Structures & Algorithms***
 
 <details>

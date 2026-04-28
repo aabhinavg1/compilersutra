@@ -128,6 +128,7 @@ const site = {
         'ml-compilers/what-problem-ml-compilers-solve-beyond-llvm',
         'ml-compilers/end-to-end-ml-compiler-pipeline',
         'ml-compilers/introduction-roadmap',
+        'ml-compilers/inside-torch-compile-dynamo-aotautograd-inductor-triton-explained',
       ],
     },
   ],
