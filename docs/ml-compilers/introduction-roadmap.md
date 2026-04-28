@@ -222,6 +222,7 @@ Use the ML compiler docs this way:
 |---|---|
 | "What is the full model-to-hardware pipeline?" | [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline) |
 | "Why is LLVM alone not enough?" | [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm) |
+| "What exactly happens inside `torch.compile`?" | [Inside torch.compile: Dynamo -> AOTAutograd -> Inductor -> Triton Explained](/docs/ml-compilers/inside-torch-compile) |
 | "What do the real IR and binary stages look like?" | [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack) |
 | "What should I learn first?" | this roadmap |
 

@@ -60,10 +60,28 @@ import TabItem from '@theme/TabItem';
 
 # How to Build C++ with Makefile
 
+If you are compiling C++ from the terminal, you eventually hit the same problem:
 
+- the command gets longer
+- the number of files grows
+- you forget which files must be rebuilt
+- and repeating the same command becomes annoying
 
+That is exactly the problem `make` solves.
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+A `Makefile` is not magic. It is a small file that tells `make`:
+
+- what needs to be built
+- which files depend on which other files
+- which commands should run to build them
+
+This article explains that flow from the beginning.
+
+- First: what "compile" and "build" actually mean
+- Then: the smallest possible Makefile
+- Then: a real multi-file C++ example
+
+By the end, you should be able to read and write a basic Makefile and understand what it is doing.
 
 <div
   style={{
@@ -87,15 +105,21 @@ import TabItem from '@theme/TabItem';
   </iframe>
 </div>
 
-Mastering the use of a `Makefile` is one of the most powerful steps toward becoming a ***confident and efficient C++ developer*** . It not only strengthens your understanding of how the ***C++ build system*** operates but also enables you to `automate`, `organize`, and `scale your development workflow` effectively.
+`Makefile` basics are worth learning because they show you how the C++ build process actually works instead of hiding it behind an IDE button.
 
-This guide walks you through the core concepts of the `C++ compilation and linking process` , and demonstrates how to `automate repetitive build tasks` using Makefiles — from compiling individual files to building large, modular codebases.
+Once you understand Makefiles, ideas like:
 
-Whether you're working on a ***small single-file program*** or managing a ***multi-module project***, understanding how to ***write clean, efficient, and reusable Makefiles*** will give you a significant edge in productivity and code maintainability.
+- source files
+- object files
+- linking
+- dependencies
+- incremental rebuilds
+
+start feeling much more concrete.
 
 
-:::tip After this What?
-By mastering Makefiles, you'll not only streamline your builds but also gain a deeper understanding of the C++ development lifecycle. Whether for quick compilation or large-scale deployment, a well-structured Makefile is an essential tool in your C++ toolbox also learn about `cmake` and `bazel`.
+:::tip After This
+Once you are comfortable with Makefiles, the next useful topics are `cmake` and `bazel`.
 :::
 
 <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginTop: '20px' }}>
@@ -168,7 +192,7 @@ A **toolchain** is a collection of programming tools used in sequence to develop
 
 In C++ development, the toolchain typically consists of the following key tools:
 
-```python
+```text
 source.cpp   ───▶  [Preprocessor]  ───▶  source.i 
 source.i     ───▶  [Compiler]      ───▶  source.s 
 source.s     ───▶  [Assembler]     ───▶  source.o 
@@ -205,6 +229,17 @@ The C++ compilation process transforms `source code` into a `runnable executable
 
 ##### What Is Compile vs Build?
 
+These two words are often mixed together, but they are not the same.
+
+- **Compile** usually means turning source code into a lower-level form such as assembly or object code.
+- **Build** means the whole process of producing the final executable.
+
+So:
+
+```text
+build = compile + assemble + link
+```
+
 :::caution **Definition of Compiler**
 :::
                     > A **compiler** is a program that takes preprocessed source code and converts it into **assembly code**, which 
@@ -213,22 +248,22 @@ The C++ compilation process transforms `source code` into a `runnable executable
 
 <TabItem value= "GCC" label="GCC">
 
-```python
-g++ -s main.cpp -o main.s
+```bash
+g++ -S main.cpp -o main.s
 ```
 
-* `-s`: Tells the compiler to compile only and produce an assembly file
+* `-S`: Stop after compilation and produce an assembly file
 * `main.s`: Output file containing assembly code
 
 </TabItem>
 
 <TabItem value="clang" label="Clang">
 
-```python
-clang++ -s main.cpp -o main.s
+```bash
+clang++ -S main.cpp -o main.s
 ```
 
-* Works similarly to GCC with the `-s` flag
+* Works similarly to GCC with the `-S` flag
 * Generates an assembly version of the input file
 
 </TabItem>
@@ -295,7 +330,7 @@ There are various implementations of `make`, but this guide focuses on **GNU Mak
 2. Paste the example into that file.
 3. In the terminal, navigate to the folder and run:
 
-```rust
+```bash
 make
 ```
 
@@ -303,18 +338,32 @@ make
 
 Here’s the simplest example to start with:
 
-```python   
+```make
 hello:
 	echo "Hello, World"
 ```
 
 #### Output:
 
-```python
+```text
 $ make
 echo "Hello, World"
 Hello, World
 ```
+
+This tiny example is useful because it shows the basic rule shape:
+
+```make
+target:
+	command
+```
+
+Here:
+
+- `hello` is the target name
+- `echo "Hello, World"` is the command that runs when you type `make hello`
+
+If `hello` is the first rule in the file, plain `make` will run it by default.
 
 
 <div>
@@ -323,9 +372,9 @@ Hello, World
 
 ## Section 4: Makefile Help Flag Creation
 
-The `help` target in the Makefile serves as a **self-documenting tool**. It allows users to quickly understand the available commands in your project by simply running:
+The `help` target in a Makefile acts like a small built-in guide. It lets someone enter the project and quickly discover the available commands.
 
-```python
+```make
 help:
 	@echo "Available targets:"
 	@echo "  make       - Build the project"
@@ -335,7 +384,7 @@ help:
 
 Run:
 
-```python
+```bash
 make help
 ```
 
@@ -386,9 +435,9 @@ To demonstrate this, we will use a simple example project structured as follows:
 
 This minimal setup will help us understand how to use a **Makefile** to automate the entire build process — from compiling source files to linking and cleaning with clarity and control.
 
-**folder structure**
+**Folder structure**
 
-```python
+```text
 my_project/
 ├── Makefile
 ├── main.cpp
@@ -443,7 +492,7 @@ int main() {
 
 <TabItem value="Makefile" label="Makefile">
 
-```python
+```make
 # Compiler and flags
 CC = g++
 CFLAGS = -Wall -std=c++17

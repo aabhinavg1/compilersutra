@@ -71,9 +71,24 @@ tags:
 
 # Introduction to TVM
 
+If you are new to ML compilers, TVM can feel confusing at first because it sits between two worlds:
 
+- the model world: PyTorch, TensorFlow, ONNX
+- the hardware world: CPU, GPU, accelerators, edge devices
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+TVM exists to connect those two worlds.
+
+Instead of running a model through a one-size-fits-all execution path, TVM tries to:
+
+- understand the computation
+- optimize it for a specific target
+- generate code that fits that target better
+
+It answers three basic questions:
+
+1. What is TVM?
+2. Why was it created?
+3. What happens inside the TVM pipeline?
 
 <div
   style={{
@@ -103,54 +118,79 @@ This article still keeps its old TVM entry URL. If you want the new section land
 
 If your search is "what is TVM?" or "how does Apache TVM optimize models?", this page is the conceptual starting point before installation, tuning, and deployment.
 
-Apache TVM is an open-source machine learning compiler framework that enables efficient execution of deep learning models on various hardware platforms. It is designed to optimize and deploy machine learning models across diverse hardware architectures such as CPUs, GPUs, and specialized accelerators.
+Apache TVM is an open-source machine learning compiler framework. Its job is to take a model and turn it into an optimized execution path for a target such as:
+
+- CPU
+- GPU
+- mobile device
+- embedded board
+- custom accelerator
+
+The important part is not only "run the model."
+The real goal is to run it well on the hardware you care about.
 
 ## Why Was TVM Created?
-As AI adoption grows it has now become essential to include AI in the wide diversity of the hardware devices.
-But the problem here is the AI framework rely on the vendor-specific libraries, thats the reason deploying the AI workload on the new platform such as phones , embedded device etc requires significant manual effort.
+As AI spread beyond cloud servers, one problem became hard to ignore:
+
+the same model might need to run on very different hardware.
+
+Examples:
+
+- a server GPU
+- a mobile phone
+- an embedded board
+- a browser runtime
+- a vendor-specific accelerator
+
+But those targets do not behave the same way.
+They have different:
+
+- memory limits
+- execution models
+- supported operators
+- performance bottlenecks
+
+Before systems like TVM, getting good performance often meant doing too much manual, target-specific work.
 
 :::tip Solution of the Problem
-To solve this their was a proposal of the TVM(Tensor Virtual Machine) It is started as a reaserch project in [SAMPL grp](https://sampl.cs.washington.edu/). 
+TVM began as a research project in the [SAMPL group](https://sampl.cs.washington.edu/).
 
-The main and intial aim of the TVM was to bridge the gap between deep learning framework and hardware accelarators which will make AI models more efficient across different devices.
+Its original goal was straightforward:
+
+> take models from common ML frameworks and compile them into efficient code for many hardware targets.
 
 After that, in 2019, TVM became an Apache Incubator project under the Apache Software Foundation (ASF). It has since evolved into a widely used open-source deep learning compiler stack, enabling efficient model deployment on CPUs, GPUs, and specialized accelerators.
-
-
-
-
-#### 🔍 Insights:
-- Identifying the most **expensive passes** helps in tuning LLVM optimizations for performance improvements.  
-- Depending on the **target architecture and workload**, tweaking pass order or selectively disabling costly passes may enhance compilation efficiency.  
-- Before TVM, deploying deep learning models required manually optimizing code for different hardware backends such as NVIDIA GPUs, ARM CPUs, or custom accelerators. Traditional deep learning frameworks like TensorFlow and PyTorch were often tied to specific hardware vendors and lacked efficient cross-platform portability.
-- TVM fix the optimization problem specific to the deep learning workloads such as ``high-level operator fusion``, ``mapping latency hiding``, ``mapping to arbitary  h/w primitives`` , and ``memory latency`` . Along with handling optimization TVM automates optimization of low level programs to hardware characteristic by helping to implementing a novel learning based cost model method for rapid exploration of code optimization.
 :::
+
+In simpler words, TVM was created because "correct model execution" is not the same as "fast model execution on this device."
+
+TVM focuses on that second problem.
 
 ## TVM Optimization Pipeline  
 
-The TVM optimization pipeline consists of three main stages:  
+The easiest way to understand TVM is to divide it into three broad stages:
 
-### 1. Frontend (Model Ingestion)  
-   - This stage is responsible for importing and parsing models from various deep learning frameworks such as TensorFlow, PyTorch, ONNX, and MXNet.  
-   - The imported model is converted into TVM’s internal computational graph representation, called **Relay IR** (Intermediate Representation).  
-   - This step ensures framework-agnostic processing of models for further optimizations.  
+### 1. Frontend (Model Ingestion)
+   - TVM imports a model from a framework such as TensorFlow, PyTorch, ONNX, or MXNet.
+   - It converts that model into TVM’s internal representation, usually explained first through **Relay IR**.
+   - The point of this step is to stop thinking in framework-specific terms and start thinking in compiler-friendly terms.
 
-### 2. Middle-End (Graph Optimizations)  
-   - The computational graph undergoes several optimizations to improve performance and efficiency.  
-   - Common optimizations include:  
-     - **Operator fusion**: Combining multiple operations into a single kernel for better execution.  
-     - **Constant folding**: Precomputing constant expressions at compile time.  
-     - **Dead code elimination**: Removing unnecessary operations.  
-     - **Layout transformations**: Reordering data layouts for improved memory access patterns.  
-   - These optimizations help reduce computation time and improve memory efficiency before code generation.  
+### 2. Middle-End (Graph Optimizations)
+   - Now TVM starts improving the computation graph before final code generation.
+   - Common examples include:
+     - **Operator fusion**: combine multiple operations into one better unit of work
+     - **Constant folding**: compute constant expressions ahead of time
+     - **Dead code elimination**: remove work that is not needed
+     - **Layout transformations**: rearrange data layout for better memory behavior
+   - This stage is where TVM starts turning "a correct model" into "a better execution plan."
 
-### 3. Backend (Target-Specific Code Generation)  
-   - In this stage, the optimized computation graph is transformed into low-level code tailored for specific hardware targets.  
-   - TVM supports various hardware backends, including CPUs, GPUs, FPGAs, and specialized accelerators like CUDA, ROCm, and Metal.  
-   - The generated code is further optimized using:  
-     - **Auto-tuning**: Searching for the best possible kernel configurations.  
-     - **Low-level scheduling**: Optimizing execution patterns for hardware efficiency.  
-   - Finally, the compiled module is packaged for deployment on the target device.  
+### 3. Backend (Target-Specific Code Generation)
+   - In the backend stage, TVM lowers the optimized graph into lower-level code for a specific target.
+   - TVM supports targets such as CPUs, GPUs, FPGAs, and specialized accelerators.
+   - This stage may also involve:
+     - **Auto-tuning**: searching for better kernel configurations
+     - **Scheduling**: deciding how work should be arranged on the hardware
+   - Finally, TVM packages the compiled result for deployment on the target device.
 
 The diagram below illustrates this workflow:
 
@@ -195,18 +235,22 @@ graph TD;
 
 ```
 ## Challenges Before TVM
-Deep learning model were able to recognize the images process natural language , and also claming to defeat human in startegic game. Because of such a great capabilties its demand to deploy smart application with AI support is increasing.
 
-However, deploying deep learning models on different types of devices is a major challenge. These devices range from self-driving cars and embedded systems to cloud servers and security applications and this will add on. Each of them uses different types of hardware, such as CPUs, GPUs, and FPGAs, which makes it difficult to optimize a single deep learning model to run efficiently everywhere.
+Before TVM, the hard part was not only training the model.
+The hard part was getting the same model to run well across many devices.
 
-One of the biggest challenges is that different hardware has different architectures, memory systems, and processing capabilities. A model optimized for a high-performance GPU may not work well on a power-limited embedded system. Some devices need low power consumption, while others require high-speed processing. This creates a need for customized optimization for each platform, which can be time-consuming and complex.
+That was difficult for three main reasons:
 
-Another challenge is that deep learning frameworks like TensorFlow, PyTorch, MXNet, and Caffe all have their own ways of representing and optimizing models. Some use computational graphs, while others rely on operations. Since there is no universal optimization method, developers often struggle to make their models run efficiently on different hardware.
+1. **Hardware fragmentation**
+Different targets need different optimization strategies.
 
-Due to these difficulties, there is a need for a unified solution that can optimize deep learning models across different devices and frameworks without requiring manual tuning for each platform. 
+2. **Framework fragmentation**
+PyTorch, TensorFlow, ONNX, and others do not all represent models in the same way.
 
-This is where TVM comes into play.
-graph intermediate representation and some DL framework rely on the graph and operation
+3. **Too much manual tuning**
+Good performance often required target-specific hand work.
+
+That is the gap TVM tries to close.
 
 
 - **Hardware Fragmentation**: Different hardware architectures require different optimization techniques.
@@ -215,7 +259,7 @@ graph intermediate representation and some DL framework rely on the graph and op
 - **Performance Bottlenecks**: Existing deep learning frameworks had overheads that made it difficult to achieve peak hardware performance.
 ##### How TVM Solves These Problems
 
-Deploying deep learning models efficiently across different hardware platforms is a major challenge due to varying architectures, performance constraints, and vendor-specific dependencies. TVM solves these problems by providing an automated and efficient machine learning compiler that optimizes models for multiple hardware backends without requiring extensive manual tuning. It ensures that deep learning applications can run efficiently on CPUs, GPUs, FPGAs, and specialized accelerators, making AI deployment seamless across edge devices, embedded systems, and cloud services.
+Deploying deep learning models efficiently across different hardware platforms is difficult because architectures, performance limits, and vendor dependencies vary widely. TVM addresses that by compiling models for multiple hardware backends with much less manual target-specific work.
 
 TVM achieves this by:  
 
@@ -223,7 +267,7 @@ TVM achieves this by:
 - **Automatically tuning deep learning models for efficiency** – TVM includes an auto-tuning framework that explores different scheduling strategies to find the most efficient execution plan for each model.  
 - **Reducing dependence on vendor-specific software** – Unlike many deep learning frameworks that rely on proprietary vendor libraries, TVM is open-source and works independently across different hardware ecosystems.  
 - **Providing an extensible system for compiler optimizations** – Developers can customize TVM to fine-tune performance based on specific workloads, making it adaptable to research and production needs.  
-- **Supporting multiple deep learning frameworks** – TVM allows seamless integration with frameworks like TensorFlow, PyTorch, MXNet, and ONNX, ensuring flexibility in model deployment.  
+- **Supporting multiple deep learning frameworks** – TVM works with frameworks like TensorFlow, PyTorch, MXNet, and ONNX, which makes deployment more flexible.  
 - **Improving model portability and deployment** – With TVM, AI models can be deployed efficiently across different devices without significant modifications, making it ideal for cloud, mobile, and embedded AI applications.  
 - **Utilizing graph-level and tensor-level optimizations** – TVM optimizes computational graphs, schedules memory layouts efficiently, and applies tensor optimizations to maximize hardware performance.  
 
@@ -231,7 +275,7 @@ TVM achieves this by:
 
 | Feature                      | Without TVM                                      | With TVM                                           |
 |------------------------------|-------------------------------------------------|----------------------------------------------------|
-| **Hardware Compatibility**    | Requires manual tuning for different hardware  | Works seamlessly across CPUs, GPUs, FPGAs, etc.  |
+| **Hardware Compatibility**    | Requires manual tuning for different hardware  | Works across CPUs, GPUs, FPGAs, etc.  |
 | **Performance Optimization**  | Limited optimization, often vendor-dependent    | Auto-tuning optimizes for efficiency and speed   |
 | **Framework Support**         | Tied to specific frameworks                     | Supports TensorFlow, PyTorch, ONNX, and more    |
 | **Portability**               | Models require modifications for each device   | Deploys across devices without major changes    |
@@ -246,7 +290,8 @@ By offering a unified, automated, and highly efficient approach to deep learning
 ### Why Use TVM?
 
 
-TVM is a powerful deep learning compiler framework designed to optimize and deploy machine learning models across a wide range of hardware platforms. It is **hardware-agnostic**, meaning it supports multiple backends such as x86, ARM, CUDA, Vulkan, Metal, and specialized accelerators like TPUs. One of its key advantages is **optimization**, as it generates highly efficient code that reduces latency and improves throughput, ensuring better performance across different devices. TVM also brings **automation** to the model optimization and deployment process, eliminating the need for extensive manual tuning. Its **extensibility** allows developers to customize and fine-tune it for specific hardware and workloads, making it highly adaptable to various use cases. Being an **open-source** project under the Apache Foundation, it benefits from continuous community contributions and improvements. Additionally, TVM provides **cross-framework support**, enabling seamless integration with deep learning frameworks like TensorFlow, PyTorch, and ONNX. It also offers **automatic tensor optimizations**, **graph-level transformations**, and **hardware-specific code generation**, allowing deep learning models to achieve near-ideal performance on any given hardware. With its ability to optimize models for cloud, edge, and embedded systems, TVM is an essential tool for efficient AI deployment.  
+TVM is useful because it does more than just "run a model."
+It tries to generate a better execution path for the target you care about.
 
 - **Hardware Agnostic**: Supports multiple hardware backends including x86, ARM, CUDA, Vulkan, Metal, and specialized accelerators like TPUs.
 - **Optimization**: Provides efficient code generation, reducing latency and improving throughput.
