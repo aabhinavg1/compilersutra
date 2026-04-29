@@ -80,6 +80,7 @@ keywords:
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 # Understanding LLVM Passes and Their Types
 
@@ -200,6 +201,8 @@ If you want the broader pass catalog, pass-family breakdown, and pass-infrastruc
     - Feedback / Queries: Use our mail us for suggestions or issues.
   </TabItem>
 </Tabs>
+
+<LlvmSeoBooster topic="llvm-passes-overview" />
 
 <div>
     <AdBanner />

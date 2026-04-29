@@ -27,6 +27,7 @@ keywords:
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 
 
@@ -219,6 +220,8 @@ Together, they tell the compiler where values remain guaranteed, where control-f
     - Feedback / Queries: Use our mail us for suggestions or issues.
   </TabItem>
 </Tabs>
+
+<LlvmSeoBooster topic="dominator-tree" />
 
 
 <div>

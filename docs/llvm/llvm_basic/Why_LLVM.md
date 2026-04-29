@@ -23,6 +23,8 @@ tags:
   - Compiler Framework
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # Know LLVM?
 
 
@@ -197,3 +199,5 @@ LLVM has reshaped the computing world in ways both visible and invisible:
 > Whether you're designing a new language, building hardware accelerators, or exploring high-performance computing, LLVM provides a clean, modular, and production-ready infrastructure. **It's not just a compiler—it's a platform.**
 
 **Explore. Learn. Build.**
+
+<LlvmSeoBooster topic="why-llvm" />

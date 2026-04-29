@@ -193,6 +193,8 @@ By understanding these causes, developers can take concrete steps to prevent the
 
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 ## Understanding RAM, Swap, and Memory Usage During Linking
 
 Large projects like **LLVM**, **Clang**, or other modern C++ toolchains generate **tens of gigabytes of intermediate object files** (`.o`). During the **linking phase**, the system must load, process, and combine all these objects to produce the final executable or library. This process can consume much more memory than the size of the source code itself.
@@ -591,3 +593,4 @@ ninja`}
 
 
 
+<LlvmSeoBooster topic="fix-build" />

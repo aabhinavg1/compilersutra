@@ -17,6 +17,8 @@ tags:
   - LLVM tutorial on the pass
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # Understanding LLVM Passes
 
 
@@ -168,3 +170,5 @@ Here’s how the whole process might look for a simple C program:
                                             | Machine Code   |
                                             +----------------+
 ```
+
+<LlvmSeoBooster topic="understanding-pass" />

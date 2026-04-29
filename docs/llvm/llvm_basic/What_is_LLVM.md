@@ -30,6 +30,7 @@ tags:
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import AdBanner from '@site/src/components/AdBanner';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 
 # LLVM Tutorial - What is LLVM? 
@@ -328,6 +329,8 @@ This is one reason LLVM has had such long-term impact in both academia and indus
 
   </TabItem>
 </Tabs>
+
+<LlvmSeoBooster topic="what-is-llvm" />
 
 ---
 

@@ -43,6 +43,9 @@ tags:
   - Languages
   - Engineering
 ---
+
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # LLVM Architecture: Revolutionizing Modern Compilers
 
 
@@ -329,3 +332,5 @@ entry:
 - Experiment with optimizations using LLVM (e.g., `clang -O3`).
 - Explore converting LLVM IR to assembly or other formats.
 - Dive deeper into LLVM tools like `opt` for applying optimization passes.
+
+<LlvmSeoBooster topic="why-what-llvm" />
