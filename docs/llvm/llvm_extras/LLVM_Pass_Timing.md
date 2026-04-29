@@ -39,6 +39,8 @@ tags:
   - Static Analysis
 
 ---
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # How to See Time of Each Pass in LLVM
 
 
@@ -461,6 +463,7 @@ Understanding these tools and LLVM passes helps in improving code performance an
 
 If you have any queries, mail to: [info@compilersutra.com](mailto:info@compilersutra.com)
 
+<LlvmSeoBooster topic="pass-timing" />
 
 
 

@@ -60,11 +60,21 @@ const tutorials = {
     },
     {
       type: 'category',
-      label: 'GCC vs LLVM',
+      label: 'Compiler Comparisons',
       collapsed: true,
       items: [
-        'compilers/gcc_vs_llvm',
-        'compilers/gcc_vs_llvm_2',
+        'compilers/clang-vs-gcc-vs-llvm',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Parser Design',
+      collapsed: true,
+      items: [
+        'compilers/parsers/types-of-parser-in-compiler-design',
+        'compilers/parsers/ll-vs-lr-parser',
+        'compilers/parsers/recursive-descent-parser-example',
+        'compilers/parsers/abstract-syntax-tree-vs-parse-tree',
       ],
     },
     {

@@ -108,6 +108,7 @@ import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { ComicQA } from '../../mcq/interview_question/Question_comics' ;
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 
 # High-Level LLVM Architecture Overview
@@ -1708,3 +1709,4 @@ This concludes the High-Level LLVM Architecture Overview.
 
 
 
+<LlvmSeoBooster topic="llvm-architecture" />

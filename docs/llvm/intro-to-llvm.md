@@ -27,6 +27,7 @@ keywords:
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 
 
@@ -601,3 +602,5 @@ That progression gives you usable LLVM intuition much faster than trying to memo
 - [Manage LLVM Versions](./llvm_extras/manage_llvm_version.md)
 - [LLVM Pass Tracker](./llvm_pass_tracker/llvm_pass.md)
 - [What is LLVM?](./llvm_basic/What_is_LLVM.md)
+
+<LlvmSeoBooster topic="llvm-roadmap" />

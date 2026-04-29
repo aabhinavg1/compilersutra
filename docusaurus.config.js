@@ -45,6 +45,20 @@ const config = {
 
   plugins: [
     [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            to: '/docs/compilers/clang-vs-gcc-vs-llvm/',
+            from: [
+              '/docs/compilers/gcc_vs_llvm/',
+              '/docs/compilers/gcc_vs_llvm_2/',
+            ],
+          },
+        ],
+      },
+    ],
+    [
       '@docusaurus/plugin-vercel-analytics',
       {
         debug: false,

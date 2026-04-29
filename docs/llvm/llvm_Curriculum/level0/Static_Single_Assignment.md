@@ -28,6 +28,7 @@ keywords:
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 ## Before we begin
 
@@ -1253,3 +1254,4 @@ Static Single Assignment (SSA) is more than a compiler technique  it’s a **len
 
 
 
+<LlvmSeoBooster topic="ssa" />
