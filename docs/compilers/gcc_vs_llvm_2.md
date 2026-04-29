@@ -1,6 +1,7 @@
 ---
 title: "LLVM vs GCC: Optimization Techniques & Benchmarks in Practice"
 description: "A practical guide comparing LLVM and GCC optimization levels, flags, binary performance, and real-world benchmarks. Dive into hands-on examples and learn how to choose the right compiler optimizations."
+slug: /compilers/gcc-vs-llvm-optimization-guide/
 
 keywords:
   - best compiler for high-performance computing
@@ -77,6 +78,15 @@ tags:
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import AdBanner from '@site/src/components/AdBanner';
+import Head from '@docusaurus/Head';
+
+<Head>
+  <link rel="canonical" href="https://www.compilersutra.com/docs/compilers/clang-vs-gcc-vs-llvm/" />
+</Head>
+
+:::tip Updated canonical comparison
+For the consolidated evergreen comparison page, use [Clang vs GCC vs LLVM Explained](/docs/compilers/clang-vs-gcc-vs-llvm). This page remains useful as an optimization-focused sequel.
+:::
 
 
 

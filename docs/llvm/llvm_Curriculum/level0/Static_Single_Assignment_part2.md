@@ -79,6 +79,7 @@ import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { ComicQA } from '../../../mcq/interview_question/Question_comics';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 
 # Static Single Assignment (SSA) Deep Dive
@@ -1225,6 +1226,8 @@ The story of SSA is ultimately a story about **clarity** about finding ways to s
 
 ## More Article
 
+<LlvmSeoBooster topic="ssa-deep-dive" />
+
 <Tabs>
   <TabItem value="docs" label="📚 Documentation">
              - [CompilerSutra Home](https://compilersutra.com)
@@ -1286,5 +1289,4 @@ The story of SSA is ultimately a story about **clarity** about finding ways to s
 
   </TabItem>
 </Tabs>
-
 

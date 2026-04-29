@@ -16,6 +16,8 @@ tags:
   - Performance Analysis
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 
 # LLVM Function Instruction Count Pass
 
@@ -241,3 +243,4 @@ If you encounter any difficulties, feel free to reach out via email at [info@com
 
 This pass provides valuable insights into the instruction counts of functions within an LLVM module. It can be used as part of custom optimizations or analysis within the LLVM framework.
 
+<LlvmSeoBooster topic="instruction-count-pass" />

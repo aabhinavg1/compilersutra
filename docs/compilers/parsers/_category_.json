@@ -1,0 +1,8 @@
+{
+  "label": "Parser Design",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn parser types, LL vs LR parsing, recursive descent, and AST vs parse tree with compiler-focused examples."
+  }
+}

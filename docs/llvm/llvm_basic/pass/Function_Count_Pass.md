@@ -13,6 +13,8 @@ tags:
   - Function Pass
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # Creating an LLVM Function Pass in C/C++
 
 
@@ -243,3 +245,5 @@ After removing `optnone`, re-run the `opt` command to observe the expected outpu
 ### Reference
 - [Why to Remove optnone](https://stackoverflow.com/questions/73537920/llvm-opt-unable-to-print-instructions-from-a-specific-function-but-it-does-for)
 - [What is LLVM Pass](https://www.llvm.org/docs/Passes.html)
+
+<LlvmSeoBooster topic="function-count-pass" />

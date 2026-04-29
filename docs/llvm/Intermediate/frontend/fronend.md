@@ -26,6 +26,8 @@ tags:
   - Machine Learning in LLVM
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # The Front-End Pass in LLVM: An Overview
 
 
@@ -92,3 +94,5 @@ The LLVM IR serves as a common ground for all programming languages supported by
 ## Conclusion
 
 The front-end pass in the LLVM compiler pipeline is essential for transforming high-level programming language code into a form that can be optimized and compiled into machine code. Through stages such as lexical analysis, parsing, semantic analysis, and IR generation, the front-end ensures that the code is both syntactically and semantically correct, providing a solid foundation for the later stages of compilation. Understanding the front-end process is a key step in grasping how LLVM works and how its compiler framework handles a wide range of programming languages.
+
+<LlvmSeoBooster topic="llvm-frontend" />

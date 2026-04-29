@@ -1,6 +1,6 @@
 ---
-title: "Decoding the Compiler: The Essential Role of Parsers"
-description: "Understand what a parser is and explore its pivotal role in the compilation process, from syntax checking to AST generation."
+title: "Role of Parser in Compiler Design"
+description: "Understand the role of parser in compiler design with AST examples, parser types, syntax analysis, and practical links to LL, LR, and recursive descent."
 keywords:
   - role of parser in compiler design
   - parser in compiler
@@ -54,6 +54,17 @@ import TabItem from '@theme/TabItem';
 </div>
 
 ---
+
+The **role of parser in compiler design** is to turn a flat token stream into structured syntax that later phases can reason about. In practice, the parser sits between lexical analysis and semantic analysis, validates grammar rules, and produces a parse tree or AST. If you are learning compilers for LLVM, Clang, or general frontend engineering, parsing is the point where source code stops being text and starts becoming structure.
+
+If you want the full parser cluster around this topic, continue with:
+
+- [Types of parser in compiler design](/docs/compilers/parsers/types-of-parser)
+- [LL vs LR parser explained](/docs/compilers/parsers/ll-vs-lr-parser)
+- [Recursive descent parser example in C++](/docs/compilers/parsers/recursive-descent-parser-example)
+- [AST vs parse tree explained](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree)
+- [Compiler frontend explained](/docs/compilers/front_end/)
+- [LLVM roadmap](/docs/llvm/intro-to-llvm)
 
 ## The Parser: The Unsung Hero of Compiler Design
 
@@ -150,6 +161,41 @@ AST Representation:
 ```
 
 ---
+
+## Role of Parser in Compiler Design: Flow Diagram
+
+```mermaid
+flowchart LR
+    A["Source code"] --> B["Lexer"]
+    B --> C["Token stream"]
+    C --> D["Parser"]
+    D --> E["Parse tree / AST"]
+    E --> F["Semantic analysis"]
+    F --> G["IR generation"]
+```
+
+## Role of Parser in Compiler Design: Small Code Example
+
+The parser's job becomes clearer when you look at even a tiny recursive descent routine:
+
+```cpp
+int parseExpr() {
+  int lhs = parseTerm();
+  while (peek().kind == Token::Plus) {
+    consume(Token::Plus);
+    lhs += parseTerm();
+  }
+  return lhs;
+}
+```
+
+This parser function does three things that matter for compiler design:
+
+- reads tokens produced by the lexer
+- checks whether the token sequence matches the grammar
+- builds structure the frontend can use for AST creation
+
+That is why parser design is central to frontend engineering, static analysis, and later LLVM-style lowering pipelines.
 
 ## Error Handling in Parsers
 
@@ -437,3 +483,46 @@ Common tools include Bison (GNU), Yacc, ANTLR, and JavaCC. These tools generate 
 You can use tools like Clang's AST dumper (`clang -Xclang -ast-dump`) or GCC’s `-fdump-tree-*` options to view intermediate representations like ASTs.
 
 ---
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What is the role of parser in compiler design?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'The parser checks whether the token stream follows the language grammar and builds a structured representation such as a parse tree or AST for later compiler phases.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What is the difference between a parser and a lexer?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'A lexer turns source text into tokens, while a parser uses those tokens to validate grammar and build syntax structure.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Why is a parser needed before AST generation?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'AST generation depends on the parser understanding how tokens fit the grammar, so the parser is the stage that gives the source its structural meaning.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What is an example of parser output?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Parser output is usually a parse tree or an abstract syntax tree representing expressions, statements, declarations, and their relationships.',
+          },
+        },
+      ],
+    }),
+  }}
+/>

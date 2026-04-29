@@ -15,6 +15,8 @@ tags:
   - LLVM Development
 
 ---
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # Passes and Implementation
 
 
@@ -122,3 +124,5 @@ This documentation is structured to support both newcomers and seasoned develope
 ### 🚀 Let's Dive In!
 Select a document to begin your journey in LLVM, or start from the basics to build a solid understanding of this powerful infrastructure.
 ___
+
+<LlvmSeoBooster topic="llvm-basic-index" />

@@ -26,6 +26,8 @@ tags:
   - Machine Learning in LLVM
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # LLVM with Clang Build Instructions
 
 
@@ -261,3 +263,5 @@ ninja
 For more details, refer to the official LLVM documentation:
 - [LLVM Build Instructions](https://llvm.org/docs/GettingStarted.html)
 - [CMake Guide for LLVM](https://llvm.org/docs/CMake.html)
+
+<LlvmSeoBooster topic="build-llvm" />

@@ -26,6 +26,8 @@ tags:
   - Machine Learning in LLVM
 ---
 
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+
 # The Back-End Pass in LLVM: An Overview
 
 
@@ -95,3 +97,5 @@ For different platforms, the LLVM back-end can generate code for specific system
 ## Conclusion
 
 The back-end pass in LLVM is a vital part of the compiler pipeline, responsible for transforming the optimized Intermediate Representation (IR) into machine-specific code. By performing tasks such as code generation, target-specific optimizations, and register allocation, the back-end ensures that the final output runs efficiently on the target hardware. Understanding the back-end pass is crucial for recognizing how LLVM generates high-performance code for a wide range of platforms and architectures.
+
+<LlvmSeoBooster topic="llvm-backend" />

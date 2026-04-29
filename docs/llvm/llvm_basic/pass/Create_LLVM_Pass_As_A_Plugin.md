@@ -59,6 +59,7 @@ keywords:
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
 # How to Create an LLVM Pass as a Plugin
 
@@ -1302,3 +1303,5 @@ The real milestone is not "I wrote some C++." It is this: you understand how LLV
 
   </TabItem>
 </Tabs>
+
+<LlvmSeoBooster topic="create-pass-plugin" />
