@@ -1,6 +1,6 @@
 ---
-title: "Time and Space Complexity Explained"
-description: "Understand time and space complexity with Big-O examples, memory tradeoffs, and practical DSA insights to choose faster, more scalable algorithms."
+title: "Time and Space Complexity Explained With Examples"
+description: "Need a quick DSA refresher? Learn how time and space complexity work and choose algorithms that scale."
 ## Keywords 
 keywords: 
 - Time Complexity  

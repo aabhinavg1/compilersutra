@@ -1,6 +1,6 @@
 ---
-title: "How to Create CMakefile with C++"
-description: "Learn how to structure, write, and use CMakeLists.txt files for building C++ projects. Understand the limitations of Makefiles and how CMake solves them with a modular, cross-platform design."
+title: "How to Use CMake Step by Step"
+description: "Need a portable build setup? Learn CMake basics, structure projects correctly, and avoid build errors."
 keywords:
 - cmakefile
 - cmakefile tutorial

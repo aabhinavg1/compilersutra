@@ -1,6 +1,6 @@
 ---
-title: "How to Install and Set Up OpenCL on Linux, Windows, and macOS"
-description: "Learn how to install OpenCL on Linux, Windows, and macOS, verify drivers and runtimes, and run your first OpenCL program on CPU or GPU."
+title: "How to Set Up OpenCL Step by Step"
+description: "Need OpenCL working? Learn the setup steps, verify your install, and fix common driver issues fast."
 keywords: 
  - How to Install Opencl On Ubuntu
  - How to Install Opencl On Window

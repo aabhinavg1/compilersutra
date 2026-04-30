@@ -1,6 +1,6 @@
 ---
-title: "Linear Data Structures Explained"
-description: "Learn linear data structures with examples of arrays, linked lists, stacks, and queues, plus comparisons, use cases, and interview-focused insights."
+title: "Linear Data Structures Explained With Examples"
+description: "Need a fast DSA refresher? Learn arrays, linked lists, stacks, and queues with practical examples."
 keywords:  
 - Linear Data Structures  
 - Arrays  

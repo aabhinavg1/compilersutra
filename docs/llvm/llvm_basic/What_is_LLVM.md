@@ -1,7 +1,7 @@
 ---
-title: "What Is LLVM? Architecture, LLVM IR, Clang, and Why LLVM Matters"
+title: "LLVM Explained: Architecture, IR, and Clang"
 slug: "intro-to-llvm"
-description: "Understand what LLVM is, how LLVM IR and Clang fit together, why LLVM succeeded, and where to start if you want to learn compiler engineering."
+description: "What is LLVM? Learn the architecture, understand LLVM IR and Clang, and start with the essentials."
 keywords:
   - LLVM Tutorial
   - LLVM Function Pass

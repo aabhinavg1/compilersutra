@@ -1,7 +1,7 @@
 ---
 
-title: "How to Build C++ with Makefile"
-description: "A comprehensive guide to writing and using Makefiles to compile and build C++ projects. Learn toolchains, build systems, and automate your C++ development process."
+title: "How to Build C++ with Make Step by Step"
+description: "Need a cleaner C++ build? Learn how Make works, avoid common errors, and compile projects faster."
 keywords:
 - makefile
 - makefile tutorial

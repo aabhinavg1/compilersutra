@@ -1,6 +1,6 @@
 ---
-title: "GCC vs LLVM: Performance, Clang, IR, and Use Cases"
-description: "Compare GCC vs LLVM for C and C++ with Clang, performance tradeoffs, IR design, assembly behavior, tooling, and real-world compiler use cases."
+title: "GCC vs LLVM Explained With Real Benchmarks"
+description: "Which compiler wins? Compare GCC vs LLVM benchmarks, understand tradeoffs, and choose the right tool for your workload."
 slug: /compilers/gcc-vs-llvm-deep-dive/
 keywords:
   - best compiler for high-performance computing

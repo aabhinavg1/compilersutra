@@ -1,6 +1,6 @@
 ---
-title: "Role of Parser in Compiler Design"
-description: "Understand the role of parser in compiler design with AST examples, parser types, syntax analysis, and practical links to LL, LR, and recursive descent."
+title: "Role of the Parser in Compiler Design"
+description: "What does a parser do? Learn its role in compilation, understand syntax analysis, and read compiler flow faster."
 keywords:
   - role of parser in compiler design
   - parser in compiler

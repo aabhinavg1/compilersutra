@@ -1,6 +1,6 @@
 ---
-title: "LLVM IR: The Backbone of Modern Compilers"
-description: "A deep, practical guide to LLVM Intermediate Representation (IR): why compilers need IR, its role in LLVM architecture, SSA, optimizations, use cases, and hands-on commands for Clang, opt, and llc."
+title: "LLVM IR Explained With Examples"
+description: "What is LLVM IR? Learn the structure, understand why it matters, and read IR with confidence."
 keywords:
   - llvm
   - llvm ir
