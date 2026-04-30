@@ -826,6 +826,7 @@ whenToUse="Early in the optimization pipeline, before intensive analysis."
 
 ## What’s Next
 
+* [How Clang Converts C/C++ Source Into LLVM IR](./clang-to-llvm-ir.md)
 * Advanced LLVM IR Optimizations (GVN, SROA, LICM)
 * Writing Custom LLVM Passes
 * Building Your Own Language Frontend with LLVM
@@ -895,4 +896,3 @@ Follow continuation articles in this LLVM series on CompilerSutra.
 
   </TabItem>
 </Tabs>
-

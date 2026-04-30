@@ -1,0 +1,41 @@
+---
+id: llvm-clang-frontend-quiz
+title: "Clang Frontend MCQs Quiz"
+slug: /mcq/questions/domain/compilers/llvm/clang-frontend-quiz
+description: "A quiz on how Clang lowers source code through preprocessing, tokenization, parsing, semantic analysis, and LLVM IR generation."
+displayed_sidebar: llvmTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Clang Frontend MCQs Quiz
+
+Use this quiz after reading the Clang-to-LLVM-IR article if you want to check the full frontend flow, not just the LLVM side.
+
+<Question question="1). What is the main role of the Clang frontend?" options={['Understand source code and prepare it for LLVM', 'Allocate CPU registers', 'Link object files', 'Run machine code directly']} answer="Understand source code and prepare it for LLVM" />
+<Question question="2). Which Clang component owns the overall compilation state?" options={['CompilerInstance', 'IRBuilder', 'TargetMachine', 'PassManager']} answer="CompilerInstance" />
+<Question question="3). What does `FrontendAction` decide?" options={['What kind of frontend work to run', 'Which CPU instruction to execute', 'How many registers exist', 'How to write source comments']} answer="What kind of frontend work to run" />
+<Question question="4). What is the main job of the preprocessor in Clang?" options={['Expand macros and includes before parsing', 'Generate machine code', 'Perform register allocation', 'Link libraries']} answer="Expand macros and includes before parsing" />
+<Question question="5). What does the lexer produce from source text?" options={['Tokens', 'Object files', 'Assembly blocks', 'MIR nodes']} answer="Tokens" />
+
+<AdBanner />
+
+<Question question="6). What does the parser mainly build?" options={['An AST or similar syntax structure', 'A linked executable', 'A debug symbol table', 'A CPU pipeline schedule']} answer="An AST or similar syntax structure" />
+<Question question="7). Which Clang subsystem checks semantic meaning and language rules?" options={['Sema', 'Lexer', 'Linker', 'MCAsmInfo']} answer="Sema" />
+<Question question="8). What is the AST in Clang best thought of as?" options={['The structured representation of the source program', 'The final object file', 'A list of assembly opcodes', 'A linker map']} answer="The structured representation of the source program" />
+<Question question="9). Which class stores AST-related type and declaration information?" options={['ASTContext', 'CodeGenFunction', 'CompilerInstance', 'TargetInfo']} answer="ASTContext" />
+<Question question="10). Which class receives parsed declarations and AST events?" options={['ASTConsumer', 'IRBuilder', 'TargetMachine', 'SourceManager']} answer="ASTConsumer" />
+<Question question="11). Which component begins lowering validated AST into LLVM IR?" options={['CodeGenAction', 'PPDirectives', 'HeaderSearch', 'DiagnosticsEngine']} answer="CodeGenAction" />
+<Question question="12). Which files are responsible for module and function IR emission in Clang?" options={['CodeGenModule.cpp and CodeGenFunction.cpp', 'Lexer.cpp and Parser.cpp', 'Sema.cpp and SourceManager.cpp', 'HeaderSearch.cpp and PPDirectives.cpp']} answer="CodeGenModule.cpp and CodeGenFunction.cpp" />
+<Question question="13). Which command shows the preprocessed source?" options={['clang -E demo.c', 'clang -S -emit-llvm demo.c', 'llvm-dis demo.bc', 'opt demo.ll']} answer="clang -E demo.c" />
+<Question question="14). Which command dumps the AST without generating code?" options={['clang -Xclang -ast-dump -fsyntax-only demo.c', 'clang -E demo.c', 'clang -O2 demo.c', 'llvm-link demo.bc']} answer="clang -Xclang -ast-dump -fsyntax-only demo.c" />
+
+<AdBanner />
+
+<Question question="15). Which command emits LLVM IR from Clang?" options={['clang -S -emit-llvm demo.c -o demo.ll', 'clang -c demo.c -o demo.o', 'clang -E demo.c -o demo.ll', 'opt demo.ll -o demo.bc']} answer="clang -S -emit-llvm demo.c -o demo.ll" />
+<Question question="16). At `-O0`, LLVM IR usually stays close to:" options={['Source structure', 'Final machine code', 'Linker output', 'CPU microcode']} answer="Source structure" />
+<Question question="17). Why can frontend lowering affect performance before LLVM optimization starts?" options={['It can hide or expose optimization opportunities in the IR shape', 'Because LLVM ignores the IR', 'Because tokens directly change CPU frequency', 'Because source comments become instructions']} answer="It can hide or expose optimization opportunities in the IR shape" />
+<Question question="18). In the article, what does the simple loop example show?" options={['Source-level control flow becomes basic blocks and branch instructions', 'The parser skips loops entirely', 'The linker removes all branches', 'LLVM converts every loop into a comment']} answer="Source-level control flow becomes basic blocks and branch instructions" />
+<Question question="19). Which stage checks whether a program is syntactically valid?" options={['Parsing', 'Register allocation', 'Code emission', 'Linking']} answer="Parsing" />
+<Question question="20). Which stage checks whether a program makes sense in the language?" options={['Semantic analysis', 'Lexing', 'Linking', 'Assembly formatting']} answer="Semantic analysis" />

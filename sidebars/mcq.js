@@ -421,8 +421,9 @@ const mcq = {
       label: 'LLVM MCQs',
       collapsed: false,
       items: [
-        'mcq/questions/domain/compilers/llvm/llvm-track-home',
+        'mcq/questions/domain/compilers/llvm/llvm-clang-frontend-quiz',
         'mcq/questions/domain/compilers/llvm/llvm-track-quiz',
+        'mcq/questions/domain/compilers/llvm/llvm-pass-plugin-quiz',
       ],
     },
   ],

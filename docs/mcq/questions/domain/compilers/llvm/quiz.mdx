@@ -24,3 +24,16 @@ import { Question } from '../../../../Question';
 <Question question="8). Which tool links multiple LLVM IR modules together?" options={['llvm-link', 'clang-format', 'lldb', 'opt-viewer']} answer="llvm-link" />
 <Question question="9). SSA is useful in LLVM because it:" options={['Makes data dependencies clearer for optimization', 'Eliminates the need for control flow', 'Removes machine registers', 'Turns all code into assembly']} answer="Makes data dependencies clearer for optimization" />
 <Question question="10). Why do LLVM passes often run in pipelines?" options={['Because one transformation can enable later optimizations', 'Because LLVM cannot process one pass at a time', 'Because linking must always happen first', 'Because parsing is repeated after every pass']} answer="Because one transformation can enable later optimizations" />
+
+<AdBanner />
+
+<Question question="11). In Clang, what is the main job of the preprocessor?" options={['Expand macros and includes before parsing', 'Allocate registers for machine code', 'Link object files together', 'Emit assembly directly']} answer="Expand macros and includes before parsing" />
+<Question question="12). What does the lexer produce from raw source characters?" options={['Tokens', 'Machine instructions', 'Object files', 'Register names']} answer="Tokens" />
+<Question question="13). What does the parser mainly build?" options={['An AST or similar syntax structure', 'A linked executable', 'A register allocation table', 'A file system index']} answer="An AST or similar syntax structure" />
+<Question question="14). What is the role of `clang::Sema`?" options={['Check semantic meaning, types, and language rules', 'Format source code', 'Link LLVM bitcode', 'Generate shell scripts']} answer="Check semantic meaning, types, and language rules" />
+<Question question="15). Which command shows the preprocessed source?" options={['clang -E demo.c', 'clang -S -emit-llvm demo.c', 'clang -O2 demo.c', 'clang -c demo.c']} answer="clang -E demo.c" />
+<Question question="16). Which command dumps the AST without generating code?" options={['clang -Xclang -ast-dump -fsyntax-only demo.c', 'clang -E demo.c', 'llvm-dis demo.bc', 'opt demo.ll']} answer="clang -Xclang -ast-dump -fsyntax-only demo.c" />
+<Question question="17). Which command emits LLVM IR from Clang?" options={['clang -S -emit-llvm demo.c -o demo.ll', 'clang -E demo.c -o demo.ll', 'opt demo.ll -o demo.bc', 'llvm-link demo.c']} answer="clang -S -emit-llvm demo.c -o demo.ll" />
+<Question question="18). At `-O0`, Clang usually keeps LLVM IR close to:" options={['Source structure', 'Final machine code', 'Linker output', 'CPU microcode']} answer="Source structure" />
+<Question question="19). Why can a bad frontend lower performance even before LLVM optimization?" options={['It can hide optimization opportunities in the IR shape', 'Because LLVM ignores IR', 'Because the backend only reads comments', 'Because tokens directly control CPU frequency']} answer="It can hide optimization opportunities in the IR shape" />
+<Question question="20). Why is LLVM IR the contract between Clang and LLVM?" options={['Clang decides meaning and LLVM decides optimization', 'LLVM writes source code for Clang', 'Clang and LLVM share a debugger', 'IR is only for documentation']} answer="Clang decides meaning and LLVM decides optimization" />

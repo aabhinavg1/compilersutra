@@ -471,6 +471,24 @@ const topics = {
       ['What is an example of LLVM IR hierarchy usage?', 'Passes often iterate module to function to basic block to instruction when analyzing or transforming IR.'],
     ],
   },
+  'clang-to-llvm-ir': {
+    title: 'How Clang Converts C/C++ Source Into LLVM IR',
+    description:
+      'Learn how Clang lowers C and C++ source through preprocessing, parsing, semantic analysis, and IR generation before LLVM optimization and backend code generation.',
+    keyword: 'Clang to LLVM IR',
+    links: [
+      { to: '/docs/llvm/llvm_ir/intro_to_llvm_ir', label: 'LLVM IR introduction' },
+      { to: '/docs/llvm/llvm_ir/hierarchy_of_llvm_ir', label: 'LLVM IR hierarchy' },
+      { to: '/docs/llvm/llvm_basic/LLVM_Architecture', label: 'LLVM architecture overview' },
+      { to: '/docs/llvm/Intermediate/frontend/fronend', label: 'LLVM frontend overview' },
+    ],
+    faqs: [
+      ['How does Clang convert source to LLVM IR?', 'Clang preprocesses the source, parses it into an AST, performs semantic analysis, and then lowers the AST into LLVM IR.'],
+      ['Why does Clang use an AST before LLVM IR?', 'The AST captures language structure and semantics so Clang can validate the program before lowering it to the target-independent LLVM form.'],
+      ['What is the difference between Clang and LLVM IR?', 'Clang is the frontend that understands C and C++, while LLVM IR is the intermediate form that later optimization and backend stages use.'],
+      ['Why does C++ usually produce more complex IR than C?', 'C++ has templates, overloads, constructors, destructors, and richer object semantics, so the emitted IR usually carries more frontend details.'],
+    ],
+  },
   'intro-to-llvm-ir': {
     title: 'LLVM IR Explained with Examples',
     description:
