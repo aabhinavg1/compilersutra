@@ -1,7 +1,7 @@
 ---
 id: tvm-for-beginners
-title: "TVM for Beginners: What Apache TVM Is and How It Optimizes ML Models"
-description: "Learn what Apache TVM is, why ML compilers matter, how TVM optimizes models for CPUs, GPUs, and accelerators, and where to start with TVM."
+title: "TVM for Beginners: What It Does and Why It Matters"
+description: "New to TVM? Learn the basics, understand the optimization pipeline, and get started faster."
 slug: /tvm-for-beginners
 sidebar_position: 1
 sidebar_label: "TVM for Beginners"

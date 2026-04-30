@@ -1,6 +1,6 @@
 ---
-title: "The Complete Evolution of LLVM Pass Infrastructure"
-description: "A comprehensive technical history of LLVM pass infrastructure evolution across 22 versions, covering architectural changes, API evolution, and practical migration guidance for compiler engineers and researchers."
+title: "LLVM Passes Explained With Real Examples"
+description: "What does an LLVM pass do? Learn the pass flow, track optimization steps, and read results more clearly."
 keywords:
   - LLVM passes
   - LLVM pass manager
@@ -631,5 +631,4 @@ Follow continuation articles in this LLVM series on CompilerSutra.
 
   </TabItem>
 </Tabs>
-
 

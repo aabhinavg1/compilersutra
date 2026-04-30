@@ -1,6 +1,6 @@
 ---
-title: "Running Multiple C++ Files Together"
-description: "Learn how to efficiently organize, compile, and manage multi-file C++ projects using best practices and automation tools."
+title: "How to Run Multiple C++ Files"
+description: "Need to compile multi-file C++ projects? Learn the workflow, avoid linker errors, and build cleanly."
 keywords:
 - Running multiple C++ files
 - Compiling multi-file C++ projects

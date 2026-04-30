@@ -1,7 +1,7 @@
 ---
 id: "IntroductionToCompilers"
-title: "Inside a Compiler: Source Code to Assembly Using Clang & GCC"
-description: "A deep technical walkthrough of the complete compiler pipeline from source code to assembly using Clang and GCC. Learn preprocessing, lexing, parsing, semantic analysis, LLVM IR, GIMPLE, RTL, optimization passes, and assembly generation with practical compiler flags and examples."
+title: "Inside a Compiler: Source Code to Assembly"
+description: "Want to see how code becomes machine instructions? Learn preprocessing, parsing, IR, optimization, and assembly."
 keywords:
   - compiler
   - compiler pipeline
