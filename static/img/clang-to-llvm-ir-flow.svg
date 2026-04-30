@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1280" viewBox="0 0 900 1280" role="img" aria-labelledby="title desc">
+  <title id="title">Clang to LLVM IR flow</title>
+  <desc id="desc">A simple stacked infographic showing how Clang lowers source code into LLVM IR.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="one" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="two" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfdf5"/>
+      <stop offset="100%" stop-color="#d1fae5"/>
+    </linearGradient>
+    <linearGradient id="three" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f3ff"/>
+      <stop offset="100%" stop-color="#ddd6fe"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto">
+      <path d="M 0 0 L 14 7 L 0 14 z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 800 44px/1.2 Inter, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 22px/1.4 Inter, Arial, sans-serif; fill: #475569; }
+      .step { font: 800 17px/1 Inter, Arial, sans-serif; fill: #0f172a; letter-spacing: 0.09em; }
+      .box-title { font: 800 30px/1.2 Inter, Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 500 20px/1.45 Inter, Arial, sans-serif; fill: #334155; }
+      .bottom { font: 700 22px/1.4 Inter, Arial, sans-serif; fill: #ffffff; }
+      .note { font: 400 18px/1.4 Inter, Arial, sans-serif; fill: #cbd5e1; }
+      .pill { font: 700 16px/1 Inter, Arial, sans-serif; fill: #334155; }
+    </style>
+  </defs>
+
+  <rect width="900" height="1280" fill="url(#bg)"/>
+
+  <text x="450" y="78" text-anchor="middle" class="title">How Clang Turns Source Into LLVM IR</text>
+  <text x="450" y="116" text-anchor="middle" class="subtitle">A simple three-step compiler story: prepare, understand, lower</text>
+
+  <g filter="url(#shadow)">
+    <rect x="64" y="160" width="772" height="226" rx="28" fill="url(#one)" stroke="#93c5fd"/>
+    <text x="98" y="208" class="step">STEP 1</text>
+    <text x="98" y="252" class="box-title">Prepare the source</text>
+    <text x="98" y="300" class="box-text">Preprocessor expands macros and headers.</text>
+    <text x="98" y="338" class="box-text">Lexer turns characters into tokens.</text>
+    <rect x="574" y="182" width="218" height="40" rx="20" fill="#dbeafe"/>
+    <text x="683" y="209" text-anchor="middle" class="pill">Preprocessor + Lexer</text>
+  </g>
+
+  <line x1="450" y1="388" x2="450" y2="432" stroke="#475569" stroke-width="6" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="64" y="446" width="772" height="226" rx="28" fill="url(#two)" stroke="#86efac"/>
+    <text x="98" y="494" class="step">STEP 2</text>
+    <text x="98" y="538" class="box-title">Understand the code</text>
+    <text x="98" y="586" class="box-text">Parser builds structure from tokens.</text>
+    <text x="98" y="624" class="box-text">Sema checks types, scopes, and rules.</text>
+    <rect x="614" y="468" width="178" height="40" rx="20" fill="#dcfce7"/>
+    <text x="703" y="495" text-anchor="middle" class="pill">Parser + Sema</text>
+  </g>
+
+  <line x1="450" y1="674" x2="450" y2="718" stroke="#475569" stroke-width="6" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="64" y="732" width="772" height="246" rx="28" fill="url(#three)" stroke="#c4b5fd"/>
+    <text x="98" y="780" class="step">STEP 3</text>
+    <text x="98" y="824" class="box-title">Lower into LLVM IR</text>
+    <text x="98" y="872" class="box-text">CodeGenAction starts emission.</text>
+    <text x="98" y="910" class="box-text">CodeGenModule and CodeGenFunction build IR.</text>
+    <rect x="610" y="754" width="182" height="40" rx="20" fill="#e9d5ff"/>
+    <text x="701" y="781" text-anchor="middle" class="pill">CodeGen + IR</text>
+  </g>
+
+  <line x1="450" y1="978" x2="450" y2="1030" stroke="#475569" stroke-width="6" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="64" y="1038" width="772" height="112" rx="28" fill="#0f172a" stroke="#0f172a"/>
+    <text x="450" y="1084" text-anchor="middle" class="bottom">LLVM IR is the handoff point.</text>
+    <text x="450" y="1120" text-anchor="middle" class="note">Clang decides meaning first. LLVM decides how to make it fast.</text>
+  </g>
+</svg>

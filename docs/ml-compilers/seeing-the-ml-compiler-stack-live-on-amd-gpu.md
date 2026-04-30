@@ -1419,7 +1419,7 @@ That changes how you debug.
 That changes how you optimize.
 That changes how you think about performance.
 
-**FAQ**
+## FAQ
 
 **Do I need to understand every line in every dump?**
 

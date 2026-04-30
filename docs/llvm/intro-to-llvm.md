@@ -598,6 +598,7 @@ That progression gives you usable LLVM intuition much faster than trying to memo
 
 ## More Articles
 
+- [How Clang Converts C/C++ Source Into LLVM IR](./llvm_ir/clang-to-llvm-ir.md)
 - [Introduction to LLVM IR](./llvm_ir/intro_to_llvm_ir.md)
 - [Manage LLVM Versions](./llvm_extras/manage_llvm_version.md)
 - [LLVM Pass Tracker](./llvm_pass_tracker/llvm_pass.md)
