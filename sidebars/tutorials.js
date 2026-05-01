@@ -257,6 +257,7 @@ const tutorials = {
             'llvm/llvm_ir/intro_to_llvm_ir',
             'llvm/llvm_ir/hierarchy_of_llvm_ir',
             'llvm/llvm_ir/clang-to-llvm-ir',
+            'llvm/llvm_ir/your-first-llvm-ir-file-line-by-line',
           ],
         },
         {
