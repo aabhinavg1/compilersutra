@@ -118,7 +118,7 @@ So the short version is simple: Clang decides what the program means, then LLVM 
     src="/img/clang-to-llvm-ir-flow.svg"
     alt="Clang to LLVM IR flow diagram"
     loading="lazy"
-    decoding="async"
+    decoding="1async"
     style={{
       width: '100%',
       maxWidth: '760px',
@@ -692,5 +692,7 @@ Read the article first, then try the quiz without looking back at the text. That
 Clang turns source into meaning; LLVM turns that meaning into performance.
 
 That is the boundary to remember when you read IR, debug compiler behavior, or reason about backend output.
+
+Next: [Your First LLVM IR File, Line by Line](./your-first-llvm-ir-file-line-by-line.md)
 
 <LlvmSeoBooster topic="clang-to-llvm-ir" />
