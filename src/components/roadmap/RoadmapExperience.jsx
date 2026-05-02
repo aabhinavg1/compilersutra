@@ -90,7 +90,10 @@ function TypeQuote({ text }) {
 }
 
 function CopySnippet() {
-  const snippet = 'source -> tokens -> AST -> semantics -> IR -> optimization -> machine code';
+  const snippet = `main.velox
+fn main() {
+  print(2 + 2);
+}`;
   const [copied, setCopied] = useState(false);
 
   const onCopy = async () => {
@@ -106,7 +109,8 @@ function CopySnippet() {
   return (
     <div className={styles.snippetCard} data-reveal>
       <div>
-        <p className={styles.snippetLabel}>Mental model</p>
+        <p className={styles.snippetLabel}>Source file</p>
+        <p className={styles.snippetMeta}>`main.velox` example</p>
         <code className={styles.snippetCode}>{snippet}</code>
       </div>
       <button type="button" className={styles.copyButton} onClick={onCopy}>
@@ -117,6 +121,36 @@ function CopySnippet() {
         <FaCheck aria-hidden="true" />
         Copied to clipboard
       </span>
+    </div>
+  );
+}
+
+function PipelineStrip() {
+  const stages = [
+    { label: 'Source', edge: 'tokens', hint: '.velox' },
+    { label: 'Lexer', edge: 'AST', hint: 'tokens' },
+    { label: 'Parser / AST', edge: 'IR', hint: 'syntax tree' },
+    { label: 'LLVM IR + opt / llc', edge: 'asm', hint: 'post-IR tools' },
+    { label: 'RISC-V asm', edge: 'binary', hint: 'lowering' },
+    { label: 'Binary -> QEMU', edge: '', hint: 'runtime' },
+  ];
+
+  return (
+    <div className={styles.pipelineStrip} data-reveal>
+      {stages.map((stage, index) => (
+        <React.Fragment key={stage.label}>
+          <div className={styles.pipelineNode}>
+            <span className={styles.pipelineHint}>{stage.hint}</span>
+            <strong>{stage.label}</strong>
+          </div>
+          {index < stages.length - 1 ? (
+            <div className={styles.pipelineArrow}>
+              <span className={styles.pipelineEdge}>{stage.edge}</span>
+              <FaArrowRight aria-hidden="true" />
+            </div>
+          ) : null}
+        </React.Fragment>
+      ))}
     </div>
   );
 }
@@ -144,8 +178,8 @@ function PhaseCard({ phase, completed, active, onToggleComplete }) {
 
       <header className={styles.phaseHeader}>
         <div>
-          <p className={styles.phaseKicker}>{phase.step}</p>
           <h2 className={styles.phaseTitle}>
+            <span className={styles.phaseStepBadge}>{phase.step}</span>
             <span className={styles.phaseGlyph} aria-hidden="true">
               <FaCode />
             </span>
@@ -454,6 +488,14 @@ export default function RoadmapExperience() {
               Open GPU track
             </Link>
           </article>
+        </div>
+      </section>
+
+      <section className={styles.section} data-reveal>
+        <div className={styles.pipelineSection}>
+          <p className={styles.eyebrow}>Compiler flow at a glance</p>
+          <h2>Source, AST, IR, optimization, backend, binary, execution</h2>
+          <PipelineStrip />
         </div>
       </section>
 
