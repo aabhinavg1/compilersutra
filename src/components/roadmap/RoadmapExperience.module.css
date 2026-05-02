@@ -357,6 +357,12 @@
   text-transform: uppercase;
 }
 
+.snippetMeta {
+  margin: 0 0 0.55rem;
+  color: var(--rm-muted);
+  font-size: 0.82rem;
+}
+
 .snippetCode {
   display: block;
   color: #0f172a;
@@ -570,6 +576,83 @@
   padding-top: 1rem;
 }
 
+.pipelineSection {
+  padding: 1.1rem 1.25rem 1.25rem;
+  border-radius: 28px;
+  border: 1px solid var(--rm-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(241,245,249,0.75));
+  box-shadow: var(--rm-shadow);
+}
+
+[data-theme='dark'] .pipelineSection {
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+}
+
+.pipelineSection h2 {
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+}
+
+[data-theme='dark'] .pipelineSection h2 {
+  color: #fff;
+}
+
+.pipelineStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pipelineNode {
+  flex: 1 1 11rem;
+  display: grid;
+  gap: 0.15rem;
+  min-height: 5.4rem;
+  padding: 0.8rem 0.85rem;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255,255,255,0.76);
+}
+
+[data-theme='dark'] .pipelineNode {
+  background: rgba(255,255,255,0.04);
+}
+
+.pipelineNode strong {
+  color: #0f172a;
+  font-size: 0.98rem;
+}
+
+[data-theme='dark'] .pipelineNode strong {
+  color: #fff;
+}
+
+.pipelineHint {
+  color: var(--rm-muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pipelineArrow {
+  flex: 0 0 auto;
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.pipelineEdge {
+  color: #7c3aed;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .timelineWrap {
   position: relative;
   padding-left: 3rem;
@@ -662,7 +745,6 @@
   gap: 1rem;
 }
 
-.phaseKicker,
 .subheading {
   margin: 0 0 0.45rem;
   color: #93c5fd;
@@ -680,6 +762,21 @@
   margin: 0;
   color: #0f172a;
   font-size: clamp(1.6rem, 2vw, 2.15rem);
+}
+
+.phaseStepBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.24);
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 [data-theme='dark'] .phaseTitle {
@@ -705,6 +802,11 @@
 
 .phaseCard:hover .phaseGlyph {
   transform: rotate(5deg) translateY(-1px);
+}
+
+.phaseCard:hover .phaseStepBadge {
+  border-color: rgba(148, 163, 184, 0.34);
+  background: rgba(59, 130, 246, 0.18);
 }
 
 .difficultyBadge {

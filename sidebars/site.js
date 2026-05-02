@@ -1,10 +1,37 @@
 const site = {
+  llvmProjectsSidebar: [
+    {
+      type: 'category',
+      label: 'LLVM Projects',
+      collapsed: false,
+      items: ['project/llvm/index'],
+    },
+  ],
+
+  veloxSidebar: [
+    {
+      type: 'category',
+      label: 'VELOX',
+      collapsed: false,
+      items: [
+        'project/llvm/VELOX/index',
+        'project/llvm/VELOX/creating-your-first-llvm-based-compiler',
+      ],
+    },
+  ],
+
   projectSidebar: [
     {
       type: 'category',
       label: 'Project',
-      collapsed: true,
+      collapsed: false,
       items: ['project/Project'],
+    },
+    {
+      type: 'category',
+      label: 'LLVM Projects',
+      collapsed: false,
+      items: ['project/llvm/index'],
     },
   ],
 

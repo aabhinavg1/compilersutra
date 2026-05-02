@@ -1275,6 +1275,26 @@ Here are some projects to build expertise in compiler development:
 
 
 
+## LLVM Projects
+
+If you want a guided LLVM project hub, start here:
+
+- [LLVM Projects](./llvm)
+
+The main project in that folder is:
+
+- [VELOX Compiler Project](./llvm/VELOX/)
+
+This series covers:
+
+- compiler theory and architecture
+- a custom frontend for `VELOX`
+- lowering to LLVM IR
+- optimization passes
+- a RISC-V backend
+
+---
+
 ## 🚀 Get Started!
 Choose a project that interests you and start building! Each project offers an opportunity to apply your C++ knowledge and explore various domains.
 
