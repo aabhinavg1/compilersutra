@@ -173,6 +173,7 @@ const config = {
             items: [
               { label: 'AI Systems', to: '/docs/AI' },
               { label: 'Compilers', to: '/docs/compilers/compiler' },
+              { label: 'Compiler Blog', to: '/docs/compilers/techblog/' },
               { label: 'LLVM', to: '/docs/llvm/intro-to-llvm' },
               { label: 'MLIR', to: '/docs/MLIR/intro' },
               { label: 'ML Compilers', to: '/docs/ml-compilers' },

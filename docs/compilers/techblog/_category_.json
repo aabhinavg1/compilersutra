@@ -1,0 +1,8 @@
+{
+  "label": "Tech Blog",
+  "position": 6,
+  "link": {
+    "type": "doc",
+    "id": "compilers/techblog/index"
+  }
+}
