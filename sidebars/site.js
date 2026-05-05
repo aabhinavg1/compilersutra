@@ -79,6 +79,23 @@ const site = {
     },
   ],
 
+  compilerTechblogSidebar: [
+    {
+      type: 'category',
+      label: 'Compiler Blog',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'compilers/techblog/index',
+      },
+      items: [
+        'compilers/techblog/how-compiler-decisions-affect-hardware-performance',
+        'compilers/techblog/how-compiler-decisions-affect-hardware-performance-how-developers-influence-compiler-decisions',
+        'compilers/techblog/how-compiler-decisions-affect-hardware-performance-practical-compiler-control',
+      ],
+    },
+  ],
+
   LLVMPassSidebar: [
     {
       type: 'category',
