@@ -1,0 +1,40 @@
+
+stage5_hsaco.bin:	file format elf64-amdgpu
+
+Disassembly of section .text:
+
+0000000000001700 <vector_add_kernel>:
+	s_clause 0x1                                               // 000000001700: BF850001
+	s_load_b96 s[4:6], s[0:1], 0x10                            // 000000001704: F400A100 F8000010
+	s_load_b128 s[0:3], s[0:1], 0x0                            // 00000000170C: F4004000 F8000000
+	s_lshl_b32 s7, ttmp9, 10                                   // 000000001714: 84078A75
+	s_mov_b32 s11, 0x31027000                                  // 000000001718: BE8B00FF 31027000
+	v_lshl_or_b32 v0, v0, 2, s7                                // 000000001720: D6560000 001D0500
+	s_mov_b32 s10, 0x7ffffffe                                  // 000000001728: BE8A00FF 7FFFFFFE
+	s_mov_b32 s7, s11                                          // 000000001730: BE87000B
+	s_delay_alu instid0(VALU_DEP_1) | instskip(SKIP_2) | instid1(VALU_DEP_2)// 000000001734: BF870131
+	v_or_b32_e32 v1, 0x200, v0                                 // 000000001738: 380200FF 00000200
+	s_wait_kmcnt 0x0                                           // 000000001740: BFC70000
+	v_cmp_gt_i32_e32 vcc_lo, s6, v0                            // 000000001744: 7C880006
+	v_lshlrev_b32_e32 v3, 2, v1                                // 000000001748: 30060282
+	v_lshlrev_b32_e32 v2, 2, v0                                // 00000000174C: 30040082
+	s_and_b32 s9, s1, 0xffff                                   // 000000001750: 8B09FF01 0000FFFF
+	s_mov_b32 s8, s0                                           // 000000001758: BE880000
+	s_and_b32 s5, s5, 0xffff                                   // 00000000175C: 8B05FF05 0000FFFF
+	s_delay_alu instid0(VALU_DEP_1)                            // 000000001764: BF870001
+	v_cndmask_b32_e32 v16, 0x80000000, v2, vcc_lo              // 000000001768: 022004FF 80000000
+	v_cmp_gt_i32_e32 vcc_lo, s6, v1                            // 000000001770: 7C880206
+	s_mov_b32 s6, s10                                          // 000000001774: BE86000A
+	s_wait_alu 0xfffd                                          // 000000001778: BF88FFFD
+	v_cndmask_b32_e32 v17, 0x80000000, v3, vcc_lo              // 00000000177C: 022206FF 80000000
+	s_clause 0x1                                               // 000000001784: BF850001
+	buffer_load_b128 v[0:3], v16, s[8:11], null offen          // 000000001788: C405C07C 40801000 00000010
+	buffer_load_b128 v[4:7], v17, s[8:11], null offen          // 000000001794: C405C07C 40801004 00000011
+	s_and_b32 s9, s3, 0xffff                                   // 0000000017A0: 8B09FF03 0000FFFF
+	s_mov_b32 s8, s2                                           // 0000000017A8: BE880002
+	s_clause 0x1                                               // 0000000017AC: BF850001
+	buffer_load_b128 v[8:11], v16, s[8:11], null offen         // 0000000017B0: C405C07C 40801008 00000010
+	buffer_load_b128 v[12:15], v17, s[8:11], null offen        // 0000000017BC: C405C07C 4080100C 00000011
+	s_wait_loadcnt 0x1                                         // 0000000017C8: BFC00001
+	v_dual_add_f32 v0, v0, v8 :: v_dual_add_f32 v1, v1, v9     // 0000000017CC: C9081100 00001301
+	v_dual_add_f32 v2, v2, v10 :: v_dual_add_f32 v3, v3, v11   // 0000000017D4: C9081502 02021703

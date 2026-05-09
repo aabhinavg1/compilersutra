@@ -1,0 +1,33 @@
+Write a high-quality technical blog post on the release of GCC 16.1.
+
+Context:
+GCC 16.1 (GNU Compiler Collection) is a major release (April 2026) with important updates across language support, optimization, diagnostics, and hardware support.
+
+Key points to cover:
+- GCC as foundational infrastructure (not just a compiler)
+- Default C++ standard is now C++20
+- Experimental C++26 features (reflection, contracts)
+- Improved diagnostics (structured errors, SARIF output)
+- Optimization improvements (vectorizer, performance)
+- OpenMP and OpenACC progress
+- Fortran 2018/2023 support improvements
+- New experimental language: Algol 68
+- Hardware support:
+  - AMD Zen 6
+  - Intel Wildcat Lake & Nova Lake
+  - AMD GPU offloading improvements
+  - LoongArch32
+- Importance of compilers in modern computing
+- GCC’s role in the GNU ecosystem and open-source movement
+
+Style guidelines:
+- Write in a clean, professional, slightly opinionated tone
+- Balance technical depth with readability
+- Include a strong intro and a powerful concluding section
+- Avoid fluff, focus on insight
+- Add section headings and structured flow
+- Include a "Why This Matters" section
+- Include a "Big Picture" or philosophical reflection on compilers
+
+Goal:
+The blog should feel like it’s written by an experienced compiler engineer explaining why this release matters beyond just features.

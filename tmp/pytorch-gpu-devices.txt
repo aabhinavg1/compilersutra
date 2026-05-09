@@ -1,0 +1,2 @@
+0 AMD Radeon RX 9060 XT gfx1200
+1 AMD Ryzen 7 9700X 8-Core Processor gfx1036

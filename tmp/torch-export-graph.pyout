@@ -1,0 +1,9 @@
+
+
+
+def forward(self, x, w, b):
+    matmul = torch.ops.aten.matmul.default(x, w);  x = w = None
+    add = torch.ops.aten.add.Tensor(matmul, b);  matmul = b = None
+    relu = torch.ops.aten.relu.default(add);  add = None
+    return (relu,)
+    

@@ -89,9 +89,26 @@ const site = {
         id: 'compilers/techblog/index',
       },
       items: [
-        'compilers/techblog/how-compiler-decisions-affect-hardware-performance',
-        'compilers/techblog/how-compiler-decisions-affect-hardware-performance-how-developers-influence-compiler-decisions',
-        'compilers/techblog/how-compiler-decisions-affect-hardware-performance-practical-compiler-control',
+        {
+          type: 'category',
+          label: 'GPU Register Pressure',
+          collapsed: false,
+          items: [
+            'compilers/techblog/register-pressure-on-gpu-why-kernels-fail',
+            'compilers/techblog/register-pressure-on-gpu-how-to-calculate-it',
+            'compilers/techblog/register-pressure-on-gpu-how-to-reduce-it',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Compiler Decisions and Hardware Performance',
+          collapsed: true,
+          items: [
+            'compilers/techblog/how-compiler-decisions-affect-hardware-performance',
+            'compilers/techblog/how-compiler-decisions-affect-hardware-performance-how-developers-influence-compiler-decisions',
+            'compilers/techblog/how-compiler-decisions-affect-hardware-performance-practical-compiler-control',
+          ],
+        },
       ],
     },
   ],

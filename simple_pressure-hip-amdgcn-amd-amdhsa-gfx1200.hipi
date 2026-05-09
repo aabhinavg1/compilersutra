@@ -1,0 +1,13 @@
+# 1 "/tmp/simple_pressure.hip"
+# 1 "<built-in>" 1
+# 1 "<built-in>" 3
+# 933 "<built-in>" 3
+# 1 "<command line>" 1
+# 1 "<built-in>" 2
+# 1 "/tmp/simple_pressure.hip" 2
+extern "C" __attribute__((global)) void demo(float* out) {
+  float a = out[0];
+  float b = a * 2.0f;
+  float c = b + 3.0f;
+  out[0] = c;
+}

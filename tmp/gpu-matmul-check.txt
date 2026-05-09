@@ -1,0 +1,1 @@
+torch.Size([1024, 1024]) cuda:0

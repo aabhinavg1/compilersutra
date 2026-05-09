@@ -1,0 +1,43 @@
+
+
+============================ ROCm System Management Interface ============================
+============================== Version of System Component ===============================
+Driver version: 6.17.0-22-generic
+==========================================================================================
+=========================================== ID ===========================================
+GPU[0]		: Device Name: 		AMD Radeon RX 9060 XT
+GPU[0]		: Device ID: 		0x7590
+GPU[0]		: Device Rev: 		0xc0
+GPU[0]		: Subsystem ID: 	0x2429
+GPU[0]		: GUID: 		7773
+GPU[1]		: Device Name: 		AMD Radeon Graphics
+GPU[1]		: Device ID: 		0x13c0
+GPU[1]		: Device Rev: 		0xc5
+GPU[1]		: Subsystem ID: 	-0x11d0
+GPU[1]		: GUID: 		18562
+==========================================================================================
+========================================= VBIOS ==========================================
+GPU[0]		: VBIOS version: 113-R906XTGO-F2
+GPU[1]		: VBIOS version: 102-RAPHAEL-008
+==========================================================================================
+====================================== Product Info ======================================
+GPU[0]		: Card Series: 		AMD Radeon RX 9060 XT
+GPU[0]		: Card Model: 		0x7590
+GPU[0]		: Card Vendor: 		Advanced Micro Devices, Inc. [AMD/ATI]
+GPU[0]		: Card SKU: 		R906XTGO
+GPU[0]		: Subsystem ID: 	0x2429
+GPU[0]		: Device Rev: 		0xc0
+GPU[0]		: Node ID: 		1
+GPU[0]		: GUID: 		7773
+GPU[0]		: GFX Version: 		gfx1200
+GPU[1]		: Card Series: 		AMD Radeon Graphics
+GPU[1]		: Card Model: 		0x13c0
+GPU[1]		: Card Vendor: 		Advanced Micro Devices, Inc. [AMD/ATI]
+GPU[1]		: Card SKU: 		RAPHAEL
+GPU[1]		: Subsystem ID: 	-0x11d0
+GPU[1]		: Device Rev: 		0xc5
+GPU[1]		: Node ID: 		2
+GPU[1]		: GUID: 		18562
+GPU[1]		: GFX Version: 		gfx1036
+==========================================================================================
+================================== End of ROCm SMI Log ===================================
