@@ -1,2 +1,0 @@
-Max error: 0.0
-Available stages: ['amdgcn', 'hsaco', 'llir', 'source', 'ttgir', 'ttir']

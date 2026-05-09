@@ -1,5 +1,0 @@
-torch 2.11.0.dev20260206+rocm7.0
-cuda_available True
-device_name AMD Radeon RX 9060 XT
-arch gfx1200
-vram_gb 17.1
