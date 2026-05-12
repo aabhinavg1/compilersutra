@@ -16,15 +16,15 @@ function getPageLimit(pathname) {
     typeof window.matchMedia === 'function' &&
     window.matchMedia('(max-width: 768px)').matches;
 
-  if (pathname.startsWith('/docs/mcq')) {
-    return isMobile ? 3 : 4;
+  if (pathname.startsWith('/docs/')) {
+    return isMobile ? 1 : 3;
   }
 
   if (pathname === '/') {
     return 1;
   }
 
-  return isMobile ? 2 : 3;
+  return isMobile ? 1 : 2;
 }
 
 function getMinTopOffset(pathname) {
