@@ -68,6 +68,33 @@ Each `pulse` flows through the VELOX pipeline:
 
 `AST -> LLVM IR -> Optimized IR -> RISC-V -> Execution in QEMU`
 
+## VELOX v1 Plan
+
+VELOX v1 is intentionally small.
+
+It should include:
+
+* `pulse` as the core unit
+* `let` for local variables
+* `i32` as the first supported type
+* arithmetic and comparison expressions
+* `for` loops only
+* `return`
+* a C++ execution engine for host-side work and backend dispatch
+
+It should not include:
+
+* `if/else`
+* `while`
+* classes
+* macros
+* imports
+* advanced type system features
+
+For the full language shape, see:
+
+* [VELOX v1 Language Spec](./v1-language-spec)
+
 ## Note on Preprocessing
 
 VELOX does not include a preprocessing stage. There are no macros or textual substitution steps, and the compiler starts directly with lexical analysis.
@@ -121,6 +148,7 @@ Later stages can introduce MLIR as a higher-level IR layer for expressing comput
 
 - [Note on Preprocessing](#note-on-preprocessing)
 - [What is a Pulse?](#what-is-a-pulse)
+- [VELOX v1 Plan](#velox-v1-plan)
 - [What This Project Covers](#what-this-project-covers)
 - [Start Here](#start-here)
 - [Why This Project Matters](#why-this-project-matters)
@@ -195,6 +223,12 @@ It includes:
 - AST construction
 - LLVM IR generation
 - basic optimization using LLVM tools
-- RISC-V code generation and execution in QEMU
+- a C++ execution engine boundary for runtime work
+- loop-centric compute kernels with minimal branching
+- execution in QEMU or a similar runtime environment
 
 It intentionally avoids complex language features to keep the system easy to understand and reason about.
+
+For the detailed language contract, see:
+
+- [VELOX v1 Language Spec](./v1-language-spec)

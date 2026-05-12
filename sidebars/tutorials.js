@@ -49,6 +49,7 @@ const tutorials = {
         'compilers/sourcecode_to_executable',
         'compilers/IntroductionToCompilers',
         'compilers/front_end/compiler-frontend',
+        'compilers/front_end/role_of_lexer',
         'compilers/front_end/role_of_parser',
         'compilers/back_end/introduction-to-backend-compilers',
         'compilers/flag/compiler-flags',

@@ -75,3 +75,9 @@ The front end of a compiler is responsible for analyzing source code syntax and 
 - Lexical analysis and tokenization
 - Syntax and semantic analysis
 - Abstract Syntax Tree (AST) construction
+
+## Start Here
+
+1. Read [Role of the Lexer in Compiler Design](/docs/compilers/front_end/role_of_lexer).
+1. Read [Role of the Parser in Compiler Design](/docs/compilers/front_end/role_of_parser).
+1. Return here when you want the full frontend map.

@@ -310,6 +310,38 @@ a:focus-visible {
 }
 
 /* ==================== DOCS DARK MODE SAFEGUARDS ==================== */
+.theme-doc-page .docRoot,
+.theme-doc-page .docMainContainer,
+.theme-doc-page .docItemWrapper,
+.theme-doc-page .docItemCol,
+.theme-doc-page .docItemContainer,
+.theme-doc-page .theme-doc-markdown,
+.theme-doc-page .theme-doc-sidebar-container,
+.theme-doc-page .theme-doc-toc-desktop {
+  min-width: 0;
+}
+
+.theme-doc-page .docMainContainer {
+  flex: 1 1 auto;
+}
+
+.theme-doc-page .docItemCol {
+  flex: 1 1 auto;
+}
+
+.theme-doc-page .theme-doc-markdown {
+  overflow-wrap: anywhere;
+}
+
+.theme-doc-page .theme-doc-markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.theme-doc-page .theme-doc-markdown :is(img, svg, iframe) {
+  max-width: 100%;
+}
+
 .main-wrapper,
 .theme-doc-page,
 .theme-doc-markdown,
