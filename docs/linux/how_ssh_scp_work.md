@@ -91,32 +91,6 @@ import { ComicQA } from '../mcq/interview_question/Question_comics' ;
 
 # What is SSH and SCP and How it Work and Where it Help
 
-
-
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
-</div>
-
 [SSH (Secure Shell)](https://www.openssh.com/) and **SCP (Secure Copy)** are **fundamental tools for secure communication and file management** across Linux, UNIX, and cloud environments.
 
 * **SSH** establishes an encrypted channel that allows users to log into remote servers, execute commands, forward ports, and automate system administration safely and reliably.
@@ -128,6 +102,21 @@ Together, they form the backbone of modern infrastructure management, empowering
 * Transfer backups and sensitive data securely
 * Troubleshoot and manage remote servers efficiently
 * Integrate with CI/CD pipelines for automation and scalability
+
+## What you will learn
+
+* How SSH creates a secure remote shell
+* How SCP moves files over the SSH transport
+* How to use custom ports, keys, and config aliases
+* How to troubleshoot connection and permission issues
+* When to use SSH, SCP, rsync, or SFTP
+
+## Best way to read this article
+
+1. Start with why secure remote access matters.
+1. Learn SSH before SCP.
+1. Practice the commands in a test VM or local host.
+1. Return to [Linux Home](/docs/linux/) for the full section map.
 
 :::tip Did You Know
 * SSH can be used not just for remote login but also for **tunneling and port forwarding**, meaning you can securely connect to internal services behind firewalls.
@@ -651,3 +640,7 @@ Next steps:
 
   </TabItem>
 </Tabs>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

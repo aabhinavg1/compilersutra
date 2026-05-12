@@ -71,6 +71,21 @@ This article remains a valid entry point. If you want the new section landing pa
 
 **Linux is a powerful**, open-source operating system renowned for its ``stability, flexibility``, and ``security``. This ``Linux basics guide`` is ``designed for beginners``, offering a step-by-step introduction to essential commands, the file system, and practical tips to ``confidently start`` your Linux journey. Whether you're using ``Ubuntu``, ``Fedora``, or ``Debian`` , this tutorial will equip you with the ``foundational skills`` to navigate and ``manage a Linux system``.
 
+## What you will learn
+
+* How Linux is structured at a practical level
+* How to move around the file system with confidence
+* How to use the terminal instead of relying on the GUI
+* How to understand the most important beginner commands
+* How package managers fit into daily Linux work
+
+## Best way to read this article
+
+1. Read the system overview first.
+1. Skim the file system and terminal sections.
+1. Practice the commands in your own shell.
+1. Return to [Linux Home](/docs/linux/) when you want the full section map.
+
 
 <summary> Youtube Video Playlist</summary>
 
@@ -350,8 +365,11 @@ Below are beginner-friendly Linux commands, organized into categories for easy l
 ```bash
 pwd        # Print the current working directory
 ls         # List directory contents
+ls -la     # Show detailed listing including hidden files
 cd         # Change directory
 cd ..      # Move up one directory level
+cd ~       # Go to your home directory
+tree       # Show a directory tree
 ```
 
 </TabItem>
@@ -359,10 +377,15 @@ cd ..      # Move up one directory level
 
 ```bash
 mkdir projects             # Create a directory
+mkdir -p work/linux/logs    # Create nested directories
 touch notes.txt            # Create an empty file
+echo "hello" > notes.txt   # Write text to a file
 cp notes.txt backup/       # Copy file
+cp -r projects backup/     # Copy a directory
 mv notes.txt notes_old.txt # Rename or move file
 rm file.txt                # Delete file
+rm -r old_folder           # Delete a directory and its contents
+ln -s notes.txt shortcut.txt # Create a symbolic link
 ```
 
 </TabItem>
@@ -371,8 +394,35 @@ rm file.txt                # Delete file
 ```bash
 cat notes.txt     # Display file contents
 less notes.txt    # View file with scrollable navigation
+head notes.txt    # Show the first lines of a file
+tail notes.txt    # Show the last lines of a file
+tail -f app.log   # Follow a log file in real time
 nano notes.txt    # Edit using Nano
 vim notes.txt     # Edit using Vim
+```
+
+</TabItem>
+<TabItem value="search" label="Search">
+
+```bash
+grep "error" app.log          # Search text inside a file
+grep -r "TODO" .              # Search recursively in a directory
+find . -name "*.md"           # Find files by name
+find . -type f -size +10M     # Find large files
+which gcc                     # Find where a command is installed
+whereis bash                  # Show related binary and docs paths
+```
+
+</TabItem>
+<TabItem value="process" label="Processes">
+
+```bash
+ps aux               # Show running processes
+top                  # View live process and CPU usage
+htop                 # Interactive process viewer
+kill 1234            # Stop a process by PID
+kill -9 1234         # Force stop a process
+jobs                 # Show background jobs in the current shell
 ```
 
 </TabItem>
@@ -380,7 +430,10 @@ vim notes.txt     # Edit using Vim
 
 ```bash
 whoami   # Show current user
+hostname # Show the machine name
+uname -a # Show kernel and system information
 df -h    # Disk usage
+du -sh . # Show size of the current directory
 free -h  # Memory usage
 top      # Monitor processes
 ```
@@ -389,8 +442,24 @@ top      # Monitor processes
 <TabItem value="permissions" label="Permissions">
 
 ```bash
+ls -l               # Inspect permissions and ownership
 chmod +x script.sh      # Make script executable
+chmod 644 file.txt      # Set common file permissions
 chown john file.txt     # Change file ownership
+id                     # Show user and group IDs
+```
+
+</TabItem>
+<TabItem value="network" label="Networking">
+
+```bash
+ip a                   # Show IP addresses and interfaces
+ip route               # Show routing table
+ping example.com       # Test network connectivity
+ss -tulpn              # Show listening ports
+curl https://example.com # Fetch a URL
+ssh user@host          # Connect to a remote machine
+scp file user@host:/tmp/ # Copy a file securely
 ```
 
 </TabItem>
@@ -398,8 +467,39 @@ chown john file.txt     # Change file ownership
 
 :::tip
  Practice Tip
-Create a test directory (e.g., `mkdir ~/test`) to safely experiment with these commands. Use `man <command>` (e.g., `man ls`) to access detailed documentation.
+Create a test directory (e.g., `mkdir ~/test`) to safely experiment with these commands. Use `man <command>` (e.g., `man ls`) to access detailed documentation, and use `history` to review commands you already ran.
 :::
+
+## Everyday Linux command patterns
+
+These patterns help you use Linux like a working environment instead of a memorized cheat sheet.
+
+1. Inspect first, then change.
+   - Use `pwd`, `ls -la`, `cat`, or `less` before editing or deleting anything.
+2. Create safe working folders.
+   - Use `mkdir -p project/logs project/src` to prepare a workspace quickly.
+3. Keep track of output.
+   - Redirect command output with `>` and append with `>>` when you want logs.
+4. Search before guessing.
+   - Use `grep`, `find`, `which`, and `history` instead of hunting manually.
+5. Check system state when something feels off.
+   - Use `top`, `free -h`, `df -h`, and `ss -tulpn` before assuming a problem.
+
+## Mini command lab
+
+Try these as a quick practice set:
+
+```bash
+mkdir -p ~/linux-practice/logs
+cd ~/linux-practice
+touch notes.txt
+echo "Linux practice" > notes.txt
+cat notes.txt
+cp notes.txt logs/notes-backup.txt
+mv notes.txt notes-final.txt
+grep "Linux" notes-final.txt
+ls -la
+```
 
 ## Installing Software with Package Managers
 
@@ -560,3 +660,7 @@ By regularly using and referencing these resources, you can reinforce your Linux
 
   </TabItem>
 </Tabs>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

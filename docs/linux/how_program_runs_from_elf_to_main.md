@@ -49,6 +49,22 @@ This article explains that full path in simple words.
 
 It is written for readers who are **new to Linux process startup**, but who are willing to look at real ELF output, a little assembly, and real addresses.
 
+## What you will learn
+
+* How the shell hands your command to the kernel
+* How `execve` starts a new process
+* How ELF headers, program headers, and `PT_INTERP` work
+* Why `_start` runs before `main`
+* What `__libc_start_main` does
+* How memory is split into text, data, BSS, heap, and stack
+
+## Best way to read this article
+
+1. Read the big-picture flow first.
+1. Follow the demo program through each step.
+1. Use `readelf`, `nm`, and `objdump` on a real binary.
+1. Return to [Linux Home](/docs/linux/) when you want the full section map.
+
 :::tip
 So if words like these are new to you:
 
@@ -1722,3 +1738,7 @@ If you want to keep digging, a good next step is to compare this same experiment
 - another architecture such as ARM64
 
 That is where you start seeing which parts of startup are general Linux ideas and which parts belong to one specific runtime implementation.
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

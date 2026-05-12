@@ -387,3 +387,7 @@ This is **compiler literacy**.
 
 
 osc@compilersutra.com
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.
