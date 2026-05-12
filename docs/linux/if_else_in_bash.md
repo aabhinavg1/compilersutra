@@ -681,3 +681,7 @@ Here are some helpful resources to further your understanding of Linux:
 <div>
     <AdBanner />
 </div>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

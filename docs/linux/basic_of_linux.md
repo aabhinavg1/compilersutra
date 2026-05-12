@@ -78,6 +78,21 @@ import TabItem from '@theme/TabItem';
 
 Bash ``scripting`` is one of the most powerful tools for ``automating tasks`` in ``Linux`` and ``Unix-like systems``. Whether you're a beginner or a seasoned system administrator, learning Bash scripting can greatly improve your efficiency, automate repetitive tasks, and help you become more productive. This guide will introduce you to Bash scripting, starting from basic commands to advanced scripting techniques.
 
+## What this article covers
+
+* What a shell is and why Bash matters
+* The difference between shells and scripts
+* Common shell types you will see on Linux
+* Variables, quoting, and script structure
+* How to make your first script executable
+
+## Best way to use this guide
+
+1. Read the shell concepts before the examples.
+1. Copy the small code snippets into your terminal.
+1. Modify the examples and rerun them.
+1. Return to [Linux Home](/docs/linux/) for the full learning path.
+
 <div>
     <AdBanner />
 </div>
@@ -823,3 +838,7 @@ By regularly using and referencing these resources, you can reinforce your Linux
     
 
  
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

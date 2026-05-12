@@ -841,3 +841,7 @@ We’ve laid the groundwork for a ***portable, automated Markdown link checker**
 
 
 <AdBanner />
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

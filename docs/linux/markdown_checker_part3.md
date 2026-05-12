@@ -1267,3 +1267,7 @@ The script also generates three report files with the complete data for further 
 
   </TabItem>
 </Tabs>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

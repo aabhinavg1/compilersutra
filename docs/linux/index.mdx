@@ -5,68 +5,244 @@ slug: /linux/
 ---
 
 import Link from '@docusaurus/Link';
-import AdBanner from '@site/src/components/AdBanner';
 
 # Linux
 
+Build a working Linux foundation for systems work, compiler tooling, shell automation, and remote workflows.
 
-
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+## Start here
 
 <div
   style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
+    display: 'grid',
+    gap: '1rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    margin: '1.5rem 0 2rem',
   }}
 >
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
-</div>
-
-This section covers Linux and Bash from a practical systems-programming angle, especially the workflows that support compiler, tooling, and automation work.
-
-<div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1.5rem'}}>
-  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
-    <h3 style={{marginTop: 0}}>Linux Intro</h3>
-    <p>Start with the Linux introduction before diving into Bash and automation.</p>
-    <Link to="/docs/linux/intro_to_linux">Open intro</Link>
+  <div style={{ padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)' }}>
+    <h3 style={{ marginTop: 0 }}>Linux basics</h3>
+    <p>Start with the core introduction, file system layout, and beginner commands.</p>
+    <Link to="/docs/linux/intro_to_linux">Open introduction</Link>
   </div>
-  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
-    <h3 style={{marginTop: 0}}>Bash Basics</h3>
-    <p>Learn scripting basics, variables, loops, and shell fundamentals.</p>
+
+  <div style={{ padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)' }}>
+    <h3 style={{ marginTop: 0 }}>Bash scripting</h3>
+    <p>Learn variables, loops, branching, and shell automation for repeatable tasks.</p>
     <Link to="/docs/linux/basic_of_linux">Open Bash basics</Link>
   </div>
-  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
-    <h3 style={{marginTop: 0}}>SSH and SCP</h3>
-    <p>Use secure remote workflows that matter in real engineering environments.</p>
-    <Link to="/docs/linux/how_ssh_scp_work">Open article</Link>
+
+  <div style={{ padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)' }}>
+    <h3 style={{ marginTop: 0 }}>Remote workflows</h3>
+    <p>Use SSH and SCP to connect, copy files, and manage remote machines safely.</p>
+    <Link to="/docs/linux/how_ssh_scp_work">Open SSH and SCP</Link>
   </div>
-  <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>
-    <h3 style={{marginTop: 0}}>ELF to main</h3>
-    <p>Understand how Linux executes a program from ELF loading, `_start`, and `__libc_start_main` to `main`.</p>
-    <Link to="/docs/linux/how_program_runs_from_elf_to_main">Open article</Link>
+
+  <div style={{ padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)' }}>
+    <h3 style={{ marginTop: 0 }}>How programs start</h3>
+    <p>Trace what happens from ELF loading to `_start`, `__libc_start_main`, and `main`.</p>
+    <Link to="/docs/linux/how_program_runs_from_elf_to_main">Open ELF to main</Link>
   </div>
 </div>
 
-<AdBanner />
+## Learning tracks
 
-## Core Articles
+### 1. Beginner track
 
-- [Introduction to Linux](/docs/linux/intro_to_linux)
-- [Introduction to Bash Scripting](/docs/linux/basic_of_linux)
-- [How a Program Executes in Linux From ELF to main](/docs/linux/how_program_runs_from_elf_to_main)
-- [Environment Variables in Linux](/docs/linux/Environment_variable_in_linux)
-- [How SSH and SCP Work](/docs/linux/how_ssh_scp_work)
-- [Know Machine IP](/docs/linux/know_machine_ip)
+Use this if you are starting from zero or want to rebuild the basics properly.
+
+1. Read [Introduction to Linux](/docs/linux/intro_to_linux).
+1. Read [Introduction to Bash Scripting](/docs/linux/basic_of_linux).
+1. Learn [Environment Variables in Linux](/docs/linux/Environment_variable_in_linux).
+1. Practice with the commands in the starter pack below.
+
+### 2. Automation track
+
+Use this if you want Linux to help you save time.
+
+1. Read [How to Declare Variables in Bash](/docs/linux/Declaring_Variable_In_bash).
+1. Read [If Else in Bash with File Handling](/docs/linux/if_else_in_bash).
+1. Read [Loop in the Bash](/docs/linux/loop_in_bash).
+1. Read [Mastering Aliases in Linux with .bashrc](/docs/linux/What_is_bashrc).
+
+### 3. Remote workflow track
+
+Use this if you work with servers, build machines, or cloud instances.
+
+1. Read [What is SSH and SCP and How it Work and Where it Help](/docs/linux/how_ssh_scp_work).
+1. Read [Finding Your Machine Name and IP Address](/docs/linux/know_machine_ip).
+1. Practice logging in with `ssh`.
+1. Practice copying files with `scp`.
+
+### 4. Systems track
+
+Use this if you want to connect Linux with compiler and runtime behavior.
+
+1. Read [What Happens When You Run `a.out`](/docs/linux/how_program_runs_from_elf_to_main).
+1. Read [CompilerSutra Live Plan](/docs/linux/live).
+1. Read [Markdown Link Checker](/docs/linux/markdown_checker).
+1. Use Linux commands to inspect builds, logs, and executables.
+
+## Recommended learning path
+
+1. Start with [Introduction to Linux](/docs/linux/intro_to_linux).
+1. Move to [Introduction to Bash Scripting](/docs/linux/basic_of_linux).
+1. Learn [Environment Variables in Linux](/docs/linux/Environment_variable_in_linux).
+1. Study [What is SSH and SCP and How it Work and Where it Help](/docs/linux/how_ssh_scp_work).
+1. Read [What Happens When You Run `a.out`](/docs/linux/how_program_runs_from_elf_to_main).
+1. Use [Finding Your Machine Name and IP Address](/docs/linux/know_machine_ip).
+
+## What this section covers
+
+* Linux basics and terminal navigation
+* Bash scripting and shell automation
+* Environment variables and shell configuration
+* Username, hostname, and IP discovery
+* SSH, SCP, and remote machine workflows
+* Program startup flow from ELF to `main`
+* Markdown and workflow tooling for Linux users
+
+## Linux command starter pack
+
+These are the commands you should know first if you want a practical Linux base.
+
+### Navigation
+
+* `pwd` - print the current directory
+* `ls` - list files
+* `ls -la` - show hidden files with details
+* `cd /path/to/dir` - change directory
+* `cd ..` - go up one level
+* `cd ~` - go to your home directory
+
+### Files and folders
+
+* `touch file.txt` - create an empty file
+* `mkdir folder` - create a directory
+* `mkdir -p a/b/c` - create nested directories
+* `cp source target` - copy files
+* `mv source target` - move or rename files
+* `rm file.txt` - remove a file
+* `rm -r folder` - remove a directory recursively
+* `cat file.txt` - print file contents
+* `less file.txt` - view a file page by page
+
+### Search and inspect
+
+* `grep "text" file.txt` - search inside a file
+* `find . -name "*.md"` - search by file name
+* `which gcc` - find the binary path
+* `whereis bash` - find related files
+* `history` - show previous shell commands
+
+### Permissions
+
+* `chmod +x script.sh` - make a script executable
+* `chmod 644 file.txt` - set common file permissions
+* `chown user:group file.txt` - change ownership
+* `id` - show your user and groups
+
+### Processes and system info
+
+* `ps aux` - list running processes
+* `top` or `htop` - view live system usage
+* `kill PID` - stop a process
+* `uname -a` - show kernel and host details
+* `whoami` - print your username
+* `hostname` - print machine name
+
+### Disk and memory
+
+* `df -h` - show disk space usage
+* `du -sh folder` - show folder size
+* `free -h` - show memory usage
+
+### Networking
+
+* `ip a` - show IP addresses and interfaces
+* `ip route` - show routing information
+* `ping example.com` - test connectivity
+* `ss -tulpn` - show listening sockets
+* `curl https://example.com` - fetch a URL
+* `ssh user@host` - connect to a remote machine
+* `scp file user@host:/path/` - copy a file securely
+
+### Package managers
+
+* Debian/Ubuntu: `sudo apt update`, `sudo apt install package`
+* Fedora/RHEL: `sudo dnf install package`
+* Arch: `sudo pacman -S package`
+
+### Bash one-liners
+
+* `echo $HOME` - show an environment variable
+* `export NAME=value` - set an environment variable
+* `for f in *.cpp; do echo "$f"; done` - loop over files
+* `command1 && command2` - run the second command only if the first succeeds
+* `command1 || command2` - run the second command if the first fails
+
+## Linux command table
+
+| Area | Must-know commands | Why it matters |
+| --- | --- | --- |
+| Navigation | `pwd`, `ls`, `cd`, `tree` | Find your place in the file system fast |
+| Files | `touch`, `mkdir`, `cp`, `mv`, `rm`, `cat`, `less` | Create, move, inspect, and clean up files |
+| Search | `grep`, `find`, `which`, `history` | Locate text, files, and commands |
+| Permissions | `chmod`, `chown`, `id` | Control access and understand ownership |
+| Processes | `ps`, `top`, `htop`, `kill` | Inspect and manage running programs |
+| System info | `uname`, `whoami`, `hostname`, `free`, `df`, `du` | Understand the machine state |
+| Networking | `ip`, `ping`, `ss`, `curl`, `ssh`, `scp` | Work with remote machines and connectivity |
+| Shell | `echo`, `export`, `for`, `&&`, `||` | Build useful command-line automation |
+
+## A practical Linux workflow
+
+1. Open a terminal.
+1. Check where you are with `pwd`.
+1. Inspect files with `ls -la`.
+1. Edit or create files with your editor of choice.
+1. Use `grep`, `find`, and `cat` to inspect data.
+1. Use `chmod +x` for scripts and run them directly.
+1. Use `ssh` and `scp` when you need remote access.
+1. Use `top`, `df -h`, and `free -h` when you need system status.
+
+## What a strong Linux learner can do
+
+* Navigate the file system without hesitation
+* Write simple Bash scripts for repeatable work
+* Set environment variables correctly for builds and tools
+* Move files safely between local and remote machines
+* Check process, disk, and memory state when something looks wrong
+* Read compiler logs and build output without getting lost
+
+## Common mistakes to avoid
+
+* Do not use `rm -r` without checking the path first.
+* Do not confuse absolute paths like `/home/aitr` with relative paths like `docs/linux`.
+* Do not forget `chmod +x` before running shell scripts directly.
+* Do not assume environment variables persist unless you export them in the right shell file.
+
+## Best articles in this section
+
+* [Introduction to Linux](/docs/linux/intro_to_linux)
+* [Introduction to Bash Scripting](/docs/linux/basic_of_linux)
+* [Environment Variables in Linux](/docs/linux/Environment_variable_in_linux)
+* [Mastering Aliases in Linux with .bashrc](/docs/linux/What_is_bashrc)
+* [What is SSH and SCP and How it Work and Where it Help](/docs/linux/how_ssh_scp_work)
+* [Finding Your Machine Name and IP Address](/docs/linux/know_machine_ip)
+* [What Happens When You Run `a.out`](/docs/linux/how_program_runs_from_elf_to_main)
+* [Markdown Link Checker](/docs/linux/markdown_checker)
+* [CompilerSutra Live Plan](/docs/linux/live)
+
+## Quick notes
+
+* If you are new to Linux, start with the beginner track.
+* If you want automation, focus on Bash and environment variables.
+* If you are working with servers, focus on SSH, SCP, and networking.
+* If you are building compiler tooling, the systems track is the one to read closely.
+* If you want a cheat sheet, the command starter pack and command table are the shortest useful path.
+
+## Related
+
+* [Articles Hub](/docs/articles)
+* [CompilerSutra Live Plan](/docs/linux/live)
+* [How to Contribute](https://github.com/aabhinavg1/FixIt/blob/main/Contribution.md)

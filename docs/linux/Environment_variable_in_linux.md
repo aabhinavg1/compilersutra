@@ -64,6 +64,21 @@ import TabItem from '@theme/TabItem';
 Environment variables in Linux are **dynamic key-value pairs** that act like global settings for your system.  
 They help control how programs run, where they look for files, and what user preferences to follow all without needing to change the program's source code.
 
+## What you will learn
+
+* What environment variables are and how they differ from shell variables
+* How temporary and permanent variables behave
+* How `export`, `env`, and `printenv` fit together
+* How `.bashrc`, `.profile`, and `.zshrc` affect persistence
+* How to debug environment-related problems in real workflows
+
+## Best way to read this article
+
+1. Start with the core concept and real-world use cases.
+1. Learn the temporary vs permanent split.
+1. Practice the command examples in your own shell.
+1. Return to [Linux Home](/docs/linux/) for the full section map.
+
 :::caution think like
 Think of them as invisible instructions that guide both the operating system and applications during runtime.  
 They are essential for customizing your shell, setting up development environments, and automating tasks.
@@ -800,3 +815,6 @@ By regularly using and referencing these resources, you can reinforce your Linux
 
   </TabItem>
 </Tabs>
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

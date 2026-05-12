@@ -980,3 +980,7 @@ A quick reference sheet for commonly used Bash commands and patterns.
 </TabItem>
 
 </Tabs>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

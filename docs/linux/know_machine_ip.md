@@ -641,3 +641,7 @@ B --> D[Internet / Public IP]
   example="// Run both commands for full identification."
   whenToUse="When documenting or verifying system details in DevOps workflows."
 />
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.

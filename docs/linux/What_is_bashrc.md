@@ -106,6 +106,21 @@ These files are powerful because they let you:
 * Automatically set variables or settings at the start of each session
 * Define reusable command shortcuts
 
+## What you will learn
+
+* What `.bashrc` and `.zshrc` are used for
+* How aliases help reduce repetitive typing
+* How `ls`, `grep`, and shell config files work together
+* How to make aliases permanent
+* How to choose the right config file for your shell
+
+## Best way to read this article
+
+1. Start with the alias problem and the `ls` examples.
+1. Learn how shell config files load.
+1. Practice creating a few aliases in your own shell.
+1. Return to [Linux Home](/docs/linux/) for the section map.
+
 ### Why Use Aliases?
 
 If you frequently run long or repetitive commands, aliases let you create short forms of those commands. This helps reduce errors, saves time, and improves productivity. For example, instead of typing `sudo apt-get update && sudo apt-get upgrade` every time, you can just type `update`.
@@ -141,26 +156,6 @@ Configuring ``aliases`` in your Linux shell is one of the ``easiest ways to boos
 * [Show Hidden Files](#show-hidden-files)
 
   * [Understanding `grep`](#understanding-grep)
-
-* [Repetitive Commands in Ubuntu](#repetitive-commands-in-ubuntu)
-
-* [What is an Alias?](#what-is-an-alias)
-
-* [How to Create an Alias](#how-to-create-an-alias)
-
-* [Make Your Alias Permanent](#make-your-alias-permanent)
-
-* [Advanced Alias Tips](#advanced-alias-tips)
-
-* [Useful Aliases for Everyday Use](#useful-aliases-for-everyday-use)
-
-* [Related Shell Config Customizations](#related-shell-config-customizations)
-
-* [Summary](#summary)
-
-* [Introduction to `ls` Command](#introduction-to-ls-command)
-
-* [Show Hidden Files](#show-hidden-files)
 
 * [Repetitive Commands in Ubuntu](#repetitive-commands-in-ubuntu)
 
@@ -655,3 +650,7 @@ For more tips on development and productivity, visit **CompilerSutra**.
 <div>
     <AdBanner />
 </div>
+
+## Linux Home
+
+Return to [Linux Home](/docs/linux/) for the section map and command starter pack.
