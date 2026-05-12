@@ -181,13 +181,16 @@ In this part, we will design `VELOX v1.0`, including:
 - Language philosophy: compute and optimization focused
 - Supported types:
   - `i32`
-  - optional `f32`
+  - `bool`
+  - additional types only after v1 is stable
 - Core language features:
   - variables with `let`
   - expressions
   - [functions with `pulse`](./index#what-is-a-pulse)
   - loops with `for`
-  - conditionals with `if-else`
+  - branching with `if`
+  - boolean logic with `&&` and `!`
+  - a C++ runtime layer for dispatch and execution
 - Example programs
 - Lexer design for tokenizing VELOX source
 - Parser design for building the AST
@@ -205,7 +208,7 @@ In this part, we will:
 - Map AST nodes to LLVM IR
 - Create functions, basic blocks, and instructions
 - Handle expressions and variables
-- Build control flow with branches and loops
+- Build loop-centric control flow
 - Verify that the generated IR is valid
 
 This is where VELOX becomes real LLVM IR.
@@ -247,7 +250,7 @@ In this part, we will cover:
 
 - Object file generation
 - Linking steps
-- Runtime entry points
+- Entry pulse selection
 - Calling conventions
 - Loading the binary in QEMU
 - Running generated programs

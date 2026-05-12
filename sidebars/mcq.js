@@ -224,6 +224,7 @@ const mcq = {
             'mcq/questions/domain/compilers/compiler-stack-home',
             'mcq/questions/domain/compilers/compiler/compiler-track-home',
             'mcq/questions/domain/compilers/compiler/compiler-basics',
+            'mcq/questions/domain/compilers/compiler/compiler-lexer-quiz',
             'mcq/questions/domain/compilers/compiler/compiler-commands',
             'mcq/questions/domain/compilers/compiler/compiler-ir',
             'mcq/questions/domain/compilers/compiler/compiler-backend',

@@ -15,6 +15,7 @@ const site = {
       collapsed: false,
       items: [
         'project/llvm/VELOX/index',
+        'project/llvm/VELOX/v1-language-spec',
         'project/llvm/VELOX/creating-your-first-llvm-based-compiler',
       ],
     },

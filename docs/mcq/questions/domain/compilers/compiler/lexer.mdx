@@ -1,0 +1,38 @@
+---
+id: compiler-lexer-quiz
+title: "Lexer MCQs Quiz"
+slug: /mcq/questions/domain/compilers/compiler/lexer
+description: "A 20-question quiz on lexer theory, maximal munch, token streams, Lex, Yacc, flex, re2c, Clang, and diagnostics."
+displayed_sidebar: compilerTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Lexer MCQs Quiz
+
+Use this quiz after reading the lexer article if you want to check tokenization, scanner history, and real frontend behavior.
+
+<Question question="1). What is the main job of a lexer?" options={['Turn raw source text into tokens', 'Build machine instructions', 'Link object files', 'Run the program directly']} answer="Turn raw source text into tokens" />
+<Question question="2). Which stage usually comes right after the lexer?" options={['Parser', 'Linker', 'Assembler', 'Loader']} answer="Parser" />
+<Question question="3). What is a lexeme?" options={['The raw character sequence matched in the source file', 'The final executable', 'A register name', 'A type checker warning']} answer="The raw character sequence matched in the source file" />
+<Question question="4). What does the longest-match rule also call itself?" options={['Maximal munch', 'Dead code removal', 'Left factoring', 'Token folding']} answer="Maximal munch" />
+<Question question="5). If the input contains `==`, the lexer should usually return:" options={['One equality token', 'Two assignment tokens', 'An AST node', 'A symbol table entry']} answer="One equality token" />
+<Question question="6). Which of these is normally NOT the lexer’s job?" options={['Building AST nodes', 'Skipping whitespace', 'Recognizing identifiers', 'Tracking source positions']} answer="Building AST nodes" />
+<Question question="7). Why do lexers track source locations?" options={['To print useful diagnostics', 'To generate object code', 'To allocate registers', 'To link libraries']} answer="To print useful diagnostics" />
+<Question question="8). Which tool is the classic lexical analyzer generator associated with M. E. Lesk and E. Schmidt?" options={['Lex', 'Yacc', 're2c', 'Clang']} answer="Lex" />
+<Question question="9). Why was Yacc important in the classic Unix toolchain?" options={['It paired naturally with Lex as the parser-generator side', 'It replaced all compilers', 'It emitted machine code directly', 'It handled register allocation']} answer="It paired naturally with Lex as the parser-generator side" />
+<Question question="10). What is flex best known as?" options={['The open-source successor to Lex', 'A GPU compiler backend', 'A linker script format', 'An LLVM pass manager']} answer="The open-source successor to Lex" />
+
+<AdBanner />
+
+<Question question="11). What is re2c mainly used for?" options={['Generating fast lexers from regular-expression rules', 'Generating object files', 'Replacing the parser', 'Running JIT code']} answer="Generating fast lexers from regular-expression rules" />
+<Question question="12). What kind of scanner does Clang use?" options={['Hand-written lexer', 'Purely table-driven parser', 'Link-time scanner only', 'No lexer at all']} answer="Hand-written lexer" />
+<Question question="13). What does the lexer do with comments and whitespace in most languages?" options={['Skips them', 'Turns them into machine instructions', 'Stores them in the AST', 'Always treats them as identifiers']} answer="Skips them" />
+<Question question="14). What is the parser responsible for?" options={['Grammar and syntax structure', 'Byte decoding only', 'Object file emission', 'Register renaming']} answer="Grammar and syntax structure" />
+<Question question="15). For `let total = 0;`, which token sequence is correct?" options={['LET IDENT(total) ASSIGN INT(0) SEMI', 'IDENT(let) INT(total) ASSIGN SEMI', 'AST LET ASSIGN RETURN', 'TOKEN total = 0']} answer="LET IDENT(total) ASSIGN INT(0) SEMI" />
+<Question question="16). Why might a handwritten lexer be preferred over a generator?" options={['Better diagnostics and tighter integration with the frontend', 'Because generators cannot tokenize', 'Because it avoids all parsing', 'Because it removes the need for source code']} answer="Better diagnostics and tighter integration with the frontend" />
+<Question question="17). What is one reason Unicode matters in lexing?" options={['Source text may be UTF-8 and identifiers need explicit rules', 'It eliminates the parser', 'It makes all tokens numeric', 'It removes the need for source locations']} answer="Source text may be UTF-8 and identifiers need explicit rules" />
+<Question question="18). Why is `peekNext()` useful in a lexer?" options={['It helps decide between single-character and multi-character tokens', 'It emits machine code', 'It resolves type errors', 'It links libraries faster']} answer="It helps decide between single-character and multi-character tokens" />
+<Question question="19). Which of these is a typical lexer error?" options={['Unterminated string literal', 'Missing register allocation', 'Undefined symbol after linking', 'Bad CPU cache locality']} answer="Unterminated string literal" />
+<Question question="20). Why does lexer design still matter in modern compilers?" options={['It affects diagnostics, token quality, and frontend correctness', 'It replaces all backend work', 'It removes the need for source files', 'It only matters for comments']} answer="It affects diagnostics, token quality, and frontend correctness" />
