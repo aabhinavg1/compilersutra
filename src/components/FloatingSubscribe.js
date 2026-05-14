@@ -3,23 +3,59 @@ import { FaYoutube } from "react-icons/fa";
 import styles from "./FloatingSubscribe.module.css";
 
 const COLLAPSED_KEY = "compilersutra-floating-subscribe-collapsed";
+const SHOW_DELAY_MS = 60000;
+const SHOW_SCROLL_RATIO = 0.6;
 
 export default function FloatingSubscribe() {
   const [visible, setVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileViewport, setMobileViewport] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return undefined;
     }
 
+    const media = window.matchMedia("(max-width: 768px)");
+    const updateViewport = () => setMobileViewport(media.matches);
+    updateViewport();
+    media.addEventListener?.("change", updateViewport);
+    media.addListener?.(updateViewport);
+
     setCollapsed(window.localStorage.getItem(COLLAPSED_KEY) === "true");
 
-    const timer = window.setTimeout(() => {
+    const showPrompt = () => {
       setVisible(true);
-    }, 3500);
+    };
 
-    return () => window.clearTimeout(timer);
+    const maybeShowFromScroll = () => {
+      const pageHeight = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.body.offsetHeight
+      );
+      const scrollTop = window.scrollY || window.pageYOffset || 0;
+      const viewportHeight = window.innerHeight || 1;
+      const maxScrollable = Math.max(pageHeight - viewportHeight, 1);
+      const progress = scrollTop / maxScrollable;
+
+      if (progress >= SHOW_SCROLL_RATIO) {
+        showPrompt();
+      }
+    };
+
+    maybeShowFromScroll();
+
+    const timer = window.setTimeout(showPrompt, SHOW_DELAY_MS);
+    window.addEventListener("scroll", maybeShowFromScroll, { passive: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", maybeShowFromScroll);
+      media.removeEventListener?.("change", updateViewport);
+      media.removeListener?.(updateViewport);
+    };
   }, []);
 
   const setCollapsedState = (value) => {
@@ -31,6 +67,10 @@ export default function FloatingSubscribe() {
   };
 
   if (!visible) return null;
+
+  if (collapsed && mobileViewport) {
+    return null;
+  }
 
   if (collapsed) {
     return (
