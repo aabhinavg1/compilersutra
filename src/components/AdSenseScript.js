@@ -9,6 +9,15 @@ export default function AdSenseScript() {
       return undefined;
     }
 
+    const isMobile =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(max-width: 768px)').matches;
+
+    if (isMobile) {
+      return undefined;
+    }
+
     const existing = document.querySelector(`script[src="${ADSENSE_SRC}"]`);
     if (existing) {
       return undefined;

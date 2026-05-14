@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const ADSENSE_SELECTOR =
   'script[src^="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]';
+const ADSENSE_SRC =
+  'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3213090090375658';
 
 function getPageKey() {
   if (typeof window === 'undefined') {
@@ -93,6 +95,27 @@ function waitForAdsense(maxAttempts = 20) {
   });
 }
 
+function ensureAdsenseScript() {
+  if (typeof document === 'undefined') {
+    return Promise.resolve(false);
+  }
+
+  const existing = document.querySelector(`script[src="${ADSENSE_SRC}"]`);
+  if (existing) {
+    return Promise.resolve(true);
+  }
+
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.src = ADSENSE_SRC;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+}
+
 export default function AdBanner({
   slot = '5928991162',
   format = 'fluid',
@@ -142,6 +165,7 @@ export default function AdBanner({
         return;
       }
 
+      await ensureAdsenseScript();
       const ready = await waitForAdsense();
       if (!ready || cancelled || node.dataset.adInitialized === 'true') {
         if (!ready) {
