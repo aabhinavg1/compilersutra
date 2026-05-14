@@ -274,6 +274,9 @@ const tutorials = {
           type: 'category',
           label: 'LEVEL 0 - Compiler-Specific DSA Foundations',
           items: [
+            'llvm/llvm_Curriculum/level0/index',
+            'llvm/llvm_Curriculum/level0/Compiler_Data_Structures_By_Phase',
+            'llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design',
             'llvm/llvm_Curriculum/level0/Static_Single_Assignment',
             'llvm/llvm_Curriculum/level0/Static_Single_Assignment_part2',
             'llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier',

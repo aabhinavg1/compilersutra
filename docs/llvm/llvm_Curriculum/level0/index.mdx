@@ -1,0 +1,79 @@
+---
+title: "LEVEL 0: Compiler-Specific DSA Foundations"
+description: "Start here for the compiler data-structures foundation layer of the LLVM curriculum: lexer automata, compiler phase mapping, SSA, and dominance."
+keywords:
+  - llvm curriculum
+  - compiler data structures
+  - compiler phases
+  - lexer automata
+  - SSA
+  - dominator tree
+  - compiler foundations
+  - LLVM
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
+import Link from '@docusaurus/Link';
+
+# LEVEL 0: Compiler-Specific DSA Foundations
+
+This is the entry point for the LLVM curriculum foundation layer.
+
+Compilers are not one algorithm. They are a sequence of changing program representations.
+
+If you want to understand how compiler data structures map to compiler phases, start here.
+The goal of this level is not to memorize isolated structures.
+It is to understand why each phase prefers a different representation.
+
+:::tip Start Here
+Read the articles in this order:
+
+1. [Compiler Data Structures by Phase](/docs/llvm/llvm_Curriculum/level0/Compiler_Data_Structures_By_Phase)
+2. [DFA and NFA in Modern Compiler Design](/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design)
+3. [Static Single Assignment (SSA)](/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment)
+4. [Static Single Assignment (Part 2)](/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment_part2)
+5. [Dominator Trees, Dominance Frontiers, and PHI Nodes](/docs/llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier)
+:::
+
+<AdBanner />
+
+## What This Level Covers
+
+| Phase | Topic | Why it matters |
+| --- | --- | --- |
+| Compiler overview | Data structures by phase | Gives you the full map before you dive into details |
+| Lexical analysis | DFA and NFA | Explains token recognition and scanner behavior |
+| IR construction | SSA | Makes value flow explicit for LLVM-style reasoning |
+| Control flow reasoning | Dominators and PHI nodes | Shows how compilers connect branching paths |
+
+## Recommended Path
+
+Start broad, then go deep:
+
+1. Read the phase map first so the rest of the articles have a place in your head.
+2. Read the lexer article to see why finite automata matter.
+3. Read the SSA articles to understand value flow in IR.
+4. Read the dominator article to understand control-flow joins and PHI placement.
+
+## Quick Links
+
+<div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginTop: '1rem'}}>
+  <div style={{padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '16px', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>Phase Map</h3>
+    <p>Use the curriculum overview to see how each compiler phase maps to a different structure.</p>
+    <Link to="/docs/llvm/llvm_Curriculum/level0/Compiler_Data_Structures_By_Phase">Open article</Link>
+  </div>
+  <div style={{padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '16px', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>Lexer Theory</h3>
+    <p>Learn how DFAs and NFAs drive token recognition in compiler frontends.</p>
+    <Link to="/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design">Open article</Link>
+  </div>
+  <div style={{padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '16px', background: 'var(--ifm-background-surface-color)'}}>
+    <h3 style={{marginTop: 0}}>SSA</h3>
+    <p>See why SSA is the core value-flow model in LLVM IR.</p>
+    <Link to="/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment">Open article</Link>
+  </div>
+</div>
+
+<LlvmSeoBooster topic="llvm-roadmap" />

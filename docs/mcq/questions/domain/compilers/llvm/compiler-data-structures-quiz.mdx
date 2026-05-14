@@ -1,0 +1,34 @@
+---
+id: compiler-data-structures-quiz
+title: "Compiler Data Structures by Phase Quiz"
+slug: /mcq/questions/domain/compilers/llvm/compiler-data-structures-quiz
+description: "MCQs on compiler data structures across lexer, parser, semantic analysis, SSA, optimization, and backend lowering."
+displayed_sidebar: llvmTrackMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../../Question';
+
+# Compiler Data Structures by Phase Quiz
+
+<Question question="1). Which structure is most closely associated with lexical analysis?" options={['Parse tree', 'Interference graph', 'Token stream', 'MachineFunction']} answer="Token stream" />
+<Question question="2). Why does a lexer often use a keyword or identifier table?" options={['To model register pressure', 'To schedule instructions', 'To resolve names quickly during tokenization', 'To store phi nodes']} answer="To resolve names quickly during tokenization" />
+<Question question="3). What is the main advantage of an AST over a parse tree?" options={['It preserves every grammar rule exactly', 'It replaces the need for parsing', 'It is only used in the backend', 'It removes syntactic noise and focuses on meaning']} answer="It removes syntactic noise and focuses on meaning" />
+<Question question="4). Which structure is best for tracking nested scopes in semantic analysis?" options={['SelectionDAG', 'Live interval table', 'Scope stack', 'Basic block list']} answer="Scope stack" />
+<Question question="5). Why is a symbol table useful in a compiler?" options={['It directly emits assembly', 'It records physical register assignments', 'It connects names to declarations and types', 'It replaces the CFG']} answer="It connects names to declarations and types" />
+<Question question="6). What does SSA guarantee about each value definition?" options={['Each value can be assigned many times', 'Each value must live in a register', 'Each value has exactly one definition', 'Each value must be global']} answer="Each value has exactly one definition" />
+<Question question="7). What structure records how control moves between regions of code?" options={['Dominance frontier', 'Alias set', 'Control-flow graph', 'Register class']} answer="Control-flow graph" />
+<Question question="8). At a branch join, what does SSA commonly introduce?" options={['A token buffer', 'A spill slot', 'A phi node', 'A keyword table']} answer="A phi node" />
+<Question question="9). Why are dominator trees important for optimization?" options={['They replace the lexer', 'They assign physical registers', 'They identify where merges and dominance relationships matter', 'They store source comments']} answer="They identify where merges and dominance relationships matter" />
+<Question question="10). What does MemorySSA model?" options={['Only CPU registers', 'Only syntax trees', 'Only keyword lookup', 'Memory versions and memory-use relationships']} answer="Memory versions and memory-use relationships" />
+<AdBanner />
+<Question question="11). Which analysis is commonly used to decide whether two memory accesses may alias?" options={['AST printing', 'Alias analysis', 'Lexical scanning', 'Instruction selection']} answer="Alias analysis" />
+<Question question="12). Why do optimization passes often use worklists?" options={['To make tokenization slower', 'To replace the need for IR', 'To track pending facts or transforms efficiently', 'To allocate stack frames']} answer="To track pending facts or transforms efficiently" />
+<Question question="13). Which backend structure is strongly associated with instruction selection in LLVM?" options={['Parse stack', 'Symbol table', 'DFA table', 'SelectionDAG']} answer="SelectionDAG" />
+<Question question="14). What is a live interval used for?" options={['Tracking token spelling', 'Tracking AST depth', 'Tracking alias sets in source code', 'Tracking where a value is live for register allocation']} answer="Tracking where a value is live for register allocation" />
+<Question question="15). What problem does register allocation solve?" options={['Choosing grammar rules', 'Building phi nodes', 'Collecting identifiers', 'Mapping virtual registers to physical registers']} answer="Mapping virtual registers to physical registers" />
+<Question question="16). Why is CFG shape important to loop optimizations?" options={['Loops ignore control flow', 'CFG shape only matters to the lexer', 'It determines keyword spelling', 'Many loop transforms depend on dominance and backedges']} answer="Many loop transforms depend on dominance and backedges" />
+<Question question="17). Which data structure is a good mental model for dead code elimination?" options={['Source manager block', 'Register class table', 'Parse tree leaf list', 'Use-def chains']} answer="Use-def chains" />
+<Question question="18). What is the key tradeoff of SSA?" options={['It makes optimization harder but parsing easier', 'It removes the need for control flow', 'It eliminates the need for declarations', 'It simplifies optimization but complicates lowering and destruction later']} answer="It simplifies optimization but complicates lowering and destruction later" />
+<Question question="19). Why might a compiler keep separate structures for AST, IR, and machine code?" options={['Because every phase needs the same representation', 'Because source code cannot be analyzed', 'Because only one pass is allowed', 'Because each phase asks a different question and needs a different shape']} answer="Because each phase asks a different question and needs a different shape" />
+<Question question="20). Which representation is most target-specific in the backend flow?" options={['AST', 'LLVM IR', 'Token stream', 'Machine IR']} answer="Machine IR" />

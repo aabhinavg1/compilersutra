@@ -134,6 +134,14 @@ This table lists the **DSA concepts**, their role in compiler engineering, and d
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>Compiler Phases Overview</td>
+      <td>Phase-by-phase data structures</td>
+      <td><a href="/docs/llvm/llvm_Curriculum/level0/Compiler_Data_Structures_By_Phase">Compiler Data Structures by Phase</a></td>
+      <td>Coming Soon</td>
+      <td>Coming Soon</td>
+      <td>Coming Soon</td>
+    </tr>
     <!-- Lexical Analysis -->
     <tr>
       <td rowspan="4">Lexical Analysis</td>
@@ -374,10 +382,12 @@ This table lists the **DSA concepts**, their role in compiler engineering, and d
 | #  | Title                                    | Link |
 | -- | :--------------------------------------- | :--- |
 | 1  | Deep Dive into LLVM IR                   | [LLVM IR](./llvm_ir/intro_to_llvm_ir.md) |
-| 2  | Understanding SSA Form                   | [SSA Part 1](./llvm_Curriculum/level0/Static_Single_Assignment.md) |
-| 3  | Control Flow Graphs and Dominators       | [Dominators, Dominance Frontiers, and PHI Nodes](./llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier.md) |
-| 4  | Peephole Optimizations in IR             | Coming Soon |
-| 5  | Loop Transformations at IR Level         | Coming Soon |
+| 2  | Compiler Data Structures by Phase        | [Compiler Data Structures by Phase](/docs/llvm/llvm_Curriculum/level0/Compiler_Data_Structures_By_Phase) |
+| 3  | DFA, NFA, and Lexer Generation           | [DFA and NFA in Modern Compiler Design](/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design) |
+| 4  | Understanding SSA Form                   | [SSA Part 1](/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment) |
+| 5  | Control Flow Graphs and Dominators       | [Dominators, Dominance Frontiers, and PHI Nodes](/docs/llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier) |
+| 6  | Peephole Optimizations in IR             | Coming Soon |
+| 7  | Loop Transformations at IR Level         | Coming Soon |
 
 </details>
 
