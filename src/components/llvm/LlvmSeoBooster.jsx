@@ -15,6 +15,8 @@ const topics = {
       { to: '/docs/llvm/llvm_pass_tracker/llvm_pass', label: 'LLVM pass infrastructure tracker' },
     ],
     faqs: [
+      ['What is LLVM full form?', 'LLVM originally stood for Low-Level Virtual Machine, although today LLVM is best understood as the name of the compiler infrastructure itself.'],
+      ['What does LLVM mean?', 'LLVM means Low-Level Virtual Machine historically, but in modern usage LLVM refers to the compiler infrastructure and ecosystem rather than a literal virtual machine.'],
       ['What is LLVM?', 'LLVM is a modular compiler infrastructure that provides IR, optimizers, backends, and tooling used by Clang and many other language ecosystems.'],
       ['Why learn LLVM first through a roadmap?', 'LLVM has many subsystems, so a roadmap prevents random topic-hopping and helps you learn IR, passes, and codegen in the right order.'],
       ['What is the difference between LLVM and Clang?', 'LLVM is the reusable compiler infrastructure, while Clang is the frontend compiler that lowers C, C++, and Objective-C into LLVM IR.'],
@@ -249,6 +251,8 @@ const topics = {
       { to: '/docs/compilers/clang-vs-gcc-vs-llvm', label: 'Clang vs GCC vs LLVM comparison' },
     ],
     faqs: [
+      ['What is LLVM full form?', 'LLVM originally stood for Low-Level Virtual Machine, although today LLVM is best understood as the name of the compiler infrastructure itself.'],
+      ['What does LLVM mean?', 'LLVM means Low-Level Virtual Machine historically, but in modern usage LLVM refers to the compiler infrastructure and ecosystem rather than a literal virtual machine.'],
       ['What is LLVM?', 'LLVM is a modular compiler infrastructure with a reusable IR, optimizer pipeline, backend framework, and broad tooling ecosystem.'],
       ['What is the difference between LLVM and Clang?', 'LLVM is the infrastructure, while Clang is the frontend compiler that uses LLVM.'],
       ['Why is LLVM important?', 'LLVM made reusable compiler engineering much easier for language designers, systems programmers, and tool builders.'],

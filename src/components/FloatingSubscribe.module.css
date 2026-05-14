@@ -2,11 +2,12 @@
   position: fixed;
   bottom: max(20px, env(safe-area-inset-bottom));
   right: 20px;
-  background: #0f172a;
+  background: rgba(15, 23, 42, 0.96);
   color: #fff;
-  padding: 14px 16px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.28);
   z-index: 9999;
   width: 260px;
   max-width: calc(100vw - 24px);
@@ -24,10 +25,10 @@
   height: 56px;
   border: 0;
   border-radius: 50%;
-  background: #ef4444;
+  background: linear-gradient(180deg, #ef4444, #dc2626);
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.28);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.22);
   z-index: 9999;
   transition:
     transform 180ms ease,
@@ -49,12 +50,12 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .title {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .desc {
@@ -66,10 +67,10 @@
 .button {
   display: inline-block;
   text-align: center;
-  background: #ef4444;
+  background: linear-gradient(180deg, #ef4444, #dc2626);
   color: white;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: bold;
   transition: 0.2s ease;
@@ -100,6 +101,9 @@
     right: 12px;
     bottom: max(12px, env(safe-area-inset-bottom));
     width: auto;
+    padding: 10px 12px;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
   }
 
   .placeholder {
@@ -107,6 +111,14 @@
     bottom: max(12px, env(safe-area-inset-bottom));
     width: 52px;
     height: 52px;
+  }
+
+  .title {
+    font-size: 12px;
+  }
+
+  .desc {
+    font-size: 11px;
   }
 }
 

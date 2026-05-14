@@ -10,24 +10,37 @@ function getPageKey() {
   return window.location.pathname || '/';
 }
 
-function getPageLimit(pathname) {
-  const isMobile =
+function isMobileViewport() {
+  return (
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
-    window.matchMedia('(max-width: 768px)').matches;
+    window.matchMedia('(max-width: 768px)').matches
+  );
+}
+
+function getPageLimit(pathname) {
+  const mobile = isMobileViewport();
 
   if (pathname.startsWith('/docs/')) {
-    return isMobile ? 1 : 3;
+    return mobile ? 1 : 3;
   }
 
   if (pathname === '/') {
     return 1;
   }
 
-  return isMobile ? 1 : 2;
+  return mobile ? 1 : 2;
 }
 
 function getMinTopOffset(pathname) {
+  if (isMobileViewport()) {
+    if (pathname === '/') {
+      return 1200;
+    }
+
+    return 1100;
+  }
+
   if (pathname.startsWith('/docs/mcq')) {
     return 0;
   }
@@ -89,6 +102,7 @@ export default function AdBanner({
 }) {
   const adRef = useRef(null);
   const [suppressed, setSuppressed] = useState(false);
+  const [mobileViewport, setMobileViewport] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -111,6 +125,13 @@ export default function AdBanner({
       setSuppressed(true);
       return undefined;
     }
+
+    const media = window.matchMedia('(max-width: 768px)');
+    const updateViewport = () => setMobileViewport(media.matches);
+
+    updateViewport();
+    media.addEventListener?.('change', updateViewport);
+    media.addListener?.(updateViewport);
 
     let cancelled = false;
     let observer;
@@ -183,6 +204,8 @@ export default function AdBanner({
       if (retryTimer) {
         window.clearTimeout(retryTimer);
       }
+      media.removeEventListener?.('change', updateViewport);
+      media.removeListener?.(updateViewport);
     };
   }, []);
 
@@ -195,7 +218,11 @@ export default function AdBanner({
       className={`cs-ad-slot ${className}`.trim()}
       aria-label="Advertisement"
       data-ad-status="loading"
-      style={{ '--cs-ad-min-height': `${minHeight}px` }}
+      data-device={mobileViewport ? 'mobile' : 'desktop'}
+      style={{
+        '--cs-ad-min-height': `${minHeight}px`,
+        '--cs-ad-mobile-min-height': `${Math.min(minHeight, 120)}px`,
+      }}
     >
       <span className="cs-ad-slot__label">Advertisement</span>
       <ins

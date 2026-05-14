@@ -149,9 +149,9 @@ html[data-theme='dark'] .docusaurus-mermaid-container .labelBkg {
 /* ==================== ADS ==================== */
 .cs-ad-slot {
   width: 100%;
-  max-width: min(100%, 860px);
-  margin: clamp(1.75rem, 4vw, 3rem) auto;
-  padding: clamp(0.85rem, 2vw, 1.1rem);
+  max-width: min(100%, 820px);
+  margin: clamp(1.4rem, 4vw, 2.6rem) auto;
+  padding: clamp(0.65rem, 1.6vw, 1rem);
   border: 1px solid var(--color-border);
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(0, 120, 212, 0.04), rgba(0, 0, 0, 0.02));
@@ -201,13 +201,71 @@ html[data-theme='dark'] .docusaurus-mermaid-container .labelBkg {
 
 @media (max-width: 768px) {
   .cs-ad-slot {
-    margin: 1.5rem auto;
-    padding: 0.75rem;
-    border-radius: 10px;
+    margin: 1rem auto;
+    padding: 0.55rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  [data-theme='dark'] .cs-ad-slot {
+    background: rgba(18, 18, 18, 0.94);
   }
 
   .cs-ad-slot .adsbygoogle {
-    min-height: min(var(--cs-ad-min-height, 220px), 140px);
+    min-height: min(var(--cs-ad-min-height, 220px), var(--cs-ad-mobile-min-height, 110px));
+  }
+
+  .cs-ad-slot__label {
+    margin-bottom: 0.45rem;
+    font-size: 0.66rem;
+  }
+}
+
+.theme-doc-markdown table {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.25rem 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.theme-doc-markdown th,
+.theme-doc-markdown td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.theme-doc-markdown th {
+  background: rgba(0, 120, 212, 0.06);
+  text-align: left;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .theme-doc-markdown table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-background);
+  }
+
+  .theme-doc-markdown table thead,
+  .theme-doc-markdown table tbody,
+  .theme-doc-markdown table tr {
+    width: max-content;
+  }
+
+  .theme-doc-markdown table th,
+  .theme-doc-markdown table td {
+    white-space: nowrap;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.92rem;
   }
 }
 
