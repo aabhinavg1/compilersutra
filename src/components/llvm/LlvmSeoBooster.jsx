@@ -39,6 +39,24 @@ const topics = {
       ['What is a good LLVM study order?', 'A good order is LLVM overview, LLVM IR, SSA, CFG and dominance, pass infrastructure, then backend and target-specific topics.'],
     ],
   },
+  'compiler-dsa-phases': {
+    title: 'Compiler Data Structures by Phase Explained',
+    description:
+      'See which data structures compilers rely on in lexing, parsing, semantic analysis, IR construction, optimization, and backend code generation.',
+    keyword: 'compiler data structures',
+    links: [
+      { to: '/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design', label: 'lexer automata and token recognition' },
+      { to: '/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment', label: 'SSA fundamentals' },
+      { to: '/docs/llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier', label: 'dominators and PHI placement' },
+      { to: '/docs/llvm/llvm_ir/intro_to_llvm_ir', label: 'LLVM IR introduction' },
+    ],
+    faqs: [
+      ['Why do compilers need different data structures in different phases?', 'Each phase solves a different problem, so lexing, parsing, semantic analysis, optimization, and backend lowering naturally prefer different representations.'],
+      ['What is the most important data structure in LLVM IR?', 'LLVM IR is built around SSA form, so SSA value naming, def-use chains, and control-flow structure are central.'],
+      ['Why do dominator trees matter in compiler optimization?', 'Dominator information helps place PHI nodes, reason about control flow, and support analyses that feed optimizations.'],
+      ['What is an example of a backend data structure?', 'SelectionDAG, live intervals, and register-class information are all common backend structures in LLVM code generation.'],
+    ],
+  },
   'fix-build': {
     title: 'Fix LLVM Build Errors on Linux',
     description:

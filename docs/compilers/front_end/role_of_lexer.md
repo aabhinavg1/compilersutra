@@ -29,6 +29,7 @@ It reads raw source text and turns it into a stream of tokens that the parser ca
 There is no single inventor of lexical analysis as a concept.
 What we call a lexer became part of compiler design because compilers needed a clean way to separate raw text from syntax [Dragon Book][2].
 The practical scanner tradition is strongly associated with [Lex][1], [Yacc](https://en.wikipedia.org/wiki/Yacc), [flex](https://westes.github.io/flex/manual/), [re2c][3], and later with handwritten frontends like [Clang][4].
+If you want the automata side of lexing, read [DFA and NFA in Modern Compiler Design](/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design).
 
 If the source file is the input story, the lexer is the first pass that separates keywords, identifiers, literals, operators, and punctuation into meaningful pieces.
 
