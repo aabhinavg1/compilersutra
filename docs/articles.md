@@ -184,7 +184,7 @@ This section serves as a **technical knowledge base** containing conceptual arti
   <tbody>
 
 <tr>
-<td rowspan="6">Compiler Engineering</td>
+<td rowspan="7">Compiler Engineering</td>
 <td>What Happens When You Compile Code</td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
@@ -233,8 +233,24 @@ This section serves as a **technical knowledge base** containing conceptual arti
 </tr>
 
 <tr>
+<td>std::byte vs unsigned char: Do Modern Compilers Optimize Them Differently?</td>
+<td><a href="./std-byte-vs-unsigned-char">Article</a></td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
+<tr>
 <td>Where GCC and Clang Diverge: A Pass-Level Trace of the 2D Stencil Loop</td>
 <td><a href="./where_gcc_and_clang_diverge_stencil_pass_trace">Article</a></td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
+<tr>
+<td>Validating Language Energy Efficiency Claims in C, C++, and Rust</td>
+<td><a href="./language_energy_efficiency_validation">Article</a></td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
