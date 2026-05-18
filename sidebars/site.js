@@ -208,7 +208,9 @@ const site = {
         'articles/gcc_vs_clang_assembly_part2a',
         'articles/gcc_vs_clang_stencil_ir_passes_part2b',
         'articles/where_gcc_and_clang_diverge_stencil_pass_trace',
+         'docs/articles/hft_stdlib_restrictions',
         'articles/language_energy_efficiency_validation',
+        
         {
           type: 'category',
           label: 'Tech Blog',
