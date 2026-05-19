@@ -262,6 +262,10 @@
   background: linear-gradient(180deg, #101a2c 0%, #0f172a 100%);
 }
 
+.mobileStartSection {
+  display: none;
+}
+
 .sectionShell,
 .trustShell,
 .leadMagnetShell {
@@ -355,7 +359,7 @@
 }
 
 .featuredPathGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .catalogueGrid {
@@ -481,15 +485,37 @@
 }
 
 .cardCover {
+  position: relative;
   min-height: 10.2rem;
   margin: -1.25rem -1.25rem 1rem;
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: end;
+  overflow: hidden;
+}
+
+.cardCoverMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.84;
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.cardCoverOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 11, 21, 0.05), rgba(6, 11, 21, 0.56) 76%, rgba(6, 11, 21, 0.76)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 46%);
 }
 
 .cardCoverInner {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 0.7rem;
 }
@@ -499,6 +525,71 @@
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+.mobileCardTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.mobileCardNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fbff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.mobilePathDeck {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.mobilePathCard {
+  display: block;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(216, 225, 244, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 18px 42px rgba(3, 7, 18, 0.12);
+}
+
+.mobilePathCard:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobilePathBody {
+  padding: 1rem 1rem 1.1rem;
+}
+
+.mobilePathBody h3 {
+  margin: 0.85rem 0 0.45rem;
+  color: #f5f8ff;
+  font-size: 1.1rem;
+  letter-spacing: -0.025em;
+}
+
+.mobilePathBody p {
+  margin: 0;
+  color: #aebdd8;
+  line-height: 1.65;
+}
+
+.mobilePathBody .pathLink {
+  margin-top: 0.9rem;
 }
 
 .cardChipRow {
@@ -655,7 +746,6 @@
 
 @media (max-width: 996px) {
   .signalGrid,
-  .featuredPathGrid,
   .heroShell,
   .leadMagnetCard {
     grid-template-columns: 1fr;
@@ -692,6 +782,14 @@
     padding: 3rem 0;
   }
 
+  .desktopStartSection {
+    display: none;
+  }
+
+  .mobileStartSection {
+    display: block;
+  }
+
   .pathGrid,
   .catalogueGrid,
   .resourceGrid,
@@ -701,7 +799,17 @@
   }
 
   .cardCover {
-    min-height: 8.2rem;
+    min-height: 13rem;
+  }
+
+  .mobilePathCard {
+    border-radius: 24px;
+  }
+
+  .pathCard,
+  .catalogueCard,
+  .resourceCard {
+    padding: 1rem;
   }
 
   .stickyCta {

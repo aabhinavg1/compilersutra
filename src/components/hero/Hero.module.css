@@ -353,6 +353,26 @@
   overflow: hidden;
 }
 
+.supportAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 3.4rem;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(219, 229, 245, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: #eef4ff;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
 .primaryAction {
   border: 1px solid rgba(0, 240, 255, 0.3);
   background: linear-gradient(135deg, #00f0ff, #00c4d4);
@@ -375,6 +395,12 @@
 .secondaryAction:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(0, 240, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.supportAction:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.28);
   transform: translateY(-2px);
 }
 
@@ -633,7 +659,8 @@
   }
   
   .primaryAction,
-  .secondaryAction {
+  .secondaryAction,
+  .supportAction {
     width: 100%;
   }
   
@@ -657,6 +684,7 @@
   .terminalBlink,
   .primaryAction,
   .secondaryAction,
+  .supportAction,
   .cpuNode,
   .gpuCore,
   .dataPulse {

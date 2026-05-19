@@ -89,7 +89,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       metadata: [
-        { name: 'google-adsense-account', content: 'ca-pub-3213090090375658' },
+        // { name: 'google-adsense-account', content: 'ca-pub-3213090090375658' },
         { name: 'theme-color', content: '#0a0f1e' },
         { name: 'robots', content: 'index, follow, max-image-preview:large' },
         { name: 'format-detection', content: 'telephone=no' },
@@ -238,6 +238,11 @@ const config = {
             label: 'Q&A',
             position: 'right',
           },
+          {
+            to: '/support',
+            label: 'Support Us',
+            position: 'right',
+          },
         ],
       },
 
@@ -270,6 +275,7 @@ const config = {
             items: [
               { label: 'GitHub', href: 'https://github.com/aabhinavg1/FixIt' },
               { label: 'About us', href: 'https://www.compilersutra.com/about_us/' },
+              { label: 'Support Us', to: '/support' },
               { label: 'Sponsor Us', href: 'https://github.com/sponsors/aabhinavg1' },
               { label: 'Contact Us', href: 'https://www.linkedin.com/in/abhinavcompilerllvm/' },
             ],
@@ -280,7 +286,7 @@ const config = {
     }),
 
   customFields: {
-    adsenseClient: 'ca-pub-3213090090375658',
+    // adsenseClient: 'ca-pub-3213090090375658',
   },
 };
 

@@ -4,7 +4,7 @@ import OriginalLayout from "@theme-original/Layout";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import AdSenseScript from "@site/src/components/AdSenseScript";
+// import AdSenseScript from "@site/src/components/AdSenseScript";
 import GoogleAnalyticsScript from "@site/src/components/GoogleAnalyticsScript";
 import { getSocialImageForPath, SOCIAL_IMAGE_VERSION } from "@site/src/utils/socialImage";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -89,7 +89,7 @@ export default function Layout(props) {
         <BrowserOnly fallback={null}>
           {() => (
             <Suspense fallback={null}>
-              <AdSenseScript />
+              {/* <AdSenseScript /> */}
               <GoogleAnalyticsScript />
               <FloatingWhatsApp />
               <FloatingSubscribe />

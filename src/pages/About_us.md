@@ -20,7 +20,7 @@ We are a diverse group of engineers, educators, and tech enthusiasts who are pas
 Become a part of our community! Share your insights, ask questions, and connect with fellow learners and experts in the field.
 
 - [Get Started with Our Tutorials](https://compilersutra.com/)
-- [Contact Us](mailto:tiwariabhinavak@gmail.com)
+- [Contact Us](mailto:osc@compilersutra.com)
 
 ---
 

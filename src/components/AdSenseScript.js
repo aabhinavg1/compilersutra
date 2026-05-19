@@ -4,31 +4,9 @@ const ADSENSE_SRC =
   'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3213090090375658';
 
 export default function AdSenseScript() {
+  // AdSense is intentionally disabled. Keep the component as a no-op so
+  // existing imports do not need to change.
   useEffect(() => {
-    if (typeof document === 'undefined') {
-      return undefined;
-    }
-
-    const isMobile =
-      typeof window !== 'undefined' &&
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(max-width: 768px)').matches;
-
-    if (isMobile) {
-      return undefined;
-    }
-
-    const existing = document.querySelector(`script[src="${ADSENSE_SRC}"]`);
-    if (existing) {
-      return undefined;
-    }
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.src = ADSENSE_SRC;
-    document.head.appendChild(script);
-
     return undefined;
   }, []);
 
