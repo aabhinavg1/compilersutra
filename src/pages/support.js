@@ -26,16 +26,17 @@ const SUPPORT_PATHS = [
   {
     label: 'Primary',
     title: 'Razorpay',
-    text: 'Best for a quick one-time contribution through a hosted payment page.',
+    text: 'Best for Indian supporters using a hosted INR checkout.',
     href: RAZORPAY_URL,
     cta: 'Support via Razorpay',
+    note: 'International visitors may see INR and India-style phone fields here.',
     icon: FaShieldAlt,
     featured: true,
   },
   {
     label: 'Secondary',
     title: 'GitHub Sponsors',
-    text: 'Best for recurring support if you already use GitHub for open-source work.',
+    text: 'Best for international supporters and recurring sponsorships in a global checkout flow.',
     href: GITHUB_SPONSOR_URL,
     cta: 'Sponsor on GitHub',
     icon: FaGithub,
@@ -94,6 +95,7 @@ function SupportOptionCard({ item, index }) {
       </div>
 
       <p className={styles.optionText}>{item.text}</p>
+      {item.note ? <p className={styles.optionNote}>{item.note}</p> : null}
 
       <a
         className={item.featured ? styles.primaryAction : styles.secondaryAction}

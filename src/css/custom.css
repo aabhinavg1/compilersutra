@@ -116,16 +116,24 @@ body {
   color: var(--color-text);
   font-family: var(--font-family-sans);
   font-weight: var(--font-weight-regular);
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-img {
+img,
+svg,
+video,
+canvas,
+iframe {
   max-width: 100%;
+}
+
+img {
   height: auto;
 }
 
@@ -826,6 +834,25 @@ button.secondary:hover {
 }
 
 @media (max-width: 996px) {
+  .navbar,
+  .navbar__inner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .navbar__items {
+    gap: 0.25rem;
+  }
+
+  .navbar__link,
+  .navbar__brand,
+  .navbar__toggle,
+  .menu__link {
+    min-height: 2.75rem;
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
   .navbar__search-input,
   .DocSearch-Input,
   .aa-Input {
@@ -836,8 +863,8 @@ button.secondary:hover {
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
   :root {
-    --font-base-size: 15px;
-    --font-scale-ratio: 1.15; /* Slightly reduced scale ratio for mobile */
+    --font-base-size: 16px;
+    --font-scale-ratio: 1.18;
   }
 
   .tutorials-list {
@@ -850,13 +877,30 @@ button.secondary:hover {
   }
 
   header h1 {
-    font-size: 1.75rem;
+    font-size: clamp(2rem, 7vw, 2.45rem);
+  }
+
+  header h2 {
+    font-size: 1.15rem;
+  }
+
+  p {
+    line-height: 1.72;
+  }
+
+  button,
+  .DocSearch-Button {
+    min-height: 3rem;
   }
 }
 
 @media (max-width: 480px) {
   :root {
-    --font-base-size: 14px;
+    --font-base-size: 16px;
+  }
+
+  body {
+    line-height: 1.7;
   }
 
   .page-404 {
@@ -868,8 +912,13 @@ button.secondary:hover {
   }
 
   .mcq-option {
-    font-size: 0.95rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 2.9rem;
+  }
+
+  .tutorials-list {
+    gap: var(--spacing-sm);
   }
 }
 #gpu-toc-page {
