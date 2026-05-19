@@ -329,6 +329,13 @@
   align-items: start;
 }
 
+.optionsColumn,
+.sideColumn {
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+}
+
 .optionsGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -381,6 +388,13 @@
   line-height: 1.72;
   font-size: 1.01rem;
 }
+.optionNote {
+  margin: 0.7rem 0 0;
+  color: rgba(141, 215, 255, 0.78);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
 
 .trustPanel,
 .contactPanel {
@@ -460,7 +474,7 @@
 
 @media (max-width: 980px) {
   .hero {
-    padding: 3.5rem 0 2rem;
+    padding: 3.2rem 0 2rem;
   }
 
   .heroLayout,
@@ -470,6 +484,11 @@
 
   .optionsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .optionsColumn,
+  .sideColumn {
+    gap: 0.9rem;
   }
 
   .heroShell {
@@ -494,7 +513,7 @@
 
 @media (max-width: 640px) {
   .hero {
-    padding: 2.6rem 0 1.2rem;
+    padding: 2.8rem 0 1.35rem;
   }
 
   .shell,
@@ -507,12 +526,17 @@
   .trustPanel,
   .contactPanel,
   .optionCard {
-    padding: 1rem;
+    padding: 1.15rem;
+  }
+
+  .heroLayout,
+  .contentGrid {
+    gap: 1rem;
   }
 
   .title {
     max-width: 100%;
-    font-size: clamp(2.5rem, 11vw, 3.8rem);
+    font-size: clamp(2.75rem, 11vw, 4rem);
   }
 
   .lede,
@@ -521,7 +545,27 @@
   .panelNote,
   .contactText,
   .optionText {
-    font-size: 0.98rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.8rem, 6.6vw, 2.2rem);
+  }
+
+  .primaryAction,
+  .secondaryAction,
+  .textAction {
+    min-height: 3.25rem;
+    padding: 0.82rem 1rem;
+    font-size: 1rem;
+  }
+
+  .microcopyPill,
+  .badge {
+    min-height: 2.1rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
   }
 
   .actions,
@@ -539,6 +583,7 @@
   .contactItem {
     grid-template-columns: 1fr;
     justify-items: start;
+    padding: 0.85rem 0.9rem;
   }
 }
 
