@@ -9,7 +9,7 @@ import {
   FaRocket,
   FaStar,
 } from 'react-icons/fa';
-import AdBanner from '@site/src/components/AdBanner';
+// import AdBanner from '@site/src/components/AdBanner';
 import { fireConfetti } from './confetti';
 import { PHASES, PREREQUISITES, ROLES } from './roadmapData';
 import useMouseSpotlight from './useMouseSpotlight';
@@ -499,9 +499,11 @@ export default function RoadmapExperience() {
         </div>
       </section>
 
-      <AdBanner />
+      {/* <AdBanner /> */}
 
       <div id="complete-roadmap" className={styles.anchor} />
+
+      {/* <AdBanner /> */}
 
       <section className={styles.section}>
         <div className={styles.guideCard} data-reveal>
@@ -544,8 +546,6 @@ export default function RoadmapExperience() {
           ))}
         </div>
       </section>
-
-      <AdBanner />
 
       <section className={styles.section}>
         <div className={styles.outcomeCard} data-reveal>

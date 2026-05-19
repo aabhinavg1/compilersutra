@@ -1,0 +1,564 @@
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softGlow {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.page {
+  position: relative;
+  overflow: hidden;
+  color: #eef4ff;
+  font-family: 'Segoe UI Variable Display', 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(141, 215, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(61, 114, 155, 0.16), transparent 28%),
+    linear-gradient(180deg, #090d16 0%, #0e1420 54%, #101827 100%);
+}
+
+.page::before,
+.page::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(26px);
+  animation: softGlow 12s ease-in-out infinite alternate;
+}
+
+.page::before {
+  top: 2.5rem;
+  left: -4rem;
+  width: 16rem;
+  height: 16rem;
+  background: rgba(141, 215, 255, 0.12);
+}
+
+.page::after {
+  right: -5rem;
+  top: 14rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(61, 114, 155, 0.16);
+  animation-delay: 1.2s;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.heroShell {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 86rem);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+.hero {
+  position: relative;
+  padding: 4.5rem 0 2.5rem;
+}
+
+.heroLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(360px, 0.78fr);
+  gap: 1.6rem;
+  align-items: stretch;
+}
+
+.heroCopy,
+.heroPanel,
+.optionCard,
+.trustPanel,
+.contactPanel {
+  border: 1px solid rgba(219, 229, 245, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 22px 48px rgba(1, 6, 16, 0.22);
+  backdrop-filter: blur(12px);
+}
+
+.heroCopy {
+  position: relative;
+  overflow: hidden;
+  padding: 2.5rem 2.6rem;
+  background:
+    linear-gradient(180deg, rgba(8, 14, 23, 0.96), rgba(8, 14, 23, 0.84)),
+    radial-gradient(circle at 12% 0%, rgba(141, 215, 255, 0.08), transparent 38%);
+  animation: floatIn 760ms ease-out both;
+}
+
+.heroCopy::after {
+  content: '';
+  position: absolute;
+  inset: -25% auto auto -12%;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(141, 215, 255, 0.14) 0%, rgba(141, 215, 255, 0.04) 38%, transparent 72%);
+  filter: blur(18px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.heroPanel {
+  position: relative;
+  overflow: hidden;
+  padding: 1.8rem;
+  background:
+    linear-gradient(180deg, rgba(10, 17, 30, 0.92), rgba(8, 14, 23, 0.82)),
+    radial-gradient(circle at 50% 0%, rgba(141, 215, 255, 0.1), transparent 52%);
+  animation: floatIn 760ms ease-out 120ms both;
+}
+
+.heroPanel::before {
+  content: '';
+  position: absolute;
+  inset: auto -15% -22% auto;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61, 114, 155, 0.16) 0%, rgba(61, 114, 155, 0.04) 42%, transparent 74%);
+  filter: blur(18px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.reveal {
+  animation: floatIn 680ms ease-out both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.eyebrow,
+.sectionEyebrow,
+.panelLabel,
+.sideTitle {
+  margin: 0 0 0.75rem;
+  color: #8dd7ff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  max-width: 11ch;
+  font-size: clamp(3.25rem, 6.6vw, 5.9rem);
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+  text-wrap: balance;
+}
+
+.lede,
+.impact,
+.sectionText,
+.panelNote,
+.contactText {
+  margin: 1rem 0 0;
+  color: rgba(235, 241, 255, 0.88);
+  font-size: 1.1rem;
+  line-height: 1.78;
+}
+
+.impact,
+.panelNote,
+.contactText,
+.sectionText {
+  color: rgba(235, 241, 255, 0.76);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  padding: 0.76rem 1.05rem;
+  border-radius: 999px;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.primaryAction {
+  border: 1px solid rgba(141, 215, 255, 0.28);
+  background: linear-gradient(135deg, rgba(141, 215, 255, 0.14), rgba(61, 114, 155, 0.1));
+  color: #eef4ff;
+}
+
+.secondaryAction {
+  border: 1px solid rgba(219, 229, 245, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  color: #eef4ff;
+}
+
+.primaryAction:hover,
+.secondaryAction:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  border-color: rgba(141, 215, 255, 0.34);
+  box-shadow: 0 12px 28px rgba(1, 6, 16, 0.2);
+}
+
+.microcopyRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+}
+
+.microcopyPill,
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(141, 215, 255, 0.18);
+  background: rgba(141, 215, 255, 0.08);
+  color: #eef4ff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.panelList,
+.trustList,
+.supportUsesList,
+.contactList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.panelList {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.panelItem,
+.trustItem,
+.supportUsesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(219, 229, 245, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(235, 241, 255, 0.88);
+  line-height: 1.5;
+}
+
+.panelIcon,
+.trustIcon,
+.supportUsesIcon,
+.contactIcon,
+.optionIcon {
+  margin-top: 0.15rem;
+  color: #8dd7ff;
+  flex: 0 0 auto;
+}
+
+.panelNote {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(219, 229, 245, 0.1);
+}
+
+.section {
+  padding: 0.5rem 0 4.5rem;
+}
+
+.sectionHeader {
+  max-width: 48rem;
+  margin-bottom: 1.15rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.8vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.05em;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(290px, 0.85fr);
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.05rem;
+}
+
+.optionCard {
+  padding: 1.4rem;
+  animation: floatIn 680ms ease-out both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.optionCardFeatured {
+  border-color: rgba(141, 215, 255, 0.28);
+  box-shadow: 0 24px 54px rgba(1, 6, 16, 0.28);
+}
+
+.optionHeader {
+  margin-bottom: 0.8rem;
+}
+
+.optionLabelRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.optionLabel {
+  color: #8dd7ff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.optionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.18;
+}
+
+.optionText {
+  margin: 0;
+  color: rgba(235, 241, 255, 0.82);
+  line-height: 1.72;
+  font-size: 1.01rem;
+}
+
+.trustPanel,
+.contactPanel {
+  padding: 1.3rem;
+}
+
+.contactPanel {
+  margin-top: 1rem;
+}
+
+.supportUses {
+  margin-top: 1rem;
+}
+
+.supportUsesList,
+.trustList,
+.contactList {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.contactItem {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.75rem 0.8rem;
+  border: 1px solid rgba(219, 229, 245, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.contactLabel {
+  font-weight: 800;
+  color: #eef4ff;
+}
+
+.contactLink {
+  color: #8dd7ff;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.contactLink:hover {
+  text-decoration: underline;
+}
+
+.textAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.7rem;
+  padding: 0.66rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(219, 229, 245, 0.14);
+  background: transparent;
+  color: #eef4ff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.textAction:hover {
+  text-decoration: none;
+}
+
+.primaryAction:focus-visible,
+.secondaryAction:focus-visible,
+.textAction:focus-visible,
+.contactLink:focus-visible,
+.optionCard:focus-within,
+.trustItem:focus-within,
+.supportUsesItem:focus-within,
+.contactItem:focus-within {
+  outline: 2px solid rgba(141, 215, 255, 0.55);
+  outline-offset: 2px;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding: 3.5rem 0 2rem;
+  }
+
+  .heroLayout,
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroShell {
+    padding: 0 1rem;
+  }
+
+  .heroCopy {
+    padding: 1.45rem;
+  }
+
+  .heroPanel,
+  .trustPanel,
+  .contactPanel,
+  .optionCard {
+    border-radius: 22px;
+  }
+
+  .title {
+    font-size: clamp(2.8rem, 7vw, 4.2rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 2.6rem 0 1.2rem;
+  }
+
+  .shell,
+  .heroShell {
+    padding: 0 1rem;
+  }
+
+  .heroCopy,
+  .heroPanel,
+  .trustPanel,
+  .contactPanel,
+  .optionCard {
+    padding: 1rem;
+  }
+
+  .title {
+    max-width: 100%;
+    font-size: clamp(2.5rem, 11vw, 3.8rem);
+  }
+
+  .lede,
+  .impact,
+  .sectionText,
+  .panelNote,
+  .contactText,
+  .optionText {
+    font-size: 0.98rem;
+  }
+
+  .actions,
+  .microcopyRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primaryAction,
+  .secondaryAction,
+  .textAction {
+    width: 100%;
+  }
+
+  .contactItem {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page::before,
+  .page::after,
+  .heroCopy,
+  .heroPanel,
+  .section,
+  .optionCard,
+  .trustPanel,
+  .contactPanel,
+  .supportUses,
+  .reveal {
+    animation: none;
+  }
+
+  .primaryAction,
+  .secondaryAction,
+  .textAction {
+    transition: none;
+  }
+}

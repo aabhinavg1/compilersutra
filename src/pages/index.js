@@ -24,6 +24,7 @@ const START_PATHS = [
     to: '/docs/tracks/compiler-fundamentals',
     cta: 'Start Fundamentals',
     tone: 'fundamentals',
+    coverImage: '/img/home/compiler-fundamentals.svg',
     coverLabel: 'Source -> IR -> Binary',
     chips: ['Frontend', 'IR', 'Control Flow'],
   },
@@ -35,6 +36,7 @@ const START_PATHS = [
     to: '/docs/tracks/llvm-and-ir',
     cta: 'Start LLVM',
     tone: 'llvm',
+    coverImage: '/img/home/llvm-track.svg',
     coverLabel: 'IR, SSA, Passes',
     chips: ['LLVM IR', 'Analysis', 'Backend'],
   },
@@ -46,6 +48,7 @@ const START_PATHS = [
     to: '/docs/coa',
     cta: 'Start COA',
     tone: 'coa',
+    coverImage: '/img/home/gpu-parallel-programming.svg',
     coverLabel: 'Pipelines, Cache, Memory',
     chips: ['Execution', 'Latency', 'Throughput'],
   },
@@ -95,8 +98,8 @@ const START_PATHS = [
   },
 ];
 
-const FEATURED_PATHS = START_PATHS.slice(0, 2);
-const SECONDARY_PATHS = START_PATHS.slice(2);
+const FEATURED_PATHS = START_PATHS.slice(0, 3);
+const SECONDARY_PATHS = START_PATHS.slice(3);
 
 const CATALOGUE_ITEMS = [
   {
@@ -265,7 +268,7 @@ function HomepageHeader() {
 
 function StartHereSection() {
   return (
-    <section className={styles.sectionBlock}>
+    <section className={clsx(styles.sectionBlock, styles.desktopStartSection)}>
       <div className={clsx('container', styles.sectionShell)}>
         <div className={styles.sectionHeader}>
           <p className={styles.sectionEyebrow}>Start Here</p>
@@ -287,6 +290,8 @@ function StartHereSection() {
               data-reveal
             >
               <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
+                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
+                <div className={styles.cardCoverOverlay} aria-hidden="true" />
                 <div className={styles.cardCoverInner}>
                   <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
                   <div className={styles.cardChipRow}>
@@ -319,6 +324,8 @@ function StartHereSection() {
               data-reveal
             >
               <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
+                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
+                <div className={styles.cardCoverOverlay} aria-hidden="true" />
                 <div className={styles.cardCoverInner}>
                   <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
                   <div className={styles.cardChipRow}>
@@ -337,6 +344,64 @@ function StartHereSection() {
                 {item.cta}
                 <FaArrowRight aria-hidden="true" />
               </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobileStartSection() {
+  return (
+    <section className={clsx(styles.sectionBlock, styles.mobileStartSection)}>
+      <div className={clsx('container', styles.sectionShell)}>
+        <div className={styles.sectionHeader}>
+          <p className={styles.sectionEyebrow}>Start Here</p>
+          <Heading as="h2" className={styles.sectionTitle}>
+            Swipe the three strongest paths
+          </Heading>
+          <p className={styles.sectionText}>
+            A tighter mobile launchpad with stronger visuals, fewer choices, and cleaner entry points.
+          </p>
+        </div>
+
+        <div className={styles.mobilePathDeck}>
+          {FEATURED_PATHS.map((item, index) => (
+            <Link
+              key={item.title}
+              to={item.to}
+              className={clsx(styles.mobilePathCard, styles.revealItem)}
+              data-track={item.cta}
+              data-reveal
+            >
+              <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
+                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
+                <div className={styles.cardCoverOverlay} aria-hidden="true" />
+                <div className={styles.cardCoverInner}>
+                <div className={styles.mobileCardTopRow}>
+                  <span className={styles.mobileCardNumber}>0{index + 1}</span>
+                  <span className={styles.pathTag}>{item.tag}</span>
+                </div>
+                <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
+                </div>
+              </div>
+
+              <div className={styles.mobilePathBody}>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <div className={styles.cardChipRow}>
+                  {item.chips.map((chip) => (
+                    <span key={chip} className={styles.cardChip}>
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+                <span className={styles.pathLink}>
+                  {item.cta}
+                  <FaArrowRight aria-hidden="true" />
+                </span>
+              </div>
             </Link>
           ))}
         </div>
@@ -582,6 +647,7 @@ export default function Home() {
       <main>
         <PremiumSignalSection />
         <StartHereSection />
+        <MobileStartSection />
         <WhyStaySection />
         <CatalogueSection />
         <PopularResourcesSection />

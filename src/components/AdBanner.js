@@ -123,142 +123,33 @@ export default function AdBanner({
   className = '',
   minHeight = 220,
 }) {
-  const adRef = useRef(null);
-  const [suppressed, setSuppressed] = useState(false);
-  const [mobileViewport, setMobileViewport] = useState(false);
+  // Ads are intentionally disabled here. Keep the component in place so
+  // existing markdown imports do not need to change.
+  return null;
 
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return undefined;
-    }
-
-    const node = adRef.current;
-    if (!node) {
-      return undefined;
-    }
-
-    const pathname = getPageKey();
-    const nodeTop = node.getBoundingClientRect().top + window.scrollY;
-    if (nodeTop < getMinTopOffset(pathname)) {
-      setSuppressed(true);
-      return undefined;
-    }
-
-    if (!claimAdSlot(pathname)) {
-      setSuppressed(true);
-      return undefined;
-    }
-
-    const media = window.matchMedia('(max-width: 768px)');
-    const updateViewport = () => setMobileViewport(media.matches);
-
-    updateViewport();
-    media.addEventListener?.('change', updateViewport);
-    media.addListener?.(updateViewport);
-
-    let cancelled = false;
-    let observer;
-    let retryTimer;
-
-    const initializeAd = async () => {
-      if (cancelled || node.dataset.adInitialized === 'true') {
-        return;
-      }
-
-      await ensureAdsenseScript();
-      const ready = await waitForAdsense();
-      if (!ready || cancelled || node.dataset.adInitialized === 'true') {
-        if (!ready) {
-          setSuppressed(true);
-        }
-        return;
-      }
-
-      const pushAd = () => {
-        if (cancelled || node.dataset.adInitialized === 'true') {
-          return;
-        }
-
-        if (node.offsetWidth === 0) {
-          retryTimer = window.setTimeout(pushAd, 250);
-          return;
-        }
-
-        try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-          node.dataset.adInitialized = 'true';
-          node.parentElement?.setAttribute('data-ad-status', 'ready');
-        } catch (error) {
-          const message = String(error?.message || error).toLowerCase();
-          if (message.includes('already have ads')) {
-            node.dataset.adInitialized = 'true';
-            node.parentElement?.setAttribute('data-ad-status', 'ready');
-            return;
-          }
-          retryTimer = window.setTimeout(pushAd, 500);
-        }
-      };
-
-      pushAd();
-    };
-
-    if ('IntersectionObserver' in window) {
-      observer = new window.IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              observer.disconnect();
-              initializeAd();
-            }
-          });
-        },
-        { rootMargin: '250px 0px' }
-      );
-
-      observer.observe(node);
-    } else {
-      initializeAd();
-    }
-
-    return () => {
-      cancelled = true;
-      if (observer) {
-        observer.disconnect();
-      }
-      if (retryTimer) {
-        window.clearTimeout(retryTimer);
-      }
-      media.removeEventListener?.('change', updateViewport);
-      media.removeListener?.(updateViewport);
-    };
-  }, []);
-
-  if (suppressed) {
-    return null;
-  }
-
-  return (
-    <div
-      className={`cs-ad-slot ${className}`.trim()}
-      aria-label="Advertisement"
-      data-ad-status="loading"
-      data-device={mobileViewport ? 'mobile' : 'desktop'}
-      style={{
-        '--cs-ad-min-height': `${minHeight}px`,
-        '--cs-ad-mobile-min-height': `${Math.min(minHeight, 120)}px`,
-      }}
-    >
-      <span className="cs-ad-slot__label">Advertisement</span>
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{ display: 'block' }}
-        data-ad-layout={layout}
-        data-ad-format={format}
-        data-ad-client="ca-pub-3213090090375658"
-        data-ad-slot={slot}
-        data-full-width-responsive="true"
-      />
-    </div>
-  );
+  // Original AdSense slot rendering is intentionally left commented out.
+  // return (
+  //   <div
+  //     className={`cs-ad-slot ${className}`.trim()}
+  //     aria-label="Advertisement"
+  //     data-ad-status="loading"
+  //     data-device={mobileViewport ? 'mobile' : 'desktop'}
+  //     style={{
+  //       '--cs-ad-min-height': `${minHeight}px`,
+  //       '--cs-ad-mobile-min-height': `${Math.min(minHeight, 120)}px`,
+  //     }}
+  //   >
+  //     <span className="cs-ad-slot__label">Advertisement</span>
+  //     <ins
+  //       ref={adRef}
+  //       className="adsbygoogle"
+  //       style={{ display: 'block' }}
+  //       data-ad-layout={layout}
+  //       data-ad-format={format}
+  //       data-ad-client="ca-pub-3213090090375658"
+  //       data-ad-slot={slot}
+  //       data-full-width-responsive="true"
+  //     />
+  //   </div>
+  // );
 }

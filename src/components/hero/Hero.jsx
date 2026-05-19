@@ -249,6 +249,9 @@ export default function Hero({ newsletterUrl }) {
               Start Learning
               <FaArrowRight className={styles.actionIcon} />
             </Link>
+            <Link className={styles.supportAction} to="/support">
+              Support Us
+            </Link>
             <Link
               className={styles.secondaryAction}
               to={newsletterUrl}

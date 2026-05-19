@@ -147,7 +147,7 @@ html[data-theme='dark'] .docusaurus-mermaid-container .labelBkg {
 }
 
 /* ==================== ADS ==================== */
-.cs-ad-slot {
+/* .cs-ad-slot {
   width: 100%;
   max-width: min(100%, 820px);
   margin: clamp(1.4rem, 4vw, 2.6rem) auto;
@@ -220,7 +220,7 @@ html[data-theme='dark'] .docusaurus-mermaid-container .labelBkg {
     margin-bottom: 0.45rem;
     font-size: 0.66rem;
   }
-}
+} */
 
 .theme-doc-markdown table {
   width: 100%;
