@@ -161,6 +161,14 @@ This section serves as a **technical knowledge base** containing conceptual arti
 <td>Coming Soon</td>
 </tr>
 
+<tr>
+<td>Rust vs Modern C++: Memory Safety Beyond the Hype</td>
+<td><a href="./rust-vs-modern-cpp-memory-safety-beyond-the-hype">Article</a></td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
   </tbody>
 </table>
 
