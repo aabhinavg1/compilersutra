@@ -250,6 +250,7 @@ const mcq = {
           collapsed: true,
           items: [
             'mcq/questions/domain/system-programming/system-programming-home',
+            'mcq/questions/domain/system-programming/c-memory-layout-mcqs',
             'mcq/questions/domain/system-programming/system-programming-quiz',
           ],
         },
@@ -330,6 +331,7 @@ const mcq = {
       collapsed: false,
       items: [
         'mcq/questions/domain/system-programming/system-programming-home',
+        'mcq/questions/domain/system-programming/c-memory-layout-mcqs',
         'mcq/questions/domain/system-programming/system-programming-quiz',
       ],
     },

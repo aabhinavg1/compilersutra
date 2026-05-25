@@ -1,0 +1,307 @@
+---
+id: c-memory-layout-mcqs
+title: "Memory Layout in C MCQs"
+slug: /mcq/questions/domain/system-programming/c-memory-layout
+description: "Test your knowledge of the memory layout of a C program, including stack, heap, data, and text segments."
+displayed_sidebar: systemProgrammingMcqSidebar
+---
+
+import AdBanner from '@site/src/components/AdBanner';
+import { Question } from '../../../Question';
+
+# Memory Layout in C MCQs
+
+Explore the intricate details of how a C program is laid out in memory. These questions cover the stack, heap, data segments, and more, helping you understand the underlying structure of C execution.
+
+---
+
+📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+
+<div
+  style={{
+    width: '100%',
+    maxWidth: '900px',
+    margin: '1rem auto',
+  }}
+>
+  <iframe
+    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
+    style={{
+      width: '100%',
+      minHeight: '620px',
+      border: '0',
+      borderRadius: '12px',
+      background: '#fff',
+    }}
+    loading="lazy"
+  >
+    Loading…
+  </iframe>
+</div>
+
+<div>
+    <AdBanner />
+</div>
+
+<Question
+  question="1). Which segment of the memory layout stores the compiled code of the program?"
+  options={['Stack', 'Heap', 'Text Segment', 'Data Segment']}
+  answer="Text Segment"
+/>
+
+---
+
+<Question
+  question="2). The Text Segment is usually ______ to prevent a program from accidentally modifying its instructions."
+  options={['Write-only', 'Read-only', 'Uninitialized', 'Part of the Heap']}
+  answer="Read-only"
+/>
+
+---
+
+<Question
+  question="3). Where are global and static variables that are explicitly initialized in the source code stored?"
+  options={['Stack', 'BSS Segment', 'Initialized Data Segment', 'Heap']}
+  answer="Initialized Data Segment"
+/>
+
+---
+
+<Question
+  question="4). Which segment stores uninitialized global and static variables?"
+  options={['BSS Segment', 'Text Segment', 'Heap', 'Stack']}
+  answer="BSS Segment"
+/>
+
+---
+
+<Question
+  question="5). What does 'BSS' stand for in the context of C memory layout?"
+  options={['Basic System Segment', 'Binary Storage Section', 'Block Started by Symbol', 'Below Stack Segment']}
+  answer="Block Started by Symbol"
+/>
+
+---
+
+<Question
+  question="6). Before a program starts executing, the variables in the BSS segment are initialized to ______ by the kernel."
+  options={['Garbage values', 'Zero', 'The maximum integer value', 'Null pointers only']}
+  answer="Zero"
+/>
+
+---
+
+<Question
+  question="7). Dynamic memory allocation (e.g., using malloc or calloc) occurs in which segment?"
+  options={['Stack', 'BSS', 'Text', 'Heap']}
+  answer="Heap"
+/>
+
+---
+
+<Question
+  question="8). In which direction does the Heap typically grow in most modern architectures?"
+  options={['From higher addresses to lower addresses', 'From lower addresses to higher addresses', 'It does not grow', 'It grows randomly']}
+  answer="From lower addresses to higher addresses"
+/>
+
+---
+
+<Question
+  question="9). Local variables and function call information (return addresses, parameters) are stored in the:"
+  options={['Heap', 'Stack', 'Data Segment', 'BSS']}
+  answer="Stack"
+/>
+
+---
+
+<Question
+  question="10). What is a 'Stack Frame'?"
+  options={['A segment of the heap', 'The entire stack memory', 'A collection of data pushed onto the stack for a single function call', 'The code segment for a function']}
+  answer="A collection of data pushed onto the stack for a single function call"
+/>
+
+---
+
+<div>
+<AdBanner />
+</div>
+
+---
+
+<Question
+  question="11). Which segment's size is typically fixed at the time of program startup?"
+  options={['Stack', 'Heap', 'Text Segment', 'Environment Variables']}
+  answer="Text Segment"
+/>
+
+---
+
+<Question
+  question="12). In most architectures, the Stack grows in which direction?"
+  options={['Opposite to the Heap', 'Same as the Heap', 'It doesn\'t grow', 'Toward higher addresses']}
+  answer="Opposite to the Heap"
+/>
+
+---
+
+<Question
+  question="13). What happens if the Stack and Heap collide in a system without virtual memory?"
+  options={['Memory Leak', 'Stack Overflow or Heap Corruption', 'Automatic memory expansion', 'The program runs faster']}
+  answer="Stack Overflow or Heap Corruption"
+/>
+
+---
+
+<Question
+  question="14). Which of the following variables would be stored in the Stack?"
+  code={`void func() {
+    int x = 10;
+}`}
+  options={['int x', 'void func', 'The constant 10', 'None of the above']}
+  answer="int x"
+/>
+
+---
+
+<Question
+  question="15). Where is the following variable 'g' stored?"
+  code={`int g;
+int main() { return 0; }`}
+  options={['Stack', 'Heap', 'Initialized Data Segment', 'BSS Segment']}
+  answer="BSS Segment"
+/>
+
+---
+
+<Question
+  question="16). Where is the following variable 's' stored?"
+  code={`static int s = 5;
+int main() { return 0; }`}
+  options={['Stack', 'Heap', 'Initialized Data Segment', 'BSS Segment']}
+  answer="Initialized Data Segment"
+/>
+
+---
+
+<Question
+  question="17). What is stored at the very top of the memory layout (highest addresses) for a C process?"
+  options={['Text Segment', 'Stack', 'Heap', 'Command-line arguments and environment variables']}
+  answer="Command-line arguments and environment variables"
+/>
+
+---
+
+<Question
+  question="18). Which segment contains read-only constants like string literals (e.g., 'Hello World') in many implementations?"
+  options={['Stack', 'BSS', 'Text Segment (or a read-only Data section)', 'Heap']}
+  answer="Text Segment (or a read-only Data section)"
+/>
+
+---
+
+<Question
+  question="19). If you call 'malloc(100)', the pointer returned points to memory in the:"
+  options={['Stack', 'Heap', 'Data Segment', 'Text Segment']}
+  answer="Heap"
+/>
+
+---
+
+<Question
+  question="20). What segment does the 'Stack Pointer' (SP) register track?"
+  options={['Heap', 'BSS', 'Stack', 'Code']}
+  answer="Stack"
+/>
+
+---
+
+<div>
+<AdBanner />
+</div>
+
+---
+
+<Question
+  question="21). Recursion typically consumes space in which segment?"
+  options={['Heap', 'BSS', 'Data', 'Stack']}
+  answer="Stack"
+/>
+
+---
+
+<Question
+  question="22). Which of the following is true about the initialized data segment?"
+  options={['It is read-only', 'It can be divided into read-only and read-write areas', 'It stores local variables', 'It is cleared to zero at startup']}
+  answer="It can be divided into read-only and read-write areas"
+/>
+
+---
+
+<Question
+  question="23). Why does the BSS segment not take up space in the executable file on disk?"
+  options={['It is empty', 'It only needs a record of its required size', 'It is compressed', 'It is part of the stack']}
+  answer="It only needs a record of its required size"
+/>
+
+---
+
+<Question
+  question="24). When a function returns, what happens to its local variables on the stack?"
+  options={['They are moved to the heap', 'They remain there forever', 'The stack pointer is moved back, logically removing the stack frame', 'They are cleared to zero immediately']}
+  answer="The stack pointer is moved back, logically removing the stack frame"
+/>
+
+---
+
+<Question
+  question="25). What is 'Static Memory Allocation' typically associated with?"
+  options={['malloc and free', 'Stack and Data segments', 'Heap only', 'Environment variables']}
+  answer="Stack and Data segments"
+/>
+
+---
+
+<Question
+  question="26). A memory leak occurs when memory is allocated in the ______ but never freed."
+  options={['Stack', 'BSS', 'Heap', 'Text Segment']}
+  answer="Heap"
+/>
+
+---
+
+<Question
+  question="27). Which segment is shared among multiple processes running the same program to save memory?"
+  options={['Heap', 'Stack', 'Text Segment', 'Data Segment']}
+  answer="Text Segment"
+/>
+
+---
+
+<Question
+  question="28). The 'brk' and 'sbrk' system calls are used to change the size of which segment?"
+  options={['Stack', 'Heap', 'Text', 'BSS']}
+  answer="Heap"
+/>
+
+---
+
+<Question
+  question="29). Where would a 'static int' declared inside a function be stored?"
+  options={['On the Stack every time the function is called', 'In the Data Segment (Initialized or BSS)', 'In the Heap', 'In the Text segment']}
+  answer="In the Data Segment (Initialized or BSS)"
+/>
+
+---
+
+<Question
+  question="30). Which of the following would cause a 'Stack Overflow'?"
+  options={['Infinite recursion', 'Allocating a very large array with malloc', 'Declaring too many global variables', 'Modifying a string literal']}
+  answer="Infinite recursion"
+/>
+
+---
+
+<div>
+    <AdBanner />
+</div>
