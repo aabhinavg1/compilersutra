@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="980" viewBox="0 0 1800 980" role="img" aria-labelledby="title desc">
+  <title id="title">HNSW graph traversal vs Flat dense scan vs IVF clustered scan</title>
+  <desc id="desc">A polished three-panel diagram comparing branch-heavy HNSW traversal, dense SIMD-friendly Flat scanning, and IVF clustered scanning that prunes the working set before the dense loop.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1118"/>
+      <stop offset="100%" stop-color="#111c28"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#131d29"/>
+      <stop offset="100%" stop-color="#172533"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#65d4ff"/>
+      <stop offset="100%" stop-color="#f5c44d"/>
+    </linearGradient>
+    <linearGradient id="simd" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8ae6ff"/>
+      <stop offset="100%" stop-color="#7cffc1"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 42px 'DejaVu Sans', Arial, sans-serif; fill: #f4f8fc; letter-spacing: 0.2px; }
+      .subtitle { font: 400 18px 'DejaVu Sans', Arial, sans-serif; fill: #a7b8c9; }
+      .panel-title { font: 700 24px 'DejaVu Sans', Arial, sans-serif; fill: #f4f8fc; }
+      .panel-sub { font: 400 14px 'DejaVu Sans', Arial, sans-serif; fill: #97a9ba; }
+      .label { font: 600 15px 'DejaVu Sans Mono', monospace; fill: #dfe8f1; }
+      .small { font: 400 13px 'DejaVu Sans Mono', monospace; fill: #91a4b7; }
+      .tiny { font: 400 12px 'DejaVu Sans Mono', monospace; fill: #7d93a8; }
+      .metric { font: 700 14px 'DejaVu Sans Mono', monospace; fill: #0b1118; }
+      .card { fill: url(#panel); stroke: #243142; stroke-width: 2; rx: 26; }
+      .chip { fill: #edf3f8; stroke: #d6e0ea; stroke-width: 1.5; }
+      .node { fill: #1a2733; stroke: #4e6479; stroke-width: 2; }
+      .node-hot { fill: #213342; stroke: #65d4ff; stroke-width: 3; }
+      .path { stroke: #7fcbff; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .path-alt { stroke: #f5c44d; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .grid { stroke: rgba(255,255,255,0.06); stroke-width: 1; }
+      .footer { fill: rgba(255,255,255,0.05); }
+    </style>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7fcbff"/>
+    </marker>
+    <marker id="arrowGold" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f5c44d"/>
+    </marker>
+  </defs>
+
+  <rect width="1800" height="980" fill="url(#bg)"/>
+  <path d="M 0 140 H 1800" class="grid"/>
+  <path d="M 0 820 H 1800" class="grid"/>
+  <path d="M 0 330 H 1800" class="grid"/>
+  <path d="M 0 650 H 1800" class="grid"/>
+
+  <text x="900" y="68" text-anchor="middle" class="title">Three ANN shapes on one CPU</text>
+  <text x="900" y="98" text-anchor="middle" class="subtitle">The same core reacts differently when the workload is traversal-heavy, math-heavy, or cluster-pruned.</text>
+
+  <rect x="56" y="148" width="520" height="720" class="card"/>
+  <rect x="640" y="148" width="520" height="720" class="card"/>
+  <rect x="1224" y="148" width="520" height="720" class="card"/>
+
+  <!-- HNSW -->
+  <text x="316" y="198" text-anchor="middle" class="panel-title">HNSW</text>
+  <text x="316" y="224" text-anchor="middle" class="panel-sub">graph traversal and queue maintenance</text>
+  <rect x="94" y="252" width="444" height="44" rx="14" class="chip"/>
+  <text x="316" y="280" text-anchor="middle" class="metric">branch-heavy / dependent / irregular</text>
+
+  <circle cx="166" cy="386" r="28" class="node-hot"/>
+  <circle cx="282" cy="340" r="24" class="node"/>
+  <circle cx="396" cy="376" r="24" class="node"/>
+  <circle cx="476" cy="300" r="20" class="node"/>
+  <circle cx="478" cy="456" r="20" class="node"/>
+  <circle cx="316" cy="484" r="22" class="node"/>
+  <circle cx="206" cy="500" r="20" class="node"/>
+
+  <path d="M 193 374 L 258 349" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 304 347 L 372 366" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 415 367 L 462 314" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 416 385 L 462 444" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 386 396 L 330 466" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 303 396 L 222 486" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 222 500 L 286 491" class="path-alt" marker-end="url(#arrowGold)"/>
+
+  <text x="94" y="574" class="label">CPU view</text>
+  <text x="94" y="598" class="tiny">each next step depends on the last decision</text>
+  <text x="94" y="620" class="tiny">mispredicts and queue updates interrupt the math</text>
+  <text x="94" y="642" class="tiny">pointer chasing reduces locality and raises latency</text>
+
+  <rect x="94" y="692" width="132" height="34" rx="11" class="chip"/>
+  <text x="160" y="714" text-anchor="middle" class="metric">1.40 IPC</text>
+  <rect x="240" y="692" width="132" height="34" rx="11" class="chip"/>
+  <text x="306" y="714" text-anchor="middle" class="metric">8.75% branch miss</text>
+  <rect x="386" y="692" width="152" height="34" rx="11" class="chip"/>
+  <text x="462" y="714" text-anchor="middle" class="metric">queue churn</text>
+
+  <!-- Flat -->
+  <text x="900" y="198" text-anchor="middle" class="panel-title">FAISS Flat</text>
+  <text x="900" y="224" text-anchor="middle" class="panel-sub">exact dense scan with stable SIMD execution</text>
+  <rect x="678" y="252" width="444" height="44" rx="14" class="chip"/>
+  <text x="900" y="280" text-anchor="middle" class="metric">regular / vectorized / predictable</text>
+
+  <rect x="706" y="356" width="388" height="60" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="724" y="372" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="796" y="372" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="868" y="372" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="940" y="372" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="1012" y="372" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <text x="900" y="450" text-anchor="middle" class="label">distance kernel</text>
+
+  <rect x="706" y="476" width="388" height="60" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="724" y="492" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="796" y="492" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="868" y="492" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="940" y="492" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="1012" y="492" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <text x="900" y="570" text-anchor="middle" class="label">distance kernel</text>
+
+  <rect x="706" y="596" width="388" height="60" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="724" y="612" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="796" y="612" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="868" y="612" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="940" y="612" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <rect x="1012" y="612" width="62" height="28" rx="9" fill="url(#simd)" opacity="0.95"/>
+  <text x="900" y="690" text-anchor="middle" class="label">distance kernel</text>
+
+  <text x="678" y="756" class="label">CPU view</text>
+  <text x="678" y="780" class="tiny">the control path stays flat, so the backend stays busy</text>
+  <text x="678" y="802" class="tiny">this is the exact-search baseline with the cleanest loop shape</text>
+
+  <rect x="678" y="834" width="132" height="34" rx="11" class="chip"/>
+  <text x="744" y="856" text-anchor="middle" class="metric">4.79 IPC</text>
+  <rect x="824" y="834" width="160" height="34" rx="11" class="chip"/>
+  <text x="904" y="856" text-anchor="middle" class="metric">dense SIMD loop</text>
+  <rect x="998" y="834" width="106" height="34" rx="11" class="chip"/>
+  <text x="1051" y="856" text-anchor="middle" class="metric">exact</text>
+
+  <!-- IVF -->
+  <text x="1484" y="198" text-anchor="middle" class="panel-title">FAISS IVF</text>
+  <text x="1484" y="224" text-anchor="middle" class="panel-sub">cluster prune first, then scan a reduced set</text>
+  <rect x="1262" y="252" width="444" height="44" rx="14" class="chip"/>
+  <text x="1484" y="280" text-anchor="middle" class="metric">pruned / clustered / balanced</text>
+
+  <rect x="1288" y="350" width="150" height="100" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="1456" y="350" width="150" height="100" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="1288" y="476" width="150" height="100" rx="18" fill="#16212b" stroke="#324150"/>
+  <rect x="1456" y="476" width="150" height="100" rx="18" fill="#16212b" stroke="#324150"/>
+
+  <circle cx="1364" cy="400" r="18" class="node-hot"/>
+  <circle cx="1532" cy="400" r="18" class="node-hot"/>
+  <circle cx="1364" cy="526" r="18" class="node"/>
+  <circle cx="1532" cy="526" r="18" class="node"/>
+
+  <path d="M 1280 400 L 1342 400" class="path-alt" marker-end="url(#arrowGold)"/>
+  <path d="M 1440 400 L 1509 400" class="path-alt" marker-end="url(#arrowGold)"/>
+  <path d="M 1280 526 L 1342 526" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 1440 526 L 1509 526" class="path" marker-end="url(#arrowBlue)"/>
+  <path d="M 1364 418 L 1364 476" class="path-alt" marker-end="url(#arrowGold)"/>
+  <path d="M 1532 418 L 1532 476" class="path-alt" marker-end="url(#arrowGold)"/>
+
+  <text x="1484" y="642" text-anchor="middle" class="label">CPU view</text>
+  <text x="1262" y="666" class="tiny">one branchy pruning step selects the candidate lists</text>
+  <text x="1262" y="688" class="tiny">the dense scan still looks regular once the working set is smaller</text>
+  <text x="1262" y="710" class="tiny">throughput improves, but only if recall is acceptable</text>
+
+  <rect x="1262" y="744" width="132" height="34" rx="11" class="chip"/>
+  <text x="1328" y="766" text-anchor="middle" class="metric">4.35 IPC</text>
+  <rect x="1408" y="744" width="132" height="34" rx="11" class="chip"/>
+  <text x="1474" y="766" text-anchor="middle" class="metric">0.857 recall</text>
+  <rect x="1554" y="744" width="132" height="34" rx="11" class="chip"/>
+  <text x="1620" y="766" text-anchor="middle" class="metric">pruned set</text>
+
+  <rect x="66" y="902" width="1668" height="38" rx="14" class="footer"/>
+  <text x="900" y="927" text-anchor="middle" class="subtitle">The point of the comparison is structural: HNSW spends cycles on decisions, Flat spends cycles on math, and IVF spends cycles on pruning before math.</text>
+</svg>

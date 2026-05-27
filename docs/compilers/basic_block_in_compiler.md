@@ -99,13 +99,12 @@ Just as sentences structure a story, basic blocks structure programs.
 ## Table of Contents
 
 - [What is a Basic Block?](#what-is-a-basic-block)
-- [Why Basic Blocks Matter](#why-basic-blocks-matter)
+  - [Why Basic Blocks Matter](#why-basic-blocks-matter)
 - [How Compilers Build CFGs](#how-compilers-build-cfgs)
 - [LLVM/Clang: Inspect, Visualize, and Count Basic Blocks](#llvmclang-inspect-visualize-and-count-basic-blocks)
   - [Quick CLI Methods (no coding)](#quick-cli-methods-no-coding)
   - [Programmatic Method (C++ tool using LLVM APIs)](#programmatic-method-c-tool-using-llvm-apis)
-- [Notes, Tips, and Cautions](#faq)
-- [What next](#what-next)
+- [What Next](#what-next)
 - [FAQ](#faq)
 
 <div>
@@ -367,7 +366,7 @@ z = y + 3;
 The edges between blocks represent **possible paths the program can take**:
 
 <img
-  src="/img/cfg_digram.svg"
+  src="/img/cfg_block.png"
   alt="Control Flow Graph diagram illustrating basic blocks and how program execution flows between them"
   style={{
     width: '100%',

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">ANN bottleneck shape and repeatability on AMD Ryzen 7 9700X</title>
+  <desc id="desc">A repeat-run query-time comparison with standard deviation bars and a three-panel bottleneck map for HNSW, Flat, and IVF.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef4ff"/>
+    </linearGradient>
+    <linearGradient id="barHnsw" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="barFlat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c2410c"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+    <linearGradient id="barIvf" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+    <linearGradient id="panelTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="520" fill="url(#bg)"/>
+  <rect x="22" y="22" width="1156" height="476" rx="24" fill="#ffffff" stroke="#dbe3ee" filter="url(#shadow)"/>
+
+  <text x="48" y="60" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="24" font-weight="800" fill="#0f172a">ANN bottleneck shape and repeatability</text>
+  <text x="48" y="84" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#475569">Three-run wall-clock repeatability check on the same binaries and inputs, pinned to CPU 0</text>
+
+  <rect x="46" y="108" width="500" height="350" rx="20" fill="url(#panelTop)" stroke="#dbe3ee"/>
+  <rect x="654" y="108" width="500" height="350" rx="20" fill="url(#panelTop)" stroke="#dbe3ee"/>
+
+  <text x="70" y="140" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="18" font-weight="800" fill="#0f172a">Repeatability: query time</text>
+  <text x="678" y="140" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="18" font-weight="800" fill="#0f172a">Bottleneck shape</text>
+
+  <line x1="116" y1="350" x2="500" y2="350" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="114" y1="194" x2="114" y2="350" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="724" y1="194" x2="724" y2="350" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="892" y1="194" x2="892" y2="350" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="1060" y1="194" x2="1060" y2="350" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <text x="70" y="194" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">HNSW</text>
+  <text x="70" y="254" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">Flat</text>
+  <text x="70" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">IVF</text>
+
+  <rect x="132" y="180" width="126" height="24" rx="7" fill="url(#barHnsw)"/>
+  <rect x="132" y="240" width="347" height="24" rx="7" fill="url(#barFlat)"/>
+  <rect x="132" y="300" width="46" height="24" rx="7" fill="url(#barIvf)"/>
+
+  <line x1="258" y1="180" x2="258" y2="204" stroke="#1d4ed8" stroke-width="2"/>
+  <line x1="251" y1="180" x2="265" y2="180" stroke="#1d4ed8" stroke-width="2"/>
+  <line x1="251" y1="204" x2="265" y2="204" stroke="#1d4ed8" stroke-width="2"/>
+
+  <line x1="479" y1="240" x2="479" y2="264" stroke="#c2410c" stroke-width="2"/>
+  <line x1="472" y1="240" x2="486" y2="240" stroke="#c2410c" stroke-width="2"/>
+  <line x1="472" y1="264" x2="486" y2="264" stroke="#c2410c" stroke-width="2"/>
+
+  <line x1="178" y1="300" x2="178" y2="324" stroke="#166534" stroke-width="2"/>
+  <line x1="171" y1="300" x2="185" y2="300" stroke="#166534" stroke-width="2"/>
+  <line x1="171" y1="324" x2="185" y2="324" stroke="#166534" stroke-width="2"/>
+
+  <text x="272" y="197" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">43.3 ms ± 0.3</text>
+  <text x="489" y="257" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="end">119.0 ms ± 1.9</text>
+  <text x="196" y="317" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">15.7 ms ± 1.7</text>
+
+  <text x="70" y="380" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">Lower is better. Flat is stable but slow; IVF is fast on repeat runs, but the ranking is close enough to justify variance reporting.</text>
+
+  <rect x="678" y="174" width="118" height="44" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="846" y="174" width="118" height="44" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="1014" y="174" width="118" height="44" rx="12" fill="#ecfdf5" stroke="#bbf7d0"/>
+
+  <text x="737" y="201" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#1d4ed8" text-anchor="middle">HNSW</text>
+  <text x="905" y="201" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#c2410c" text-anchor="middle">Flat</text>
+  <text x="1073" y="201" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#166534" text-anchor="middle">IVF</text>
+
+  <line x1="796" y1="196" x2="846" y2="196" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="964" y1="196" x2="1014" y2="196" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <rect x="678" y="246" width="118" height="128" rx="16" fill="#f8fafc" stroke="#dbe3ee"/>
+  <rect x="846" y="246" width="118" height="128" rx="16" fill="#f8fafc" stroke="#dbe3ee"/>
+  <rect x="1014" y="246" width="118" height="128" rx="16" fill="#f8fafc" stroke="#dbe3ee"/>
+
+  <text x="737" y="274" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" font-weight="800" fill="#0f172a" text-anchor="middle">Branchy graph walk</text>
+  <text x="737" y="294" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">queue maintenance</text>
+  <text x="737" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">branch-miss pressure</text>
+  <text x="737" y="338" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="11" fill="#1d4ed8" text-anchor="middle">frontend-sensitive</text>
+
+  <text x="905" y="274" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" font-weight="800" fill="#0f172a" text-anchor="middle">Dense exact scan</text>
+  <text x="905" y="294" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">regular SIMD loop</text>
+  <text x="905" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">high IPC baseline</text>
+  <text x="905" y="338" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="11" fill="#c2410c" text-anchor="middle">backend-fed arithmetic</text>
+
+  <text x="1073" y="274" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" font-weight="800" fill="#0f172a" text-anchor="middle">Cluster prune</text>
+  <text x="1073" y="294" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">smaller scan set</text>
+  <text x="1073" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#475569" text-anchor="middle">recall tradeoff</text>
+  <text x="1073" y="338" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="11" fill="#166534" text-anchor="middle">balanced IPC</text>
+
+  <rect x="46" y="472" width="1108" height="6" rx="3" fill="#cbd5e1" opacity="0.5"/>
+</svg>
