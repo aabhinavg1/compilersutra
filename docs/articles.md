@@ -162,11 +162,13 @@ This section serves as a **technical knowledge base** containing conceptual arti
 </tr>
 
 <tr>
-<td>Rust vs Modern C++: Memory Safety Beyond the Hype</td>
-<td><a href="./rust-vs-modern-cpp-memory-safety-beyond-the-hype">Article</a></td>
+<td>Rust vs Modern C++</td>
+<td>Memory Safety Beyond the Hype</td>
+<td><a href="./rust-vs-modern-cpp-memory-safety-beyond-the-hype">link</a></td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
+
 </tr>
 
   </tbody>
@@ -249,7 +251,8 @@ This section serves as a **technical knowledge base** containing conceptual arti
 </tr>
 
 <tr>
-<td>Where GCC and Clang Diverge: A Pass-Level Trace of the 2D Stencil Loop</td>
+<td>Where GCC and Clang Diverge</td>
+<td> A Pass-Level Trace of the 2D Stencil Loop</td>
 <td><a href="./where_gcc_and_clang_diverge_stencil_pass_trace">Article</a></td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
@@ -257,7 +260,8 @@ This section serves as a **technical knowledge base** containing conceptual arti
 </tr>
 
 <tr>
-<td>Validating Language Energy Efficiency Claims in C, C++, and Rust</td>
+<td>Comparing the languages</td>
+<td>Emergy efficiency in C/C++ Rust</td>
 <td><a href="./language_energy_efficiency_validation">Article</a></td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>
@@ -321,6 +325,34 @@ This section serves as a **technical knowledge base** containing conceptual arti
   </tbody>
 </table>
 
+
+
+<summary><strong>Benchmarking and Performance</strong></summary>
+
+<table>
+  <thead>
+    <tr>
+      <th>Topic Area</th>
+      <th>Article Title</th>
+      <th>Article Link</th>
+      <th>Video</th>
+      <th>PDF</th>
+      <th>PPT</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+<tr>
+<td rowspan="1">ANN Benchmarking</td>
+<td><a href="./benchmarking/ann-cpu-bottleneck-analysis">ANN Bottleneck Analysis on AMD CPUs</a></td>
+<td>Article</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
+  </tbody>
+</table>
 
 
 <summary><strong>Systems and Architecture</strong></summary>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">ANN parameter sweep on AMD Ryzen 7 9700X</title>
+  <desc id="desc">Throughput sweep for HNSW ef and FAISS IVF nprobe, with recall labels and a visual throughput frontier.</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef4ff"/>
+    </linearGradient>
+    <linearGradient id="hnsw8" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1d4ed8"/><stop offset="100%" stop-color="#93c5fd"/></linearGradient>
+    <linearGradient id="hnsw16" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient>
+    <linearGradient id="hnsw32" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1d4ed8"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient>
+    <linearGradient id="ivf1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#166534"/><stop offset="100%" stop-color="#86efac"/></linearGradient>
+    <linearGradient id="ivf4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#15803d"/><stop offset="100%" stop-color="#4ade80"/></linearGradient>
+    <linearGradient id="ivf8" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#16a34a"/><stop offset="100%" stop-color="#22c55e"/></linearGradient>
+    <linearGradient id="ivf16" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#22c55e"/><stop offset="100%" stop-color="#86efac"/></linearGradient>
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="560" fill="url(#bg2)"/>
+  <rect x="22" y="22" width="1156" height="516" rx="24" fill="#ffffff" stroke="#dbe3ee" filter="url(#shadow2)"/>
+
+  <text x="48" y="60" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="24" font-weight="800" fill="#0f172a">Parameter sweep: throughput and recall frontier</text>
+  <text x="48" y="84" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#475569">Same hardware, same dataset, same binary; HNSW varies `ef`, IVF varies `nprobe`</text>
+
+  <rect x="46" y="110" width="532" height="356" rx="20" fill="#ffffff" stroke="#dbe3ee"/>
+  <rect x="622" y="110" width="532" height="356" rx="20" fill="#ffffff" stroke="#dbe3ee"/>
+
+  <text x="68" y="142" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="18" font-weight="800" fill="#0f172a">HNSW: `ef` sweep</text>
+  <text x="644" y="142" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="18" font-weight="800" fill="#0f172a">IVF: `nprobe` sweep</text>
+
+  <line x1="100" y1="336" x2="524" y2="336" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="100" y1="186" x2="100" y2="336" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="146" y1="176" x2="146" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="240" y1="176" x2="240" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="334" y1="176" x2="334" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="428" y1="176" x2="428" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <text x="68" y="190" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">ef 8</text>
+  <text x="68" y="250" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">ef 16</text>
+  <text x="68" y="310" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">ef 32</text>
+
+  <rect x="120" y="176" width="252" height="26" rx="7" fill="url(#hnsw8)"/>
+  <rect x="120" y="236" width="151" height="26" rx="7" fill="url(#hnsw16)"/>
+  <rect x="120" y="296" width="79" height="26" rx="7" fill="url(#hnsw32)"/>
+
+  <text x="382" y="194" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">363.5k qps</text>
+  <text x="286" y="254" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">218.3k qps</text>
+  <text x="216" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">115.1k qps</text>
+
+  <text x="382" y="212" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 1.000</text>
+  <text x="286" y="272" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 1.000</text>
+  <text x="216" y="332" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 1.000</text>
+
+  <text x="68" y="400" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">Higher `ef` increases search work without changing recall on this slice.</text>
+
+  <line x1="674" y1="336" x2="1100" y2="336" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="674" y1="186" x2="674" y2="336" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="760" y1="176" x2="760" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="860" y1="176" x2="860" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="960" y1="176" x2="960" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="1060" y1="176" x2="1060" y2="346" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <text x="644" y="190" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">nprobe 1</text>
+  <text x="644" y="250" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">nprobe 4</text>
+  <text x="644" y="310" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">nprobe 8</text>
+  <text x="644" y="370" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" fill="#334155">nprobe 16</text>
+
+  <rect x="720" y="176" width="282" height="26" rx="7" fill="url(#ivf1)"/>
+  <rect x="720" y="236" width="93" height="26" rx="7" fill="url(#ivf4)"/>
+  <rect x="720" y="296" width="54" height="26" rx="7" fill="url(#ivf8)"/>
+  <rect x="720" y="356" width="26" height="26" rx="7" fill="url(#ivf16)"/>
+
+  <text x="1012" y="194" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">1.87M qps</text>
+  <text x="826" y="254" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">615.7k qps</text>
+  <text x="788" y="314" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">355.9k qps</text>
+  <text x="758" y="374" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="13" font-weight="800" fill="#0f172a">173.7k qps</text>
+
+  <text x="1012" y="212" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 0.347</text>
+  <text x="826" y="272" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 0.697</text>
+  <text x="788" y="332" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 0.857</text>
+  <text x="758" y="392" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">recall 0.963</text>
+
+  <text x="644" y="400" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#64748b">Higher `nprobe` lifts recall and drops throughput.</text>
+
+  <rect x="46" y="482" width="1108" height="42" rx="16" fill="#f8fafc" stroke="#dbe3ee"/>
+  <circle cx="80" cy="503" r="6" fill="#2563eb"/>
+  <circle cx="258" cy="503" r="6" fill="#16a34a"/>
+  <text x="96" y="507" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#334155">HNSW retains recall while throughput drops as traversal work rises.</text>
+  <text x="274" y="507" font-family="Inter, ui-sans-serif, system-ui, Arial, sans-serif" font-size="12" fill="#334155">IVF trades recall for speed by shrinking the scan set before distance evaluation.</text>
+</svg>

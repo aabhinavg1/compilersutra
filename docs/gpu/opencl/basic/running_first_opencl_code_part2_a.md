@@ -56,7 +56,7 @@ keywords:
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import AdBanner from '@site/src/components/AdBanner';
-import InfolinksScript from '@site/src/components/InfolinksScript';
+// import InfolinksScript from '@site/src/components/InfolinksScript';
 
 
 
@@ -85,14 +85,10 @@ import InfolinksScript from '@site/src/components/InfolinksScript';
   </iframe>
 </div>
 
-<div>
-    <AdBanner />
-</div>
-
-
 # Detect Your GPU Device Using OpenCL
 
-<InfolinksScript />
+<!-- <AdBanner /> -->
+<!-- <InfolinksScript /> -->
 
 
 Welcome to your next step in mastering **OpenCL**  a powerful framework for running code across a range of devices, including GPUs, CPUs, and other accelerators.
@@ -889,4 +885,3 @@ Stay tuned for the next article: ***"Running Your First Kernel with OpenCL in C+
 > These references provide **both theoretical depth** and **hands-on implementation** support.         
 > Start with **official docs** for correctness and use tutorial articles for guided learning.
 :::
-
