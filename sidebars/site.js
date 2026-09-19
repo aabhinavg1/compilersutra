@@ -309,6 +309,7 @@ const site = {
         'articles/when-o2-layout-hurts-machineblockplacement',
         'articles/machineblockplacement-wrong-bet-static-probabilities-pgo',
         'articles/machineblockplacement-329-benchmark-prevalence-and-fix',
+        'articles/vulkan-radv-perf-query-mesa-icd-gfx12-csrun-linux',
         'articles/hft_stdlib_restrictions',
         'articles/language_energy_efficiency_validation',
         {
