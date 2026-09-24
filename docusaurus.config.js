@@ -99,10 +99,11 @@ const config = {
             ],
           },
           {
+            // Only trailing-slash forms: site has trailingSlash:true, and listing
+            // both /path and /path/ writes the same index.html (EEXIST on build).
             to: '/docs/compilers/intro/',
             from: [
               '/docs/compilers/IntroductionToCompilers/',
-              '/docs/compilers/IntroductionToCompilers',
               '/docs/compilers/inside-a-compiler/',
               '/docs/compilers/inside-a-compiler-source-to-assembly/',
             ],
