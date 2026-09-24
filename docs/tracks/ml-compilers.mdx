@@ -8,67 +8,263 @@ keywords:
   - MLIR tutorial
   - TVM tutorial
   - lowering pipeline
+hide_title: true
 ---
 
-import AdBanner from '@site/src/components/AdBanner';
+import Link from '@docusaurus/Link';
+import styles from './track.module.css';
 
-# ML Compilers Track
+<div className={styles.page}>
+  <header className={styles.hero}>
+    <p className={styles.eyebrow}>Learning track · AI compiler stack</p>
+    <h1 className={styles.title}>ML Compilers</h1>
+    <p className={styles.subtitle}>
+      Not just another frontend/backend story — richer IRs, staged lowering, schedules, and
+      hardware-aware codegen for models. MLIR, TVM, and how they sit above LLVM.
+    </p>
 
+    <div className={styles.heroMeta}>
+      <span>Free</span>
+      <span>~10 core lessons</span>
+      <span>After: LLVM helpful</span>
+    </div>
 
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/ml-compilers/introduction-roadmap/">
+        Start lesson 1
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/llvm-and-ir/">
+        Need LLVM first?
+      </Link>
+    </div>
+  </header>
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+  <section className={styles.infoRow}>
+    <article className={styles.infoCard}>
+      <h2>Who this is for</h2>
+      <ul>
+        <li>Compiler engineers moving into AI / DSC stacks</li>
+        <li>LLVM readers who want the layer above raw IR</li>
+        <li>Performance engineers interested in model compilation</li>
+      </ul>
+    </article>
+    <article className={styles.infoCard}>
+      <h2>What you will understand</h2>
+      <ul>
+        <li>Why ML compilers exist beyond classic LLVM flows</li>
+        <li>Where MLIR and TVM fit in the stack</li>
+        <li>Staged lowering vs a single-IR pipeline</li>
+        <li>How torch.compile-style stacks connect the pieces</li>
+      </ul>
+    </article>
+  </section>
 
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Path</span>
+      <h2 className={styles.sectionTitle}>Follow this order</h2>
+      <p className={styles.sectionDesc}>
+        Labels match the article titles. Finish one step, then open the next.
+      </p>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>1 · Why ML compilers exist</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/ml-compilers/introduction-roadmap/">
+          <span className={styles.stepNum}>01</span>
+          <span className={styles.stepCopy}>
+            <strong>Introduction to ML Compilers + Roadmap</strong>
+            <em>Field map and study order</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm/">
+          <span className={styles.stepNum}>02</span>
+          <span className={styles.stepCopy}>
+            <strong>What Problem ML Compilers Solve Beyond LLVM</strong>
+            <em>Why classic IR alone is not enough</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/ml-compilers/end-to-end-pipeline/">
+          <span className={styles.stepNum}>03</span>
+          <span className={styles.stepCopy}>
+            <strong>The End-to-End ML Compiler Pipeline</strong>
+            <em>Graph → optimize → kernels → hardware</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>2 · See it live</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/ml-compilers/mlcompilerstack/">
+          <span className={styles.stepNum}>04</span>
+          <span className={styles.stepCopy}>
+            <strong>Seeing the ML Compiler Stack Live on AMD GPU</strong>
+            <em>Make every stage visible on a real machine</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/ml-compilers/inside-torch-compile/">
+          <span className={styles.stepNum}>05</span>
+          <span className={styles.stepCopy}>
+            <strong>Inside torch.compile</strong>
+            <em>Dynamo → AOTAutograd → Inductor → Triton</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>3 · MLIR</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/MLIR/">
+          <span className={styles.stepNum}>06</span>
+          <span className={styles.stepCopy}>
+            <strong>MLIR Hub</strong>
+            <em>Section home for multi-level IR</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/MLIR/intro/">
+          <span className={styles.stepNum}>07</span>
+          <span className={styles.stepCopy}>
+            <strong>Introduction to MLIR</strong>
+            <em>Dialects, lowering, why multi-level IR</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>4 · TVM</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/tvm/">
+          <span className={styles.stepNum}>08</span>
+          <span className={styles.stepCopy}>
+            <strong>TVM Hub</strong>
+            <em>Section home for Apache TVM</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/tvm-for-beginners/">
+          <span className={styles.stepNum}>09</span>
+          <span className={styles.stepCopy}>
+            <strong>TVM for Beginners</strong>
+            <em>What TVM does and why it matters</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/tvm/basics/installation/">
+          <span className={styles.stepNum}>10</span>
+          <span className={styles.stepCopy}>
+            <strong>TVM Installation</strong>
+            <em>Get a working TVM environment</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/tvm/basics/first-model/">
+          <span className={styles.stepNum}>11</span>
+          <span className={styles.stepCopy}>
+            <strong>First Model with TVM</strong>
+            <em>Compile and run a small model path</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/tvm/basics/autotuning/">
+          <span className={styles.stepNum}>12</span>
+          <span className={styles.stepCopy}>
+            <strong>TVM Autotuning</strong>
+            <em>Search schedules for better kernels</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>5 · Connect the stack</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/tracks/llvm-and-ir/">
+          <span className={styles.stepNum}>13</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM and IR Track</strong>
+            <em>The infra ML stacks often lower into</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/tracks/gpu-compilers/">
+          <span className={styles.stepNum}>14</span>
+          <span className={styles.stepCopy}>
+            <strong>GPU Compilers Track</strong>
+            <em>Device execution model for generated kernels</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/AI/">
+          <span className={styles.stepNum}>15</span>
+          <span className={styles.stepCopy}>
+            <strong>AI Systems</strong>
+            <em>Broader math → models → hardware map</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Practice</span>
+      <h2 className={styles.sectionTitle}>While you learn</h2>
+    </div>
+    <ul className={styles.practiceList}>
+      <li>Compare classic LLVM-style opts with staged lowering in an ML stack</li>
+      <li>Sketch a pipeline from a domain IR down toward kernels / LLVM</li>
+      <li>Connect one MLIR or TVM idea back to an LLVM concept you already know</li>
+    </ul>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Extra</span>
+      <h2 className={styles.sectionTitle}>Optional supporting reads</h2>
+      <p className={styles.sectionDesc}>Deeper TVM chapters when you are ready.</p>
+    </div>
+    <div className={styles.chipRow}>
+      <Link className={styles.chip} to="/docs/ml-compilers/">ML Compilers hub</Link>
+      <Link className={styles.chip} to="/docs/tvm/intermediate/relay/">TVM Relay</Link>
+      <Link className={styles.chip} to="/docs/tvm/intermediate/graph-optimizations/">Graph Optimizations</Link>
+      <Link className={styles.chip} to="/docs/tvm/intermediate/schedule-tuning/">Schedule Tuning</Link>
+      <Link className={styles.chip} to="/docs/tvm/deployment/runtime/">TVM Runtime</Link>
+      <Link className={styles.chip} to="/docs/tvm/advanced/meta-scheduler/">Meta Scheduler</Link>
+    </div>
+  </section>
+
+  <section className={styles.nextCard}>
+    <p className={styles.nextLabel}>When this track is done</p>
+    <h2 className={styles.nextTitle}>Keep going</h2>
+    <p className={styles.nextText}>
+      Practice on Labs/Tools, or go deeper on GPU execution for the kernels these stacks emit.
+    </p>
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/labs/">
+        Open Labs
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tools/">
+        Tools
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/gpu-compilers/">
+        GPU Compilers
+      </Link>
+    </div>
+  </section>
 </div>
-
-ML compilers are not just another frontend or backend story. They exist because modern workloads need richer IR design, staged lowering, schedule-aware optimization, and hardware-specific code generation strategies.
-
-## Who This Is For
-
-- compiler engineers moving into AI and domain-specific compilation
-- LLVM readers who want to understand the next layer above raw IR
-- performance engineers interested in model compilation and lowering pipelines
-
-## Outcome
-
-You should understand why MLIR exists, where TVM fits, and how multi-level compiler pipelines differ from classic single-IR workflows.
-
-## Recommended Sequence
-
-1. [Introduction to ML Compilers + Roadmap](/docs/ml-compilers/introduction-roadmap)
-2. [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack)
-3. [MLIR Intro](/docs/MLIR/intro)
-4. [TVM Intro](/docs/tvm-for-beginners)
-5. [GPU Compilers Track](/docs/tracks/gpu-compilers)
-6. [LLVM and IR Track](/docs/tracks/llvm-and-ir)
-
-<AdBanner />
-
-## Suggested Practice
-
-- compare classic LLVM-style optimization with staged lowering in an ML compiler stack
-- sketch a simple lowering pipeline from a domain-level representation toward low-level code
-- connect one ML compiler concept back to LLVM infrastructure you already know
-
-## Next Step
-
-Pair this track with [Tools](/docs/tools) and [Labs](/docs/labs) as those sections expand.

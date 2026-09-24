@@ -1,65 +1,225 @@
 ---
 id: start-here
 title: Start Here
-description: A high-conviction roadmap to become a compiler engineer through compilers, LLVM, GPU systems, and backend fundamentals.
+description: Find where everything lives on CompilerSutra — start in one path, or jump by Learn, Practice, Tools, or Read.
 keywords:
   - compiler engineer roadmap
   - LLVM roadmap
   - compiler learning path
-  - GPU compiler roadmap
-  - systems engineering roadmap
+hide_title: true
 ---
 
 import Link from '@docusaurus/Link';
-import RoadmapExperience from '@site/src/components/roadmap/RoadmapExperience';
+import styles from './start-here.module.css';
 
+<div className={styles.page}>
+  <header className={styles.hero}>
+    <p className={styles.eyebrow}>Site map · First stop</p>
+    <h1 className={styles.title}>Where do you want to go?</h1>
+    <p className={styles.subtitle}>
+      Everything on CompilerSutra sits in four places. Unsure? Start with Fundamentals. Otherwise jump to a section below.
+    </p>
 
+    <nav className={styles.jumpNav} aria-label="Jump to section">
+      <a href="#start">Start</a>
+      <a href="#learn">Learn</a>
+      <a href="#practice">Practice</a>
+      <a href="#tools">Tools</a>
+      <a href="#read">Read</a>
+    </nav>
+  </header>
 
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '0 auto 1.5rem',
-    padding: '1rem 1.1rem',
-    borderRadius: '18px',
-    border: '1px solid var(--ifm-color-emphasis-200)',
-    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(234, 179, 8, 0.08)), var(--ifm-background-surface-color)',
-  }}
->
-  <div style={{fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ifm-color-emphasis-700)'}}>
-    Beginner glossary
+  <section id="start" className={styles.primaryCard}>
+    <div className={styles.primaryMeta}>
+      <span className={styles.badge}>Best first choice</span>
+    </div>
+    <h2 className={styles.primaryTitle}>New here? Start with Fundamentals</h2>
+    <p className={styles.primaryText}>
+      Source → IR → binary. One guided track so you are not lost in the docs.
+    </p>
+    <div className={styles.primaryActions}>
+      <Link className={styles.primaryCta} to="/docs/tracks/compiler-fundamentals">
+        Open Compiler Fundamentals
+        <span className={styles.ctaArrow} aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/basic-terminology/">
+        Or open the glossary
+      </Link>
+    </div>
+  </section>
+
+  <section id="learn" className={styles.zone}>
+    <div className={styles.zoneHead}>
+      <div>
+        <p className={styles.zoneLabel}>Learn</p>
+        <h2 className={styles.zoneTitle}>Guided tracks &amp; topic hubs</h2>
+        <p className={styles.zoneDesc}>Pick one track and stay on it. Same links as the Learn menu.</p>
+      </div>
+      <Link className={styles.zoneAll} to="/docs/tracks/">All tracks →</Link>
+    </div>
+
+    <div className={styles.cardGrid}>
+      <Link className={styles.itemCard} to="/docs/tracks/compiler-fundamentals">
+        <span className={styles.itemTitle}>Compiler Fundamentals</span>
+        <span className={styles.itemHint}>Phases, IR, how code becomes binary</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/tracks/llvm-and-ir">
+        <span className={styles.itemTitle}>LLVM and IR</span>
+        <span className={styles.itemHint}>SSA, passes, architecture</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/tracks/gpu-compilers">
+        <span className={styles.itemTitle}>GPU Compilers</span>
+        <span className={styles.itemHint}>OpenCL, parallel execution</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/tracks/ml-compilers">
+        <span className={styles.itemTitle}>ML Compilers</span>
+        <span className={styles.itemHint}>MLIR, TVM, AI stack</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/c++">
+        <span className={styles.itemTitle}>C++</span>
+        <span className={styles.itemHint}>Systems language base</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/coa">
+        <span className={styles.itemTitle}>Computer Architecture</span>
+        <span className={styles.itemHint}>ISA, pipelines, cache</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/llvm/intro-to-llvm">
+        <span className={styles.itemTitle}>LLVM Tutorials</span>
+        <span className={styles.itemHint}>Full LLVM doc series</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/compilers/compiler">
+        <span className={styles.itemTitle}>Compilers Hub</span>
+        <span className={styles.itemHint}>Frontend, backend, flags</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/MLIR/intro">
+        <span className={styles.itemTitle}>MLIR</span>
+        <span className={styles.itemHint}>Dialects and lowering</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/tvm/intro-to-tvm">
+        <span className={styles.itemTitle}>TVM</span>
+        <span className={styles.itemHint}>ML compiler runtime</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/gpu/opencl">
+        <span className={styles.itemTitle}>OpenCL / GPU</span>
+        <span className={styles.itemHint}>Kernels and platforms</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/AI">
+        <span className={styles.itemTitle}>AI Systems</span>
+        <span className={styles.itemHint}>Math → models → hardware</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/linux/intro_to_linux">
+        <span className={styles.itemTitle}>Linux</span>
+        <span className={styles.itemHint}>Shell, ELF, tooling</span>
+      </Link>
+      <Link className={styles.itemCard} to="/docs/parallel-computing/">
+        <span className={styles.itemTitle}>Parallel Programming</span>
+        <span className={styles.itemHint}>CPU + GPU concurrency</span>
+      </Link>
+    </div>
+  </section>
+
+  <div className={styles.splitZones}>
+    <section id="practice" className={styles.zone}>
+      <div className={styles.zoneHead}>
+        <div>
+          <p className={styles.zoneLabel}>Practice</p>
+          <h2 className={styles.zoneTitle}>Build skill</h2>
+          <p className={styles.zoneDesc}>Hands-on work and quizzes.</p>
+        </div>
+      </div>
+      <div className={styles.listBlock}>
+        <Link className={styles.listRow} to="/dsa">
+          <span>
+            <strong>DSA Academy</strong>
+            <em>Algorithms track</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/docs/labs">
+          <span>
+            <strong>Labs</strong>
+            <em>Guided practical work</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/docs/mcq">
+          <span>
+            <strong>MCQ Hub</strong>
+            <em>Topic quizzes</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/docs/mcq/interview_question/cpp_interview_mcqs">
+          <span>
+            <strong>Interview Q&amp;A</strong>
+            <em>C++ practice</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </section>
+
+    <section id="tools" className={styles.zone}>
+      <div className={styles.zoneHead}>
+        <div>
+          <p className={styles.zoneLabel}>Tools</p>
+          <h2 className={styles.zoneTitle}>Inspect &amp; explore</h2>
+          <p className={styles.zoneDesc}>Interactive utilities.</p>
+        </div>
+      </div>
+      <div className={styles.listBlock}>
+        <Link className={styles.listRow} to="/tools/clang-flags/">
+          <span>
+            <strong>Clang Flags</strong>
+            <em>Flag explorer</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/abi/">
+          <span>
+            <strong>ABI Explorer</strong>
+            <em>Calling conventions</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/docs/llvm/llvm_pass_tracker/llvm_pass">
+          <span>
+            <strong>Pass Tracker</strong>
+            <em>LLVM passes</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.listRow} to="/docs/tools">
+          <span>
+            <strong>Tools Hub</strong>
+            <em>All tooling</em>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </section>
   </div>
-  <h2 style={{marginTop: '0.35rem', marginBottom: '0.45rem'}}>Basic Terminology for Everyone</h2>
-  <p style={{marginTop: 0, marginBottom: '0.9rem', color: 'var(--ifm-color-emphasis-800)'}}>
-    A visual beginner glossary for program, compiler, OS, memory, networking, and data basics.
+
+  <section id="read" className={styles.zone}>
+    <div className={styles.zoneHead}>
+      <div>
+        <p className={styles.zoneLabel}>Read</p>
+        <h2 className={styles.zoneTitle}>Articles, papers, books</h2>
+        <p className={styles.zoneDesc}>Deep dives when you already have a path.</p>
+      </div>
+    </div>
+    <div className={styles.chipRow}>
+      <Link className={styles.chip} to="/docs/articles">All Articles</Link>
+      <Link className={styles.chip} to="/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter">Benchmarks</Link>
+      <Link className={styles.chip} to="/docs/compilers/techblog/">Compiler Blog</Link>
+      <Link className={styles.chip} to="/docs/how-about">How-To Guides</Link>
+      <Link className={styles.chip} to="/library">Paper Library</Link>
+      <Link className={styles.chip} to="/books">Books</Link>
+      <Link className={styles.chip} to="/docs/project/">Projects</Link>
+    </div>
+  </section>
+
+  <p className={styles.footerNote}>
+    Tip: the top menu mirrors this page — <strong>Learn</strong>, <strong>Practice</strong>, <strong>Tools</strong>, <strong>Read</strong>.
   </p>
-  <Link className="button button--primary button--md" to="/docs/basic-terminology/">
-    Open glossary
-  </Link>
 </div>
-
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
-</div>
-
-<RoadmapExperience />

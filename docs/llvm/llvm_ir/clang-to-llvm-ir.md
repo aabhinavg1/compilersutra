@@ -77,7 +77,8 @@ This split is why LLVM scales well. Clang understands the source language, while
   <AdBanner />
 </div>
 
-If you want the general compiler frontend first, see [Compiler Front End](https://www.compilersutra.com/docs/compilers/IntroductionToCompilers/).
+If you want the general compiler frontend first, see [Compiler Frontend](/docs/compilers/front_end/).
+For the full pipeline to assembly, see [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/).
 If you want to see the complete LLVM toolchain pipeline, start with the [LLVM Architecture Overview](/docs/llvm/llvm_basic/LLVM_Architecture) and the [LLVM Roadmap](/docs/llvm/).
 
 ## Table of Contents

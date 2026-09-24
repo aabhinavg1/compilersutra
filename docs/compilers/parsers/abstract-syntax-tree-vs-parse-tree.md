@@ -172,7 +172,7 @@ Modern compiler frontends such as Clang are valuable partly because they produce
 - [Recursive descent parser example](/docs/compilers/parsers/recursive-descent-parser-example)
 - [LL vs LR parser explained](/docs/compilers/parsers/ll-vs-lr-parser)
 - [Types of parser in compiler design](/docs/compilers/parsers/types-of-parser)
-- [Inside a compiler: source code to assembly](/docs/compilers/intro)
+- [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/)
 - [LLVM and IR roadmap](/docs/llvm/intro-to-llvm)
 
 ## FAQ

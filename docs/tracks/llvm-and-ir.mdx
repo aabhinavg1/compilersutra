@@ -7,81 +7,278 @@ keywords:
   - SSA
   - compiler passes
   - LLVM roadmap
+hide_title: true
 ---
 
-import AdBanner from '@site/src/components/AdBanner';
+import Link from '@docusaurus/Link';
+import styles from './track.module.css';
 
-# LLVM and IR Track
+<div className={styles.page}>
+  <header className={styles.hero}>
+    <p className={styles.eyebrow}>Learning track · Core path</p>
+    <h1 className={styles.title}>LLVM and IR</h1>
+    <p className={styles.subtitle}>
+      From what LLVM is, to reading IR, SSA, dominance, and passes — the main CompilerSutra path
+      for real compiler infrastructure work.
+    </p>
 
+    <div className={styles.heroMeta}>
+      <span>Free</span>
+      <span>~15 lessons</span>
+      <span>After: Fundamentals</span>
+    </div>
 
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/llvm/llvm_basic/intro-to-llvm/">
+        Start lesson 1
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/compiler-fundamentals/">
+        Need foundations first?
+      </Link>
+    </div>
+  </header>
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+  <section className={styles.infoRow}>
+    <article className={styles.infoCard}>
+      <h2>Who this is for</h2>
+      <ul>
+        <li>Engineers moving from compiler basics into LLVM</li>
+        <li>C++ developers entering the LLVM ecosystem</li>
+        <li>Readers who want SSA, dominance, and passes with real context</li>
+      </ul>
+    </article>
+    <article className={styles.infoCard}>
+      <h2>What you will understand</h2>
+      <ul>
+        <li>How LLVM is organized (Clang, IR, passes, backend)</li>
+        <li>How to read and navigate LLVM IR</li>
+        <li>Why SSA and dominance matter for opts</li>
+        <li>How passes analyze and transform IR</li>
+      </ul>
+    </article>
+  </section>
 
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Path</span>
+      <h2 className={styles.sectionTitle}>Follow this order</h2>
+      <p className={styles.sectionDesc}>
+        Labels match the article titles. Finish one step, then open the next.
+      </p>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>1 · Orientation</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_basic/intro-to-llvm/">
+          <span className={styles.stepNum}>01</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM Explained: Architecture, IR, and Clang</strong>
+            <em>What LLVM is and how Clang fits</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_basic/Why_LLVM/">
+          <span className={styles.stepNum}>02</span>
+          <span className={styles.stepCopy}>
+            <strong>Why LLVM?</strong>
+            <em>Design philosophy and why teams use it</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_basic/LLVM_Architecture/">
+          <span className={styles.stepNum}>03</span>
+          <span className={styles.stepCopy}>
+            <strong>High-Level LLVM Architecture</strong>
+            <em>Frontend, IR, middle end, backend overview</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/intro-to-llvm/">
+          <span className={styles.stepNum}>04</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM Roadmap: Beginner to Advanced</strong>
+            <em>Full curriculum map (bookmark this)</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>2 · Setup &amp; tools</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_basic/Build/">
+          <span className={styles.stepNum}>05</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM with Clang — Build Instructions</strong>
+            <em>Get a working LLVM/Clang build</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_extras/manage_llvm_version/">
+          <span className={styles.stepNum}>06</span>
+          <span className={styles.stepCopy}>
+            <strong>Manage Multiple LLVM Versions</strong>
+            <em>Switch toolchains cleanly on Linux/macOS</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_tools/llvm_tools/">
+          <span className={styles.stepNum}>07</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM Tools</strong>
+            <em>opt, llvm-dis, llvm-as, and the daily CLI set</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>3 · Read LLVM IR</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_ir/intro_to_llvm_ir/">
+          <span className={styles.stepNum}>08</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM IR Explained With Examples</strong>
+            <em>What IR is and how to read it</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_ir/hierarchy_of_llvm_ir/">
+          <span className={styles.stepNum}>09</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM IR Hierarchy</strong>
+            <em>Module → Function → Basic Block → Instruction</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_ir/clang-to-llvm-ir/">
+          <span className={styles.stepNum}>10</span>
+          <span className={styles.stepCopy}>
+            <strong>How Clang Converts C/C++ Into LLVM IR</strong>
+            <em>From source to bitcode/IR in practice</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/">
+          <span className={styles.stepNum}>11</span>
+          <span className={styles.stepCopy}>
+            <strong>Your First LLVM IR File, Line by Line</strong>
+            <em>Walk a real IR file without rushing</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>4 · SSA &amp; analysis foundations</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment/">
+          <span className={styles.stepNum}>12</span>
+          <span className={styles.stepCopy}>
+            <strong>SSA: Static Single Assignment</strong>
+            <em>φ-nodes, CFG joins, why SSA enables opts</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment_part2/">
+          <span className={styles.stepNum}>13</span>
+          <span className={styles.stepCopy}>
+            <strong>SSA Deep Dive</strong>
+            <em>How modern compilers reason about values</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier/">
+          <span className={styles.stepNum}>14</span>
+          <span className={styles.stepCopy}>
+            <strong>Dominator Trees &amp; Dominance Frontiers</strong>
+            <em>How SSA placement actually works</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>5 · Passes</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/llvm/Intermediate/What_Is_LLVM_Passes/">
+          <span className={styles.stepNum}>15</span>
+          <span className={styles.stepCopy}>
+            <strong>Understanding LLVM Passes and Their Types</strong>
+            <em>Analysis vs transform, pass manager basics</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_pass_tracker/llvm_pass/">
+          <span className={styles.stepNum}>16</span>
+          <span className={styles.stepCopy}>
+            <strong>LLVM Passes Explained With Real Examples</strong>
+            <em>Track what passes do to IR</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/llvm/llvm_basic/pass/Create_LLVM_Pass_As_A_Plugin/">
+          <span className={styles.stepNum}>17</span>
+          <span className={styles.stepCopy}>
+            <strong>Create an LLVM Pass as a Plugin</strong>
+            <em>Hands-on: ship your first pass</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Practice</span>
+      <h2 className={styles.sectionTitle}>While you learn</h2>
+    </div>
+    <ul className={styles.practiceList}>
+      <li>Compile a simple C file to LLVM IR and inspect the instructions</li>
+      <li>Find φ-nodes in a control-flow-heavy example</li>
+      <li>Compare IR before and after a known <code>opt</code> pass</li>
+    </ul>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Extra</span>
+      <h2 className={styles.sectionTitle}>Optional supporting reads</h2>
+      <p className={styles.sectionDesc}>Only when you hit that problem — not instead of the main path.</p>
+    </div>
+    <div className={styles.chipRow}>
+      <Link className={styles.chip} to="/docs/llvm/fix_llvm_build_bugs/">Build OOM / ld killed fix</Link>
+      <Link className={styles.chip} to="/docs/llvm/llvm_extras/More_About_LLVM/">Unlocking the Power of LLVM</Link>
+      <Link className={styles.chip} to="/docs/llvm/llvm_extras/LLVM_Pass_Timing/">Time each LLVM pass</Link>
+      <Link className={styles.chip} to="/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design/">DFA &amp; NFA (lexer foundations)</Link>
+      <Link className={styles.chip} to="/docs/llvm/llvm_Curriculum/level0/">Level 0 curriculum hub</Link>
+    </div>
+  </section>
+
+  <section className={styles.nextCard}>
+    <p className={styles.nextLabel}>When this track is done</p>
+    <h2 className={styles.nextTitle}>Branch by goal</h2>
+    <p className={styles.nextText}>
+      Practice with labs/tools, or continue into GPU or ML compiler tracks.
+    </p>
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/labs/">
+        Open Labs
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/gpu-compilers/">
+        GPU Compilers
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/ml-compilers/">
+        ML Compilers
+      </Link>
+    </div>
+  </section>
 </div>
-
-This track is the core of CompilerSutra. It takes you from LLVM orientation into IR reasoning, analysis foundations, and pass-oriented thinking.
-
-## Who This Is For
-
-- engineers moving from compiler basics into real infrastructure
-- C++ developers entering the LLVM ecosystem
-- readers who want to understand SSA, dominance, and passes with production context
-
-## Outcome
-
-You should leave this track able to read LLVM IR, understand how LLVM is organized, and reason about why analyses and transformations are built the way they are.
-
-## Recommended Sequence
-
-1. [LLVM Roadmap](/docs/llvm/intro-to-llvm)
-2. [Build LLVM](/docs/llvm/llvm_basic/Build)
-3. [What Is LLVM?](/docs/llvm/llvm_basic/What_is_LLVM)
-4. [Why LLVM](/docs/llvm/llvm_basic/Why_LLVM)
-5. [LLVM Architecture](/docs/llvm/llvm_basic/LLVM_Architecture)
-6. [Manage LLVM Version](/docs/llvm/llvm_extras/manage_llvm_version)
-7. [LLVM Tools](/docs/llvm/llvm_tools/)
-8. [LLVM IR Introduction](/docs/llvm/llvm_ir/intro_to_llvm_ir)
-9. [Hierarchy of LLVM IR](/docs/llvm/llvm_ir/hierarchy_of_llvm_ir)
-10. [DFA and NFA in Modern Compiler Design](/docs/llvm/llvm_Curriculum/level0/DFA_and_NFA_in_Modern_Compiler_Design)
-11. [Static Single Assignment](/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment)
-12. [SSA Part 2](/docs/llvm/llvm_Curriculum/level0/Static_Single_Assignment_part2)
-13. [Dominator Tree and Dominance Frontier](/docs/llvm/llvm_Curriculum/level0/Dominator_Tree_And_Dominance_Frontier)
-14. [LLVM Pass Tracker](/docs/llvm/llvm_pass_tracker/llvm_pass)
-
-<AdBanner />
-
-## Supporting Material
-
-- [LLVM Build Fixes](/docs/llvm/fix_llvm_build_bugs)
-- [LLVM Guide](/docs/llvm/llvm_extras/llvm-guide)
-- [LLVM Pass Timing](/docs/llvm/llvm_extras/llvm_pass_timing)
-
-## Suggested Practice
-
-- compile a simple C file to LLVM IR and inspect the generated instructions
-- identify phi nodes in a control-flow-heavy example
-- compare the IR before and after a known optimization pass
-
-## Next Step
-
-After this track, move to [Labs](/docs/labs) and [Tools](/docs/tools), or continue into [GPU Compilers](/docs/tracks/gpu-compilers) or [ML Compilers](/docs/tracks/ml-compilers).

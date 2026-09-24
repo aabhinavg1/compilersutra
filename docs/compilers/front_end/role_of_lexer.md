@@ -62,7 +62,8 @@ If you want to test your understanding right away, try the lexer quiz:
 * [Lexer MCQs Quiz](/docs/mcq/questions/domain/compilers/compiler/lexer)
 
 :::tip New Section Home
-If you want the broader compiler frontend map first, go to [Compiler Frontend](/docs/compilers/IntroductionToCompilers/).
+If you want the broader compiler frontend map first, go to [Compiler Frontend](/docs/compilers/front_end/).
+For the full source→assembly walkthrough, see [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/).
 :::
 
 ## Table of Contents

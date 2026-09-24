@@ -267,7 +267,7 @@ In the next sections, we will explore **how each mechanism works internally and 
 ## Section 2: Where `#if` and `if` Fit in the Compilation Process
 
 To fully understand the difference between `#if` and `if`, we first need to understand **how a C/C++ program is transformed into a running executable**.
-I have already published article on it [how toolchain](https://www.compilersutra.com/docs/compilers/sourcecode_to_executable/) and [compiler](https://www.compilersutra.com/docs/compilers/IntroductionToCompilers/) works.
+I have already published article on it [how toolchain](https://www.compilersutra.com/docs/compilers/sourcecode_to_executable/) and [Inside a Compiler: Source Code to Assembly](https://www.compilersutra.com/docs/compilers/intro/) works.
 
 A typical C/C++ program passes through several stages before it becomes a runnable program.
 

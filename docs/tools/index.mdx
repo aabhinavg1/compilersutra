@@ -9,72 +9,65 @@ keywords:
   - SSA graph
 ---
 
+import Link from '@docusaurus/Link';
 import AdBanner from '@site/src/components/AdBanner';
 
 # Tools
 
+The tools layer turns reading into inspection. Use these after a core article, not before.
 
+## Available now
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
+<div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1.5rem'}}>
+  <div style={{padding: '1.1rem', borderRadius: '14px', border: '1px solid var(--ifm-color-emphasis-200)'}}>
+    <h3 style={{marginTop: 0}}>Clang Flags Explorer</h3>
+    <p>Browse and understand Clang/LLVM flag behavior.</p>
+    <Link to="/tools/clang-flags/">Open explorer</Link>
+  </div>
+  <div style={{padding: '1.1rem', borderRadius: '14px', border: '1px solid var(--ifm-color-emphasis-200)'}}>
+    <h3 style={{marginTop: 0}}>ABI Explorer</h3>
+    <p>Inspect ABI layout and calling-convention details.</p>
+    <Link to="/abi/">Open explorer</Link>
+  </div>
+  <div style={{padding: '1.1rem', borderRadius: '14px', border: '1px solid var(--ifm-color-emphasis-200)'}}>
+    <h3 style={{marginTop: 0}}>LLVM Pass Tracker</h3>
+    <p>Follow pass behavior and transformation notes.</p>
+    <Link to="/docs/llvm/llvm_pass_tracker/llvm_pass">Open tracker</Link>
+  </div>
 </div>
 
-CompilerSutra should not stop at articles. The tools layer is where readers turn static learning into interactive inspection.
-
-## Planned Tools
+## Planned tools
 
 ### LLVM IR Visualizer
 
-Inspect generated IR, follow control flow, and connect instructions to the source-level intuition behind them.
+Inspect generated IR, follow control flow, and connect instructions to source-level intuition.
 
 ### Optimization Diff Viewer
 
-Compare outputs across optimization levels, pass pipelines, or compiler choices such as GCC versus Clang.
+Compare outputs across optimization levels, pass pipelines, or GCC versus Clang.
 
 ### CFG and SSA Graph Generator
 
-Visualize control-flow graphs, dominance, and SSA relationships so analysis concepts stop feeling abstract.
+Visualize control-flow graphs, dominance, and SSA relationships.
 
 ### Pass Pipeline Explorer
 
-Track how a sequence of passes changes IR over time instead of treating the optimizer like a black box.
+Track how a sequence of passes changes IR over time.
 
 ### Benchmark Artifact Explorer
 
-Browse benchmark JSON, CSV, and comparison outputs with enough structure to spot meaningful differences fast.
+Browse benchmark JSON, CSV, and comparison outputs with enough structure to spot real differences.
 
 <AdBanner />
 
-## How to Use This Section
+## How to use this section
 
-Use tools after reading a core article, not before. The right loop is:
+1. Learn the concept
+2. Inspect a concrete example
+3. Compare before and after
+4. Write down what actually changed
 
-1. learn the concept
-2. inspect a concrete example
-3. compare before and after states
-4. write down what actually changed
-
-## Related Paths
+## Related paths
 
 - [Start Here](/docs/start-here)
 - [LLVM and IR Track](/docs/tracks/llvm-and-ir)

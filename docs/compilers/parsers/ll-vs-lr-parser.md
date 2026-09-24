@@ -182,7 +182,7 @@ That sequence is the pragmatic one:
 - [Recursive descent parser example](/docs/compilers/parsers/recursive-descent-parser-example)
 - [AST vs parse tree explained](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree)
 - [Role of parser in compiler design](/docs/compilers/front_end/role_of_parser)
-- [Inside a compiler: source code to assembly](/docs/compilers/intro)
+- [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/)
 - [LLVM basics and roadmap](/docs/llvm/intro-to-llvm)
 
 ## FAQ

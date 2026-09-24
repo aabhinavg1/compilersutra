@@ -1,83 +1,228 @@
 ---
 title: Compiler Fundamentals Track
-description: Build strong compiler foundations with compiler phases, IR, CFGs, basic optimization reasoning, and practical build-your-own-compiler articles.
+description: Build strong compiler foundations with compiler phases, IR, CFGs, optimization reasoning, and a path to build your own compiler.
 keywords:
   - compiler fundamentals
   - compiler basics
   - build your own compiler
   - compiler roadmap
+hide_title: true
 ---
 
-import AdBanner from '@site/src/components/AdBanner';
+import Link from '@docusaurus/Link';
+import styles from './track.module.css';
 
-# Compiler Fundamentals Track
+<div className={styles.page}>
+  <header className={styles.hero}>
+    <p className={styles.eyebrow}>Learning track · Beginner friendly</p>
+    <h1 className={styles.title}>Compiler Fundamentals</h1>
+    <p className={styles.subtitle}>
+      A clean path into how compilers work — what they are, how source becomes a binary,
+      IR, frontend/backend, then a small build project — before deep LLVM internals.
+    </p>
 
+    <div className={styles.heroMeta}>
+      <span>Free</span>
+      <span>11 lessons</span>
+      <span>Then: LLVM track</span>
+    </div>
 
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/compilers/compiler/">
+        Start lesson 1
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/start-here">
+        Back to Start Here
+      </Link>
+    </div>
+  </header>
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+  <section className={styles.infoRow}>
+    <article className={styles.infoCard}>
+      <h2>Who this is for</h2>
+      <ul>
+        <li>Students learning compilers for the first time</li>
+        <li>C/C++ programmers new to compiler architecture</li>
+        <li>Engineers who want foundations before LLVM</li>
+      </ul>
+    </article>
+    <article className={styles.infoCard}>
+      <h2>What you will understand</h2>
+      <ul>
+        <li>How a compiler is structured end to end</li>
+        <li>Why IR exists and how CFGs matter</li>
+        <li>Frontend vs backend responsibilities</li>
+        <li>How a small compiler project fits together</li>
+      </ul>
+    </article>
+  </section>
 
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Path</span>
+      <h2 className={styles.sectionTitle}>Follow this order</h2>
+      <p className={styles.sectionDesc}>
+        Each link opens the matching article. Finish one step, then open the next.
+      </p>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>1 · What a compiler is</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/compilers/compiler/">
+          <span className={styles.stepNum}>01</span>
+          <span className={styles.stepCopy}>
+            <strong>Know Your Compiler</strong>
+            <em>What compilers do, how they are structured, and key features</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/sourcecode_to_executable/">
+          <span className={styles.stepNum}>02</span>
+          <span className={styles.stepCopy}>
+            <strong>From Source Code to Binary</strong>
+            <em>Preprocess → compile → assemble → link → run</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/intro/">
+          <span className={styles.stepNum}>03</span>
+          <span className={styles.stepCopy}>
+            <strong>Inside a Compiler: Source Code to Assembly</strong>
+            <em>Pipeline walkthrough — lexer, parser, IR, opts, codegen</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>2 · Middle end thinking</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/compilers/ir_in_compiler/">
+          <span className={styles.stepNum}>04</span>
+          <span className={styles.stepCopy}>
+            <strong>Why Intermediate Representation Matters</strong>
+            <em>Why IR sits between source and machine code</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/basic_block_in_compiler/">
+          <span className={styles.stepNum}>05</span>
+          <span className={styles.stepCopy}>
+            <strong>Understanding Basic Blocks</strong>
+            <em>CFG building blocks used in analysis and optimization</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>3 · Frontend</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/compilers/front_end/">
+          <span className={styles.stepNum}>06</span>
+          <span className={styles.stepCopy}>
+            <strong>Compiler Frontend</strong>
+            <em>Overview of lexing, parsing, semantics, and IR generation</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/front_end/role_of_lexer/">
+          <span className={styles.stepNum}>07</span>
+          <span className={styles.stepCopy}>
+            <strong>Role of the Lexer</strong>
+            <em>Tokenization — the first real frontend step</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/front_end/role_of_parser/">
+          <span className={styles.stepNum}>08</span>
+          <span className={styles.stepCopy}>
+            <strong>Role of the Parser</strong>
+            <em>How tokens become structure (AST / parse trees)</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>4 · Backend &amp; control</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/compilers/back_end/">
+          <span className={styles.stepNum}>09</span>
+          <span className={styles.stepCopy}>
+            <strong>Introduction to Backend Compilers</strong>
+            <em>Codegen, register allocation, and target lowering</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/flag/">
+          <span className={styles.stepNum}>10</span>
+          <span className={styles.stepCopy}>
+            <strong>Compiler Flags</strong>
+            <em>How -O levels and flags change compiler behavior</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>5 · Build something</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/compilers/build_your_compiler/">
+          <span className={styles.stepNum}>11</span>
+          <span className={styles.stepCopy}>
+            <strong>Build Your First Compiler with LLVM</strong>
+            <em>Small hands-on project that generates and runs IR</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Practice</span>
+      <h2 className={styles.sectionTitle}>While you learn</h2>
+    </div>
+    <ul className={styles.practiceList}>
+      <li>Trace one simple C/C++ file through preprocess → parse → IR → assembly</li>
+      <li>For each phase, write one frontend job and one backend job</li>
+      <li>Compare a hand-written optimization idea with what <code>-O2</code> already does</li>
+    </ul>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Extra</span>
+      <h2 className={styles.sectionTitle}>Optional supporting reads</h2>
+      <p className={styles.sectionDesc}>Only after the main path — not instead of it.</p>
+    </div>
+    <div className={styles.chipRow}>
+      <Link className={styles.chip} to="/docs/compilers/clang-vs-gcc-vs-llvm/">Clang vs GCC vs LLVM</Link>
+      <Link className={styles.chip} to="/docs/compilers/parsers/types-of-parser-in-compiler-design/">Types of Parsers</Link>
+      <Link className={styles.chip} to="/docs/compilers/Verification_Vs_Validation/">Verification vs Validation</Link>
+      <Link className={styles.chip} to="/docs/compilers/CPU/">CPU Compilers</Link>
+      <Link className={styles.chip} to="/docs/compilers/GPU/">GPU Compilers</Link>
+      <Link className={styles.chip} to="/docs/compilers/other_arch/">Other Architectures</Link>
+    </div>
+  </section>
+
+  <section className={styles.nextCard}>
+    <p className={styles.nextLabel}>When this track is done</p>
+    <h2 className={styles.nextTitle}>Next: LLVM and IR</h2>
+    <p className={styles.nextText}>
+      Move from general compiler structure into LLVM architecture, IR, SSA, and passes.
+    </p>
+    <Link className={styles.primaryCta} to="/docs/tracks/llvm-and-ir">
+      Open LLVM track
+      <span aria-hidden="true">→</span>
+    </Link>
+  </section>
 </div>
-
-This track is for readers who want a clean path into compiler engineering without getting buried under toolchain details too early.
-
-## Who This Is For
-
-- students learning compilers for the first time
-- systems programmers who know C or C++ but not compiler architecture
-- engineers who want to understand optimization pipelines before touching LLVM internals
-
-## Outcome
-
-By the end of this track, you should understand how a compiler is structured, why IR exists, how control flow and data flow shape optimization, and how a small compiler project fits together.
-
-## Recommended Sequence
-
-1. [What Is a Compiler?](/docs/compilers/Compiler)
-2. [Intermediate Representation in Compilers](/docs/compilers/ir_in_compiler)
-3. [Source Code to Executable](/docs/compilers/sourcecode_to_executable)
-4. [Introduction to Compilers](/docs/compilers/IntroductionToCompilers)
-5. [Compiler Frontend](/docs/compilers/front_end/)
-6. [Role of Parser](/docs/compilers/front_end/role_of_parser)
-7. [Introduction to Backend Compilers](/docs/compilers/back_end/)
-8. [Basic Blocks in Compiler Design](/docs/compilers/basic_block_in_compiler)
-9. [Compiler Flags](/docs/compilers/flag/)
-10. [Build Your First Compiler](/docs/compilers/build_your_compiler)
-
-<AdBanner />
-
-## Supporting Articles
-
-- [Verification vs Validation](/docs/compilers/Verification_Vs_Validation)
-- [Other Architectures](/docs/compilers/other_arch/)
-- [CPU Compilers](/docs/compilers/CPU/)
-- [GPU Compilers](/docs/compilers/GPU/)
-
-## Suggested Practice
-
-- trace a simple source file through preprocessing, parsing, IR, and assembly
-- identify one frontend responsibility and one backend responsibility for each compiler phase
-- compare a hand-written optimization idea with what `-O2` or `-O3` already does
-
-## Next Step
-
-After this track, move to [LLVM and IR](/docs/tracks/llvm-and-ir).

@@ -6,78 +6,274 @@ keywords:
   - OpenCL tutorial
   - heterogeneous programming
   - GPU optimization
+hide_title: true
 ---
 
-import AdBanner from '@site/src/components/AdBanner';
+import Link from '@docusaurus/Link';
+import styles from './track.module.css';
 
-# GPU Compilers Track
+<div className={styles.page}>
+  <header className={styles.hero}>
+    <p className={styles.eyebrow}>Learning track · Parallel hardware</p>
+    <h1 className={styles.title}>GPU Compilers</h1>
+    <p className={styles.subtitle}>
+      Where compiler ideas meet real GPU constraints — execution model, memory, OpenCL kernels,
+      and why parallel hardware changes codegen and optimization choices.
+    </p>
 
+    <div className={styles.heroMeta}>
+      <span>Free</span>
+      <span>~12 lessons</span>
+      <span>OpenCL-first path</span>
+    </div>
 
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/gpu/what_is_gpu/">
+        Start lesson 1
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/start-here/">
+        Back to Start Here
+      </Link>
+    </div>
+  </header>
 
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
+  <section className={styles.infoRow}>
+    <article className={styles.infoCard}>
+      <h2>Who this is for</h2>
+      <ul>
+        <li>Engineers exploring GPU compiler / runtime stacks</li>
+        <li>Developers learning OpenCL and heterogeneous programming</li>
+        <li>Readers who want to know why GPUs change compiler decisions</li>
+      </ul>
+    </article>
+    <article className={styles.infoCard}>
+      <h2>What you will understand</h2>
+      <ul>
+        <li>CPU vs GPU execution and memory tradeoffs</li>
+        <li>OpenCL host/device model and first kernels</li>
+        <li>How platforms (CUDA, ROCm, Vulkan) fit the map</li>
+        <li>Where “GPU compilers” sit in the stack</li>
+      </ul>
+    </article>
+  </section>
 
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Path</span>
+      <h2 className={styles.sectionTitle}>Follow this order</h2>
+      <p className={styles.sectionDesc}>
+        Labels match the article titles. Finish one step, then open the next.
+      </p>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>1 · Why GPUs exist</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/gpu/what_is_gpu/">
+          <span className={styles.stepNum}>01</span>
+          <span className={styles.stepCopy}>
+            <strong>Introduction to GPU — What is a Graphics Processing Unit?</strong>
+            <em>Core hardware picture before APIs</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/CPU_Vs_GPU/">
+          <span className={styles.stepNum}>02</span>
+          <span className={styles.stepCopy}>
+            <strong>GPU vs CPU: What's the Difference</strong>
+            <em>Latency vs throughput, when each wins</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/parallel-programming-evolution/">
+          <span className={styles.stepNum}>03</span>
+          <span className={styles.stepCopy}>
+            <strong>Evolution of Parallel Programming</strong>
+            <em>From single-thread to multi-core to accelerators</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/Parallel_Programming/Intro_to_Parallel_Programming/">
+          <span className={styles.stepNum}>04</span>
+          <span className={styles.stepCopy}>
+            <strong>Intro to Parallel Programming</strong>
+            <em>Programming-model intuition for parallel work</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>2 · Pipelines &amp; GPU compilers</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/The_Graphic_Rendering_Pipeline/">
+          <span className={styles.stepNum}>05</span>
+          <span className={styles.stepCopy}>
+            <strong>The Graphic Rendering Pipeline</strong>
+            <em>How graphics work maps onto GPU stages</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/compilers/GPU/">
+          <span className={styles.stepNum}>06</span>
+          <span className={styles.stepCopy}>
+            <strong>GPU Compilers</strong>
+            <em>How high-level code becomes GPU-executable work</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/gpu_programming/gpu_programming_toc/">
+          <span className={styles.stepNum}>07</span>
+          <span className={styles.stepCopy}>
+            <strong>GPU Programming Curriculum</strong>
+            <em>Broader GPU programming map (bookmark)</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>3 · OpenCL path (hands-on)</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/">
+          <span className={styles.stepNum}>08</span>
+          <span className={styles.stepCopy}>
+            <strong>OpenCL Master Guide</strong>
+            <em>Hub for AMDGPU, NVIDIA, CPU, Android tracks</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/basic/what_is_opencl/">
+          <span className={styles.stepNum}>09</span>
+          <span className={styles.stepCopy}>
+            <strong>What is OpenCL</strong>
+            <em>Host/device model and why OpenCL exists</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/basic/setting_up_opencl/">
+          <span className={styles.stepNum}>10</span>
+          <span className={styles.stepCopy}>
+            <strong>OpenCL Installation Guide</strong>
+            <em>Windows, Ubuntu, macOS setup</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/basic/running_first_opencl_code/">
+          <span className={styles.stepNum}>11</span>
+          <span className={styles.stepCopy}>
+            <strong>Running Your First OpenCL Hello World</strong>
+            <em>First host-side program end to end</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/basic/running_first_opencl_code_part2_a/">
+          <span className={styles.stepNum}>12</span>
+          <span className={styles.stepCopy}>
+            <strong>Hello World Part 2a — Detect GPU</strong>
+            <em>Enumerate devices and pick a GPU</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/opencl/basic/Writing_your_first_kernel/">
+          <span className={styles.stepNum}>13</span>
+          <span className={styles.stepCopy}>
+            <strong>Writing and Running Your First OpenCL Kernel</strong>
+            <em>Kernel + host interaction</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className={styles.phase}>
+      <h3 className={styles.phaseTitle}>4 · Pick a platform track</h3>
+      <div className={styles.stepList}>
+        <Link className={styles.stepRow} to="/docs/gpu/platforms/">
+          <span className={styles.stepNum}>14</span>
+          <span className={styles.stepCopy}>
+            <strong>GPU Platforms</strong>
+            <em>Choose CUDA, ROCm, Vulkan, Mac, Android, …</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/platforms/cuda/">
+          <span className={styles.stepNum}>15</span>
+          <span className={styles.stepCopy}>
+            <strong>CUDA Track (NVIDIA)</strong>
+            <em>When you have an NVIDIA GPU</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/platforms/rocm/">
+          <span className={styles.stepNum}>16</span>
+          <span className={styles.stepCopy}>
+            <strong>ROCm Track (AMD)</strong>
+            <em>HIP / ROCm / OpenCL on AMDGPU</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+        <Link className={styles.stepRow} to="/docs/gpu/platforms/vulkan/">
+          <span className={styles.stepNum}>17</span>
+          <span className={styles.stepCopy}>
+            <strong>Vulkan Compute Track</strong>
+            <em>Cross-vendor compute + SPIR-V</em>
+          </span>
+          <span className={styles.stepGo} aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Practice</span>
+      <h2 className={styles.sectionTitle}>While you learn</h2>
+    </div>
+    <ul className={styles.practiceList}>
+      <li>Install an OpenCL stack on your machine</li>
+      <li>Run one host-side OpenCL sample and list devices</li>
+      <li>Write one simple kernel and inspect host ↔ device buffers</li>
+    </ul>
+  </section>
+
+  <section className={styles.section}>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Extra</span>
+      <h2 className={styles.sectionTitle}>Optional supporting reads</h2>
+      <p className={styles.sectionDesc}>Only when you need them — not instead of the main path.</p>
+    </div>
+    <div className={styles.chipRow}>
+      <Link className={styles.chip} to="/docs/gpu/optimizations/">GPU Optimizations</Link>
+      <Link className={styles.chip} to="/docs/gpu/opencl/basic/getting_started_with_opencl_on_amdgpu/">OpenCL on AMDGPU</Link>
+      <Link className={styles.chip} to="/docs/gpu/opencl/basic/detecting_opencl_gpu_on_android/">OpenCL on Android</Link>
+      <Link className={styles.chip} to="/docs/gpu/gpu_programming/Setting_your_Gpu/">Setting Your GPU</Link>
+      <Link className={styles.chip} to="/docs/gpu/gpu_programming/how_computer_works/">How a Computer Works</Link>
+      <Link className={styles.chip} to="/docs/parallel-computing/">Parallel Computing hub</Link>
+      <Link className={styles.chip} to="/docs/gpu/">GPU section home</Link>
+    </div>
+  </section>
+
+  <section className={styles.nextCard}>
+    <p className={styles.nextLabel}>When this track is done</p>
+    <h2 className={styles.nextTitle}>Go deeper</h2>
+    <p className={styles.nextText}>
+      Connect GPU work to LLVM/IR, or move into ML compilers that target accelerators.
+    </p>
+    <div className={styles.heroActions}>
+      <Link className={styles.primaryCta} to="/docs/tracks/llvm-and-ir/">
+        LLVM and IR
+        <span aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/tracks/ml-compilers/">
+        ML Compilers
+      </Link>
+      <Link className={styles.secondaryCta} to="/docs/labs/">
+        Labs
+      </Link>
+    </div>
+  </section>
 </div>
-
-GPU compilers are where compiler theory meets hardware constraints in a very visible way. This track connects device architecture, memory behavior, and kernel execution to practical programming and optimization choices.
-
-## Who This Is For
-
-- engineers exploring GPU compiler stacks
-- developers learning OpenCL and heterogeneous programming
-- readers who want to understand why parallel hardware changes compiler decisions
-
-## Outcome
-
-You should be able to explain the programming model, set up OpenCL workflows, write basic kernels, and reason about why compiler and memory decisions matter on GPUs.
-
-## Recommended Sequence
-
-1. [GPU Introduction](/docs/The_Graphic_Rendering_Pipeline)
-2. [Evolution of Parallel Programming](/docs/parallel-programming-evolution)
-3. [CPU vs GPU](/docs/gpu/CPU_Vs_GPU)
-4. [What Is GPU?](/docs/gpu/what_is_gpu)
-5. [OpenCL Home](/docs/gpu/opencl)
-6. [What Is OpenCL?](/docs/gpu/opencl/basic/what_is_opencl)
-7. [Setting Up OpenCL](/docs/gpu/opencl/basic/setting_up_opencl)
-8. [Running Your First OpenCL Code](/docs/gpu/opencl/basic/running_first_opencl_code)
-9. [Running Your First OpenCL Code Part 2](/docs/gpu/opencl/basic/running_first_opencl_code_part2_a)
-10. [Writing Your First Kernel](/docs/gpu/opencl/basic/Writing_your_first_kernel)
-11. [GPU Programming TOC](/docs/gpu/gpu_programming/gpu_programming_toc)
-
-<AdBanner />
-
-## Supporting Material
-
-- [Parallel Programming Intro](/docs/gpu/Parallel_Programming/Intro_to_Parallel_Programming)
-- [GPU Optimizations](/docs/gpu/optimizations)
-- [Detecting OpenCL GPU on Android](/docs/gpu/opencl/basic/detecting_opencl_gpu_on_android)
-
-## Suggested Practice
-
-- install the OpenCL stack on your local machine
-- run one host-side OpenCL sample
-- write one simple kernel and inspect the host-kernel interaction
-
-## Next Step
-
-After this track, use [Tools](/docs/tools) to compare outputs and [Labs](/docs/labs) to turn the concepts into repeatable engineering skill.

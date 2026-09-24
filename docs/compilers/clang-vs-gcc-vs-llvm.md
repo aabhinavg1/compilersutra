@@ -181,7 +181,7 @@ In those cases, `llvm vs gcc` is not only about emitted code. It is about which 
 
 - [GCC vs Clang benchmark report](/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter)
 - [GCC vs Clang assembly analysis](/docs/articles/gcc_vs_clang_assembly_part2a)
-- [Inside a compiler: source code to assembly](/docs/compilers/intro)
+- [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/)
 - [Intermediate representation in compilers](/docs/compilers/ir_in_compiler)
 - [LLVM roadmap](/docs/llvm/intro-to-llvm)
 - [Role of parser in compiler design](/docs/compilers/front_end/role_of_parser)

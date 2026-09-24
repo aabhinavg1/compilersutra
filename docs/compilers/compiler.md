@@ -1,89 +1,179 @@
 ---
 id: Compiler
-title: Know Your Compiler - A Comprehensive Guide to Understanding Compilers and Their Features
-description: |
-  Discover the inner workings of compilers in this insightful guide. From basic concepts to advanced features, learn how compilers transform source code into executable programs, optimize code, and handle different programming languages. Ideal for both beginners and experienced programmers looking to deepen their understanding of compiler technology.
+title: Know Your Compiler
+description: Learn what a compiler is, how it is structured, how it differs from interpreters and assemblers, and where Clang, GCC, and LLVM fit — a clear first lesson for compiler engineering.
 keywords:
-  - Compiler
-  - Source Code
-  - Compiler Design
-  - Optimization
-  - Programming Languages
-  - Compiler Architecture
-  - Code Generation
-  - Code Optimization
-  - Compiler Features
-  - Compiler Theory
-  - Compiler Tools
-tags:
-  - Compiler Design
-  - Programming
-  - Software Development
-  - Code Optimization
-  - Compiler Technology
-  - Programming Languages
-
----
-# 🔍 Know Your Compilers
-
-
-
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
-</div>
-
-:::tip New Section Home
-This compiler entry article still works as before. If you want the new section landing page first, go to [Compilers Home](/docs/compilers/).
-:::
-
-Welcome to the **Compiler Documentation**! Explore each stage and component of the compiler, from front-end parsing to architecture-specific optimizations for GPU, CPU, and more.
-
-## Contents
-
-- **[Introduction to Compilers](intro.md)**  
-  Get a broad understanding of compilers, their purpose, and various types in the programming world.
-
-- **[Know Your Compilers](Know_Your_Compilers.md)**  
-  Dive deeper into the details of different compilers and understand their unique features.
-
-
-- **[CPP vs C Compiler Clang ](./clang-c-vs-cpp-compilation.md)**  
-Comparison of Clang's C and C++ compilation, covering parsing, AST, LLVM IR, optimizations, and code generation differences.
-
-- **[Compiler Verification and Validation](./Verification_Vs_Validation.md)**
-Compiler verification and validation are crucial processes in ensuring that a compiler functions correctly and reliably. These processes help detect errors in compilation, code optimization, and code generation.
-
-
-## Sections
-
-- **[Flags](flag/index.md)**: Explore the various compiler flags and their effects on code optimization, debugging, and performance tuning.
-- **[Front End](front_end/index.md)**: Learn about the front-end process of a compiler, including lexical analysis, syntax parsing, and AST generation.
-- **[Back End](back_end/index.md)**: Understand the back-end workings, from intermediate representation (IR) to code generation and optimization.
-- **[GPU](GPU/index.md)**: Dive into GPU-specific compiler technologies, with a focus on parallelism and memory optimization.
-- **[CPU](CPU/index.md)**: Explore CPU-focused optimizations and architectures, covering instruction sets and performance tuning.
-- **[Other Architectures](other_arch/index.md)**: Learn about compilers for additional architectures, including embedded systems, FPGAs, and custom hardware.
-
+  - what is a compiler
+  - compiler basics
+  - compiler phases
+  - clang gcc llvm
+  - compiler frontend backend
+  - know your compiler
 ---
 
-### 🚀 Start Learning
-Choose a section to begin your journey through the different layers of compiler technology!
+import Link from '@docusaurus/Link';
+
+A **compiler** turns human-written source code into a form a machine can run — usually through several clear stages, not one magic step.
+
+This page is **lesson 1** of the [Compiler Fundamentals](/docs/tracks/compiler-fundamentals/) track. Stay here until the big picture is clear, then move to the next lesson.
+
+## What a compiler actually does
+
+Given source like C or C++, a compiler:
+
+1. **Reads** the text and checks that it is legal for that language
+2. **Understands** structure and meaning (types, names, control flow)
+3. **Rewrites** the program into intermediate forms that are easier to analyze
+4. **Optimizes** when asked (for speed, size, or other goals)
+5. **Emits** target code — often assembly or machine code for a CPU/GPU ISA
+
+You usually invoke this with a driver such as `clang` or `g++`. The driver runs the full toolchain for you (preprocess, compile, assemble, link), but the **compiler proper** is the part that turns source into assembly/object code.
+
+```text
+source.c  →  [preprocessor]  →  [compiler]  →  [assembler]  →  [linker]  →  binary
+                 .i file           .s / .o         .o file         executable
+```
+
+## Compiler vs related tools
+
+| Tool | Job | Example |
+| --- | --- | --- |
+| **Compiler** | Language → IR / assembly / object | `clang -S`, `g++ -c` |
+| **Assembler** | Assembly → object code | `as`, `clang -c` on `.s` |
+| **Linker** | Objects + libs → executable / shared lib | `ld`, `clang` link step |
+| **Interpreter** | Executes source (or bytecode) without a full ahead-of-time binary | Python, some JS engines |
+| **JIT** | Compiles hot code at runtime | JVM, V8, many ML runtimes |
+
+A single command like `clang hello.c -o hello` **orchestrates** several of these. Knowing which stage failed (parse error vs link error) is the first practical skill.
+
+## The three big layers
+
+Almost every production compiler is split like this:
+
+```mermaid
+flowchart LR
+  A[Frontend] --> B[Middle end]
+  B --> C[Backend]
+```
+
+- **Frontend** — language rules  
+- **Middle end** — IR and optimizations  
+- **Backend** — machine code
+
+### Frontend (language-facing)
+
+- Lexing (tokens)
+- Parsing (structure / AST)
+- Semantic checks (types, names, validity)
+- Lowering to an IR
+
+Different languages need different frontends. One backend can serve many languages if they share IR.
+
+### Middle end (IR-facing)
+
+- Works on **Intermediate Representation**
+- Runs analyses and optimizations (DCE, inlining, loop opts, …)
+- Mostly language-independent
+
+### Backend (machine-facing)
+
+- Instruction selection
+- Register allocation
+- Scheduling and target quirks
+- Emits assembly or object code for an ISA
+
+**Why this split matters:** you can add a new language (new frontend) or a new CPU (new backend) without rewriting the whole compiler.
+
+## Where Clang, GCC, and LLVM fit
+
+People often say “LLVM compiler” casually. Be precise:
+
+| Name | What it is |
+| --- | --- |
+| **Clang** | A C/C++/Obj-C **frontend** (and driver) that targets LLVM |
+| **LLVM** | Compiler **infrastructure**: IR, passes, backends, tools |
+| **GCC** | A full compiler collection with its own IR pipeline (GIMPLE → RTL) |
+
+So:
+
+- **Clang vs GCC** = two compilers/toolchains you can install and run
+- **LLVM** = the shared engine Clang (and many others) build on
+
+For a deeper comparison later: [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/).
+
+## A tiny mental model (one function)
+
+Take:
+
+```c
+int add(int a, int b) {
+  return a + b;
+}
+```
+
+Roughly:
+
+1. **Lexer** sees keywords, identifiers, operators
+2. **Parser** builds a tree: function → params → return → add
+3. **Semantics** confirms `a` and `b` are `int`, `+` is valid
+4. **IR** represents the add in a simpler, explicit form
+5. **Opts** may simplify or inline this at `-O2`
+6. **Backend** picks machine instructions (`add`, register moves, ret)
+
+You do not need to memorize every pass yet. You need this **stage map**.
+
+## What “knowing your compiler” means in practice
+
+For day-to-day engineering, “know your compiler” means you can answer:
+
+- Which **stage** produced this error (frontend diagnostic vs linker)?
+- What does **`-O0` vs `-O2`** change, roughly?
+- How do I **inspect** IR or assembly when performance looks wrong?
+- Is this a **language** issue, an **ABI** issue, or a **codegen** issue?
+
+Those questions show up in debugging, performance work, and LLVM learning.
+
+## Common beginner mistakes
+
+1. **Treating the compiler as one blob** — then every failure looks the same  
+2. **Jumping to LLVM passes too early** — without IR / CFG intuition  
+3. **Confusing compile errors with link errors** — different tools, different fixes  
+4. **Assuming `-O2` always wins** — opts change codegen; measure on real workloads  
+
+## Hands-on (5 minutes)
+
+Save `add.c` with the function above, then try:
+
+```bash
+# Stop after preprocessing (expanded source)
+clang -E add.c -o add.i
+
+# Emit assembly (no link)
+clang -S add.c -o add.s
+
+# Emit LLVM IR (Clang/LLVM)
+clang -S -emit-llvm add.c -o add.ll
+
+# Compile only to object file
+clang -c add.c -o add.o
+```
+
+Open `add.s` and `add.ll`. You are already looking *inside* the pipeline.
+
+## What to read next (Fundamentals track)
+
+Follow this order — do not skip around:
+
+1. **You are here** — Know Your Compiler  
+2. [From Source Code to Binary](/docs/compilers/sourcecode_to_executable/) — full toolchain story  
+3. [Inside a Compiler: Source Code to Assembly](/docs/compilers/intro/) — stage-by-stage with Clang & GCC flags  
+4. [Why IR Matters](/docs/compilers/ir_in_compiler/)  
+5. Then frontend → backend → flags → [build a tiny compiler](/docs/compilers/build_your_compiler/)
+
+Or open the full path: [Compiler Fundamentals Track](/docs/tracks/compiler-fundamentals/).
+
+## Related hubs
+
+- [Compilers section home](/docs/compilers/)
+- [Start Here](/docs/start-here/)
+- [LLVM and IR track](/docs/tracks/llvm-and-ir/) (after fundamentals)

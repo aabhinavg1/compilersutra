@@ -1,31 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
-import { FaEnvelope, FaRocket, FaArrowRight, FaMicrochip, FaCode, FaChartLine } from 'react-icons/fa';
+import { FaArrowRight, FaRocket } from 'react-icons/fa';
 import styles from './Hero.module.css';
 
-export default function Hero({ newsletterUrl }) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+export default function Hero() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
-    };
-
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -204,77 +191,33 @@ export default function Hero({ newsletterUrl }) {
 
       <div className={styles.shell}>
         <div className={styles.content}>
-          <div className={styles.badgeGroup}>
-            <span className={styles.badge}>AI Compilers</span>
-            <span className={styles.badge}>LLVM</span>
-            <span className={styles.badge}>MLIR STABLE</span>
-          </div>
-          
-          <p className={styles.eyebrow}>
-            <span className={styles.eyebrowIcon}>⚡</span>
-            Master LLVM, Compilers & MLIR
-          </p>
-          
+          <p className={styles.eyebrow}>Free guided paths · LLVM · Compilers · Performance</p>
+
           <h1 className={styles.title}>
-            Source to Silicon
-            <span className={styles.titleBreak}>
-              Full Stack Compiler Engineering
-              <span className={styles.titleCursor}>_</span>
-            </span>
+            From source code
+            <span className={styles.titleBreak}>to real hardware</span>
           </h1>
-          
+
           <p className={styles.subtitle}>
-            Structured paths through compiler internals, execution models, GPU systems & performance engineering – 
-            the full stack from source code to hardware.
+            Learn how compilers, LLVM, and systems design actually work — with clear tracks,
+            practical reads, and tools. All material is free.
           </p>
-          
-          <div className={styles.stats}>
-            <div className={styles.stat}>
-              <FaMicrochip className={styles.statIcon} />
-              <span className={styles.statLabel}>LLVM</span>
-            </div>
-            <div className={styles.stat}>
-              <FaCode className={styles.statIcon} />
-              <span className={styles.statLabel}>MLIR Stable</span>
-            </div>
-            <div className={styles.stat}>
-              <FaChartLine className={styles.statIcon} />
-              <span className={styles.statLabel}>Performance Focus</span>
-            </div>
-          </div>
-          
+
           <div className={styles.actions}>
             <Link className={styles.primaryAction} to="/docs/start-here">
               <FaRocket aria-hidden="true" />
-              Start Learning
+              Start learning — free
               <FaArrowRight className={styles.actionIcon} />
             </Link>
-            <Link className={styles.supportAction} to="/support">
-              Support Us
-            </Link>
             <Link
-              className={styles.secondaryAction}
-              to={newsletterUrl}
+              className={styles.supportAction}
+              href="https://www.linkedin.com/in/abhinavcompilerllvm/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaEnvelope aria-hidden="true" />
-              Weekly Compiler Notes
+              Contact for guidance
             </Link>
           </div>
-          
-          <div className={styles.terminalHint}>
-            <span className={styles.terminalPrompt}>$</span>
-            <span className={styles.terminalText}>compilersutra --path llvm --depth expert</span>
-            <span className={styles.terminalBlink}>█</span>
-          </div>
-        </div>
-      </div>
-      
-      <div className={styles.scrollIndicator}>
-        <span className={styles.scrollText}>Scroll to explore</span>
-        <div className={styles.scrollMouse}>
-          <div className={styles.scrollWheel} />
         </div>
       </div>
     </header>

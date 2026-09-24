@@ -3,11 +3,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
-import {
-  FaArrowRight,
-  FaBookOpen,
-  FaEnvelope,
-} from 'react-icons/fa';
+import { FaArrowRight, FaEnvelope } from 'react-icons/fa';
 import Heading from '@theme/Heading';
 import Hero from '@site/src/components/hero/Hero';
 import styles from './index.module.css';
@@ -15,265 +11,135 @@ import styles from './index.module.css';
 const NEWSLETTER_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform';
 
-const START_PATHS = [
+const CONTACT_URL = 'https://www.linkedin.com/in/abhinavcompilerllvm/';
+const CONTACT_EMAIL = 'mailto:osc@compilersutra.com';
+
+const BUCKETS = [
   {
-    title: 'DSA Academy',
-    description:
-      'A dedicated DSA world for computational thinking, math, structures, algorithms, complexity, and domain use.',
-    tag: 'Separate product',
-    to: '/dsa',
-    cta: 'Start DSA',
-    tone: 'dsa',
-    coverImage: '/img/home/dsa-academy.svg',
-    coverLabel: 'Why + Math + Visuals',
-    chips: ['DSA', 'Math', 'Domain'],
+    label: 'Learn',
+    title: 'Tracks & tutorials',
+    text: 'Compiler fundamentals, LLVM, GPU, MLIR, C++, architecture.',
+    to: '/docs/tracks/',
+    cta: 'Browse Learn',
   },
   {
-    title: 'Compiler Fundamentals',
-    description:
-      'Start with source to binary, IR, control flow, data flow, and why compiler transformations matter.',
-    tag: 'Best for beginners',
-    to: '/docs/tracks/compiler-fundamentals',
-    cta: 'Start Fundamentals',
-    tone: 'fundamentals',
-    coverImage: '/img/home/compiler-fundamentals.svg',
-    coverLabel: 'Source -> IR -> Binary',
-    chips: ['Frontend', 'IR', 'Control Flow'],
+    label: 'Practice',
+    title: 'Labs, DSA, MCQs',
+    text: 'Hands-on labs, interview practice, and algorithm tracks.',
+    to: '/docs/labs',
+    cta: 'Browse Practice',
   },
   {
-    title: 'LLVM Track',
-    description:
-      'Go from LLVM architecture into IR, passes, SSA, analysis, and backend reasoning.',
-    tag: 'Most popular',
-    to: '/docs/tracks/llvm-and-ir',
-    cta: 'Start LLVM',
-    tone: 'llvm',
-    coverImage: '/img/home/llvm-track.svg',
-    coverLabel: 'IR, SSA, Passes',
-    chips: ['LLVM IR', 'Analysis', 'Backend'],
+    label: 'Tools',
+    title: 'Inspect & explore',
+    text: 'Clang flags, ABI explorer, LLVM pass tracker.',
+    to: '/docs/tools',
+    cta: 'Browse Tools',
   },
   {
-    title: 'COA / Performance',
-    description:
-      'Understand how processors execute code, how memory hierarchy shapes speed, and why compiler decisions show up on real hardware.',
-    tag: 'Systems-focused',
-    to: '/docs/coa',
-    cta: 'Start COA',
-    tone: 'coa',
-    coverImage: '/img/home/gpu-parallel-programming.svg',
-    coverLabel: 'Pipelines, Cache, Memory',
-    chips: ['Execution', 'Latency', 'Throughput'],
-  },
-  {
-    title: 'AI Systems',
-    description:
-      'Start with the AI systems master page linking math, tensors, model formats, compilers, papers, books, and hardware execution.',
-    tag: 'New topic',
-    to: '/docs/AI',
-    cta: 'Start AI Systems',
-    tone: 'mlir',
-    coverLabel: 'Math -> Tensors -> Hardware',
-    chips: ['AI', 'ONNX', 'MLIR'],
-  },
-  {
-    title: 'MLIR / ML Compilers',
-    description:
-      'Move into MLIR, staged lowering, and the compiler stack behind modern AI systems.',
-    tag: 'Advanced path',
-    to: '/docs/tracks/ml-compilers',
-    cta: 'Start MLIR',
-    tone: 'mlir',
-    coverLabel: 'Dialects and Lowering',
-    chips: ['MLIR', 'Dialects', 'Lowering'],
-  },
-  {
-    title: 'GPU / Parallel Programming',
-    description:
-      'Study GPU execution, memory hierarchy, OpenCL, and hardware-aware optimization.',
-    tag: 'Parallel path',
-    to: '/docs/tracks/gpu-compilers',
-    cta: 'Start GPU',
-    tone: 'gpu',
-    coverLabel: 'Parallel work at scale',
-    chips: ['SIMT', 'OpenCL', 'Memory'],
-  },
-  {
-    title: 'C++ for Systems',
-    description:
-      'Build the C++ foundation needed for systems work, compiler internals, and performance-oriented programming.',
-    tag: 'Implementation base',
-    to: '/docs/c++/cpp-learning-roadmap/',
-    cta: 'Start C++',
-    tone: 'cpp',
-    coverLabel: 'Language for implementation',
-    chips: ['C++', 'Memory', 'Tooling'],
+    label: 'Read',
+    title: 'Articles & papers',
+    text: 'Benchmarks, how-tos, books, and the paper library.',
+    to: '/docs/articles',
+    cta: 'Browse Read',
   },
 ];
 
-const FEATURED_PATHS = START_PATHS.slice(0, 3);
-const SECONDARY_PATHS = START_PATHS.slice(3);
-
-const CATALOGUE_ITEMS = [
+const FEATURED_PATHS = [
   {
-    title: 'Latest Articles',
-    description:
-      'Read the newest deep dives, explainers, and technical writeups across compilers, LLVM, MLIR, GPU, and systems topics.',
-    to: '/docs/articles',
-    cta: 'See Latest Articles',
-    tag: 'Read',
+    title: 'Compiler Fundamentals',
+    description: 'Source → IR → binary. Best first choice if you are unsure.',
+    tag: 'Best first choice',
+    to: '/docs/tracks/compiler-fundamentals',
+    cta: 'Start Fundamentals',
   },
   {
-    title: 'Benchmark Reports',
-    description:
-      'Explore performance-focused benchmark reports, compiler comparisons, and evidence-driven analysis.',
-    to: '/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter',
-    cta: 'View Benchmarks',
-    tag: 'Measure',
+    title: 'LLVM and IR',
+    description: 'Architecture, SSA, passes, and IR reasoning.',
+    tag: 'Most popular',
+    to: '/docs/tracks/llvm-and-ir',
+    cta: 'Start LLVM',
   },
   {
-    title: 'Research Papers',
-    description:
-      'Go deeper with curated research papers across LLVM, MLIR, GPU systems, compiler design, and computer architecture.',
-    to: '/library',
-    cta: 'Browse Papers',
-    tag: 'Research',
-  },
-  {
-    title: 'Books',
-    description:
-      'Use curated books and long-form references when you want structured, deeper study.',
-    to: '/books',
-    cta: 'Browse Books',
-    tag: 'Study',
-  },
-  {
-    title: 'MCQs / Practice',
-    description:
-      'Practice what you learned with topic-based MCQs and quizzes. Good for revision, interviews, and checking whether concepts actually stuck.',
-    to: '/docs/mcq/questions/domain/coa',
-    cta: 'Start Practice',
-    tag: 'Practice',
+    title: 'DSA Academy',
+    description: 'Separate guided product for data structures and algorithms.',
+    tag: 'Practice track',
+    to: '/dsa',
+    cta: 'Start DSA',
   },
 ];
 
 const FIRST_READS = [
   {
-    title: 'LLVM Roadmap',
-    description: 'Best first stop if you want a guided LLVM sequence instead of random docs hopping.',
-    to: '/docs/llvm/intro-to-llvm',
-    tag: 'Beginner',
-  },
-  {
     title: 'How Source Code Becomes Binary',
     description: 'A clean bridge from high-level code into machine-level execution.',
     to: '/docs/compilers/sourcecode_to_executable',
-    tag: 'Best First Read',
+    tag: 'Core',
   },
   {
-    title: 'When Clang -O2 Gets Slower: From Perf Counters to MachineBlockPlacement',
-    description:
-      'Counters, csperf, AMD uProf, one backend flag, and opt-bisect pin a parse-loop regression on MachineBlockPlacement.',
-    to: '/docs/articles/when-o2-layout-hurts-machineblockplacement',
-    tag: 'Best First Read',
-  },
-  {
-    title: 'How Modern Processors Execute Code',
-    description: 'See how sequential, pipelined, speculative, SIMD, and multicore execution fit together.',
-    to: '/docs/coa/types_of_execution',
-    tag: 'Performance',
+    title: 'Intro to LLVM',
+    description: 'Guided LLVM sequence instead of random docs hopping.',
+    to: '/docs/llvm/intro-to-llvm',
+    tag: 'LLVM',
   },
   {
     title: 'Memory Hierarchy for Compiler Engineers',
-    description: 'Understand why cache, locality, and memory behavior dominate real performance.',
+    description: 'Why cache and locality dominate real performance.',
     to: '/docs/coa/memory-hierarchy',
-    tag: 'Deep Dive',
+    tag: 'Performance',
   },
   {
     title: 'GCC vs Clang Benchmark Report',
-    description: 'Benchmark-driven analysis that connects compiler behavior to generated performance.',
+    description: 'Evidence-driven compiler comparison you can learn from.',
     to: '/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter',
-    tag: 'Popular',
-  },
-  {
-    title: 'Seeing the ML Compiler Stack Live on AMD GPU',
-    description: 'A concrete way to connect ML compilers, GPU execution, and the broader toolchain.',
-    to: '/docs/ml-compilers/seeing-the-ml-compiler-stack-live-on-amd-gpu',
-    tag: 'ML Compilers',
+    tag: 'Benchmarks',
   },
 ];
 
-const RETURN_PATHS = [
+const PACK_ITEMS = [
   {
-    title: 'Continue with LLVM',
-    description: 'Pick up from architecture into IR, SSA, passes, and analysis flow.',
-    to: '/docs/tracks/llvm-and-ir',
+    title: 'LLVM IR reading starter',
+    hint: 'How to read IR without getting lost',
+    to: '/docs/llvm/llvm_ir/intro_to_llvm_ir',
   },
   {
-    title: 'Go deeper on performance',
-    description: 'Move from execution models into cache, memory behavior, and benchmarking.',
-    to: '/docs/coa',
+    title: 'Compiler engineer roadmap',
+    hint: 'One clear path from foundations up',
+    to: '/docs/start-here',
   },
   {
-    title: 'Browse the paper library',
-    description: 'Use curated shelves when you want references, papers, and deeper reading.',
-    to: '/library',
-  },
-];
-
-const WHY_STAY = [
-  {
-    title: 'Guided paths',
-    description: 'Choose a direction and keep going instead of bouncing through a docs maze.',
-  },
-  {
-    title: 'Real engineering depth',
-    description: 'LLVM, IR, optimization, execution models, and benchmark-driven writing.',
-  },
-  {
-    title: 'Practical references',
-    description: 'Tracks, papers, books, benchmarks, and MCQs stay connected instead of living in separate corners.',
+    title: 'Best first reads',
+    hint: 'LLVM, MLIR, GPU, and performance picks',
+    to: '/docs/tracks/compiler-fundamentals',
   },
 ];
 
-const PREMIUM_SIGNALS = [
-  {
-    label: 'Depth',
-    value: 'LLVM to GPU',
-    description: 'Compiler internals, execution models, MLIR, and hardware-aware systems work in one connected path.',
-  },
-  {
-    label: 'Style',
-    value: 'Editorial + Practical',
-    description: 'Roadmaps, core articles, benchmark reports, books, and papers built to reinforce each other.',
-  },
-  {
-    label: 'Goal',
-    value: 'Source to Hardware',
-    description: 'The site is designed to explain not just what tools do, but how computation actually reaches silicon.',
-  },
-];
-
-function PremiumSignalSection() {
+function ExploreSection() {
   return (
-    <section className={styles.signalSection}>
-      <div className={clsx('container', styles.signalShell)}>
-        <div className={styles.signalIntro}>
-          <p className={styles.sectionEyebrow}>Why This Homepage Feels Different</p>
+    <section className={styles.sectionBlock}>
+      <div className={clsx('container', styles.sectionShell)}>
+        <div className={styles.sectionHeader}>
+          <p className={styles.sectionEyebrow}>Where everything lives</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            A sharper entry point into serious systems learning
+            Four places. Same as the top menu.
           </Heading>
           <p className={styles.sectionText}>
-            CompilerSutra should feel less like a docs maze and more like a guided technical publication. The homepage now prioritizes the strongest paths first, then lets you branch into papers, benchmarks, books, and practice.
+            Learn paths, practice, tools, or reading — pick the mode you need right now.
+            All material on this site is free.
           </p>
         </div>
 
-        <div className={styles.signalGrid}>
-          {PREMIUM_SIGNALS.map((item) => (
-            <article key={item.label} className={clsx(styles.signalCard, styles.revealItem)} data-reveal>
-              <p className={styles.signalLabel}>{item.label}</p>
-              <h3>{item.value}</h3>
-              <p>{item.description}</p>
-            </article>
+        <div className={styles.bucketGrid}>
+          {BUCKETS.map((item) => (
+            <Link key={item.label} to={item.to} className={styles.bucketCard}>
+              <span className={styles.bucketLabel}>{item.label}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <span className={styles.pathLink}>
+                {item.cta}
+                <FaArrowRight aria-hidden="true" />
+              </span>
+            </Link>
           ))}
         </div>
       </div>
@@ -281,81 +147,25 @@ function PremiumSignalSection() {
   );
 }
 
-function HomepageHeader() {
-  return <Hero newsletterUrl={NEWSLETTER_URL} />;
-}
-
-function StartHereSection() {
+function FeaturedPathsSection() {
   return (
-    <section className={clsx(styles.sectionBlock, styles.desktopStartSection)}>
+    <section className={styles.sectionBlockAlt}>
       <div className={clsx('container', styles.sectionShell)}>
         <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Start Here</p>
+          <p className={styles.sectionEyebrow}>Start with one path</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            Start with the strongest paths
+            Three strong entry points
           </Heading>
           <p className={styles.sectionText}>
-            Begin with a featured path, then expand into adjacent systems only when you need them. The goal is momentum, not overwhelm.
+            Unsure? Open{' '}
+            <Link to="/docs/start-here">Start Here</Link> for the full map. Otherwise pick one
+            path below and stay on it.
           </p>
         </div>
 
         <div className={styles.featuredPathGrid}>
           {FEATURED_PATHS.map((item) => (
-            <Link
-              key={item.title}
-              to={item.to}
-              className={clsx(styles.pathCard, styles.pathCardFeatured, styles.revealItem)}
-              data-track={item.cta}
-              data-reveal
-            >
-              <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
-                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
-                <div className={styles.cardCoverOverlay} aria-hidden="true" />
-                <div className={styles.cardCoverInner}>
-                  <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
-                  <div className={styles.cardChipRow}>
-                    {item.chips.map((chip) => (
-                      <span key={chip} className={styles.cardChip}>
-                        {chip}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <span className={styles.pathTag}>{item.tag}</span>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-              <span className={styles.pathLink}>
-                {item.cta}
-                <FaArrowRight aria-hidden="true" />
-              </span>
-            </Link>
-          ))}
-        </div>
-
-        <div className={styles.pathGrid}>
-          {SECONDARY_PATHS.map((item) => (
-            <Link
-              key={item.title}
-              to={item.to}
-              className={clsx(styles.pathCard, styles.revealItem)}
-              data-track={item.cta}
-              data-reveal
-            >
-              <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
-                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
-                <div className={styles.cardCoverOverlay} aria-hidden="true" />
-                <div className={styles.cardCoverInner}>
-                  <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
-                  <div className={styles.cardChipRow}>
-                    {item.chips.map((chip) => (
-                      <span key={chip} className={styles.cardChip}>
-                        {chip}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            <Link key={item.title} to={item.to} className={styles.simplePathCard}>
               <span className={styles.pathTag}>{item.tag}</span>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
@@ -371,149 +181,20 @@ function StartHereSection() {
   );
 }
 
-function MobileStartSection() {
-  return (
-    <section className={clsx(styles.sectionBlock, styles.mobileStartSection)}>
-      <div className={clsx('container', styles.sectionShell)}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Start Here</p>
-          <Heading as="h2" className={styles.sectionTitle}>
-            Swipe the three strongest paths
-          </Heading>
-          <p className={styles.sectionText}>
-            A tighter mobile launchpad with stronger visuals, fewer choices, and cleaner entry points.
-          </p>
-        </div>
-
-        <div className={styles.mobilePathDeck}>
-          {FEATURED_PATHS.map((item, index) => (
-            <Link
-              key={item.title}
-              to={item.to}
-              className={clsx(styles.mobilePathCard, styles.revealItem)}
-              data-track={item.cta}
-              data-reveal
-            >
-              <div className={clsx(styles.cardCover, styles[`tone${item.tone.charAt(0).toUpperCase()}${item.tone.slice(1)}`])}>
-                <img className={styles.cardCoverMedia} src={item.coverImage} alt="" aria-hidden="true" loading="lazy" />
-                <div className={styles.cardCoverOverlay} aria-hidden="true" />
-                <div className={styles.cardCoverInner}>
-                <div className={styles.mobileCardTopRow}>
-                  <span className={styles.mobileCardNumber}>0{index + 1}</span>
-                  <span className={styles.pathTag}>{item.tag}</span>
-                </div>
-                <span className={styles.cardCoverEyebrow}>{item.coverLabel}</span>
-                </div>
-              </div>
-
-              <div className={styles.mobilePathBody}>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-                <div className={styles.cardChipRow}>
-                  {item.chips.map((chip) => (
-                    <span key={chip} className={styles.cardChip}>
-                      {chip}
-                    </span>
-                  ))}
-                </div>
-                <span className={styles.pathLink}>
-                  {item.cta}
-                  <FaArrowRight aria-hidden="true" />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WhyStaySection() {
-  return (
-    <section className={styles.sectionBlockAlt}>
-      <div className={clsx('container', styles.sectionShell)}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Why People Stay</p>
-          <Heading as="h2" className={styles.sectionTitle}>
-            A cleaner way to keep learning
-          </Heading>
-        </div>
-
-        <div className={styles.whyGrid}>
-          {WHY_STAY.map((item) => (
-            <article key={item.title} className={clsx(styles.whyCard, styles.revealItem)} data-reveal>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CatalogueSection() {
-  return (
-    <section className={styles.sectionBlockAlt}>
-      <div className={clsx('container', styles.sectionShell)}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Browse CompilerSutra</p>
-          <Heading as="h2" className={styles.sectionTitle}>
-            Choose the mode, not just the page
-          </Heading>
-          <p className={styles.sectionText}>
-            Different sessions need different depth. Sometimes you want a roadmap. Sometimes you want a benchmark report, a paper shelf, or one focused article.
-          </p>
-        </div>
-
-        <div className={styles.catalogueGrid}>
-          {CATALOGUE_ITEMS.map((item) => (
-            <Link
-              key={item.title}
-              to={item.to}
-              className={clsx(styles.catalogueCard, styles.revealItem)}
-              data-track={item.title}
-              data-reveal
-            >
-              <span className={styles.catalogueTag}>{item.tag}</span>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-              <span className={styles.catalogueLink}>
-                {item.cta}
-                <FaArrowRight aria-hidden="true" />
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PopularResourcesSection() {
+function FirstReadsSection() {
   return (
     <section className={styles.sectionBlock}>
       <div className={clsx('container', styles.sectionShell)}>
         <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Best First Reads</p>
+          <p className={styles.sectionEyebrow}>Worth opening first</p>
           <Heading as="h2" className={styles.sectionTitle}>
-            Editorial picks worth opening first
+            Four informative reads
           </Heading>
-          <p className={styles.sectionText}>
-            These are the pages that best represent the standard the rest of the site is aiming for: clarity, systems depth, and useful progression.
-          </p>
         </div>
 
-        <div className={styles.resourceGrid}>
+        <div className={styles.resourceGridCompact}>
           {FIRST_READS.map((item) => (
-            <Link
-              key={item.title}
-              to={item.to}
-              className={clsx(styles.resourceCard, styles.revealItem)}
-              data-track={item.title}
-              data-reveal
-            >
+            <Link key={item.title} to={item.to} className={styles.resourceCard}>
               <span className={styles.resourceTag}>{item.tag}</span>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
@@ -525,94 +206,77 @@ function PopularResourcesSection() {
   );
 }
 
-function LeadMagnetSection() {
+function StarterPackSection() {
   return (
     <section className={styles.sectionBlockAlt}>
       <div className={clsx('container', styles.leadMagnetShell)}>
-        <div className={styles.leadMagnetCard}>
-          <div className={styles.leadMagnetCopy}>
-            <p className={styles.sectionEyebrow}>Starter Pack</p>
-          <Heading as="h2" className={styles.sectionTitle}>
-            Get the CompilerSutra Starter Pack
-          </Heading>
-          <p className={styles.sectionText}>
-            Get the best starting resources for LLVM, compiler engineering, and performance-focused systems learning.
-          </p>
-            <ul className={styles.leadMagnetList}>
-              <li>LLVM IR reading starter guide</li>
-              <li>Compiler engineer roadmap</li>
-              <li>Best first reads across LLVM, MLIR, GPU, and performance</li>
-            </ul>
-          </div>
+        <div className={styles.starterPack}>
+          <div className={styles.starterPackMain}>
+            <div className={styles.starterPackBadges}>
+              <span className={styles.freeBadge}>100% free</span>
+              <span className={styles.openBadge}>No paywall</span>
+            </div>
 
-          <div className={styles.leadMagnetAction}>
-            <Link
-              className={clsx('button button--lg', styles.primaryButton)}
-              to={NEWSLETTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track="starter_pack_cta"
-            >
-              <FaEnvelope aria-hidden="true" />
-              Send Me the Pack
-            </Link>
+            <p className={styles.sectionEyebrow}>Starter Pack</p>
+            <Heading as="h2" className={styles.sectionTitle}>
+              Free starting resources
+            </Heading>
+            <p className={styles.sectionText}>
+              Tutorials, tracks, tools, and guides stay free. Begin with these three, then keep going.
+            </p>
+
+            <div className={styles.packGrid}>
+              {PACK_ITEMS.map((item) => (
+                <Link key={item.title} to={item.to} className={styles.packCard}>
+                  <strong>{item.title}</strong>
+                  <span>{item.hint}</span>
+                </Link>
+              ))}
+            </div>
+
+            <div className={styles.starterPackActions}>
+              <Link className={styles.starterPrimary} to="/docs/start-here">
+                Open free Start Here
+                <FaArrowRight aria-hidden="true" />
+              </Link>
+              <Link
+                className={styles.starterGhost}
+                to={NEWSLETTER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaEnvelope aria-hidden="true" />
+                Optional weekly notes
+              </Link>
+            </div>
             <p className={styles.formNote}>
-              No spam. Just practical compiler notes, new articles, and curated resources.
+              No spam — practical compiler notes and curated resources only.
             </p>
           </div>
+
+          <aside className={styles.guidancePanel}>
+            <p className={styles.guidanceLabel}>Personal guidance</p>
+            <h3 className={styles.guidanceTitle}>Materials are free. Guidance is on request.</h3>
+            <p className={styles.guidanceText}>
+              Want help choosing a path or going deeper on LLVM / performance? Reach out.
+            </p>
+            <div className={styles.guidanceActions}>
+              <Link
+                className={styles.guidancePrimary}
+                href={CONTACT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Contact on LinkedIn
+              </Link>
+              <Link className={styles.guidanceSecondary} href={CONTACT_EMAIL}>
+                Email osc@compilersutra.com
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
-  );
-}
-
-function ReturnPathSection() {
-  return (
-    <section className={styles.sectionBlock}>
-      <div className={clsx('container', styles.sectionShell)}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionEyebrow}>Come Back Deeper</p>
-          <Heading as="h2" className={styles.sectionTitle}>
-            Come back when you want to go deeper
-          </Heading>
-          <p className={styles.sectionText}>
-            Use the homepage as a re-entry point into tracks, deep dives, and the paper library.
-          </p>
-        </div>
-
-        <div className={styles.returnGrid}>
-          {RETURN_PATHS.map((item) => (
-            <Link key={item.title} to={item.to} className={clsx(styles.returnCard, styles.revealItem)} data-reveal>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-              <FaArrowRight aria-hidden="true" />
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StickyCta() {
-  return (
-    <div className={styles.stickyCta}>
-      <Link to="/docs/tracks/llvm-and-ir" className={styles.stickyPrimary}>
-        <FaBookOpen aria-hidden="true" />
-        Start LLVM
-      </Link>
-      <Link
-        to={NEWSLETTER_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.stickySecondary}
-      >
-        <FaEnvelope aria-hidden="true" />
-        Get Starter Pack
-      </Link>
-    </div>
   );
 }
 
@@ -662,18 +326,13 @@ export default function Home() {
         <meta name="twitter:image" content={socialImage} />
       </Head>
 
-      <HomepageHeader />
+      <Hero />
       <main>
-        <PremiumSignalSection />
-        <StartHereSection />
-        <MobileStartSection />
-        <WhyStaySection />
-        <CatalogueSection />
-        <PopularResourcesSection />
-        <LeadMagnetSection />
-        <ReturnPathSection />
+        <ExploreSection />
+        <FeaturedPathsSection />
+        <FirstReadsSection />
+        <StarterPackSection />
       </main>
-      <StickyCta />
     </Layout>
   );
 }
