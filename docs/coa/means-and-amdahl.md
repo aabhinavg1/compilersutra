@@ -3,10 +3,34 @@ title: "Summarizing Performance: Means and Amdahl's Law"
 description: "How compiler engineers use mathematical means and Amdahl's law to evaluate optimization passes across benchmark suites."
 keywords:
   - Amdahl's law
+  - Amdahl's law for compiler engineers
   - geometric mean
+  - geometric mean of speedups
   - harmonic mean
-  - compiler optimization evaluation
+  - arithmetic mean
+  - which mean for benchmarks
+  - do not average speedups
   - benchmark speedup
+  - compiler optimization evaluation
+  - summarizing benchmark results
+  - CPU performance equation
+  - instruction count CPI cycle time
+  - speedup ratio
+  - overall speedup limit
+  - sequential bottleneck
+  - parallel fraction
+  - execution time fraction
+  - vectorization speedup limit
+  - optimization diminishing returns
+  - IPC harmonic mean
+  - SPEC geometric mean
+  - profile guided optimization
+  - compiler performance measurement
+  - how to report compiler speedup
+  - computer architecture performance
+  - means and averages in computer architecture
+  - Fleming Wallace benchmark mean
+  - what the compiler can change in CPU time
 displayed_sidebar: coasidebar
 slug: /coa/means-and-amdahl
 ---
@@ -145,6 +169,10 @@ Where:
 :::note
 $f$ is a fraction of the original execution time, not a fraction of the source. A loop that is half the file can be 2% of the time.
 :::
+
+![Amdahl's law diagram. Two bars on the same scale. The untouched fraction stays the same length. The fraction the pass speeds up gets shorter.](/img/coa/means-and-amdahl.svg)
+
+*Diagram: overall speedup is limited by the part of the program the pass does not touch. The worked example below uses this same split.*
 
 ## A worked example
 

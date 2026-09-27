@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="240" viewBox="0 0 880 240" role="img" aria-label="Amdahl's law. The untouched fraction of program time stays the same length after the optimized fraction shrinks.">
+  <rect width="880" height="240" fill="#f7f5f2"/>
+  <text x="24" y="34" font-family="Georgia, serif" font-size="18" fill="#1c1917">Program time, same scale</text>
+  <text x="24" y="78" font-family="sans-serif" font-size="13" fill="#44403c">Before</text>
+  <rect x="110" y="56" width="576" height="32" fill="#1e3a5f"/>
+  <rect x="686" y="56" width="144" height="32" fill="#b45309"/>
+  <text x="24" y="138" font-family="sans-serif" font-size="13" fill="#44403c">After</text>
+  <rect x="110" y="116" width="576" height="32" fill="#1e3a5f"/>
+  <rect x="686" y="116" width="36" height="32" fill="#b45309"/>
+  <text x="110" y="178" font-family="sans-serif" font-size="13" fill="#1e3a5f">untouched fraction</text>
+  <text x="400" y="178" font-family="sans-serif" font-size="13" fill="#b45309">fraction the pass speeds up</text>
+  <text x="24" y="214" font-family="sans-serif" font-size="13" fill="#44403c">The untouched fraction stays the same length. That is the limit on the whole program.</text>
+</svg>
