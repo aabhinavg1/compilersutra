@@ -12,6 +12,8 @@ slug: /coa/means-and-amdahl
 ---
 
 import AdBanner from '@site/src/components/AdBanner';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Summarizing Performance: Means and Amdahl's Law
 
@@ -36,6 +38,42 @@ If you have not measured a program yet, start with the measuring lesson. This pa
 :::note
 A formula here is a check on a compiler pass, not a hardware spec. The compiler can change instruction count and CPI. It cannot change the cycle time of the chip.
 :::
+
+<div>
+  <AdBanner />
+
+## References
+
+### Academic papers
+
+- Gene M. Amdahl, "Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities," AFIPS Conference Proceedings, 1967. https://dl.acm.org/doi/10.1145/1465482.1465560
+- Philip J. Fleming and John J. Wallace, "How Not to Lie with Statistics: The Correct Way to Summarize Benchmark Results," Communications of the ACM, 1986. https://dl.acm.org/doi/10.1145/5666.5673
+
+### Benchmark rules
+
+- SPEC CPU 2017 reports a geometric mean of ratios, not an arithmetic mean of run times. https://www.spec.org/cpu2017/Docs/overview.html
+
+### Textbooks
+
+- John L. Hennessy and David A. Patterson, *Computer Architecture: A Quantitative Approach*
+- David A. Patterson and John L. Hennessy, *Computer Organization and Design*
+- William Stallings, *Computer Organization and Architecture*
+
+### Practical tools
+
+- Linux `perf`, for the fraction of time a region actually takes
+- LLVM `llvm-mca`, for whether a loop is a dependence chain or independent work
+</div>
+
+## Table of Contents
+
+1. [TL;DR](#tldr)
+2. [The mechanism](#the-mechanism)
+3. [A worked example](#a-worked-example)
+4. [What the compiler can and cannot do](#what-the-compiler-can-and-cannot-do)
+5. [Common misconceptions](#common-misconceptions)
+6. [What To Read Next](#what-to-read-next)
+7. [References](#references)
 
 ## TL;DR
 *   **Decide on Geometric Mean** when summarizing speedup ratios relative to a baseline compiler to ensure consistent relative improvements regardless of which run is chosen as the baseline.
@@ -77,6 +115,18 @@ $$\text{GM} = \sqrt[n]{\prod_{i=1}^{n} X_i}$$
 The **Harmonic Mean** of $n$ values is:
 
 $$\text{HM} = \frac{n}{\sum_{i=1}^{n} \frac{1}{X_i}}$$
+
+<Tabs>
+  <TabItem value="arithmetic" label="Arithmetic mean" default>
+    <p>Use this on raw times of a fixed workload, when each program runs once and the total is what you care about. The mean stays proportional to the sum of the times.</p>
+  </TabItem>
+  <TabItem value="geometric" label="Geometric mean">
+    <p>Use this on speedup ratios. Swapping which compiler is the baseline takes the reciprocal of the mean. The arithmetic mean of those same ratios does not.</p>
+  </TabItem>
+  <TabItem value="harmonic" label="Harmonic mean">
+    <p>Use this on rates such as IPC, when the amount of work is what you hold fixed. It matches total time. The arithmetic mean of the rates does not.</p>
+  </TabItem>
+</Tabs>
 
 :::tip Note
 The geometric mean of speedups stays the same when you swap which compiler is the baseline. The arithmetic mean does not. That is why a benchmark suite reports a geometric mean.
@@ -121,8 +171,18 @@ Let us analyze how a compiler optimization pass affects this code using the CPU 
 
 ### Step 1: Analyzing the Hardware and Code Behavior
 
-*   **Part 1 (Sequential)**: The statement `local_sum = (local_sum + a[i]) * b[i]` has a strict loop-carried dependency. The value of `local_sum` in iteration $i$ depends on the result of iteration $i-1$. The compiler cannot parallelize or vectorize this loop without violating IEEE-754 floating-point semantics (unless `-ffast-math` is enabled, allowing reassociation). The CPI of this loop is bound by the latency of the floating-point adder and multiplier in the CPU pipeline.
-*   **Part 2 (Vectorizable)**: The statement `c[i] = a[i] + b[i]` has no loop-carried dependencies. Each iteration is completely independent. A compiler's loop vectorizer can transform this loop to use SIMD instructions (e.g., AVX-512), processing 8 double-precision floats in a single instruction. This drastically reduces the Instruction Count ($IC$) for Part 2.
+The two loops are not the same kind of work. Open the one you are about to change.
+
+<Tabs>
+  <TabItem value="sequential" label="Sequential chain" default>
+    <p><code>local_sum = (local_sum + a[i]) * b[i]</code> carries a dependence from one iteration to the next. Under strict IEEE-754 rules the compiler cannot vectorize it. The loop stalls on the latency of the floating-point add and multiply.</p>
+    <p><code>-ffast-math</code> is the lever that allows reassociation. Without that flag, the chain stays a chain.</p>
+  </TabItem>
+  <TabItem value="independent" label="Independent adds">
+    <p><code>c[i] = a[i] + b[i]</code> has no carried dependence. A vectorizer can turn it into one SIMD add and cut the instruction count of that loop.</p>
+    <p>That cut does not touch the sequential chain above it. Amdahl's law is what turns a faster second loop into a smaller whole-program speedup.</p>
+  </TabItem>
+</Tabs>
 
 ### Step 2: Applying Amdahl's Law
 
@@ -157,17 +217,18 @@ Do not invent a cycle count to make the speedup look precise. Use the measured f
 
 A compiler engineer must understand where the compiler has levers to change performance metrics and where the hardware or mathematical limits override compiler control.
 
-### What the compiler can do
-
-*   **Instruction Selection and Scheduling**: The compiler directly controls $IC$ and $CPI$. By choosing instructions with lower latency and scheduling them to avoid pipeline stalls, the compiler minimizes the $CPI$ of the sequential portion of the code.
-*   **Profile-Guided Optimization (PGO)**: PGO allows the compiler to determine the exact execution frequency of basic blocks. This gives the compiler a precise estimate of the fraction $f$ for various code paths, allowing it to apply high-overhead optimizations (like loop unrolling or aggressive inlining) only to the hot paths where $f$ is large.
-*   **Loop Transformations**: The compiler can perform loop tiling, fission, or fusion to improve cache locality. This reduces memory stall cycles, which directly lowers the $CPI$ term of the CPU performance equation.
-
-### What the compiler cannot do
-
-*   **Overcome Strict Data Dependencies**: If the language standard or compiler flags prevent reassociation (e.g., strict IEEE-754 compliance), the compiler cannot parallelize a loop-carried dependency. The hardware must execute the instructions sequentially, and the compiler is bound by the latency of the execution units.
-*   **Change Memory Latency**: If the data structures do not fit in the cache, the CPU will stall waiting for DRAM. While the compiler can insert prefetch instructions, it cannot change the physical latency of the memory hierarchy.
-*   **Alter the Amdahl Limit of the Algorithm**: If an algorithm is fundamentally sequential, no compiler optimization can make it parallel. The compiler cannot rewrite a sequential bubble sort into a parallel merge sort unless the compiler has specific high-level domain knowledge (which general-purpose compilers do not possess).
+<Tabs>
+  <TabItem value="can" label="What the compiler can change" default>
+    <p><strong>Instruction selection and scheduling.</strong> The compiler chooses the instructions and their order, so it changes instruction count and CPI. Scheduling the sequential chain to hide latency is the useful move. Shortening a cold path is not.</p>
+    <p><strong>Profile-guided optimization.</strong> A profile gives the fraction <em>f</em> of each path. Unrolling and inlining belong on the hot path, where that fraction is large.</p>
+    <p><strong>Loop tiling, fission, and fusion.</strong> These change how the loop touches memory, which changes stall cycles and therefore CPI. They do not change the cycle time of the chip.</p>
+  </TabItem>
+  <TabItem value="cannot" label="What it cannot change">
+    <p><strong>A strict dependence.</strong> If the language rules forbid reassociation, the compiler cannot vectorize the carried chain. The hardware still waits on the add and the multiply.</p>
+    <p><strong>Memory latency.</strong> A prefetch can overlap a miss. It cannot make DRAM faster when the working set does not fit.</p>
+    <p><strong>The Amdahl limit of the algorithm.</strong> A general-purpose compiler does not turn a sequential reduction into a different parallel algorithm. If the hot fraction is the chain, the chain is the limit.</p>
+  </TabItem>
+</Tabs>
 
 ## Common misconceptions
 
