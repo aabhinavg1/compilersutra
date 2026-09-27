@@ -273,6 +273,7 @@ const site = {
         'coa/cpu_execution',
         'coa/memory-hierarchy',
         'coa/measuring_throughput_cache_misses_cpu_behavior_cpp',
+        'coa/means-and-amdahl',
       ],
     },
   ],
