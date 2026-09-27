@@ -1,4 +1,5 @@
----title: "Summarizing Performance: Means and Amdahl's Law"
+---
+title: "Summarizing Performance: Means and Amdahl's Law"
 description: "How compiler engineers use mathematical means and Amdahl's law to evaluate optimization passes across benchmark suites."
 keywords:
   - Amdahl's law
@@ -15,6 +16,26 @@ import AdBanner from '@site/src/components/AdBanner';
 # Summarizing Performance: Means and Amdahl's Law
 
 The physical CPU executes instructions over time, but a compiler engineer evaluates optimizations across entire suites of programs. Understanding how to mathematically summarize these results and calculate the theoretical limits of an optimization prevents wasting months of engineering effort on passes that cannot yield measurable gains.
+
+:::tip Read these first
+- [Measuring Throughput, Cache Misses, and CPU Behavior](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp) — where the raw times and rates on this page come from
+- [Computer Organization vs Computer Architecture](/docs/coa/intro_to_coa) — the split between the ISA contract and the machine that runs it
+:::
+
+:::important What you should leave with
+- Use the geometric mean for speedup ratios. Swapping the baseline does not change the answer.
+- Use the harmonic mean for rates such as IPC. The arithmetic mean of rates does not match total time.
+- Use the arithmetic mean only for raw times of a workload that runs each program once.
+- Amdahl's law caps the whole-program speedup by the fraction of time your pass actually touches.
+:::
+
+:::caution Who this is not for
+If you have not measured a program yet, start with the measuring lesson. This page assumes you already have times or rates and need to summarize them without lying to yourself.
+:::
+
+:::note
+A formula here is a check on a compiler pass, not a hardware spec. The compiler can change instruction count and CPI. It cannot change the cycle time of the chip.
+:::
 
 ## TL;DR
 *   **Decide on Geometric Mean** when summarizing speedup ratios relative to a baseline compiler to ensure consistent relative improvements regardless of which run is chosen as the baseline.
@@ -57,6 +78,10 @@ The **Harmonic Mean** of $n$ values is:
 
 $$\text{HM} = \frac{n}{\sum_{i=1}^{n} \frac{1}{X_i}}$$
 
+:::tip Note
+The geometric mean of speedups stays the same when you swap which compiler is the baseline. The arithmetic mean does not. That is why a benchmark suite reports a geometric mean.
+:::
+
 ### Amdahl's Law
 
 When an optimization improves only a fraction of a program, the overall speedup is governed by Amdahl's Law:
@@ -66,6 +91,10 @@ $$\text{Speedup}_{\text{overall}} = \frac{1}{(1 - f) + \frac{f}{s}}$$
 Where:
 *   $f$ is the fraction of execution time in the original program that is affected by the optimization.
 *   $s$ is the speedup achieved for that fraction.
+
+:::note
+$f$ is a fraction of the original execution time, not a fraction of the source. A loop that is half the file can be 2% of the time.
+:::
 
 ## A worked example
 
@@ -115,6 +144,14 @@ What if we spend another six months optimizing the vectorizer to achieve an infi
 $$\text{Speedup}_{\text{overall}} = \frac{1}{(1 - 0.20) + \frac{0.20}{\infty}} = \frac{1}{0.80 + 0} = 1.25$$
 
 The absolute maximum speedup we can ever achieve by optimizing Part 2 is **25%**. This is the Amdahl limit. It tells the compiler engineer that further optimization of Part 2 has diminishing returns, and engineering effort should instead be redirected to Part 1 (e.g., by attempting to break the dependency chain using fast-math reassociation).
+
+:::caution The limit is on the whole program
+A 4× speedup on the vectorized loop is not a 4× speedup of the program. The sequential 80% is still there.
+:::
+
+:::warning
+Do not invent a cycle count to make the speedup look precise. Use the measured fraction $f$ and the measured time of that region.
+:::
 
 ## What the compiler can and cannot do
 
