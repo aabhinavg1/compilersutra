@@ -34,10 +34,10 @@ def get_base_commit() -> str:
         return base
 
 # --- Get commit log ---
-def get_commit_log(docs_changed_flag: bool) -> str:
+def get_commit_log(docs_changed_flag: bool, base: str = "") -> str:
     if docs_changed_flag:
-        base = get_base_commit()
-        log("Docs changed: reading commits from base to HEAD")
+        base = base or get_base_commit()
+        log(f"Docs changed: reading commits from {base} to HEAD")
         return run(f"git log {base}..HEAD --no-merges --pretty=format:'---%n%B'")
     else:
         log("No docs changed: reading latest commit only")
@@ -111,7 +111,7 @@ def main():
         head = run("git rev-parse HEAD")
         log(f"Fallback head commit: {head}")
 
-    commit_log = get_commit_log(docs_flag)
+    commit_log = get_commit_log(docs_flag, base)
     print("\n===== COMMIT LOG =====")
     print(commit_log)
     print("=====================\n")
