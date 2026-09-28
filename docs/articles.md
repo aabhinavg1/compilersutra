@@ -428,7 +428,15 @@ No article has been published from the Jenkins queue yet.
   <tbody>
 
 <tr>
-<td rowspan="4">Systems Programming</td>
+<td rowspan="5">Systems Programming</td>
+<td>Vulkan RADV perf_query on Linux (ICD → GFX12 counters)</td>
+<td><a href="./articles/vulkan-radv-perf-query-mesa-icd-gfx12-csrun-linux">Article</a></td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+<td>Coming Soon</td>
+</tr>
+
+<tr>
 <td>CPU vs GPU Architecture</td>
 <td>Coming Soon</td>
 <td>Coming Soon</td>

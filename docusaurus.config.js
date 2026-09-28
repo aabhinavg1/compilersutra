@@ -49,10 +49,10 @@ const config = {
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
-          // Old capital-P URL used in footers/side links → projects catalogue
           {
-            to: '/docs/project/',
-            from: '/docs/Project',
+            // trailingSlash:true — only one `from` form; both slash variants write the same file and EEXIST on Vercel
+            to: '/docs/project/cpp-project-ideas/',
+            from: '/docs/project/Project/',
           },
           { to: '/docs/c++/advanced/', from: ['/docs/c++/advance/', '/docs/c++/advance/index', '/docs/c++/advance/intro'] },
           {
@@ -99,10 +99,11 @@ const config = {
             ],
           },
           {
+            // Only trailing-slash forms: site has trailingSlash:true, and listing
+            // both /path and /path/ writes the same index.html (EEXIST on build).
             to: '/docs/compilers/intro/',
             from: [
               '/docs/compilers/IntroductionToCompilers/',
-              '/docs/compilers/IntroductionToCompilers',
               '/docs/compilers/inside-a-compiler/',
               '/docs/compilers/inside-a-compiler-source-to-assembly/',
             ],
