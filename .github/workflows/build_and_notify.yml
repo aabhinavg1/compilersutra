@@ -31,11 +31,17 @@ jobs:
       - name: Detect docs changes
         id: detect_docs
         run: |
-          BASE="${{ github.event.before }}"
           HEAD="${{ github.sha }}"
+          BASE="${{ github.event.before }}"
 
-          if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
-            BASE="$(git rev-list --max-parents=0 HEAD)"
+          # pull_request events have no `before`; the PR base is the correct diff point.
+          if [ -z "$BASE" ] && [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          fi
+
+          # Branch creation and absent `before` leave no usable base: fall back to the parent.
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE="$(git rev-parse HEAD~1 2>/dev/null || git rev-list --max-parents=0 HEAD)"
           fi
 
           if git diff --name-only "$BASE" "$HEAD" | grep -q '^docs/'; then

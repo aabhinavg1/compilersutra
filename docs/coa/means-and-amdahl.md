@@ -38,6 +38,8 @@ slug: /coa/means-and-amdahl
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
 
 # Summarizing Performance: Means and Amdahl's Law
 
@@ -103,13 +105,13 @@ A formula here is a check on a compiler pass, not a hardware spec. The compiler 
 *   **Decide on Geometric Mean** when summarizing speedup ratios relative to a baseline compiler to ensure consistent relative improvements regardless of which run is chosen as the baseline.
 *   **Decide on Harmonic Mean** when averaging rates (such as IPC or throughput metrics) to maintain a direct, proportional relationship with total execution time.
 *   **Decide on Arithmetic Mean** only when summarizing total raw execution times of a workload where each benchmark runs exactly once in sequence.
-*   **Decide to profile execution hotness ($f$)** before writing an optimization pass, applying Amdahl's Law to determine if the maximum possible speedup justifies the complexity of the compiler transformation.
+*   **Decide to profile execution hotness (<InlineMath>{String.raw`f`}</InlineMath>)** before writing an optimization pass, applying Amdahl's Law to determine if the maximum possible speedup justifies the complexity of the compiler transformation.
 
 ## The mechanism
 
 To evaluate a compiler optimization, we must measure its impact on execution time. The fundamental equation of computer performance is the CPU performance equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+<BlockMath>{String.raw`\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}`}</BlockMath>
 
 A compiler can directly change two terms in this equation:
 1.  **Instruction Count (IC)**: Reduced by optimizations like dead code elimination, common subexpression elimination, and instruction selection.
@@ -122,23 +124,23 @@ When evaluating these changes across a benchmark suite, we must summarize the re
 | Situation | Mathematical Behavior | What the Compiler Engineer Must Do |
 | :--- | :--- | :--- |
 | Summarizing absolute execution times of a fixed workload | Arithmetic mean preserves the sum of times; total time is directly proportional to the mean. | Use Arithmetic Mean. Ensure the workload represents the actual execution sequence. |
-| Summarizing speedup ratios ($Time_{\text{old}} / Time_{\text{new}}$) across multiple benchmarks | Geometric mean maintains the property $GM(A/B) = 1/GM(B/A)$. It does not reward inflating a single benchmark's ratio. | Use Geometric Mean. Never use the arithmetic mean on ratios, as it biases results toward the benchmark used as the normalization base. |
+| Summarizing speedup ratios (<InlineMath>{String.raw`Time_{\text{old}} / Time_{\text{new}}`}</InlineMath>) across multiple benchmarks | Geometric mean maintains the property <InlineMath>{String.raw`GM(A/B) = 1/GM(B/A)`}</InlineMath>. It does not reward inflating a single benchmark's ratio. | Use Geometric Mean. Never use the arithmetic mean on ratios, as it biases results toward the benchmark used as the normalization base. |
 | Summarizing execution rates (e.g., IPC, MIPS, or throughput) | Harmonic mean relates directly to total time because it sums the reciprocals of rates (which are proportional to time). | Use Harmonic Mean. Using the arithmetic mean on rates yields a value that does not correspond to actual total time spent. |
-| Evaluating a targeted optimization (e.g., vectorizing a specific intrinsic) | Amdahl's Law limits overall speedup based on the execution fraction ($f$) of the targeted code. | Profile the workload first. If the target loop consumes only 2% of execution time ($f=0.02$), even an infinite speedup ($s=\infty$) yields a maximum 2.04% overall gain. |
+| Evaluating a targeted optimization (e.g., vectorizing a specific intrinsic) | Amdahl's Law limits overall speedup based on the execution fraction (<InlineMath>{String.raw`f`}</InlineMath>) of the targeted code. | Profile the workload first. If the target loop consumes only 2% of execution time (<InlineMath>{String.raw`f=0.02`}</InlineMath>), even an infinite speedup (<InlineMath>{String.raw`s=\infty`}</InlineMath>) yields a maximum 2.04% overall gain. |
 
 ### The Mathematics of Means
 
-The **Arithmetic Mean** of $n$ values is:
+The **Arithmetic Mean** of <InlineMath>{String.raw`n`}</InlineMath> values is:
 
-$$\text{AM} = \frac{1}{n} \sum_{i=1}^{n} X_i$$
+<BlockMath>{String.raw`\text{AM} = \frac{1}{n} \sum_{i=1}^{n} X_i`}</BlockMath>
 
-The **Geometric Mean** of $n$ values is:
+The **Geometric Mean** of <InlineMath>{String.raw`n`}</InlineMath> values is:
 
-$$\text{GM} = \sqrt[n]{\prod_{i=1}^{n} X_i}$$
+<BlockMath>{String.raw`\text{GM} = \sqrt[n]{\prod_{i=1}^{n} X_i}`}</BlockMath>
 
-The **Harmonic Mean** of $n$ values is:
+The **Harmonic Mean** of <InlineMath>{String.raw`n`}</InlineMath> values is:
 
-$$\text{HM} = \frac{n}{\sum_{i=1}^{n} \frac{1}{X_i}}$$
+<BlockMath>{String.raw`\text{HM} = \frac{n}{\sum_{i=1}^{n} \frac{1}{X_i}}`}</BlockMath>
 
 <Tabs>
   <TabItem value="arithmetic" label="Arithmetic mean" default>
@@ -160,14 +162,14 @@ The geometric mean of speedups stays the same when you swap which compiler is th
 
 When an optimization improves only a fraction of a program, the overall speedup is governed by Amdahl's Law:
 
-$$\text{Speedup}_{\text{overall}} = \frac{1}{(1 - f) + \frac{f}{s}}$$
+<BlockMath>{String.raw`\text{Speedup}_{\text{overall}} = \frac{1}{(1 - f) + \frac{f}{s}}`}</BlockMath>
 
 Where:
-*   $f$ is the fraction of execution time in the original program that is affected by the optimization.
-*   $s$ is the speedup achieved for that fraction.
+*   <InlineMath>{String.raw`f`}</InlineMath> is the fraction of execution time in the original program that is affected by the optimization.
+*   <InlineMath>{String.raw`s`}</InlineMath> is the speedup achieved for that fraction.
 
 :::note
-$f$ is a fraction of the original execution time, not a fraction of the source. A loop that is half the file can be 2% of the time.
+<InlineMath>{String.raw`f`}</InlineMath> is a fraction of the original execution time, not a fraction of the source. A loop that is half the file can be 2% of the time.
 :::
 
 ![Amdahl's law diagram. Two bars on the same scale. The untouched fraction stays the same length. The fraction the pass speeds up gets shorter.](/img/coa/means-and-amdahl.svg)
@@ -216,20 +218,20 @@ The two loops are not the same kind of work. Open the one you are about to chang
 
 Assume a profiler shows that in our baseline run:
 *   Total execution time is 100 seconds.
-*   Part 1 (Sequential) takes 80 seconds ($f_{\text{seq}} = 0.80$).
-*   Part 2 (Vectorizable) takes 20 seconds ($f_{\text{vec}} = 0.20$).
+*   Part 1 (Sequential) takes 80 seconds (<InlineMath>{String.raw`f_{\text{seq}} = 0.80`}</InlineMath>).
+*   Part 2 (Vectorizable) takes 20 seconds (<InlineMath>{String.raw`f_{\text{vec}} = 0.20`}</InlineMath>).
 
-A compiler engineer writes an aggressive loop vectorization pass that targets Part 2. The pass successfully vectorizes the loop, reducing its execution time from 20 seconds to 5 seconds. This represents a speedup of $s = 4$ for Part 2.
+A compiler engineer writes an aggressive loop vectorization pass that targets Part 2. The pass successfully vectorizes the loop, reducing its execution time from 20 seconds to 5 seconds. This represents a speedup of <InlineMath>{String.raw`s = 4`}</InlineMath> for Part 2.
 
 Let us calculate the overall speedup using Amdahl's Law:
 
-$$\text{Speedup}_{\text{overall}} = \frac{1}{(1 - 0.20) + \frac{0.20}{4}} = \frac{1}{0.80 + 0.05} = \frac{1}{0.85} \approx 1.176$$
+<BlockMath>{String.raw`\text{Speedup}_{\text{overall}} = \frac{1}{(1 - 0.20) + \frac{0.20}{4}} = \frac{1}{0.80 + 0.05} = \frac{1}{0.85} \approx 1.176`}</BlockMath>
 
-The overall program speedup is **17.6%**, even though the vectorized portion was sped up by **400%** ($4\times$).
+The overall program speedup is **17.6%**, even though the vectorized portion was sped up by **400%** (<InlineMath>{String.raw`4\times`}</InlineMath>).
 
-What if we spend another six months optimizing the vectorizer to achieve an infinite speedup ($s = \infty$) on Part 2?
+What if we spend another six months optimizing the vectorizer to achieve an infinite speedup (<InlineMath>{String.raw`s = \infty`}</InlineMath>) on Part 2?
 
-$$\text{Speedup}_{\text{overall}} = \frac{1}{(1 - 0.20) + \frac{0.20}{\infty}} = \frac{1}{0.80 + 0} = 1.25$$
+<BlockMath>{String.raw`\text{Speedup}_{\text{overall}} = \frac{1}{(1 - 0.20) + \frac{0.20}{\infty}} = \frac{1}{0.80 + 0} = 1.25`}</BlockMath>
 
 The absolute maximum speedup we can ever achieve by optimizing Part 2 is **25%**. This is the Amdahl limit. It tells the compiler engineer that further optimization of Part 2 has diminishing returns, and engineering effort should instead be redirected to Part 1 (e.g., by attempting to break the dependency chain using fast-math reassociation).
 
@@ -238,7 +240,7 @@ A 4× speedup on the vectorized loop is not a 4× speedup of the program. The se
 :::
 
 :::warning
-Do not invent a cycle count to make the speedup look precise. Use the measured fraction $f$ and the measured time of that region.
+Do not invent a cycle count to make the speedup look precise. Use the measured fraction <InlineMath>{String.raw`f`}</InlineMath> and the measured time of that region.
 :::
 
 ## What the compiler can and cannot do
@@ -266,21 +268,21 @@ This is false and highly misleading. If you use the arithmetic mean to summarize
 
 Consider two benchmarks, B1 and B2, evaluated on Compiler X and Compiler Y:
 
-| Benchmark | Compiler X Time | Compiler Y Time | Speedup of Y over X ($Time_X / Time_Y$) | Speedup of X over Y ($Time_Y / Time_X$) |
+| Benchmark | Compiler X Time | Compiler Y Time | Speedup of Y over X (<InlineMath>{String.raw`Time_X / Time_Y`}</InlineMath>) | Speedup of X over Y (<InlineMath>{String.raw`Time_Y / Time_X`}</InlineMath>) |
 | :--- | :--- | :--- | :--- | :--- |
-| B1 | 10s | 5s | $2.0\times$ | $0.5\times$ |
-| B2 | 5s | 10s | $0.5\times$ | $2.0\times$ |
+| B1 | 10s | 5s | <InlineMath>{String.raw`2.0\times`}</InlineMath> | <InlineMath>{String.raw`0.5\times`}</InlineMath> |
+| B2 | 5s | 10s | <InlineMath>{String.raw`0.5\times`}</InlineMath> | <InlineMath>{String.raw`2.0\times`}</InlineMath> |
 
 *   If we calculate the **Arithmetic Mean of the speedups of Y over X**:
-    $$\text{AM} = \frac{2.0 + 0.5}{2} = 1.25\times \text{ (suggesting Y is 25\% faster than X)}$$
+    <BlockMath>{String.raw`\text{AM} = \frac{2.0 + 0.5}{2} = 1.25\times \text{ (suggesting Y is 25\% faster than X)}`}</BlockMath>
 *   If we calculate the **Arithmetic Mean of the speedups of X over Y**:
-    $$\text{AM} = \frac{0.5 + 2.0}{2} = 1.25\times \text{ (suggesting X is 25\% faster than Y)}$$
+    <BlockMath>{String.raw`\text{AM} = \frac{0.5 + 2.0}{2} = 1.25\times \text{ (suggesting X is 25\% faster than Y)}`}</BlockMath>
 
 This is a physical contradiction. Both compilers cannot be 25% faster than each other.
 
 If we use the **Geometric Mean**:
-*   Geometric Mean of Y over X: $\sqrt{2.0 \times 0.5} = 1.0\times$
-*   Geometric Mean of X over Y: $\sqrt{0.5 \times 2.0} = 1.0\times$
+*   Geometric Mean of Y over X: <InlineMath>{String.raw`\sqrt{2.0 \times 0.5} = 1.0\times`}</InlineMath>
+*   Geometric Mean of X over Y: <InlineMath>{String.raw`\sqrt{0.5 \times 2.0} = 1.0\times`}</InlineMath>
 
 The geometric mean correctly shows that the overall performance of the two compilers is identical.
 
@@ -288,20 +290,20 @@ The geometric mean correctly shows that the overall performance of the two compi
 
 This is incorrect because IPC (Instructions Per Cycle) is a rate. Averaging rates with the arithmetic mean overestimates performance because it does not account for the different number of cycles each benchmark runs.
 
-Suppose we have two benchmarks, each executing $10^9$ instructions:
-*   Benchmark 1 runs at $2.0$ IPC. It takes $0.5 \times 10^9$ cycles.
-*   Benchmark 2 runs at $1.0$ IPC. It takes $1.0 \times 10^9$ cycles.
+Suppose we have two benchmarks, each executing <InlineMath>{String.raw`10^9`}</InlineMath> instructions:
+*   Benchmark 1 runs at <InlineMath>{String.raw`2.0`}</InlineMath> IPC. It takes <InlineMath>{String.raw`0.5 \times 10^9`}</InlineMath> cycles.
+*   Benchmark 2 runs at <InlineMath>{String.raw`1.0`}</InlineMath> IPC. It takes <InlineMath>{String.raw`1.0 \times 10^9`}</InlineMath> cycles.
 
-Total instructions executed = $2.0 \times 10^9$.
-Total cycles consumed = $1.5 \times 10^9$.
+Total instructions executed = <InlineMath>{String.raw`2.0 \times 10^9`}</InlineMath>.
+Total cycles consumed = <InlineMath>{String.raw`1.5 \times 10^9`}</InlineMath>.
 The true overall IPC of the combined run is:
 
-$$\text{True IPC} = \frac{2.0 \times 10^9 \text{ instructions}}{1.5 \times 10^9 \text{ cycles}} \approx 1.33 \text{ IPC}$$
+<BlockMath>{String.raw`\text{True IPC} = \frac{2.0 \times 10^9 \text{ instructions}}{1.5 \times 10^9 \text{ cycles}} \approx 1.33 \text{ IPC}`}</BlockMath>
 
 *   If we use the **Arithmetic Mean** of the IPCs:
-    $$\text{AM} = \frac{2.0 + 1.0}{2} = 1.5 \text{ IPC (incorrect, overestimates performance)}$$
+    <BlockMath>{String.raw`\text{AM} = \frac{2.0 + 1.0}{2} = 1.5 \text{ IPC (incorrect, overestimates performance)}`}</BlockMath>
 *   If we use the **Harmonic Mean** of the IPCs:
-    $$\text{HM} = \frac{2}{\frac{1}{2.0} + \frac{1}{1.0}} = \frac{2}{0.5 + 1.0} = \frac{2}{1.5} \approx 1.33 \text{ IPC (correct)}$$
+    <BlockMath>{String.raw`\text{HM} = \frac{2}{\frac{1}{2.0} + \frac{1}{1.0}} = \frac{2}{0.5 + 1.0} = \frac{2}{1.5} \approx 1.33 \text{ IPC (correct)}`}</BlockMath>
 
 The harmonic mean must always be used when averaging rates where the numerator (instructions, in this case) is constant across the measurements.
 
@@ -309,12 +311,12 @@ The harmonic mean must always be used when averaging rates where the numerator (
 
 This is a common misunderstanding. Amdahl's law applies to *any* optimization that targets a subset of a program's execution.
 
-If you write a compiler pass that optimizes 64-bit integer division by replacing it with a multiplication-by-inverse sequence, Amdahl's law dictates your limit. If division instructions only account for 3% of the program's total execution time, your optimization can never speed up the program by more than 3%, even if you reduce the latency of division to zero cycles. You must always measure the fraction of execution time ($f$) your optimization targets before committing to complex implementation details.
+If you write a compiler pass that optimizes 64-bit integer division by replacing it with a multiplication-by-inverse sequence, Amdahl's law dictates your limit. If division instructions only account for 3% of the program's total execution time, your optimization can never speed up the program by more than 3%, even if you reduce the latency of division to zero cycles. You must always measure the fraction of execution time (<InlineMath>{String.raw`f`}</InlineMath>) your optimization targets before committing to complex implementation details.
 
 ## What To Read Next
 
 *   [Computer Architecture vs Computer Organization](/docs/coa/intro_to_coa) — Understanding the boundary between the ISA contract and the physical implementation.
-*   [Measuring Throughput and Cache Misses](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp) — How to collect the raw performance counters needed to calculate $f$ and $s$ in real workloads.
+*   [Measuring Throughput and Cache Misses](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp) — How to collect the raw performance counters needed to calculate <InlineMath>{String.raw`f`}</InlineMath> and <InlineMath>{String.raw`s`}</InlineMath> in real workloads.
 *   [Basic Terminology in COA](/docs/coa/basic_terminology_in_coa) — A shared vocabulary for cycles, hazards, and memory stalls.
 
 <AdBanner />
