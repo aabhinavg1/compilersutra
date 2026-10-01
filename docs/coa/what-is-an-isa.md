@@ -171,7 +171,7 @@ Same ISA
         └── in-order / embedded implementation
 ```
 
-All three can execute the same binary correctly. But their performance can differ by an order of magnitude. The ISA guarantees correctness; the microarchitecture determines performance.
+All three can execute the same binary correctly. Their performance need not match. The ISA guarantees correctness; the microarchitecture determines performance.
 
 The ISA acts as a strict interface layer separating the software (compiler, ABI, application) from the hardware (pipeline, execution units, physical registers).
 
@@ -216,7 +216,7 @@ CPU internally:
 P0 P1 P2 P3 ... P127   ← physical registers
 ```
 
-The compiler allocates into architectural registers. The hardware renames them to physical registers at runtime. This is why a compiler can generate correct code for an ISA with 31 registers even when the physical CPU has 200.
+The compiler allocates into architectural registers. The hardware renames them to physical registers at runtime. A binary written for 31 architectural registers stays correct on a chip whose rename file is much larger.
 
 ---
 
@@ -278,13 +278,14 @@ The compiler must emit a release store for `flag` so that a thread which acquire
 On x86-64, the memory model guarantees that stores are not reordered with other stores. Therefore, a standard store instruction is sufficient to implement release semantics.
 
 ```assembly
-# rdi = flag, rsi = data, edx = value
+# rdi = flag, rsi = data
+mov edx, 42
 mov dword ptr [rsi], edx  # Store data
-mov dword ptr [rdi], 1    # Store flag (implicitly acts as a release store)
+mov dword ptr [rdi], 1    # Store flag (a plain store is a release store)
 ret
 ```
 
-The compiler does not need to emit any fence instructions because the x86-64 ISA guarantees that these stores will be observed in program order by other cores.
+A plain x86-64 store is enough for release, because the ISA does not reorder a store with an older store from the same core. A sequentially consistent store can still need `xchg` or a fence. Release is the weaker of the two.
 
 ### Case 2: AArch64 (Weakly Ordered)
 
@@ -316,9 +317,10 @@ This makes the **release → acquire → happens-before** relationship concrete:
 On RISC-V, the hardware is allowed to reorder the two stores. To prevent this, the compiler must insert a memory barrier or use an atomic instruction with release annotations.
 
 ```assembly
-# a0 = flag, a1 = data, a2 = value
+# a0 = flag, a1 = data
+li      a2, 42
 sw      a2, 0(a1)         # Store data
-fence   w, w              # Fence: Ensure previous writes finish before subsequent writes
+fence   w, w              # Order this write before the flag write
 li      t0, 1
 sw      t0, 0(a0)         # Store flag
 ret
@@ -327,10 +329,11 @@ ret
 Alternatively, using RISC-V's atomic instructions (if the `A` extension is present):
 
 ```assembly
-# a0 = flag, a1 = data, a2 = value
+# a0 = flag, a1 = data
+li      a2, 42
 sw      a2, 0(a1)         # Store data
 li      t0, 1
-amoswap.w.rl zero, t0, (a0) # Atomic swap with Release (.rl) semantics
+amoswap.w.rl zero, t0, (a0) # Atomic swap with release (.rl) semantics
 ret
 ```
 
@@ -381,7 +384,7 @@ On modern out-of-order CPUs, hardware scheduling often dominates instruction sch
 - **Instruction Scheduling**: The compiler reorders instructions to avoid pipeline hazards (such as data dependencies or load latencies) while preserving the sequential execution semantics guaranteed by the ISA.
 
 ### What the compiler cannot do:
-- **Exceed Architectural Registers**: If an ISA defines 16 general-purpose registers (like x86-64), the compiler cannot use 17. It must spill excess variables to the stack, even if the underlying microarchitecture has 180 physical registers.
+- **Exceed Architectural Registers**: If an ISA defines 16 general-purpose registers (like x86-64), the compiler cannot use 17. It must spill excess variables to the stack, even when the chip renames those 16 names onto a larger physical file.
 - **Bypass Memory Semantics**: The compiler cannot reorder memory operations past an ISA-defined barrier, even if it knows the underlying hardware could execute them faster out-of-order without violating correctness in the common case.
 - **Invent an instruction the target does not implement**: If the encoded instruction is not part of the selected ISA or extension, the CPU may raise an illegal-instruction exception. The compiler's lever is a different instruction sequence, a library routine, or a lower ISA target. Microcode inside a CPU that does implement the instruction is not the same thing as software emulation.
 
