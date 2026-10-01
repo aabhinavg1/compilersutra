@@ -36,6 +36,8 @@ slug: /coa/what-is-an-isa
 import AdBanner from '@site/src/components/AdBanner';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import 'katex/dist/katex.min.css';
+import { BlockMath } from 'react-katex';
 
 # What is an Instruction Set Architecture (ISA)?
 
@@ -372,7 +374,7 @@ The hardware does not know or care about caller-saved or callee-saved registers;
 
 To analyze how a compiler optimizes code within the boundaries of an ISA, we use the classic CPU performance equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+<BlockMath>{String.raw`\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}`}</BlockMath>
 
 The compiler **strongly influences** instruction count through instruction selection and optimization. It **indirectly influences** CPI through scheduling, register pressure, and code layout. Cycle time is primarily determined by the processor's hardware implementation and operating conditions, rather than by individual compiler decisions.
 
