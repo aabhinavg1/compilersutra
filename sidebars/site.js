@@ -275,6 +275,7 @@ const site = {
         'coa/measuring_throughput_cache_misses_cpu_behavior_cpp',
         'coa/means-and-amdahl',
         'coa/what-is-an-isa',
+        'coa/risc-vs-cisc',
       ],
     },
   ],

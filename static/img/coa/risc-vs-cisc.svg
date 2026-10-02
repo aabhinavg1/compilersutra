@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569" />
+    </marker>
+  </defs>
+  <rect width="640" height="300" fill="#f8fafc" />
+  <text x="24" y="36" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0f172a">Register-memory, variable length</text>
+  <rect x="24" y="52" width="150" height="48" rx="4" fill="#0284c7" />
+  <text x="99" y="81" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">ISA bytes</text>
+  <line x1="174" y1="76" x2="214" y2="76" stroke="#475569" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="220" y="52" width="160" height="48" rx="4" fill="#475569" />
+  <text x="300" y="81" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">Find lengths</text>
+  <line x1="380" y1="76" x2="420" y2="76" stroke="#475569" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="426" y="52" width="180" height="48" rx="4" fill="#475569" />
+  <text x="516" y="81" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">Simple internal ops</text>
+  <text x="24" y="156" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0f172a">Load-store, fixed length</text>
+  <rect x="24" y="172" width="150" height="48" rx="4" fill="#0284c7" />
+  <text x="99" y="201" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">Fixed-length words</text>
+  <line x1="174" y1="196" x2="214" y2="196" stroke="#475569" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="220" y="172" width="160" height="48" rx="4" fill="#475569" />
+  <text x="300" y="201" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">Decode side by side</text>
+  <line x1="380" y1="196" x2="420" y2="196" stroke="#475569" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="426" y="172" width="180" height="48" rx="4" fill="#475569" />
+  <text x="516" y="201" font-family="sans-serif" font-size="13" fill="#ffffff" text-anchor="middle">Execute</text>
+  <text x="24" y="268" font-family="sans-serif" font-size="13" fill="#334155">The compiler emits the blue box. It does not schedule the gray steps.</text>
+</svg>

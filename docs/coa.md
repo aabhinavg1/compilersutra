@@ -54,6 +54,7 @@ LLVM backend work, instruction selection, scheduling, and people who already hav
 | Issue width and ILP | [superscalar](/docs/coa/superscalar-execution) |
 | Caches, locality, false sharing, prefetch | [memory hierarchy](/docs/coa/memory-hierarchy) |
 | perf, IPC, misses | [measuring](/docs/coa/measuring_throughput_cache_misses_cpu_behavior_cpp) |
+| Load-store versus register-memory | [RISC vs CISC](/docs/coa/risc-vs-cisc) |
 
 ## The rest of the map
 
@@ -62,7 +63,6 @@ These pages are not written yet. Each one is linked here when it lands.
 ### ISA and the backend
 
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
-- RISC vs CISC Architecture
 - Registers and Addressing Modes
 - Calling Conventions and ABI
 - Load-Store Architecture
