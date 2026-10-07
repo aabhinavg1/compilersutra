@@ -90,9 +90,13 @@ OpenMP ends at the node. MPI is the library the nodes use to talk.
 
 ### Before a GPU could run your loop
 
-- The CPU ran out of cheap speed
-- Thousands of arithmetic units that could only draw
-- No language for those units
+### Daily lessons
+
+| # | Topic | 📝 MCQ | 📄 PDF | 📊 PPT | 📺 YouTube |
+|---|-------|--------|--------|--------|-----------|
+| 1 | [Why a parallel program is a different program](why-parallel-programs.md) | Coming Soon | Coming Soon | Coming Soon | Coming Soon |
+
+### 02 — CPU Shared-Memory Parallelism
 
 ### CUDA
 
