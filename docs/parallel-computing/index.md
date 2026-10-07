@@ -75,6 +75,12 @@ This curriculum takes you from the absolute fundamentals — what a process, thr
 | 5 | [Parallel Hardware Overview](fundamentals/parallel-hardware-overview.md) | Coming Soon | Coming Soon | Coming Soon | Coming Soon |
 | 6 | [Measuring Parallel Performance](fundamentals/measuring-parallel-performance.md) | Coming Soon | Coming Soon | Coming Soon | Coming Soon |
 
+### Daily lessons
+
+| # | Topic | 📝 MCQ | 📄 PDF | 📊 PPT | 📺 YouTube |
+|---|-------|--------|--------|--------|-----------|
+| 1 | [Why a parallel program is a different program](why-parallel-programs.md) | Coming Soon | Coming Soon | Coming Soon | Coming Soon |
+
 ### 02 — CPU Shared-Memory Parallelism
 
 | # | Topic | 📝 MCQ | 📄 PDF | 📊 PPT | 📺 YouTube |

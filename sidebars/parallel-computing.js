@@ -26,6 +26,14 @@ const parallel = {
             'parallel-computing/fundamentals/measuring-parallel-performance',
           ],
         },
+        {
+          type: 'category',
+          label: 'Daily lessons',
+          collapsed: false,
+          items: [
+            'parallel-computing/why-parallel-programs',
+          ],
+        },
       ],
     },
   ],
