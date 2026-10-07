@@ -280,8 +280,7 @@ The teaching list is finished once the tail has produced 28. The next lessons on
 - [Amdahl's Law and Gustafson's Law](/docs/parallel-computing/fundamentals/amdahls-and-gustafsons-law)
 - [Measuring Parallel Performance](/docs/parallel-computing/fundamentals/measuring-parallel-performance)
 
-<div>
-  <AdBanner />
+<AdBanner />
 
 ## References
 
