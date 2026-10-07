@@ -28,10 +28,15 @@ const parallel = {
         },
         {
           type: 'category',
-          label: 'Daily lessons',
+          label: 'GPU tracks',
           collapsed: false,
           items: [
-            'parallel-computing/why-parallel-programs',
+            { type: 'link', label: 'What is a GPU?', href: '/docs/gpu/what_is_gpu/' },
+            { type: 'link', label: 'CUDA', href: '/docs/gpu/platforms/cuda/' },
+            { type: 'link', label: 'ROCm', href: '/docs/gpu/platforms/rocm/' },
+            { type: 'link', label: 'Vulkan', href: '/docs/gpu/platforms/vulkan/' },
+            { type: 'link', label: 'OpenCL', href: '/docs/gpu/opencl/basic/what_is_opencl/' },
+            { type: 'link', label: 'GPU optimizations', href: '/docs/gpu/optimizations/' },
           ],
         },
       ],
