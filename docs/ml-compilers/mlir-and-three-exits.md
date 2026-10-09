@@ -87,6 +87,7 @@ LLVM is the exit for LLVM backends. SPIR-V is the exit for that GPU path. A vend
 
 ## What To Read Next
 
+- [IREE](/docs/ml-compilers/iree/)
 - [One MatMul, Many Implementations](/docs/ml-compilers/one-matmul-many-implementations/)
 - [Introduction to MLIR](/docs/MLIR/intro/)
 - [Seeing the ML Compiler Stack Live on AMD GPU](/docs/ml-compilers/mlcompilerstack/)

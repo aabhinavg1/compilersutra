@@ -290,6 +290,51 @@ const ROWS = [
   topic('27.11', 'Read the graph and the bottleneck', 'The operator, the shape, and the kernel that dominate'),
   topic('27.12', 'The pass, the check, the measurement', 'Chapter 16 or 19, then 18, then 24'),
   topic('27.13', 'The regression, then upstream', 'The baseline from 24.9 stays in the test suite'),
+
+  part('Part VIII. The stacks'),
+  chapter('28', 'The stack map', lesson('the-stack-map')),
+  topic('28.1', 'Two layers', 'A graph compiler decides fusion and placement. A kernel compiler or a library implements one piece.', lesson('the-stack-map', 'two-layers')),
+  topic('28.2', 'Three front doors', 'torch.export, StableHLO, and an ONNX file', lesson('the-stack-map', 'three-front-doors')),
+  topic('28.3', 'Who compiles the graph', 'ONNX Runtime, IREE, XLA, TVM Relax, TensorRT', lesson('the-stack-map', 'who-compiles-the-graph')),
+  topic('28.4', 'Who writes the kernel', 'Triton, Inductor, CUTLASS, cuDNN, oneDNN, MIOpen', lesson('the-stack-map', 'who-writes-the-kernel')),
+  topic('28.5', 'Dialects by name', 'TOSA, StableHLO, linalg, vector, gpu, spirv, llvm', lesson('the-stack-map', 'dialects-by-name')),
+  topic('28.6', 'The file you ship', 'ONNX, vmfb, a TensorRT engine, LiteRT, ExecuTorch, TVM, GGUF', lesson('the-stack-map', 'the-file-you-ship')),
+  topic('28.7', 'Cases the toy graph hides', 'If, Loop, Scan, custom ops, Q/DQ, a dynamic rank', lesson('the-stack-map', 'cases-the-toy-graph-hides')),
+  topic('28.8', 'Where training compilers live', 'XLA and torch.compile also compile the backward pass', lesson('the-stack-map', 'where-training-compilers-live')),
+
+  chapter('29', 'ONNX Runtime', lesson('onnx-runtime')),
+  topic('29.1', 'The session', 'Loading the session is the compile step', lesson('onnx-runtime', 'the-session')),
+  topic('29.2', 'Graph optimization levels', 'Disabled, basic, extended, and all', lesson('onnx-runtime', 'graph-optimization-levels')),
+  topic('29.3', 'The partition', 'CPU, CUDA, TensorRT, OpenVINO, CoreML, QNN, XNNPACK', lesson('onnx-runtime', 'the-partition')),
+  topic('29.4', 'The fallback copy', 'One unsupported node splits a device subgraph', lesson('onnx-runtime', 'the-fallback-copy')),
+  topic('29.5', 'Binding the buffers', 'IO binding keeps the ends of the graph on the device', lesson('onnx-runtime', 'binding-the-buffers')),
+  topic('29.6', 'Mobile and the web', 'A smaller binary, WebAssembly, and WebGPU', lesson('onnx-runtime', 'mobile-and-the-web')),
+  topic('29.7', 'A fusion stays inside one provider', 'A new chip is a new provider and a new set of kernels', lesson('onnx-runtime', 'a-fusion-stays-inside-one-provider')),
+
+  chapter('30', 'IREE', lesson('iree')),
+  topic('30.1', 'What it imports', 'Torch, StableHLO, and TOSA become one graph', lesson('iree', 'what-it-imports')),
+  topic('30.2', 'Flow', 'Dispatch regions are the fused kernels', lesson('iree', 'flow')),
+  topic('30.3', 'Stream', 'Copies, order, and overlap', lesson('iree', 'stream')),
+  topic('30.4', 'HAL', 'Command buffers and executables, one backend at a time', lesson('iree', 'hal')),
+  topic('30.5', 'The VM and the vmfb', 'The file you ship', lesson('iree', 'the-vm-and-the-vmfb')),
+  topic('30.6', 'The backends', 'llvm-cpu, vulkan-spirv, cuda, rocm', lesson('iree', 'the-backends')),
+  topic('30.7', 'Where the chapters land', 'Import, flow, stream, HAL, VM', lesson('iree', 'where-the-chapters-land')),
+
+  chapter('31', 'Edge and the NPU', lesson('edge-and-the-npu')),
+  topic('31.1', 'Compile before you ship', 'The device loads a finished program', lesson('edge-and-the-npu', 'compile-before-you-ship')),
+  topic('31.2', 'TOSA', 'A short legal operator set', lesson('edge-and-the-npu', 'tosa')),
+  topic('31.3', 'Two program files', 'A LiteRT flatbuffer and an ExecuTorch .pte', lesson('edge-and-the-npu', 'two-program-files')),
+  topic('31.4', 'The mobile CPU', 'XNNPACK runs the nodes a delegate leaves behind', lesson('edge-and-the-npu', 'the-mobile-cpu')),
+  topic('31.5', 'The NPU delegates', 'NNAPI, Core ML, QNN, OpenVINO', lesson('edge-and-the-npu', 'the-npu-delegates')),
+  topic('31.6', 'Integer is the common dtype', 'Quantize and dequantize fold into an integer kernel', lesson('edge-and-the-npu', 'integer-is-the-common-dtype')),
+
+  chapter('32', 'Attention and the shipped model', lesson('attention-and-the-shipped-model')),
+  topic('32.1', 'The score matrix', 'Scores grow with the square of the sequence', lesson('attention-and-the-shipped-model', 'the-score-matrix')),
+  topic('32.2', 'Fusion keeps the tile', 'The full score matrix is never stored', lesson('attention-and-the-shipped-model', 'fusion-keeps-the-tile')),
+  topic('32.3', 'The KV cache', 'Keys and values stay between tokens', lesson('attention-and-the-shipped-model', 'the-kv-cache')),
+  topic('32.4', 'Paging is a runtime', 'Pages and the batch sit above the kernel', lesson('attention-and-the-shipped-model', 'paging-is-a-runtime')),
+  topic('32.5', 'GGUF on the machine in front of you', 'A quantized file for a laptop or a phone', lesson('attention-and-the-shipped-model', 'gguf-on-the-machine-in-front-of-you')),
+  topic('32.6', 'The forward graph is still the program', 'One frozen run per token, then the Chapter 4 decision', lesson('attention-and-the-shipped-model', 'the-forward-graph-is-still-the-program')),
 ];
 
 const OWNERS = [
@@ -415,7 +460,7 @@ export default function MlCompilerCurriculum() {
             Follow the parts in order
           </h2>
           <p className={track.sectionDesc}>
-            Chapters 1–14 are lessons. A title opens that section. Chapters 15–27 are the rest of the path.
+            Chapters 1–14 and 28–32 are lessons. A title opens that section. Chapters 15–27 are the rest of the path.
           </p>
         </div>
         <div className={styles.syllabus}>

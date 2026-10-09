@@ -105,6 +105,7 @@ The compiler writes the program: the kernels, the variants, and the guards. The 
 ## What To Read Next
 
 - [ONNX and the Operator Graph](/docs/ml-compilers/onnx-and-the-operator-graph/)
+- [The Stack Map](/docs/ml-compilers/the-stack-map/)
 - [What Problem ML Compilers Solve Beyond LLVM](/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm/)
 - [The End-to-End ML Compiler Pipeline](/docs/ml-compilers/end-to-end-pipeline/)
 

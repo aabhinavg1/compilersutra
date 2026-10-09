@@ -1549,6 +1549,17 @@ html[data-theme='dark'] .cmp-chip--shared {
 .ml-tutorial-ch-12 { --ml-ch: '12.'; }
 .ml-tutorial-ch-13 { --ml-ch: '13.'; }
 .ml-tutorial-ch-14 { --ml-ch: '14.'; }
+.ml-tutorial-ch-28 { --ml-ch: '28.'; }
+.ml-tutorial-ch-29 { --ml-ch: '29.'; }
+.ml-tutorial-ch-30 { --ml-ch: '30.'; }
+.ml-tutorial-ch-31 { --ml-ch: '31.'; }
+.ml-tutorial-ch-32 { --ml-ch: '32.'; }
+
+.ml-course-n28 > .menu__link::before { content: '28'; counter-increment: none; }
+.ml-course-n29 > .menu__link::before { content: '29'; counter-increment: none; }
+.ml-course-n30 > .menu__link::before { content: '30'; counter-increment: none; }
+.ml-course-n31 > .menu__link::before { content: '31'; counter-increment: none; }
+.ml-course-n32 > .menu__link::before { content: '32'; counter-increment: none; }
 
 .ml-tutorial-chapter > .menu__list-item-collapsible > .menu__link {
   background: transparent;
