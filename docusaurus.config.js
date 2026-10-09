@@ -12,6 +12,7 @@ const config = {
   trailingSlash: true,
   projectName: 'FixIt',
   onBrokenLinks: 'ignore',
+  clientModules: [require.resolve('./src/clientModules/mlTutorialNav.js')],
 
   i18n: {
     defaultLocale: 'en',

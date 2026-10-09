@@ -3,13 +3,11 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
-import { FaArrowRight, FaEnvelope } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import Heading from '@theme/Heading';
 import Hero from '@site/src/components/hero/Hero';
+import WeeklyNotesForm from '@site/src/components/WeeklyNotesForm';
 import styles from './index.module.css';
-
-const NEWSLETTER_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform';
 
 const CONTACT_URL = 'https://www.linkedin.com/in/abhinavcompilerllvm/';
 const CONTACT_EMAIL = 'mailto:osc@compilersutra.com';
@@ -239,19 +237,8 @@ function StarterPackSection() {
                 Open free Start Here
                 <FaArrowRight aria-hidden="true" />
               </Link>
-              <Link
-                className={styles.starterGhost}
-                to={NEWSLETTER_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaEnvelope aria-hidden="true" />
-                Optional weekly notes
-              </Link>
             </div>
-            <p className={styles.formNote}>
-              No spam — practical compiler notes and curated resources only.
-            </p>
+            <WeeklyNotesForm />
           </div>
 
           <aside className={styles.guidancePanel}>

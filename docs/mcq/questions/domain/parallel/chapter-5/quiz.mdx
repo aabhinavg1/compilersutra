@@ -1,0 +1,19 @@
+---
+title: "Chapter 5: SIMD quiz"
+description: "Questions for Chapter 5: SIMD."
+displayed_sidebar: parallelMcqChapter5Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 5: SIMD quiz
+
+Lesson pages: [Chapter 5: SIMD](/docs/parallel-computing/chapter-5/)
+
+<Question question="1. What is one SIMD add?" options={['Several threads with different program counters', 'One instruction applied to several lanes', 'A message between machines', 'A barrier']} answer="One instruction applied to several lanes" />
+
+<Question question="2. Which loop can a compiler widen more directly?" options={['out[i] = in[i] + 1', 'a prefix that needs the previous output', "two threads waiting on each other's locks", 'a receive that matches a send']} answer="out[i] = in[i] + 1" />
+
+<Question question="3. What do SIMD lanes share that threads do not?" options={['Separate process memories', 'One instruction stream', 'MPI ranks', 'Private address spaces by default']} answer="One instruction stream" />
+
+<Question question="4. What does SIMD change about the CPU split?" options={['It removes the need to use more than one core', "It shortens the work inside one core's slice", 'It sends the list to another machine', 'It locks every lane']} answer="It shortens the work inside one core's slice" />

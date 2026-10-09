@@ -1,0 +1,21 @@
+---
+title: "Chapter 2: CPU Parallelism quiz"
+description: "Questions for Chapter 2: CPU Parallelism."
+displayed_sidebar: parallelMcqChapter2Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 2: CPU Parallelism quiz
+
+Lesson pages: [Chapter 2: CPU Parallelism](/docs/parallel-computing/chapter-2/)
+
+<Question question="1. What does a thread inside a process share with another thread there?" options={['Nothing, like a separate machine', 'The process address space', 'Only the GPU registers', "The other machine's rank"]} answer="The process address space" />
+
+<Question question="2. Which snippet races if two threads run it on one total?" options={['each thread writes its own private sum', 'total = total + x on a shared total', 'printing the core count', 'adding a private copy after the join']} answer="total = total + x on a shared total" />
+
+<Question question="3. What should the mutex cover in the shared-total version?" options={['The entire program, including startup', 'The shared update', 'Only the comments', 'The list length']} answer="The shared update" />
+
+<Question question="4. When is an atomic a weak fit for this sum?" options={['When each thread can keep a private sum and combine once', 'When the program is serial', 'When the list is empty', 'When the printer is slow']} answer="When each thread can keep a private sum and combine once" />
+
+<Question question="5. What is deadlock?" options={['A wait that the other waiters also cannot end', 'A faster lock', 'A correct private sum', 'A cache hit']} answer="A wait that the other waiters also cannot end" />

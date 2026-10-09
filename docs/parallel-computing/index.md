@@ -3,6 +3,7 @@ title: Parallel Computing
 description: Fundamentals first, then OpenMP, MPI, CUDA, ROCm, OpenCL, and Vulkan. Written pages are linked. The rest is the order they will be added.
 slug: /parallel-computing/
 displayed_sidebar: parallelComputingSidebar
+hide_title: true
 keywords:
   - parallel computing
   - OpenMP
@@ -14,6 +15,7 @@ keywords:
   - GPU programming
 ---
 
+import Link from '@docusaurus/Link';
 import AdBanner from '@site/src/components/AdBanner';
 
 # Parallel Computing

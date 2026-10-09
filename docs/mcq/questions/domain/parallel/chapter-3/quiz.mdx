@@ -1,0 +1,19 @@
+---
+title: "Chapter 3: OpenMP quiz"
+description: "Questions for Chapter 3: OpenMP."
+displayed_sidebar: parallelMcqChapter3Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 3: OpenMP quiz
+
+Lesson pages: [Chapter 3: OpenMP](/docs/parallel-computing/chapter-3/)
+
+<Question question="1. Which loop is a safer split?" options={['each step reads the value the previous step wrote', 'each step writes a private slot', 'two steps share one running total without a reduction', 'the loop body joins a thread']} answer="each step writes a private slot" />
+
+<Question question="2. What does reduction(+:total) do?" options={['It deletes total', 'It gives each thread a private copy, then adds those copies', 'It sends total to another machine', 'It widens the add into AVX by name']} answer="It gives each thread a private copy, then adds those copies" />
+
+<Question question="3. Where is a wait required in the summing program?" options={['Before both partial sums exist, if the final add needs them', 'On every load of a private value', 'Before the list is written down', 'Between two independent reads']} answer="Before both partial sums exist, if the final add needs them" />
+
+<Question question="4. What do you compare in the OpenMP project?" options={['Two totals that should match, and two times from your machine', 'A time copied from a textbook', 'The GPU driver version', 'An MPI rank']} answer="Two totals that should match, and two times from your machine" />

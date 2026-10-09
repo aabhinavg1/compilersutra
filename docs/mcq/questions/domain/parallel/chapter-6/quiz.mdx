@@ -1,0 +1,21 @@
+---
+title: "Chapter 6: GPU Programming quiz"
+description: "Questions for Chapter 6: GPU Programming."
+displayed_sidebar: parallelMcqChapter6Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 6: GPU Programming quiz
+
+Lesson pages: [Chapter 6: GPU Programming](/docs/parallel-computing/chapter-6/)
+
+<Question question="1. What has to happen before a GPU can add this list?" options={['The list is copied to the device, and a kernel is launched', 'OpenMP crosses the network', 'The CPU clock doubles', 'The list is sorted']} answer="The list is copied to the device, and a kernel is launched" />
+
+<Question question="2. Which threads can wait for each other with a block barrier?" options={['Threads in different blocks', 'Threads in the same block', 'Threads on another machine', 'The host compiler']} answer="Threads in the same block" />
+
+<Question question="3. Where does one thread's private running add belong?" options={['In a register', "In every other thread's local list", 'In the host source file', 'In an MPI tag']} answer="In a register" />
+
+<Question question="4. What does the CUDA copy move?" options={['The kernel source into the C compiler only', 'Bytes between host memory and device memory', 'A mutex into the cache', 'The sidebar']} answer="Bytes between host memory and device memory" />
+
+<Question question="5. What does Vulkan compute take from the compiler before the driver finishes the device code?" options={['An OpenMP pragma', 'SPIR-V', 'A serial total only', 'An MPI rank']} answer="SPIR-V" />

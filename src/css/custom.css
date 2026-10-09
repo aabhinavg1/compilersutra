@@ -1500,3 +1500,103 @@ html[data-theme='dark'] .cmp-chip--shared {
   padding-right: 0 !important;
   margin-left: 0 !important;
 }
+
+/* ML compiler course outline. Scoped to the track and chapter sidebars. */
+.ml-course > .menu__list {
+  counter-reset: ml-course;
+}
+
+.ml-course-link > .menu__link {
+  display: grid;
+  grid-template-columns: 1.7rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.35rem;
+  line-height: 1.35;
+}
+
+.ml-course-link > .menu__link::before {
+  counter-increment: ml-course;
+  content: counter(ml-course);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+  padding-top: 0.12rem;
+}
+
+.ml-tutorial-back > .menu__link {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.ml-tutorial-back > .menu__link::before {
+  content: '←';
+  margin-right: 0.4rem;
+}
+
+.ml-tutorial-ch-1 { --ml-ch: '1.'; }
+.ml-tutorial-ch-2 { --ml-ch: '2.'; }
+.ml-tutorial-ch-3 { --ml-ch: '3.'; }
+.ml-tutorial-ch-4 { --ml-ch: '4.'; }
+.ml-tutorial-ch-5 { --ml-ch: '5.'; }
+.ml-tutorial-ch-6 { --ml-ch: '6.'; }
+.ml-tutorial-ch-7 { --ml-ch: '7.'; }
+.ml-tutorial-ch-8 { --ml-ch: '8.'; }
+.ml-tutorial-ch-9 { --ml-ch: '9.'; }
+.ml-tutorial-ch-10 { --ml-ch: '10.'; }
+.ml-tutorial-ch-11 { --ml-ch: '11.'; }
+.ml-tutorial-ch-12 { --ml-ch: '12.'; }
+.ml-tutorial-ch-13 { --ml-ch: '13.'; }
+.ml-tutorial-ch-14 { --ml-ch: '14.'; }
+
+.ml-tutorial-chapter > .menu__list-item-collapsible > .menu__link {
+  background: transparent;
+  color: var(--ifm-font-color-base);
+  font-weight: 700;
+}
+
+.ml-tutorial-chapter > .menu__list-item-collapsible > .menu__link:hover {
+  background: var(--ifm-hover-overlay);
+}
+
+.ml-tutorial-chapter > .menu__list {
+  counter-reset: ml-lesson;
+  margin-top: 0.15rem;
+  margin-left: 0.35rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.ml-tutorial-lesson > .menu__link {
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--ifm-font-color-base);
+}
+
+.ml-tutorial-lesson > .menu__link::before {
+  counter-increment: ml-lesson;
+  content: var(--ml-ch) counter(ml-lesson);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ifm-color-emphasis-600);
+  padding-top: 0.15rem;
+}
+
+.ml-tutorial-lesson > .menu__link:hover {
+  background: var(--ifm-hover-overlay);
+}
+
+.ml-tutorial-lesson > .menu__link.ml-tutorial-current {
+  background: color-mix(in srgb, var(--ifm-color-primary) 12%, transparent);
+  font-weight: 650;
+}
+
+.ml-tutorial-lesson > .menu__link.ml-tutorial-current::before {
+  color: var(--ifm-color-primary);
+}
