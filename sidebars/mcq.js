@@ -401,6 +401,23 @@ const mcq = {
             'mcq/questions/domain/competitive-programming/competitive-programming-quiz',
           ],
         },
+        {
+          type: 'category',
+          label: 'Parallel Programming MCQs',
+          collapsed: true,
+          items: [
+            { type: 'link', label: 'Start Here MCQs', href: '/docs/mcq/questions/domain/parallel/start-here/' },
+            { type: 'link', label: 'Chapter 1: Parallel Thinking MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-1/' },
+            { type: 'link', label: 'Chapter 2: CPU Parallelism MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-2/' },
+            { type: 'link', label: 'Chapter 3: OpenMP MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-3/' },
+            { type: 'link', label: 'Chapter 4: Parallel Algorithms MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-4/' },
+            { type: 'link', label: 'Chapter 5: SIMD MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-5/' },
+            { type: 'link', label: 'Chapter 6: GPU Programming MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-6/' },
+            { type: 'link', label: 'Chapter 7: Distributed Computing MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-7/' },
+            { type: 'link', label: 'Chapter 8: Measuring MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-8/' },
+            { type: 'link', label: 'Projects MCQs', href: '/docs/mcq/questions/domain/parallel/projects/' },
+          ],
+        },
       ],
     },
   ],
@@ -577,6 +594,148 @@ const mcq = {
       ],
     },
   ],
+
+  parallelMcqHomeSidebar: [
+    {
+      type: 'category',
+      label: 'Parallel Programming MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/index' },
+      items: [
+        { type: 'link', label: 'Start Here MCQs', href: '/docs/mcq/questions/domain/parallel/start-here/' },
+        { type: 'link', label: 'Chapter 1: Parallel Thinking MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-1/' },
+        { type: 'link', label: 'Chapter 2: CPU Parallelism MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-2/' },
+        { type: 'link', label: 'Chapter 3: OpenMP MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-3/' },
+        { type: 'link', label: 'Chapter 4: Parallel Algorithms MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-4/' },
+        { type: 'link', label: 'Chapter 5: SIMD MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-5/' },
+        { type: 'link', label: 'Chapter 6: GPU Programming MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-6/' },
+        { type: 'link', label: 'Chapter 7: Distributed Computing MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-7/' },
+        { type: 'link', label: 'Chapter 8: Measuring MCQs', href: '/docs/mcq/questions/domain/parallel/chapter-8/' },
+        { type: 'link', label: 'Projects MCQs', href: '/docs/mcq/questions/domain/parallel/projects/' },
+      ],
+    },
+  ],
+  parallelMcqStartSidebar: [
+    {
+      type: 'category',
+      label: 'Start Here MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/start-here/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/start-here/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter1Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 1: Parallel Thinking MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-1/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-1/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter2Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 2: CPU Parallelism MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-2/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-2/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter3Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 3: OpenMP MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-3/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-3/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter4Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 4: Parallel Algorithms MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-4/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-4/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter5Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 5: SIMD MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-5/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-5/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter6Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 6: GPU Programming MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-6/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-6/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter7Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 7: Distributed Computing MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-7/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-7/quiz',
+      ],
+    },
+  ],
+  parallelMcqChapter8Sidebar: [
+    {
+      type: 'category',
+      label: 'Chapter 8: Measuring MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/chapter-8/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/chapter-8/quiz',
+      ],
+    },
+  ],
+  parallelMcqProjectsSidebar: [
+    {
+      type: 'category',
+      label: 'Projects MCQs',
+      collapsed: false,
+      link: { type: 'doc', id: 'mcq/questions/domain/parallel/projects/index' },
+      items: [
+        { type: 'link', label: 'All parallel quizzes', href: '/docs/mcq/questions/domain/parallel/' },
+        'mcq/questions/domain/parallel/projects/quiz',
+      ],
+    },
+  ],
+
 };
 
 module.exports = mcq;

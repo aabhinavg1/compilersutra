@@ -13,36 +13,39 @@ hide_title: true
 
 import Link from '@docusaurus/Link';
 import styles from './track.module.css';
+import MlCompilerCurriculum from './MlCompilerCurriculum';
 
-<div className={styles.page}>
+<div className={`${styles.page} ${styles.pageWide}`}>
   <header className={styles.hero}>
     <p className={styles.eyebrow}>Learning track · AI compiler stack</p>
     <h1 className={styles.title}>ML Compilers</h1>
     <p className={styles.subtitle}>
-      Not just another frontend/backend story — richer IRs, staged lowering, schedules, and
-      hardware-aware codegen for models. MLIR, TVM, and how they sit above LLVM.
+      Start from a program you can already read. Then a model, a graph, and the compiler that
+      turns inference into kernels. Twenty-seven chapters. The longer articles stay below the table.
     </p>
 
     <div className={styles.heroMeta}>
       <span>Free</span>
-      <span>~10 core lessons</span>
-      <span>After: LLVM helpful</span>
+      <span>27 chapters</span>
+      <span>Lessons through Chapter 14</span>
     </div>
 
     <div className={styles.heroActions}>
-      <Link className={styles.primaryCta} to="/docs/ml-compilers/introduction-roadmap/">
-        Start lesson 1
+      <Link className={styles.primaryCta} to="/docs/ml-compilers/programs-as-rules/">
+        Start chapter 1
         <span aria-hidden="true">→</span>
       </Link>
-      <Link className={styles.secondaryCta} to="/docs/tracks/llvm-and-ir/">
-        Need LLVM first?
+      <Link className={styles.secondaryCta} to="#syllabus">
+        Syllabus
       </Link>
     </div>
   </header>
 
-  <section className={styles.infoRow}>
+  <details className={styles.overview}>
+    <summary>Course overview</summary>
+    <section className={styles.infoRow}>
     <article className={styles.infoCard}>
-      <h2>Who this is for</h2>
+      <h2>Who is this course for?</h2>
       <ul>
         <li>Compiler engineers moving into AI / DSC stacks</li>
         <li>LLVM readers who want the layer above raw IR</li>
@@ -58,167 +61,10 @@ import styles from './track.module.css';
         <li>How torch.compile-style stacks connect the pieces</li>
       </ul>
     </article>
-  </section>
+    </section>
+  </details>
 
-  <section className={styles.section}>
-    <div className={styles.sectionHead}>
-      <span className={styles.sectionStep}>Path</span>
-      <h2 className={styles.sectionTitle}>Follow this order</h2>
-      <p className={styles.sectionDesc}>
-        Labels match the article titles. Finish one step, then open the next.
-      </p>
-    </div>
-
-    <div className={styles.phase}>
-      <h3 className={styles.phaseTitle}>1 · Why ML compilers exist</h3>
-      <div className={styles.stepList}>
-        <Link className={styles.stepRow} to="/docs/ml-compilers/introduction-roadmap/">
-          <span className={styles.stepNum}>01</span>
-          <span className={styles.stepCopy}>
-            <strong>Introduction to ML Compilers + Roadmap</strong>
-            <em>Field map and study order</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/ml-compilers/what-problem-ml-compilers-solve-beyond-llvm/">
-          <span className={styles.stepNum}>02</span>
-          <span className={styles.stepCopy}>
-            <strong>What Problem ML Compilers Solve Beyond LLVM</strong>
-            <em>Why classic IR alone is not enough</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/ml-compilers/end-to-end-pipeline/">
-          <span className={styles.stepNum}>03</span>
-          <span className={styles.stepCopy}>
-            <strong>The End-to-End ML Compiler Pipeline</strong>
-            <em>Graph → optimize → kernels → hardware</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-
-    <div className={styles.phase}>
-      <h3 className={styles.phaseTitle}>2 · See it live</h3>
-      <div className={styles.stepList}>
-        <Link className={styles.stepRow} to="/docs/ml-compilers/mlcompilerstack/">
-          <span className={styles.stepNum}>04</span>
-          <span className={styles.stepCopy}>
-            <strong>Seeing the ML Compiler Stack Live on AMD GPU</strong>
-            <em>Make every stage visible on a real machine</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/ml-compilers/inside-torch-compile/">
-          <span className={styles.stepNum}>05</span>
-          <span className={styles.stepCopy}>
-            <strong>Inside torch.compile</strong>
-            <em>Dynamo → AOTAutograd → Inductor → Triton</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-
-    <div className={styles.phase}>
-      <h3 className={styles.phaseTitle}>3 · MLIR</h3>
-      <div className={styles.stepList}>
-        <Link className={styles.stepRow} to="/docs/MLIR/">
-          <span className={styles.stepNum}>06</span>
-          <span className={styles.stepCopy}>
-            <strong>MLIR Hub</strong>
-            <em>Section home for multi-level IR</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/MLIR/intro/">
-          <span className={styles.stepNum}>07</span>
-          <span className={styles.stepCopy}>
-            <strong>Introduction to MLIR</strong>
-            <em>Dialects, lowering, why multi-level IR</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-
-    <div className={styles.phase}>
-      <h3 className={styles.phaseTitle}>4 · TVM</h3>
-      <div className={styles.stepList}>
-        <Link className={styles.stepRow} to="/docs/tvm/">
-          <span className={styles.stepNum}>08</span>
-          <span className={styles.stepCopy}>
-            <strong>TVM Hub</strong>
-            <em>Section home for Apache TVM</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/tvm-for-beginners/">
-          <span className={styles.stepNum}>09</span>
-          <span className={styles.stepCopy}>
-            <strong>TVM for Beginners</strong>
-            <em>What TVM does and why it matters</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/tvm/basics/installation/">
-          <span className={styles.stepNum}>10</span>
-          <span className={styles.stepCopy}>
-            <strong>TVM Installation</strong>
-            <em>Get a working TVM environment</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/tvm/basics/first-model/">
-          <span className={styles.stepNum}>11</span>
-          <span className={styles.stepCopy}>
-            <strong>First Model with TVM</strong>
-            <em>Compile and run a small model path</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/tvm/basics/autotuning/">
-          <span className={styles.stepNum}>12</span>
-          <span className={styles.stepCopy}>
-            <strong>TVM Autotuning</strong>
-            <em>Search schedules for better kernels</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-
-    <div className={styles.phase}>
-      <h3 className={styles.phaseTitle}>5 · Connect the stack</h3>
-      <div className={styles.stepList}>
-        <Link className={styles.stepRow} to="/docs/tracks/llvm-and-ir/">
-          <span className={styles.stepNum}>13</span>
-          <span className={styles.stepCopy}>
-            <strong>LLVM and IR Track</strong>
-            <em>The infra ML stacks often lower into</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/tracks/gpu-compilers/">
-          <span className={styles.stepNum}>14</span>
-          <span className={styles.stepCopy}>
-            <strong>GPU Compilers Track</strong>
-            <em>Device execution model for generated kernels</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-        <Link className={styles.stepRow} to="/docs/AI/">
-          <span className={styles.stepNum}>15</span>
-          <span className={styles.stepCopy}>
-            <strong>AI Systems</strong>
-            <em>Broader math → models → hardware map</em>
-          </span>
-          <span className={styles.stepGo} aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-  </section>
+  <MlCompilerCurriculum />
 
   <section className={styles.section}>
     <div className={styles.sectionHead}>
@@ -230,22 +76,6 @@ import styles from './track.module.css';
       <li>Sketch a pipeline from a domain IR down toward kernels / LLVM</li>
       <li>Connect one MLIR or TVM idea back to an LLVM concept you already know</li>
     </ul>
-  </section>
-
-  <section className={styles.section}>
-    <div className={styles.sectionHead}>
-      <span className={styles.sectionStep}>Extra</span>
-      <h2 className={styles.sectionTitle}>Optional supporting reads</h2>
-      <p className={styles.sectionDesc}>Deeper TVM chapters when you are ready.</p>
-    </div>
-    <div className={styles.chipRow}>
-      <Link className={styles.chip} to="/docs/ml-compilers/">ML Compilers hub</Link>
-      <Link className={styles.chip} to="/docs/tvm/intermediate/relay/">TVM Relay</Link>
-      <Link className={styles.chip} to="/docs/tvm/intermediate/graph-optimizations/">Graph Optimizations</Link>
-      <Link className={styles.chip} to="/docs/tvm/intermediate/schedule-tuning/">Schedule Tuning</Link>
-      <Link className={styles.chip} to="/docs/tvm/deployment/runtime/">TVM Runtime</Link>
-      <Link className={styles.chip} to="/docs/tvm/advanced/meta-scheduler/">Meta Scheduler</Link>
-    </div>
   </section>
 
   <section className={styles.nextCard}>

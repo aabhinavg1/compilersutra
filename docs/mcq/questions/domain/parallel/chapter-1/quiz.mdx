@@ -1,0 +1,21 @@
+---
+title: "Chapter 1: Parallel Thinking quiz"
+description: "Questions for Chapter 1: Parallel Thinking."
+displayed_sidebar: parallelMcqChapter1Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 1: Parallel Thinking quiz
+
+Lesson pages: [Chapter 1: Parallel Thinking](/docs/parallel-computing/chapter-1/)
+
+<Question question="1. What does serial mean on this list?" options={['Two cores add at the same time', 'One step finishes before the next starts', 'The list is sent in a message', 'The compiler deletes the loop']} answer="One step finishes before the next starts" />
+
+<Question question="2. Why can extra cores sit idle during the first loop?" options={['The loop never uses more than one core', 'Cores refuse integer adds', 'The list is too long', 'Printing disables the chip']} answer="The loop never uses more than one core" />
+
+<Question question="3. Two people add halves at the same time, then add those halves. Which word fits?" options={['Distributed, if they share one sheet of paper', 'Parallel', 'Serial', 'A race by definition']} answer="Parallel" />
+
+<Question question="4. Two machines can only exchange the half-sums by talking. Which word fits?" options={['SIMD', 'Distributed', 'A single thread', 'A map']} answer="Distributed" />
+
+<Question question="5. Both workers update one shared total. What can go wrong?" options={['The program fails to compile', 'One add can be lost', 'The list sorts itself', 'The core count drops to zero']} answer="One add can be lost" />

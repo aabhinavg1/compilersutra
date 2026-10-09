@@ -1,0 +1,21 @@
+---
+title: "Chapter 4: Parallel Algorithms quiz"
+description: "Questions for Chapter 4: Parallel Algorithms."
+displayed_sidebar: parallelMcqChapter4Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 4: Parallel Algorithms quiz
+
+Lesson pages: [Chapter 4: Parallel Algorithms](/docs/parallel-computing/chapter-4/)
+
+<Question question="1. Which loop is a map?" options={['a running prefix at every index', 'out[i] = in[i] + 1, with no other index', 'one shared bin incremented by every thread', 'a message between two ranks']} answer="out[i] = in[i] + 1, with no other index" />
+
+<Question question="2. What is the combining step of a sum?" options={['A private store that nobody reads', 'Addition of the partial results', 'A broadcast of the list', 'A cache flush']} answer="Addition of the partial results" />
+
+<Question question="3. Where does a histogram race?" options={['On a bin two threads both increment', 'On a read of an input that nobody writes', 'On the length of the list', 'On the thread id']} answer="On a bin two threads both increment" />
+
+<Question question="4. Why write a stencil into a second array?" options={['So neighbors stay the old values for the whole pass', 'Because one array cannot be indexed', 'Because OpenMP forbids loads', 'Because MPI requires two arrays']} answer="So neighbors stay the old values for the whole pass" />
+
+<Question question="5. What does position i of a scan need?" options={['Only in[i]', 'The prefix before it', 'A GPU block size', 'A mutex on every read']} answer="The prefix before it" />

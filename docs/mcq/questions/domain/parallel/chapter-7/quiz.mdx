@@ -1,0 +1,21 @@
+---
+title: "Chapter 7: Distributed Computing quiz"
+description: "Questions for Chapter 7: Distributed Computing."
+displayed_sidebar: parallelMcqChapter7Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 7: Distributed Computing quiz
+
+Lesson pages: [Chapter 7: Distributed Computing](/docs/parallel-computing/chapter-7/)
+
+<Question question="1. Why can OpenMP not see another machine's half of the list?" options={['OpenMP shares one process memory. The other machine is a different memory.', 'OpenMP only adds even numbers', 'OpenMP is a GPU language', 'OpenMP deletes messages']} answer="OpenMP shares one process memory. The other machine is a different memory." />
+
+<Question question="2. What is a rank?" options={['A cache line', 'One process in the MPI job', 'A SIMD lane', 'A shared mutex']} answer="One process in the MPI job" />
+
+<Question question="3. How do two ranks deadlock on this sum?" options={['Both block in send, and neither reaches a receive', 'Both compute a private sum', 'One rank prints 28', 'They use a reduction tree']} answer="Both block in send, and neither reaches a receive" />
+
+<Question question="4. Why is a reduction described as a tree?" options={['Rank 0 sends the full list to itself in a loop', 'Partial sums combine in stages instead of one rank receiving a separate message from everyone in a long loop', 'The tree sorts the list', 'The tree is the GPU grid']} answer="Partial sums combine in stages instead of one rank receiving a separate message from everyone in a long loop" />
+
+<Question question="5. In a hybrid run, where do the threads live?" options={["Inside one rank's process. MPI is between ranks.", 'Inside SPIR-V', 'Across a single SIMD lane', 'In the quiz sidebar only']} answer="Inside one rank's process. MPI is between ranks." />
