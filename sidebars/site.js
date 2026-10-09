@@ -308,6 +308,11 @@ const site = {
             {type: 'link', label: 'ONNX and the Operator Graph', href: '/docs/ml-compilers/onnx-and-the-operator-graph/', className: 'ml-course-link'},
             {type: 'link', label: 'MLIR and Three Exits', href: '/docs/ml-compilers/mlir-and-three-exits/', className: 'ml-course-link'},
             {type: 'link', label: 'One MatMul, Many Implementations', href: '/docs/ml-compilers/one-matmul-many-implementations/', className: 'ml-course-link'},
+            {type: 'link', label: 'The Stack Map', href: '/docs/ml-compilers/the-stack-map/', className: 'ml-course-link ml-course-n28'},
+            {type: 'link', label: 'ONNX Runtime', href: '/docs/ml-compilers/onnx-runtime/', className: 'ml-course-link ml-course-n29'},
+            {type: 'link', label: 'IREE', href: '/docs/ml-compilers/iree/', className: 'ml-course-link ml-course-n30'},
+            {type: 'link', label: 'Edge and the NPU', href: '/docs/ml-compilers/edge-and-the-npu/', className: 'ml-course-link ml-course-n31'},
+            {type: 'link', label: 'Attention and the Shipped Model', href: '/docs/ml-compilers/attention-and-the-shipped-model/', className: 'ml-course-link ml-course-n32'},
           ],
         },
         {
@@ -523,6 +528,55 @@ site.mlChapter13Sidebar = mlChapterSidebar(13, 'MLIR and Three Exits', 'ml-compi
   ['Exit 2: SPIR-V', 'exit-2-spir-v'],
   ['Exit 3: vendor API', 'exit-3-vendor-api'],
   ['Each exit is a finished compilation', 'each-exit-is-a-finished-compilation'],
+]);
+
+site.mlChapter28Sidebar = mlChapterSidebar(28, 'The Stack Map', 'ml-compilers/the-stack-map', [
+  ['Two layers', 'two-layers'],
+  ['Three front doors', 'three-front-doors'],
+  ['Who compiles the graph', 'who-compiles-the-graph'],
+  ['Who writes the kernel', 'who-writes-the-kernel'],
+  ['Dialects by name', 'dialects-by-name'],
+  ['The file you ship', 'the-file-you-ship'],
+  ['Cases the toy graph hides', 'cases-the-toy-graph-hides'],
+  ['Where training compilers live', 'where-training-compilers-live'],
+]);
+
+site.mlChapter29Sidebar = mlChapterSidebar(29, 'ONNX Runtime', 'ml-compilers/onnx-runtime', [
+  ['The session', 'the-session'],
+  ['Graph optimization levels', 'graph-optimization-levels'],
+  ['The partition', 'the-partition'],
+  ['The fallback copy', 'the-fallback-copy'],
+  ['Binding the buffers', 'binding-the-buffers'],
+  ['Mobile and the web', 'mobile-and-the-web'],
+  ['A fusion stays inside one provider', 'a-fusion-stays-inside-one-provider'],
+]);
+
+site.mlChapter30Sidebar = mlChapterSidebar(30, 'IREE', 'ml-compilers/iree', [
+  ['What it imports', 'what-it-imports'],
+  ['Flow', 'flow'],
+  ['Stream', 'stream'],
+  ['HAL', 'hal'],
+  ['The VM and the vmfb', 'the-vm-and-the-vmfb'],
+  ['The backends', 'the-backends'],
+  ['Where the chapters land', 'where-the-chapters-land'],
+]);
+
+site.mlChapter31Sidebar = mlChapterSidebar(31, 'Edge and the NPU', 'ml-compilers/edge-and-the-npu', [
+  ['Compile before you ship', 'compile-before-you-ship'],
+  ['TOSA', 'tosa'],
+  ['Two program files', 'two-program-files'],
+  ['The mobile CPU', 'the-mobile-cpu'],
+  ['The NPU delegates', 'the-npu-delegates'],
+  ['Integer is the common dtype', 'integer-is-the-common-dtype'],
+]);
+
+site.mlChapter32Sidebar = mlChapterSidebar(32, 'Attention and the Shipped Model', 'ml-compilers/attention-and-the-shipped-model', [
+  ['The score matrix', 'the-score-matrix'],
+  ['Fusion keeps the tile', 'fusion-keeps-the-tile'],
+  ['The KV cache', 'the-kv-cache'],
+  ['Paging is a runtime', 'paging-is-a-runtime'],
+  ['GGUF on the machine in front of you', 'gguf-on-the-machine-in-front-of-you'],
+  ['The forward graph is still the program', 'the-forward-graph-is-still-the-program'],
 ]);
 
 site.mlChapter14Sidebar = mlChapterSidebar(14, 'One MatMul, Many Implementations', 'ml-compilers/one-matmul-many-implementations', [
