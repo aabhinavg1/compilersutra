@@ -60,7 +60,7 @@ A line here turns into a link when that lesson is published.
 ### The machine you already have
 
 - One core, made busier
-- SIMD, MIMD, and the interconnect
+- [SIMD, MIMD, and the interconnect](simd-mimd-and-the-interconnect.md)
 - Shared memory versus distributed memory
 - Cache coherence and false sharing
 - Decomposition, tasks, and mapping

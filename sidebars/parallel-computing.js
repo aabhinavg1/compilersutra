@@ -28,6 +28,14 @@ const parallel = {
         },
         {
           type: 'category',
+          label: 'Daily lessons',
+          collapsed: false,
+          items: [
+            'parallel-computing/simd-mimd-and-the-interconnect',
+          ],
+        },
+        {
+          type: 'category',
           label: 'GPU tracks',
           collapsed: false,
           items: [
