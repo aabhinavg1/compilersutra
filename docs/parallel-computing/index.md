@@ -55,8 +55,7 @@ A line here turns into a link when that lesson is published.
 ### Why
 
 - Why a parallel program is a different program
-- Concurrent, parallel, and distributed
-
+- [Concurrent, parallel, and distributed](concurrent-parallel-distributed.md)
 ### The machine you already have
 
 - [One core, made busier](one-core-made-busier.md)
