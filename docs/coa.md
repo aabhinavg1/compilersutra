@@ -66,7 +66,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - Registers and Addressing Modes
 - Calling Conventions and ABI
 - Load-Store Architecture
-- Instruction Formats and Encoding
+- [Instruction Formats and Encoding](/docs/coa/instruction-formats-and-encoding)
 - ISA Design Tradeoffs
 - ISA Impact on Compiler Backend
 
