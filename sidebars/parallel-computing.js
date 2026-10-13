@@ -31,7 +31,7 @@ const parallel = {
           label: 'Daily lessons',
           collapsed: false,
           items: [
-            'parallel-computing/simd-mimd-and-the-interconnect',
+            'parallel-computing/shared-versus-distributed-memory',
           ],
         },
         {
