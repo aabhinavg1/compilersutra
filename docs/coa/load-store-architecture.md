@@ -244,7 +244,7 @@ Because pure load-store architectures require all operands to reside in register
 
 To analyze how the target model impacts performance, state, and execution, consider the standard CPU performance equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$$
 
 Using this model, we can evaluate the systemic impact of architecture constraints on compiler optimization:
 
