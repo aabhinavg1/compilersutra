@@ -59,7 +59,7 @@ A line here turns into a link when that lesson is published.
 
 ### The machine you already have
 
-- One core, made busier
+- [One core, made busier](one-core-made-busier.md)
 - SIMD, MIMD, and the interconnect
 - [Shared memory versus distributed memory](shared-versus-distributed-memory.md)
 - Cache coherence and false sharing

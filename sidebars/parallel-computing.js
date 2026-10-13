@@ -31,6 +31,7 @@ const parallel = {
           label: 'Daily lessons',
           collapsed: false,
           items: [
+            'parallel-computing/one-core-made-busier',
             'parallel-computing/shared-versus-distributed-memory',
           ],
         },
