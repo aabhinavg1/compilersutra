@@ -65,7 +65,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
 - Registers and Addressing Modes
 - Calling Conventions and ABI
-- Load-Store Architecture
+- [Load-Store Architecture](/docs/coa/load-store-architecture)
 - Instruction Formats and Encoding
 - ISA Design Tradeoffs
 - ISA Impact on Compiler Backend
