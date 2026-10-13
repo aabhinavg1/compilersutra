@@ -1,4 +1,5 @@
----title: "One core, made busier"
+---
+title: "One core, made busier"
 description: "How CPU caches, instruction-level parallelism, and hardware multithreading increase single-core execution density without creating a parallel program."
 keywords:
   - microarchitecture
