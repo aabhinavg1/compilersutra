@@ -32,6 +32,8 @@ const parallel = {
           collapsed: false,
           items: [
             'parallel-computing/concurrent-parallel-distributed',
+            'parallel-computing/one-core-made-busier',
+            'parallel-computing/shared-versus-distributed-memory',
           ],
         },
         {
