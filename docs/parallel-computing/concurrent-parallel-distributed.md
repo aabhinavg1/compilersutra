@@ -1,4 +1,5 @@
----title: "Concurrent, Parallel, and Distributed"
+---
+title: "Concurrent, Parallel, and Distributed"
 description: "Understand the structural differences between concurrency, parallelism, and distributed execution to design correct compiler optimizations and runtime schedulers."
 keywords:
   - concurrent vs parallel

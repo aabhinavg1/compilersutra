@@ -1,4 +1,5 @@
----title: "Shared memory versus distributed memory"
+---
+title: "Shared memory versus distributed memory"
 description: "How uniform address spaces and disjoint rank namespaces dictate lowering choices, pointer representations, and runtime communication protocols in parallel compilers."
 keywords:
   - shared memory architecture

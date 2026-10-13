@@ -1,4 +1,5 @@
----title: "SIMD, MIMD, and the Interconnect"
+---
+title: "SIMD, MIMD, and the Interconnect"
 description: "How vector registers, independent execution streams, and memory interconnects dictate vectorization, thread placement, and message-passing runtime decisions."
 keywords:
   - SIMD vectorization
