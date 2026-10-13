@@ -1,4 +1,5 @@
----title: "Registers and addressing modes"
+---
+title: "Registers and addressing modes"
 description: "Learn how compilers choose between register and memory operands and how addressing modes affect instruction count and register pressure."
 keywords:
   - register allocation
