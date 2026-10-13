@@ -117,7 +117,7 @@ Architectural registers are the named registers specified by the ISA and used by
 Different architecture and operating system pairings specify unique register mappings, alignment constraints, and frame attributes.
 
 <Tabs>
-  <TabItem value="sysv" label="System V AMD64 (Linux / macOS x86-64)">
+<TabItem value="sysv" label="System V AMD64 (Linux / macOS x86-64)">
 
 ### Key Attributes
 - **Integer/Pointer Arguments:** Passed in `%rdi`, `%rsi`, `%rdx`, `%rcx`, `%r8`, `%r9` (first 6).
@@ -128,9 +128,9 @@ Different architecture and operating system pairings specify unique register map
 - **Stack Alignment:** `%rsp` + 8 must be a multiple of 16 at function entry (meaning `%rsp` is 16-byte aligned *before* the 8-byte return address is pushed by `call`).
 - **Red Zone:** 128 bytes below `%rsp`. Safe from asynchronous signal and interrupt handlers for leaf functions.
 
-  </TabItem>
+</TabItem>
 
-  <TabItem value="win64" label="Microsoft x64 (Windows x86-64)">
+<TabItem value="win64" label="Microsoft x64 (Windows x86-64)">
 
 ### Key Attributes
 - **Integer/Pointer Arguments:** Passed in `%rcx`, `%rdx`, `%r8`, `%r9` (first 4).
@@ -141,20 +141,20 @@ Different architecture and operating system pairings specify unique register map
 - **Shadow Space (Home Space):** Mandatory 32-byte allocation on the stack by the caller immediately before `call`, reserved for the callee to dump its four register parameters if needed.
 - **Red Zone:** None. Asynchronous handlers can overwrite memory below `%rsp` at any time.
 
-  </TabItem>
+</TabItem>
 
-  <TabItem value="aapcs64" label="AAPCS64 (ARM64 / AArch64)">
+<TabItem value="aapcs64" label="AAPCS64 (ARM64 / AArch64)">
 
 ### Key Attributes
 - **Integer/Pointer Arguments:** Passed in `x0` through `x7` (first 8).
 - **Floating-Point/SIMD Arguments:** Passed in `v0` through `v7` (first 8).
-- **Return Registers:** `x0`–`x1` for integers; `v0`–v1` for floating-point/vector results.
+- **Return Registers:** `x0`–`x1` for integers; `v0`–`v1` for floating-point/vector results.
 - **Caller-Saved Registers:** `x0`–`x17`, `x18` (platform reserved), `v0`–`v7`, `v16`–`v31`.
 - **Callee-Saved Registers:** `x19`–`x28`, `x29` (Frame Pointer), `x30` (Link Register), `v8`–`v15` (only lower 64 bits are preserved).
 - **Stack Alignment:** Stack pointer (`sp`) must always remain 16-byte aligned when accessed for memory operations.
 - **Red Zone:** Optional 16-byte area (or platform dependent, e.g., Apple ARM64 specifies a 128-byte red zone).
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 :::caution
