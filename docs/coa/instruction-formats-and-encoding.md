@@ -124,7 +124,7 @@ When a compiler encounters a constant that exceeds the immediate field width of 
 
 RISC-V splits 32-bit constants using a 20-bit upper immediate instruction (`lui` - Load Upper Immediate) and a 12-bit immediate instruction (`addi` - Add Immediate). 
 
-Because `addi` sign-extends its 12-bit immediate, the compiler must inspect bit 11 of the lower 12 bits. If bit 11 is `1`, the hardware will sign-extend the value, effectively subtracting $2^{12}$ ($4096$) from the upper portion. To counteract this, the compiler must add `1` to the high 20-bit value loaded by `lui`.
+Because `addi` sign-extends its 12-bit immediate, the compiler must inspect bit 11 of the lower 12 bits. If bit 11 is `1`, the hardware will sign-extend the value, effectively subtracting $2^\{12\}$ ($4096$) from the upper portion. To counteract this, the compiler must add `1` to the high 20-bit value loaded by `lui`.
 
 ```assembly
 # Goal: Load 0x12345F00 into a0
@@ -218,7 +218,7 @@ If a compiler backend developer forgets to implement this compensation step in t
 
 The compiler's decisions directly impact the CPU performance equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$$
 
 ### What the compiler strongly influences
 * **Instruction Count:** By choosing between inline synthesis (multiple instructions) and literal pools (one instruction + one memory load), the compiler balances instruction count against memory access overhead.
