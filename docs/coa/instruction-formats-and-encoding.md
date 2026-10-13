@@ -1,4 +1,5 @@
----title: "Instruction Formats and Encoding: Constant Materialization"
+---
+title: "Instruction Formats and Encoding: Constant Materialization"
 description: "Learn how hardware instruction encoding limits immediate widths and how compilers synthesize large constants and offsets."
 keywords:
   - instruction encoding
