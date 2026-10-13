@@ -1,5 +1,6 @@
----title: "Assembler, Linker, and Loader"
-description: "How object files become a running process: relocation, symbol tables, and the three‑stage build pipeline"
+---
+title: "Assembler, linker, and loader"
+description: "How an object file becomes a running process: sections, symbols, relocation, and the loader."
 keywords:
   - assembler
   - linker
@@ -7,450 +8,9 @@ keywords:
   - object file
   - relocation
   - symbol table
-  - relocation entries
-  - relocation type
-  - relocation offset
-  - relocation addend
-  - relocation symbol
-  - relocation section
-  - relocation table
-  - dynamic linker
-  - static linker
-  - ELF
-  - COFF
-  - Mach-O
-  - relocation model
-  - relocation strategy
-  - relocation relocation
-  - relocation address
-  - relocation offset
-  - relocation symbol resolution
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - relocation relocation
-  - 
+  - static linking
+  - dynamic linking
+  - position independent code
 displayed_sidebar: coasidebar
 slug: /coa/assembler-linker-loader
 ---
@@ -465,8 +25,8 @@ The assembler turns ISA‑level source into machine‑code sections; the linker 
 A compiler engineer must understand how the object file format, relocation entries, and symbol tables cooperate so that the generated code can be linked and loaded correctly.
 
 :::tip Read these first
-- [/docs/coa/intro_to_coa](https://example.com/docs/coa/intro_to_coa)
-- [/docs/coa/basic_terminology_in_coa](https://example.com/docs/coa/basic_terminology_in_coa)
+- [/docs/coa/intro_to_coa](/docs/coa/intro_to_coa)
+- [/docs/coa/basic_terminology_in_coa](/docs/coa/basic_terminology_in_coa)
 :::
 
 :::important What you should leave with
@@ -626,12 +186,12 @@ Compile with `gcc -c foo.c -o foo.o`. The assembler emits:
 
 Link with `gcc foo.o -o foo`. The linker:
 
-1. Places `.text` at virtual address 0x400000.
-2. Resolves `bar` to 0x400000 (section base) + 0x0 = 0x400000.
-3. Computes the PC‑relative offset: `0x400000 + 0x8` (next instruction) – `0x400000` (bar) = `0x8`.
-4. Writes `0x8` into the relocation offset.
+1. Places `.text` at virtual address 0x401000.
+2. Resolves `bar` to 0x401000 + 0x0 = 0x401000.
+3. The `call` starts at 0x401014. On x86-64 the PC used by `R_X86_64_PC32` is the next instruction, 0x401019.
+4. Displacement = 0x401000 − 0x401019 = −0x19. That signed value is what the linker writes into the immediate.
 
-The loader maps the executable at 0x400000, performs no further relocations, and jumps to `main`.
+The loader maps the executable at 0x401000, performs no further relocations for this static binary, and jumps to `main`.
 
 :::warning
 If the linker had used a wrong relocation type (e.g., absolute instead of PC‑relative), the call would jump to the wrong address, causing a crash.
@@ -673,9 +233,9 @@ Assuming the loader will always map the executable at the same address leads to 
 
 ## What to read next
 
-- [/docs/coa/calling-conventions-and-abi](https://example.com/docs/coa/calling-conventions-and-abi)
-- [/docs/coa/superscalar_execution](https://example.com/docs/coa/superscalar_execution)
-- [/docs/coa/memory-hierarchy](https://example.com/docs/coa/memory-hierarchy)
+- [/docs/coa/calling-conventions-and-abi](/docs/coa/calling-conventions-and-abi)
+- [/docs/coa/superscalar_execution](/docs/coa/superscalar_execution)
+- [/docs/coa/memory-hierarchy](/docs/coa/memory-hierarchy)
 
 <div>
   <AdBanner />
@@ -684,11 +244,8 @@ Assuming the loader will always map the executable at the same address leads to 
 ![Diagram](/img/coa/assembler-linker-loader.svg)
 
 ## References
-- R. Hennessy & D. Patterson, *Computer Architecture: A Quantitative Approach*, 5th ed.
-- ELF Specification, 2.30, 2023.
-- COFF Specification, Microsoft, 2022.
-- Mach‑O Specification, Apple, 2023.
-- “Position‑Independent Code” – GCC documentation, 2024.
-- “Dynamic Linking” – LLVM documentation, 2024.
+- Hennessy and Patterson, *Computer Architecture: A Quantitative Approach*, the section on translating and starting a program.
+- The ELF gABI relocation and symbol-table chapters.
+- GCC's `-fPIC` / `-fPIE` documentation.
 
 <AdBanner />

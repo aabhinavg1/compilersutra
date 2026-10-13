@@ -62,6 +62,7 @@ These pages are not written yet. Each one is linked here when it lands.
 
 ### ISA and the backend
 
+- [Assembler, linker, and loader](/docs/coa/assembler-linker-loader)
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
 - Registers and Addressing Modes
 - Calling Conventions and ABI
