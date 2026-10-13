@@ -63,7 +63,7 @@ These pages are not written yet. Each one is linked here when it lands.
 ### ISA and the backend
 
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
-- Registers and Addressing Modes
+- [Registers and Addressing Modes](/docs/coa/registers-and-addressing-modes)
 - Calling Conventions and ABI
 - Load-Store Architecture
 - Instruction Formats and Encoding
