@@ -1,4 +1,5 @@
----title: "Load-Store Architecture: Compiler Pipeline Simplification"
+---
+title: "Load-Store Architecture: Compiler Pipeline Simplification"
 description: "How restricting arithmetic instructions to registers simplifies instruction scheduling, register allocation, and hazard detection in compiler backends."
 keywords:
   - load store architecture
