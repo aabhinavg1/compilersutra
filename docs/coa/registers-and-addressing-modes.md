@@ -218,7 +218,7 @@ If the array element size were 12 bytes (e.g., a struct of three integers), neit
 
 To understand how addressing modes affect performance, we look at the CPU performance equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$$
 
 ### What the Compiler Influences
 * **Instruction Count:** By selecting complex addressing modes, the compiler can fold multiple address-calculation instructions (shifts, additions) into a single load or store instruction.
