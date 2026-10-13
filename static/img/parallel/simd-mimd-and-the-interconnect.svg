@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="100%" height="100%">
+  <rect width="800" height="420" fill="#0f172a" rx="8" />
+  
+  <!-- Outer Labels -->
+  <text x="200" y="35" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">SIMD Architecture (One Control Unit, Wide Lanes)</text>
+  <text x="600" y="35" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">MIMD Architecture (Independent Cores + Interconnect)</text>
+  
+  <!-- SIMD Container -->
+  <rect x="30" y="55" width="340" height="340" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="6" />
+  
+  <!-- SIMD Control Unit -->
+  <rect x="60" y="75" width="280" height="45" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" rx="4" />
+  <text x="200" y="102" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Control Unit (Single Fetch / Decode)</text>
+  
+  <!-- Broadcast arrow -->
+  <path d="M 200 120 L 200 155" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow)" />
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+    </marker>
+  </defs>
+
+  <!-- Execution Vector Register / Lanes -->
+  <rect x="60" y="160" width="280" height="35" fill="#0f172a" stroke="#94a3b8" stroke-width="1" rx="4" />
+  <text x="200" y="182" fill="#e2e8f0" font-family="monospace" font-size="12" text-anchor="middle">Vector Instruction: VADD.F32 V1, V2, V3</text>
+
+  <!-- Vector Lanes -->
+  <rect x="60" y="210" width="60" height="110" fill="#334155" stroke="#38bdf8" stroke-width="1.5" rx="4" />
+  <text x="90" y="240" fill="#f8fafc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Lane 0</text>
+  <text x="90" y="270" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">ALU</text>
+  <text x="90" y="300" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Active</text>
+
+  <rect x="133" y="210" width="60" height="110" fill="#334155" stroke="#38bdf8" stroke-width="1.5" rx="4" />
+  <text x="163" y="240" fill="#f8fafc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Lane 1</text>
+  <text x="163" y="270" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">ALU</text>
+  <text x="163" y="300" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Active</text>
+
+  <rect x="206" y="210" width="60" height="110" fill="#334155" stroke="#f43f5e" stroke-width="1.5" rx="4" opacity="0.6" />
+  <text x="236" y="240" fill="#f8fafc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Lane 2</text>
+  <text x="236" y="270" fill="#f43f5e" font-family="monospace" font-size="11" text-anchor="middle">ALU</text>
+  <text x="236" y="300" fill="#f43f5e" font-family="monospace" font-size="10" text-anchor="middle">Masked</text>
+
+  <rect x="280" y="210" width="60" height="110" fill="#334155" stroke="#38bdf8" stroke-width="1.5" rx="4" />
+  <text x="310" y="240" fill="#f8fafc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Lane 3</text>
+  <text x="310" y="270" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">ALU</text>
+  <text x="310" y="300" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Active</text>
+
+  <text x="200" y="365" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Shared Vector Registers &amp; Control Stream</text>
+
+  <!-- MIMD Container -->
+  <rect x="430" y="55" width="340" height="340" fill="#1e293b" stroke="#a855f7" stroke-width="2" rx="6" />
+
+  <!-- Core 0 -->
+  <rect x="450" y="75" width="130" height="80" fill="#334155" stroke="#a855f7" stroke-width="1.5" rx="4" />
+  <text x="515" y="98" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Core 0</text>
+  <text x="515" y="118" fill="#a855f7" font-family="monospace" font-size="10" text-anchor="middle">Control + ALU</text>
+  <text x="515" y="138" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Stream A (IP_0)</text>
+
+  <!-- Core 1 -->
+  <rect x="620" y="75" width="130" height="80" fill="#334155" stroke="#a855f7" stroke-width="1.5" rx="4" />
+  <text x="685" y="98" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Core 1</text>
+  <text x="685" y="118" fill="#a855f7" font-family="monospace" font-size="10" text-anchor="middle">Control + ALU</text>
+  <text x="685" y="138" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Stream B (IP_1)</text>
+
+  <!-- Interconnect Fabric Network -->
+  <rect x="450" y="185" width="300" height="60" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" rx="4" />
+  <text x="600" y="210" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold" text-anchor="middle">Interconnect Fabric Network</text>
+  <text x="600" y="230" fill="#e0f2fe" font-family="monospace" font-size="10" text-anchor="middle">(Crossbar / Ring / Mesh Topology)</text>
+
+  <!-- Interconnect Links -->
+  <line x1="515" y1="155" x2="515" y2="185" stroke="#a855f7" stroke-width="2" />
+  <line x1="685" y1="155" x2="685" y2="185" stroke="#a855f7" stroke-width="2" />
+
+  <line x1="515" y1="245" x2="515" y2="275" stroke="#a855f7" stroke-width="2" />
+  <line x1="685" y1="245" x2="685" y2="275" stroke="#a855f7" stroke-width="2" />
+
+  <!-- Core 2 -->
+  <rect x="450" y="275" width="130" height="80" fill="#334155" stroke="#a855f7" stroke-width="1.5" rx="4" />
+  <text x="515" y="298" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Core 2</text>
+  <text x="515" y="318" fill="#a855f7" font-family="monospace" font-size="10" text-anchor="middle">Control + ALU</text>
+  <text x="515" y="338" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Stream C (IP_2)</text>
+
+  <!-- Core 3 -->
+  <rect x="620" y="275" width="130" height="80" fill="#334155" stroke="#a855f7" stroke-width="1.5" rx="4" />
+  <text x="685" y="298" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Core 3</text>
+  <text x="685" y="318" fill="#a855f7" font-family="monospace" font-size="10" text-anchor="middle">Control + ALU</text>
+  <text x="685" y="338" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Stream D (IP_3)</text>
+
+  <text x="600" y="380" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Independent Instruction Streams &amp; Memory Routing</text>
+</svg>
