@@ -277,6 +277,8 @@ const site = {
         'coa/what-is-an-isa',
         'coa/risc-vs-cisc',
         'coa/load-store-architecture',
+        'coa/calling-conventions-and-abi',
+        'coa/assembler-linker-loader',
       ],
     },
   ],
