@@ -20,14 +20,14 @@ import MlCompilerCurriculum from './MlCompilerCurriculum';
     <p className={styles.eyebrow}>Learning track · AI compiler stack</p>
     <h1 className={styles.title}>ML Compilers</h1>
     <p className={styles.subtitle}>
-      Start from a program you can already read. Then a model, a graph, and the compiler that
-      turns inference into kernels. Thirty-two chapters. The longer articles stay below the table.
+      One scoring model, followed from a desk rule to a program on hardware. First where the
+      weights come from. Then how a compiler turns the frozen graph into that program.
     </p>
 
     <div className={styles.heroMeta}>
       <span>Free</span>
-      <span>32 chapters</span>
-      <span>Lessons in 1–14 and 28–32</span>
+      <span>19 lessons published</span>
+      <span>Chapters 15–27 are planned</span>
     </div>
 
     <div className={styles.heroActions}>
@@ -59,11 +59,115 @@ import MlCompilerCurriculum from './MlCompilerCurriculum';
         <li>Where MLIR and TVM fit in the stack</li>
         <li>Staged lowering vs a single-IR pipeline</li>
         <li>How torch.compile-style stacks connect the pieces</li>
+        <li>Where a trained score comes from, and where the compiler’s job begins</li>
         <li>Where ONNX Runtime, IREE, XLA, TensorRT, and the edge runtimes sit</li>
       </ul>
     </article>
     </section>
   </details>
+
+  <section className={styles.section} id="project">
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>The project</span>
+      <h2 className={styles.sectionTitle}>From market data to a compiled ML program</h2>
+    </div>
+    <h3 className={styles.subTitle}>The problem we want to solve</h3>
+    <p className={styles.sectionDesc}>
+      A trading desk receives new market data for stocks such as Reliance, TCS, and Infosys.
+      Every few minutes it has to read the changing market and calculate a score. A later
+      system may use that score. The score itself is the return over the next fixed window,
+      such as the next five minutes.
+    </p>
+    <p className={styles.sectionDesc}>
+      A simple program can check whether the price is above a line, or whether volume has
+      increased. Add more inputs, and the relationships among them, and the rule list becomes
+      hard to maintain. It also misses patterns that are present in past examples.
+    </p>
+    <p className={styles.sectionDesc}>
+      The inputs are only bars that have already closed: recent returns, volume changes, and
+      volatility. The future return is the label. It is not one of the inputs. If a future
+      number leaks into the window, the network looks right and the problem is wrong.
+    </p>
+    <p className={styles.sectionDesc}>
+      <strong>
+        The challenge is to train a small model on those past examples, then run that frozen
+        model efficiently on real hardware.
+      </strong>
+    </p>
+    <ul className={styles.practiceList}>
+      <li>Correctness. Does the compiled program produce scores close to the original PyTorch model?</li>
+      <li>Performance. Do fusion, kernel choice, or a library call reduce latency or raise throughput? We measure this. We do not assume it.</li>
+      <li>Hardware. How does the same model behave on a CPU and on a GPU, and what trade-off shows up in the measurement?</li>
+    </ul>
+    <h3 className={styles.subTitle}>What we will build</h3>
+    <p className={styles.sectionDesc}>
+      First, define the features and the target, prepare the historical examples, and train a
+      small network in PyTorch. Inspect the learned weights, freeze the model, and keep that
+      PyTorch run as the reference score.
+    </p>
+    <p className={styles.sectionDesc}>
+      Next, export the model and read its computation graph. Follow that graph through an ML
+      compiler: the intermediate forms, the optimizations, the lowering, the kernel or library
+      that gets chosen, and the code for the target.
+    </p>
+    <p className={styles.sectionDesc}>
+      Finally, run the compiled model on a CPU or a GPU. Compare its scores with the reference.
+      Then measure latency for one input, and throughput for a batch, under conditions you write down.
+    </p>
+    <h3 className={styles.subTitle}>What we aim to achieve</h3>
+    <p className={styles.sectionDesc}>
+      By the end there is a path you can repeat: historical data, a trained model, a compiled
+      program. You can point at where each transformation happens, check that the score still
+      agrees, and use the benchmark to decide whether the compiled program is actually faster.
+    </p>
+    <p className={styles.sectionDesc}>
+      <strong>The ML compiler is the engineering focus.</strong> It turns the frozen
+      computation into a program for the target hardware. It does not train the model, decide
+      that a trade is profitable, or place an order. The trading policy stays outside the project.
+    </p>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>By the end</span>
+      <h2 className={styles.sectionTitle}>By the end of this track, you will be able to</h2>
+    </div>
+    <section className={styles.infoRow}>
+      <article className={styles.infoCard}>
+        <h2>Train and export a model</h2>
+        <p>Build a small PyTorch model and keep a reference implementation.</p>
+      </article>
+      <article className={styles.infoCard}>
+        <h2>Trace model compilation</h2>
+        <p>Read the graph, one optimization, and the program ONNX Runtime actually runs.</p>
+      </article>
+      <article className={styles.infoCard}>
+        <h2>Validate correctness</h2>
+        <p>Compare the compiled scores with PyTorch and state the tolerance.</p>
+      </article>
+      <article className={styles.infoCard}>
+        <h2>Evaluate performance</h2>
+        <p>Measure latency and throughput, and say what those numbers do and do not prove.</p>
+      </article>
+    </section>
+    <p className={styles.sectionDesc}>
+      The runnable path is <code>examples/market-score</code>. One command trains the network,
+      exports ONNX, runs it in ONNX Runtime on the CPU, checks the score, and prints a benchmark
+      from your machine. Chapters 28–32 name other stacks. They are not extra steps in that command.
+    </p>
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Journey</span>
+      <h2 className={styles.sectionTitle}>Six parts, one model</h2>
+    </div>
+    <ul className={styles.practiceList}>
+      <li>Part 1. The problem. Market window, features, labels, and the score. Chapters 1–4.</li>
+      <li>Part 2. Train. Tensors, weights, loss, and the scoring network you train in Chapter 5.7.</li>
+      <li>Part 3. Inference. Frozen weights, the forward pass, shapes, the score you must preserve. Chapters 6–8.</li>
+      <li>Part 4. Export. The graph, operator meaning, ONNX. Chapters 9–12.</li>
+      <li>Part 5. The compiler. Chapters 13 and 14 are published. Chapters 15–20 are planned.</li>
+      <li>Part 6. Runtime and measurement. Chapters 21–27 are planned. The script in examples/market-score is the check you can run today.</li>
+    </ul>
+    <p className={styles.sectionDesc}>
+      Chapters 28–32 are published lessons. They name ONNX Runtime, IREE, and the edge stack. More articles, under the syllabus, are extra reading. They are not chapters.
+    </p>
+  </section>
 
   <MlCompilerCurriculum />
 
