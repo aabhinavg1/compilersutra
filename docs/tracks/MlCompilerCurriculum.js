@@ -63,6 +63,7 @@ const ROWS = [
   topic('5.4', 'Training writes the weights', 'The artifact inference keeps', lesson('training-writes-the-weights', 'training-writes-the-weights')),
   topic('5.5', 'Forward and backward', 'Two programs. This book compiles the forward one.', lesson('training-writes-the-weights', 'forward-and-backward')),
   topic('5.6', 'A batch', 'Many examples in one tensor. The batch symbol returns in Chapter 10.', lesson('training-writes-the-weights', 'a-batch')),
+  topic('5.7', 'Train the scoring network', 'The label is the next bar’s return. It is not one of the inputs.', lesson('training-writes-the-weights', 'train-the-scoring-network')),
 
   chapter('6', 'Inference', lesson('inference-is-the-computation')),
   topic('6.1', 'Weights are frozen', 'The run does not update them', lesson('inference-is-the-computation', 'weights-are-frozen')),
@@ -422,9 +423,14 @@ function Materials() {
   );
 }
 
-function LessonTitle({href, children}) {
+function LessonTitle({href, children, planned}) {
   if (!href) {
-    return <span className={styles.lessonTitle}>{children}</span>;
+    return (
+      <span className={styles.lessonTitle}>
+        {children}
+        {planned ? <span className={styles.planned}>Planned</span> : null}
+      </span>
+    );
   }
   return (
     <Link className={styles.lessonLink} to={href}>
@@ -441,7 +447,7 @@ function LessonRow({id, title, covers, href, chapter}) {
     <div className={chapter ? styles.chapterRow : styles.lessonRow}>
       <span className={styles.id}>{id}</span>
       <div className={styles.copy}>
-        <LessonTitle href={href}>{title}</LessonTitle>
+        <LessonTitle href={href} planned={Boolean(chapter && !href)}>{title}</LessonTitle>
         {covers ? <p className={styles.desc}>{covers}</p> : null}
       </div>
       <Materials />
@@ -460,12 +466,12 @@ export default function MlCompilerCurriculum() {
             Follow the parts in order
           </h2>
           <p className={track.sectionDesc}>
-            Chapters 1–14 and 28–32 are lessons. A title opens that section. Chapters 15–27 are the rest of the path.
+            A title with Start is a published lesson: chapters 1–14 and 28–32. Chapters 15–27 are planned. Those pages are not written yet.
           </p>
         </div>
         <div className={styles.syllabus}>
-          {parts.map((part, index) => (
-            <details key={part.label} className={styles.part} open={index === 0}>
+          {parts.map((part) => (
+            <details key={part.label} className={styles.part}>
               <summary>
                 <span>{part.label}</span>
                 <span className={styles.chevron} aria-hidden="true" />

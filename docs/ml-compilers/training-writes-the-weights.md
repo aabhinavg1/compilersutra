@@ -59,6 +59,70 @@ A batch is many examples stacked into one tensor. One image might have shape `[1
 
 That dimension is why later graphs say `batch` instead of a fixed integer. [Shapes, Types, and Dynamic Dimensions](/docs/ml-compilers/shapes-types-and-dynamic-dimensions/) is where a compiler treats `batch` as a symbol. The symbol starts here, as "how many examples are in this run".
 
+## Train the scoring network {#train-the-scoring-network}
+
+The desk's model is small enough to train here. The target is the return on the next bar. Each input is the four bars that have already closed. Each of those bars carries a return, a volume change, and a volatility. The next return is the label. It is not one of the inputs.
+
+The series below are synthetic, so the update has a target without using a real price file. The split is the part to copy onto a real file: the window stops when the bar closes, and the label is the return after that.
+
+```python
+import torch
+from torch import nn
+
+torch.manual_seed(0)
+
+examples = 256
+bars = 4
+
+# Five returns. The window keeps the first four. The fifth is the next bar.
+returns = torch.randn(examples, bars + 1)
+volume_change = torch.randn(examples, bars)
+volatility = torch.randn(examples, bars).abs()
+windows = torch.cat([returns[:, :bars], volume_change, volatility], dim=1)
+labels = returns[:, bars:].contiguous()
+width = windows.shape[1]
+
+class ScoreNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(width, 8)  # MatMul, then Add
+        self.fc2 = nn.Linear(8, 1)      # MatMul, then Add
+
+    def forward(self, windows):
+        hidden = torch.relu(self.fc1(windows))
+        return self.fc2(hidden)
+
+model = ScoreNet()
+before = model.fc2.weight.detach().clone()
+
+update = torch.optim.SGD(model.parameters(), lr=0.05)
+loss_fn = nn.MSELoss()
+
+for _ in range(40):
+    score = model(windows)
+    loss = loss_fn(score, labels)
+    update.zero_grad()
+    loss.backward()
+    update.step()
+```
+
+`windows` holds only bars that have already closed. `labels` is the next return, and that column is absent from `windows`. `loss` is the gap. `backward` builds the gradient. `update.step` is the assignment from the section above: each weight moves a short distance against that gradient.
+
+After the loop, `fc2.weight` is a different tensor from `before`. Architecture did not change. The numbers did. That file of numbers is what inference keeps.
+
+Freeze it and score one new window. `eval` and `no_grad` mean this run does not perform the assignment.
+
+```python
+model.eval()
+with torch.no_grad():
+    one_window = torch.randn(1, width)
+    score = model(one_window)
+
+print(tuple(one_window.shape), tuple(score.shape))
+```
+
+The print is `(1, 12)` and `(1, 1)`. Twelve features go in. One score comes out. The forward graph is Linear, ReLU, Linear. Each Linear is a MatMul and an Add. Later chapters compile that forward graph and leave this training loop behind.
+
 ## What To Read Next
 
 - [Inference Is the Computation](/docs/ml-compilers/inference-is-the-computation/)
