@@ -280,6 +280,7 @@ const site = {
         'coa/load-store-architecture',
         'coa/calling-conventions-and-abi',
         'coa/assembler-linker-loader',
+        'coa/isa-and-the-compiler-backend',
       ],
     },
   ],
