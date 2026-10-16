@@ -70,7 +70,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - [Calling Conventions and ABI](/docs/coa/calling-conventions-and-abi)
 - Load-Store Architecture
 - Instruction Formats and Encoding
-- ISA Design Tradeoffs
+- [ISA Design Tradeoffs](/docs/coa/isa-design-tradeoffs)
 - ISA Impact on Compiler Backend
 
 ### Pipeline
