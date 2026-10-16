@@ -5,7 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "NODE_OPTIONS=--max-old-space-size=8192 docusaurus start --poll 1000",
-    "build": "npm install && npm run prebuild && docusaurus build",
+    "build": "npm install && npm run prebuild && NODE_OPTIONS=--max-old-space-size=8192 docusaurus build",
     "prebuild": "node prebuild.js && node scripts/generate-clang-flag-pages.mjs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",

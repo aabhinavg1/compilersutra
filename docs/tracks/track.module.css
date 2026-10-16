@@ -132,6 +132,13 @@
   letter-spacing: -0.01em;
 }
 
+.infoCard p {
+  margin: 0;
+  color: var(--t-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .infoCard ul {
   margin: 0;
   padding-left: 1.05rem;
@@ -174,6 +181,17 @@
   margin: 0;
   font-size: 0.9rem;
   color: var(--t-faint);
+}
+
+.sectionDesc + .sectionDesc {
+  margin-top: 0.75rem;
+}
+
+.subTitle {
+  margin: 1.35rem 0 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .phase {
@@ -327,6 +345,52 @@
   color: var(--t-muted);
   font-size: 0.94rem;
   line-height: 1.5;
+}
+
+.overview {
+  margin: 0 0 1.5rem;
+}
+
+.overview > summary {
+  width: fit-content;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: var(--t-blue);
+}
+
+.overview > summary:focus-visible {
+  outline: 2px solid var(--t-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.overview .infoRow {
+  margin-top: 0.85rem;
+}
+
+.pageWide {
+  width: 100%;
+  max-width: 68rem;
+  padding-bottom: 5rem;
+}
+
+.pageWide .title {
+  font-size: clamp(2rem, 2.6vw, 2.25rem);
+}
+
+.pageWide .sectionTitle {
+  font-size: clamp(1.5rem, 2vw, 1.75rem);
+}
+
+@media (max-width: 768px) {
+  .pageWide .title {
+    font-size: clamp(26px, 7vw, 30px);
+  }
+
+  .pageWide .sectionTitle {
+    font-size: clamp(21px, 4vw, 24px);
+  }
 }
 
 @media (max-width: 640px) {

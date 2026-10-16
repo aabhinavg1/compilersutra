@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="350" fill="#f8fafc" rx="8" />
+
+  <!-- Title Top -->
+  <text x="300" y="30" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a">
+    Pipeline Stage Execution Comparison
+  </text>
+
+  <!-- Section 1: Load-Store Pipeline -->
+  <g transform="translate(30, 60)">
+    <text x="0" y="15" font-family="sans-serif" font-weight="bold" font-size="12" fill="#0284c7">
+      Pure Load-Store Pipeline (Fixed Latency Memory Operations)
+    </text>
+    
+    <!-- IF Stage -->
+    <rect x="0" y="30" width="80" height="40" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="40" y="55" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Fetch</text>
+    
+    <!-- ID Stage -->
+    <rect x="95" y="30" width="80" height="40" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="135" y="55" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Decode</text>
+    
+    <!-- EX Stage -->
+    <rect x="190" y="30" width="100" height="40" fill="#bae6fd" stroke="#0284c7" rx="4" />
+    <text x="240" y="55" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="11" fill="#0369a1">ALU / Reg-Reg</text>
+    
+    <!-- MEM Stage -->
+    <rect x="305" y="30" width="100" height="40" fill="#e0f2fe" stroke="#0284c7" rx="4" opacity="0.8" />
+    <text x="355" y="55" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#0369a1">Explicit Load/Store</text>
+    
+    <!-- WB Stage -->
+    <rect x="420" y="30" width="80" height="40" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="460" y="55" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Writeback</text>
+
+    <!-- Connectors -->
+    <line x1="80" y1="50" x2="93" y2="50" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="175" y1="50" x2="188" y2="50" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="290" y1="50" x2="303" y2="50" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="405" y1="50" x2="418" y2="50" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+  </g>
+
+  <!-- Section 2: Memory-Operand Pipeline -->
+  <g transform="translate(30, 180)">
+    <text x="0" y="15" font-family="sans-serif" font-weight="bold" font-size="12" fill="#475569">
+      Memory-Operand Pipeline (Complex Combined Arithmetic)
+    </text>
+    
+    <!-- IF Stage -->
+    <rect x="0" y="30" width="80" height="50" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="40" y="60" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Fetch</text>
+    
+    <!-- ID Stage -->
+    <rect x="95" y="30" width="80" height="50" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="135" y="60" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Decode</text>
+    
+    <!-- EX Complex Stage (Embedded Memory Read + ALU) -->
+    <rect x="190" y="30" width="215" height="50" fill="#f1f5f9" stroke="#475569" stroke-dasharray="4,4" rx="4" />
+    
+    <rect x="200" y="38" width="85" height="34" fill="#cbd5e1" stroke="#475569" rx="3" />
+    <text x="242" y="59" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1e293b">Addr Gen / Load</text>
+    
+    <rect x="305" y="38" width="85" height="34" fill="#bae6fd" stroke="#0284c7" rx="3" />
+    <text x="347" y="59" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="10" fill="#0369a1">ALU Execution</text>
+
+    <!-- WB Stage -->
+    <rect x="420" y="30" width="80" height="50" fill="#e2e8f0" stroke="#94a3b8" rx="4" />
+    <text x="460" y="60" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#334155">Writeback / Store</text>
+
+    <!-- Connectors -->
+    <line x1="80" y1="55" x2="93" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="175" y1="55" x2="188" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="285" y1="55" x2="302" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+    <line x1="405" y1="55" x2="418" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead)" />
+  </g>
+
+  <!-- Legend Bottom -->
+  <g transform="translate(140, 310)">
+    <rect x="0" y="0" width="12" height="12" fill="#bae6fd" stroke="#0284c7" rx="2" />
+    <text x="18" y="10" font-family="sans-serif" font-size="10" fill="#334155">Register ALU Operation</text>
+    
+    <rect x="180" y="0" width="12" height="12" fill="#e0f2fe" stroke="#0284c7" rx="2" />
+    <text x="198" y="10" font-family="sans-serif" font-size="10" fill="#334155">Explicit Load/Store Unit</text>
+  </g>
+</svg>

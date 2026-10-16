@@ -960,6 +960,67 @@
   line-height: 1.55;
 }
 
+.notesForm {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.notesForm .formNote {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.notesInput {
+  min-height: 2.75rem;
+  min-width: min(100%, 16rem);
+  flex: 1 1 14rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 225, 244, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #edf3ff;
+  font: inherit;
+}
+
+.notesInput:focus {
+  outline: 2px solid rgba(147, 197, 253, 0.55);
+  outline-offset: 1px;
+}
+
+.notesTrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+button.starterGhost {
+  cursor: pointer;
+  font: inherit;
+  border-style: solid;
+}
+
+button.starterGhost:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .stickyCta {
   position: fixed;
   left: 50%;

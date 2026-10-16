@@ -1,0 +1,21 @@
+---
+title: "Chapter 8: Measuring quiz"
+description: "Questions for Chapter 8: Measuring."
+displayed_sidebar: parallelMcqChapter8Sidebar
+---
+
+import { Question } from '../../../../Question';
+
+# Chapter 8: Measuring quiz
+
+Lesson pages: [Chapter 8: Measuring](/docs/parallel-computing/chapter-8/)
+
+<Question question="1. What is speedup here?" options={['Parallel time divided by the core count, with no serial run', 'Serial time divided by parallel time, on the same work', 'The number of threads', 'The cache-line size']} answer="Serial time divided by parallel time, on the same work" />
+
+<Question question="2. What is false sharing?" options={['Two threads write the same variable on purpose', 'Two threads write different variables on one cache line, and the line bounces', 'A wrong serial total', 'An MPI deadlock']} answer="Two threads write different variables on one cache line, and the line bounces" />
+
+<Question question="3. A huge list, one add per element. What is the loop often waiting on?" options={['The printer font', 'Memory bandwidth', 'The chapter number', 'A Vulkan pipeline cache']} answer="Memory bandwidth" />
+
+<Question question="4. In a 5-and-1 split of equal adds, who sets the time?" options={['The worker with one add', 'The worker with five adds', 'The idle quiz page', 'The serial compiler only']} answer="The worker with five adds" />
+
+<Question question="5. What belongs in a profile note?" options={['A time from a paper you did not run', 'The region name and the time from the run you did', 'A guessed occupancy', 'A device name you do not have']} answer="The region name and the time from the run you did" />
