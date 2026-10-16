@@ -64,7 +64,7 @@ These pages are not written yet. Each one is linked here when it lands.
 
 - [Assembler, linker, and loader](/docs/coa/assembler-linker-loader)
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
-- Registers and Addressing Modes
+- [Registers and Addressing Modes](/docs/coa/registers-and-addressing-modes)
 - Calling Conventions and ABI
 - [Load-Store Architecture](/docs/coa/load-store-architecture)
 - [Calling Conventions and ABI](/docs/coa/calling-conventions-and-abi)
