@@ -177,6 +177,21 @@ const site = {
     },
   ],
 
+  weeklyProblemsSidebar: [
+    {
+      type: 'category',
+      label: 'Weekly Problem Briefs',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'weekly-problems/index',
+      },
+      items: [
+        'weekly-problems/w42-ort-ep-graph-partitioning',
+      ],
+    },
+  ],
+
   compilerTechblogSidebar: [
     {
       type: 'category',
