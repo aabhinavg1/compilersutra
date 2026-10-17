@@ -62,7 +62,7 @@ A line here turns into a link when that lesson is published.
 - SIMD, MIMD, and the interconnect
 - [Shared memory versus distributed memory](shared-versus-distributed-memory.md)
 - Cache coherence and false sharing
-- Decomposition, tasks, and mapping
+- [Decomposition, tasks, and mapping](decomposition-tasks-and-mapping.md)
 - Communication cost and granularity
 - Speedup, efficiency, and scalability
 
