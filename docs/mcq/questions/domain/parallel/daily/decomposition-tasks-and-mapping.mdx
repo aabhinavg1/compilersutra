@@ -1,0 +1,20 @@
+---
+title: "Decomposition, tasks, and mapping quiz"
+description: "Five questions for Decomposition, tasks, and mapping. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Decomposition, tasks, and mapping quiz
+
+Lesson: [Decomposition, tasks, and mapping](/docs/parallel-computing/decomposition-tasks-and-mapping/)
+
+<Question question="1. Which phase of designing a parallel program involves dividing the problem into smaller units of computation?" options={["Mapping", "Dependency Analysis", "Decomposition", "Runtime Scheduling"]} answer="Decomposition" />
+
+<Question question="2. What defines the lower bound on execution time regardless of thread availability?" options={["The number of threads", "The critical path length in the task DAG", "The static chunk size", "The dynamic scheduling queue length"]} answer="The critical path length in the task DAG" />
+
+<Question question="3. What is a major downside of dynamic mapping compared to static mapping?" options={["It cannot balance dynamically varying task workloads", "It introduces runtime synchronization overhead", "It must be assigned before program execution starts", "It completely prevents thread context switching"]} answer="It introduces runtime synchronization overhead" />
+
+<Question question="4. In domain (data) decomposition, how is the workload partitioned?" options={["By dividing computation into distinct functional pipeline stages", "By partitioning input, intermediate, or output data into sub-domains", "By dynamically spawning threads for each loop iteration", "By locking memory regions using a global mutex"]} answer="By partitioning input, intermediate, or output data into sub-domains" />
+
+<Question question="5. Why might fine-grained decomposition lower overall performance if tasks are too small?" options={["It reduces the total available concurrency", "It prevents the use of thread pools", "Scheduling overhead and loss of cache locality can exceed actual work time", "Compilers reject programs with more than eight tasks"]} answer="Scheduling overhead and loss of cache locality can exceed actual work time" />
