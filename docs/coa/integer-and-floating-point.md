@@ -100,7 +100,7 @@ Modern ISAs implement integer arithmetic using **two's complement** notation. Fo
 
 ### Overflow Contracts: Language vs. Hardware
 
-Hardware registers have fixed bit-widths (e.g., 32-bit or 64-bit). When an operation yields a result larger than $2^{N}-1$ (unsigned) or outside $[-2^{N-1}, 2^{N-1}-1]$ (signed), the hardware truncates the result to the lower $N$ bits.
+Hardware registers have fixed bit-widths (e.g., 32-bit or 64-bit). When an operation yields a result larger than $2^\{N\}-1$ (unsigned) or outside $[-2^\{N-1\}, 2^\{N-1\}-1]$ (signed), the hardware truncates the result to the lower $N$ bits.
 
 1. **Unsigned Arithmetic:** Always operates as pure modulo $2^N$ arithmetic. This behavior is well-defined in both hardware and high-level language standards like C/C++.
 2. **Signed Arithmetic:** In hardware, two's complement overflow wraps modulo $2^N$. However, in ISO C and C++, signed integer overflow triggers **Undefined Behavior (UB)**.
@@ -127,39 +127,39 @@ When converting smaller integer types to larger ones (e.g., 8-bit to 32-bit), th
 
 IEEE 754 standardizes floating-point representation using three bit-fields:
 1. **Sign bit ($S$):** 1 bit (0 for positive, 1 for negative).
-2. **Biased Exponent ($E$):** $e$ bits representing an offset exponent ($E = \text{Unbiased Exponent} + \text{Bias}$).
+2. **Biased Exponent ($E$):** $e$ bits representing an offset exponent ($E = \text\{Unbiased Exponent\} + \text\{Bias\}$).
 3. **Significand / Fraction ($F$):** $m$ bits representing the fractional part of the normalized mantissa ($1.F$).
 
-$$\text{Value} = (-1)^S \times 2^{E - \text{Bias}} \times (1.F)_2$$
+$$\text\{Value\} = (-1)^S \times 2^\{E - \text\{Bias\}\} \times (1.F)_2$$
 
 <Tabs>
-  <TabItem value="single" label="Single Precision (32-bit)" default>
+<TabItem value="single" label="Single Precision (32-bit)" default>
 
 - **Sign ($S$):** 1 bit
 - **Exponent ($E$):** 8 bits (Bias = 127)
 - **Significand ($F$):** 23 bits (24 bits of implicit precision)
-- **Dynamic Range:** Approximately $\pm 1.18 \times 10^{-38}$ to $\pm 3.40 \times 10^{38}$
+- **Dynamic Range:** Approximately $\pm 1.18 \times 10^\{-38\}$ to $\pm 3.40 \times 10^\{38\}$
 - **Precision:** $\sim 7$ decimal digits
 
-  </TabItem>
-  <TabItem value="double" label="Double Precision (64-bit)">
+</TabItem>
+<TabItem value="double" label="Double Precision (64-bit)">
 
 - **Sign ($S$):** 1 bit
 - **Exponent ($E$):** 11 bits (Bias = 1023)
 - **Significand ($F$):** 52 bits (53 bits of implicit precision)
-- **Dynamic Range:** Approximately $\pm 2.23 \times 10^{-308}$ to $\pm 1.79 \times 10^{308}$
-- **Precision:** $\sim 15\text{--}17$ decimal digits
+- **Dynamic Range:** Approximately $\pm 2.23 \times 10^\{-308\}$ to $\pm 1.79 \times 10^\{308\}$
+- **Precision:** $\sim 15\text\{--\}17$ decimal digits
 
-  </TabItem>
-  <TabItem value="half" label="Half Precision (16-bit FP16)">
+</TabItem>
+<TabItem value="half" label="Half Precision (16-bit FP16)">
 
 - **Sign ($S$):** 1 bit
 - **Exponent ($E$):** 5 bits (Bias = 15)
 - **Significand ($F$):** 10 bits (11 bits of implicit precision)
-- **Dynamic Range:** Approximately $\pm 6.10 \times 10^{-5}$ to $\pm 65504$
-- **Precision:** $\sim 3\text{--}4$ decimal digits
+- **Dynamic Range:** Approximately $\pm 6.10 \times 10^\{-5\}$ to $\pm 65504$
+- **Precision:** $\sim 3\text\{--\}4$ decimal digits
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 ### Special Bit Patterns in IEEE 754
@@ -167,9 +167,9 @@ $$\text{Value} = (-1)^S \times 2^{E - \text{Bias}} \times (1.F)_2$$
 IEEE 754 reserves specific exponent patterns to represent values outside normalized real numbers:
 
 - **Zeros ($+0.0$ and $-0.0$):** Exponent $E = 0$, Significand $F = 0$. Sign bit distinguishes sign.
-- **Subnormal (Denormal) Numbers:** Exponent $E = 0$, Significand $F \neq 0$. Value is $(-1)^S \times 2^{1 - \text{Bias}} \times (0.F)_2$. Allows gradual underflow near zero, but historically degrades hardware execution throughput.
-- **Infinities ($+\infty$ and $-\infty$):** Exponent $E = \text{All 1s}$, Significand $F = 0$. Produced by overflow or division by zero.
-- **Not-a-Number (NaN):** Exponent $E = \text{All 1s}$, Significand $F \neq 0$.
+- **Subnormal (Denormal) Numbers:** Exponent $E = 0$, Significand $F \neq 0$. Value is $(-1)^S \times 2^\{1 - \text\{Bias\}\} \times (0.F)_2$. Allows gradual underflow near zero, but historically degrades hardware execution throughput.
+- **Infinities ($+\infty$ and $-\infty$):** Exponent $E = \text\{All 1s\}$, Significand $F = 0$. Produced by overflow or division by zero.
+- **Not-a-Number (NaN):** Exponent $E = \text\{All 1s\}$, Significand $F \neq 0$.
   - **Quiet NaN (qNaN):** MSB of significand is set. Propagates through calculations without hardware exceptions.
   - **Signaling NaN (sNaN):** MSB of significand is clear. Triggers an invalid-operation exception when accessed.
 
@@ -179,7 +179,7 @@ IEEE 754 reserves specific exponent patterns to represent values outside normali
 
 In real mathematics, addition is associative: $(a + b) + c = a + (b + c)$. In IEEE 754 floating-point arithmetic, **addition is not associative**.
 
-$$\text{IEEE 754: } (a \oplus b) \oplus c \neq a \oplus (b \oplus c)$$
+$$\text\{IEEE 754: \} (a \oplus b) \oplus c \neq a \oplus (b \oplus c)$$
 
 ### Microarchitectural Reason for Non-Associativity
 
@@ -193,24 +193,24 @@ Because finite significand registers drop bits during alignment shifts, changing
 ### Mathematical Proof of Non-Associativity
 
 Consider single-precision float numbers ($24$ bits of mantissa precision):
-- Let $a = 2^{24} = 16777216.0$
-- Let $b = -2^{24} = -16777216.0$
+- Let $a = 2^\{24\} = 16777216.0$
+- Let $b = -2^\{24\} = -16777216.0$
 - Let $c = 1.0$
 
 **Evaluation Order 1: $((a + b) + c)$**
 1. $a + b = 16777216.0 + (-16777216.0) = 0.0$
-2. $0.0 + c = 0.0 + 1.0 = \mathbf{1.0}$
+2. $0.0 + c = 0.0 + 1.0 = \mathbf\{1.0\}$
 
 **Evaluation Order 2: $(a + (b + c))$**
 1. Evaluate $(b + c) = -16777216.0 + 1.0$:
-   - Binary representation of $16777216.0$: $2^{24}$ ($1.00000000000000000000000_2 \times 2^{24}$)
+   - Binary representation of $16777216.0$: $2^\{24\}$ ($1.00000000000000000000000_2 \times 2^\{24\}$)
    - Binary representation of $1.0$: $2^0$ ($1.00000000000000000000000_2 \times 2^0$)
    - Align $1.0$ to exponent $24$: Shift significand right by $24$ positions.
    - The value $1.0$ shifts completely out of the 24-bit precision window.
-   - Under IEEE Round-to-Nearest, $-16777216.0 + 1.0 = \mathbf{-16777216.0}$
-2. Evaluate $a + (b + c) = 16777216.0 + (-16777216.0) = \mathbf{0.0}$
+   - Under IEEE Round-to-Nearest, $-16777216.0 + 1.0 = \mathbf\{-16777216.0\}$
+2. Evaluate $a + (b + c) = 16777216.0 + (-16777216.0) = \mathbf\{0.0\}$
 
-Since $\mathbf{1.0} \neq \mathbf{0.0}$, floating-point reassociation alters numerical results.
+Since $\mathbf\{1.0\} \neq \mathbf\{0.0\}$, floating-point reassociation alters numerical results.
 
 :::caution Catastrophic Cancellation
 Subtracting two nearly equal floating-point numbers yields a result where leading significand bits cancel out, leaving low-order bits (which contain rounding errors) shifted into high-significand positions. Reordering calculations changes when cancellation occurs.
@@ -285,7 +285,7 @@ The output of the vectorized `reassoc` code will not match the bitwise output of
 
 The standard CPU Performance Equation governs execution runtime:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Clock Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Clock Cycle Time\}$$
 
 ```
                 ┌─────────────────────────────────────────┐
