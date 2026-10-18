@@ -61,7 +61,7 @@ A line here turns into a link when that lesson is published.
 - [One core, made busier](one-core-made-busier.md)
 - SIMD, MIMD, and the interconnect
 - [Shared memory versus distributed memory](shared-versus-distributed-memory.md)
-- Cache coherence and false sharing
+- [Cache coherence and false sharing](cache-coherence-and-false-sharing.md)
 - Decomposition, tasks, and mapping
 - Communication cost and granularity
 - Speedup, efficiency, and scalability
