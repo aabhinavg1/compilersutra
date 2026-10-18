@@ -35,6 +35,7 @@ const parallel = {
             'parallel-computing/one-core-made-busier',
             'parallel-computing/shared-versus-distributed-memory',
             'parallel-computing/decomposition-tasks-and-mapping',
+            'parallel-computing/cache-coherence-and-false-sharing',
           ],
         },
         {

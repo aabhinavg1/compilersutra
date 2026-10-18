@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="350" fill="#f8fafc" rx="8" />
+
+  <!-- Title Banner -->
+  <rect x="150" y="15" width="300" height="35" fill="#0284c7" rx="4" />
+  <text x="300" y="38" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">ISA Design Tradeoff Spectrum</text>
+
+  <!-- Left Box: Orthogonal RISC -->
+  <rect x="30" y="85" width="230" height="235" fill="#ffffff" stroke="#0284c7" stroke-width="2" rx="6" />
+  <rect x="30" y="85" width="230" height="30" fill="#0284c7" rx="4" />
+  <text x="145" y="105" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Orthogonal RISC Target</text>
+  
+  <text x="45" y="135" fill="#334155" font-family="sans-serif" font-size="12" font-weight="bold">• Fixed-Length Instruction Encoding</text>
+  <text x="45" y="155" fill="#475569" font-family="sans-serif" font-size="11">  - Easy multi-instruction decode</text>
+  <text x="45" y="170" fill="#475569" font-family="sans-serif" font-size="11">  - Uniform boundary alignment</text>
+  
+  <text x="45" y="195" fill="#334155" font-family="sans-serif" font-size="12" font-weight="bold">• Load-Store Architecture</text>
+  <text x="45" y="215" fill="#475569" font-family="sans-serif" font-size="11">  - Operations consume registers</text>
+  <text x="45" y="230" fill="#475569" font-family="sans-serif" font-size="11">  - Symmetric addressing modes</text>
+
+  <text x="45" y="255" fill="#0284c7" font-family="sans-serif" font-size="12" font-weight="bold">Compiler Impact:</text>
+  <text x="45" y="275" fill="#334155" font-family="sans-serif" font-size="11">+ Straightforward pattern matcher</text>
+  <text x="45" y="295" fill="#334155" font-family="sans-serif" font-size="11">- Higher code size / I-cache load</text>
+
+  <!-- Right Box: Non-Orthogonal CISC -->
+  <rect x="340" y="85" width="230" height="235" fill="#ffffff" stroke="#475569" stroke-width="2" rx="6" />
+  <rect x="340" y="85" width="230" height="30" fill="#475569" rx="4" />
+  <text x="455" y="105" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Non-Orthogonal / Complex Target</text>
+
+  <text x="355" y="135" fill="#334155" font-family="sans-serif" font-size="12" font-weight="bold">• Variable-Length Instruction Encoding</text>
+  <text x="355" y="155" fill="#475569" font-family="sans-serif" font-size="11">  - Complex sequential decode</text>
+  <text x="355" y="170" fill="#475569" font-family="sans-serif" font-size="11">  - Compact memory footprint</text>
+
+  <text x="355" y="195" fill="#334155" font-family="sans-serif" font-size="12" font-weight="bold">• Memory Operand Arithmetic</text>
+  <text x="355" y="215" fill="#475569" font-family="sans-serif" font-size="11">  - Direct memory modification</text>
+  <text x="355" y="230" fill="#475569" font-family="sans-serif" font-size="11">  - Implicit dedicated registers</text>
+
+  <text x="355" y="255" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">Compiler Impact:</text>
+  <text x="355" y="275" fill="#334155" font-family="sans-serif" font-size="11">+ Dense binary &amp; low instruction count</text>
+  <text x="355" y="295" fill="#334155" font-family="sans-serif" font-size="11">- High instruction selector complexity</text>
+
+  <!-- Connectors -->
+  <line x1="260" y1="180" x2="340" y1="180" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrowhead)" />
+</svg>

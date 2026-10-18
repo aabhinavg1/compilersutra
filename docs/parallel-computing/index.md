@@ -63,6 +63,8 @@ A line here turns into a link when that lesson is published.
 - [Shared memory versus distributed memory](shared-versus-distributed-memory.md)
 - Cache coherence and false sharing
 - [Decomposition, tasks, and mapping](decomposition-tasks-and-mapping.md)
+- [Cache coherence and false sharing](cache-coherence-and-false-sharing.md)
+- Decomposition, tasks, and mapping
 - Communication cost and granularity
 - Speedup, efficiency, and scalability
 
