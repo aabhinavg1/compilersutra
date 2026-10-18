@@ -291,6 +291,7 @@ const site = {
         'coa/means-and-amdahl',
         'coa/what-is-an-isa',
         'coa/risc-vs-cisc',
+        'coa/instruction-formats-and-encoding',
         'coa/registers-and-addressing-modes',
         'coa/load-store-architecture',
         'coa/calling-conventions-and-abi',
