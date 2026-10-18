@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="350" fill="#f8fafc" rx="8" />
+
+  <!-- Title block -->
+  <text x="300" y="28" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a">
+    Hardware Execution Data Paths: Integer vs. Floating Point
+  </text>
+
+  <!-- Input Operands -->
+  <rect x="220" y="48" width="160" height="32" rx="4" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="300" y="69" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">
+    32-bit / 64-bit Operands
+  </text>
+
+  <!-- Left Side: Integer Path (Software/Hardware Simple) -->
+  <path d="M 260 80 L 160 120" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)" />
+  
+  <rect x="60" y="120" width="200" height="180" rx="6" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5" />
+  <text x="160" y="142" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="13" fill="#0369a1">
+    Integer ALU Data Path
+  </text>
+
+  <rect x="80" y="160" width="160" height="32" rx="4" fill="#ffffff" stroke="#0284c7" stroke-width="1" />
+  <text x="160" y="180" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#0c4a6e">
+    Two's Complement Adder
+  </text>
+
+  <rect x="80" y="205" width="160" height="32" rx="4" fill="#ffffff" stroke="#0284c7" stroke-width="1" />
+  <text x="160" y="225" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#0c4a6e">
+    Bitwise Logic / Shift
+  </text>
+
+  <rect x="80" y="250" width="160" height="35" rx="4" fill="#bae6fd" stroke="#0284c7" stroke-width="1" />
+  <text x="160" y="271" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0369a1">
+    Deterministic Wrap (1 Cycle)
+  </text>
+
+  <!-- Right Side: Floating Point Path -->
+  <path d="M 340 80 L 440 120" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)" />
+
+  <rect x="340" y="120" width="200" height="180" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5" />
+  <text x="440" y="142" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155">
+    IEEE 754 FPU Data Path
+  </text>
+
+  <rect x="360" y="155" width="160" height="26" rx="4" fill="#ffffff" stroke="#64748b" stroke-width="1" />
+  <text x="440" y="172" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1e293b">
+    1. Exponent Compare &amp; Align
+  </text>
+
+  <rect x="360" y="188" width="160" height="26" rx="4" fill="#ffffff" stroke="#64748b" stroke-width="1" />
+  <text x="440" y="205" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1e293b">
+    2. Significand Addition
+  </text>
+
+  <rect x="360" y="221" width="160" height="26" rx="4" fill="#ffffff" stroke="#64748b" stroke-width="1" />
+  <text x="440" y="238" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1e293b">
+    3. Normalize &amp; Round
+  </text>
+
+  <rect x="360" y="254" width="160" height="35" rx="4" fill="#cbd5e1" stroke="#475569" stroke-width="1" />
+  <text x="440" y="275" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="#0f172a">
+    Non-Associative (Multi-Cycle)
+  </text>
+</svg>

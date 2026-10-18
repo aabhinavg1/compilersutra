@@ -296,6 +296,7 @@ const site = {
         'coa/load-store-architecture',
         'coa/calling-conventions-and-abi',
         'coa/assembler-linker-loader',
+        'coa/integer-and-floating-point',
         'coa/isa-design-tradeoffs',
       ],
     },
