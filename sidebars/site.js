@@ -177,6 +177,21 @@ const site = {
     },
   ],
 
+  weeklyProblemsSidebar: [
+    {
+      type: 'category',
+      label: 'Weekly Problem Briefs',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'weekly-problems/index',
+      },
+      items: [
+        'weekly-problems/w42-ort-ep-graph-partitioning',
+      ],
+    },
+  ],
+
   compilerTechblogSidebar: [
     {
       type: 'category',
@@ -277,6 +292,11 @@ const site = {
         'coa/what-is-an-isa',
         'coa/risc-vs-cisc',
         'coa/instruction-formats-and-encoding',
+        'coa/registers-and-addressing-modes',
+        'coa/load-store-architecture',
+        'coa/calling-conventions-and-abi',
+        'coa/assembler-linker-loader',
+        'coa/isa-design-tradeoffs',
       ],
     },
   ],
@@ -445,6 +465,7 @@ site.mlChapter5Sidebar = mlChapterSidebar(5, 'Training Writes the Weights', 'ml-
   ['Training writes the weights', 'training-writes-the-weights'],
   ['Forward and backward', 'forward-and-backward'],
   ['A batch', 'a-batch'],
+  ['Train the scoring network', 'train-the-scoring-network'],
 ]);
 
 site.mlChapter6Sidebar = mlChapterSidebar(6, 'Inference Is the Computation', 'ml-compilers/inference-is-the-computation', [

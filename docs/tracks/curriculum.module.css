@@ -107,6 +107,15 @@
   font-size: 1.05rem;
 }
 
+.planned {
+  margin-left: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
 .desc {
   margin: 0.15rem 0 0;
   font-size: 0.875rem;

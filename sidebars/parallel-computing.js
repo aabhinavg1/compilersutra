@@ -28,6 +28,17 @@ const parallel = {
         },
         {
           type: 'category',
+          label: 'Daily lessons',
+          collapsed: false,
+          items: [
+            'parallel-computing/concurrent-parallel-distributed',
+            'parallel-computing/one-core-made-busier',
+            'parallel-computing/shared-versus-distributed-memory',
+            'parallel-computing/cache-coherence-and-false-sharing',
+          ],
+        },
+        {
+          type: 'category',
           label: 'GPU tracks',
           collapsed: false,
           items: [

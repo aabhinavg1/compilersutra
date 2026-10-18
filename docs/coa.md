@@ -62,12 +62,17 @@ These pages are not written yet. Each one is linked here when it lands.
 
 ### ISA and the backend
 
+- [Assembler, linker, and loader](/docs/coa/assembler-linker-loader)
 - [What is Instruction Set Architecture (ISA)?](/docs/coa/what-is-an-isa)
-- Registers and Addressing Modes
+- [Registers and Addressing Modes](/docs/coa/registers-and-addressing-modes)
 - Calling Conventions and ABI
+- [Load-Store Architecture](/docs/coa/load-store-architecture)
+- [Calling Conventions and ABI](/docs/coa/calling-conventions-and-abi)
 - Load-Store Architecture
 - [Instruction Formats and Encoding](/docs/coa/instruction-formats-and-encoding)
 - ISA Design Tradeoffs
+- Instruction Formats and Encoding
+- [ISA Design Tradeoffs](/docs/coa/isa-design-tradeoffs)
 - ISA Impact on Compiler Backend
 
 ### Pipeline

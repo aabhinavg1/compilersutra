@@ -27,7 +27,7 @@ An AI compiler eventually lowers a model. The model is still a program. This cha
 
 Every program you already trust has the same shape. Something arrives. The program does a fixed sequence of steps. Something leaves.
 
-A thermostat reads a temperature. It compares that number with a setpoint. It turns a heater on or leaves it off. The steps are the program. The temperature is the input. The heater command is the output.
+A trading rule reads the last price and a moving average the desk already computed. It compares them. It sends a buy order, or it holds. The steps are the program. The price and the average are the input. The order is the output.
 
 An AI compiler does not replace this shape. Later chapters put a model in the middle of it. The model still receives an input and still produces an output. The difference is where the steps came from.
 
@@ -36,19 +36,19 @@ An AI compiler does not replace this shape. Later chapters put a model in the mi
 Most useful programs branch. A condition is a comparison. The branch is the path that comparison selects.
 
 ```text
-if temperature < setpoint:
-    heater = on
+if price < moving_average:
+    order = buy
 else:
-    heater = off
+    order = hold
 ```
 
-Nested conditions are the same idea with more paths. `if` the message contains a known phrase, and `if` the sender is on a list, then mark it. Each added condition is another case a person wrote down.
+Nested conditions are the same idea with more paths. If the price is under the buy line, buy. If it is over the sell line, sell. Otherwise hold. Each added condition is another case a person wrote down.
 
 ## Situation and action {#situation-and-action}
 
 Call the inputs the situation. Call the output the action.
 
-The situation for a spam filter might be the sender, the subject, and a few words in the body. The action is "deliver" or "hold". The situation for a photo tool is the pixels. The action is a label, a crop, or a score.
+The situation for the trading rule is the market the desk can see: the price, the moving average, the volume. The action is "buy", "sell", or "hold". The situation for a photo tool is the pixels. The action is a label, a crop, or a score.
 
 Once you name it this way, a model and a hand-written program are doing the same job at the boundary. Both map a situation to an action. Chapter 4 stays on that boundary. The compiler chapters start after the score exists.
 
@@ -70,7 +70,7 @@ A parser for a small configuration language belongs here. A protocol decoder bel
 
 The list stops being a program a person can finish when the cases interact.
 
-A photo is not a handful of flags. Two pictures of the same object differ by light, angle, and crop. An email can be spam without any phrase you put on the list. Adding one more `if` fixes one example and leaves the rest.
+One name and two lines is a list you can finish. Buy under this price, sell over that price, hold in between. The list stops being finishable when the order depends on price, volume, the rest of the book, and what the other names did in the same session. Adding one more `if` fixes one day and leaves the rest. A photo has the same failure: two pictures of one object differ by light, angle, and crop.
 
 The failure is the size of the case list. The program shape is still input, steps, and output.
 

@@ -233,6 +233,7 @@ const config = {
             position: 'left',
             items: [
               { label: 'All Articles', to: '/docs/articles' },
+              { label: 'Weekly Problems', to: '/docs/weekly-problems/' },
               { label: 'Benchmarks', to: '/docs/articles/gcc_vs_clang_real_benchmarks_2026_reporter' },
               { label: 'Compiler Blog', to: '/docs/compilers/techblog/' },
               { label: 'How-To Guides', to: '/docs/how-about' },
