@@ -103,7 +103,7 @@ Instruction selection maps abstract intermediate operations to hardware instruct
 When an ISA features rich memory addressing modes, the instruction selector searches for opportunities to fold multiple operations (such as pointer arithmetic, array indexing, and dereferencing) into a single instruction. Conversely, on a strict load-store ISA, pointer computations remain explicit arithmetic instructions, keeping the selector simpler.
 
 <Tabs>
-  <TabItem value="dag" label="SelectionDAG Pattern Matching">
+<TabItem value="dag" label="SelectionDAG Pattern Matching">
 
 SelectionDAG represents basic blocks as directed acyclic graphs of target-independent nodes. Target matching uses tree-matching patterns to merge arithmetic and memory nodes into complex target instructions.
 
@@ -115,8 +115,8 @@ SelectionDAG represents basic blocks as directed acyclic graphs of target-indepe
 
 **Tradeoff:** Strong pattern-matching optimization capabilities across multi-instruction trees, but high memory overhead and slow compilation speed.
 
-  </TabItem>
-  <TabItem value="globalisel" label="GlobalISel Pipeline">
+</TabItem>
+<TabItem value="globalisel" label="GlobalISel Pipeline">
 
 GlobalISel operates directly on linear Machine IR across entire functions using a step-by-step pipeline: `IRTranslator` $\rightarrow$ `Legalizer` $\rightarrow$ `RegBankSelect` $\rightarrow$ `InstructionSelect`.
 
@@ -129,7 +129,7 @@ GlobalISel operates directly on linear Machine IR across entire functions using 
 
 **Tradeoff:** Significantly faster compilation times and shared code between targets, with slightly fewer global instruction-folding patterns than SelectionDAG.
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 :::caution
@@ -253,7 +253,7 @@ When lowering this IR for a target ISA, the backend makes concrete decisions bas
 
 The compiler's ability to optimize code execution is constrained by the hardware boundary set by the ISA. This relationship is highlighted by the standard **CPU Performance Equation**:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$$
 
 ```text
                   +-----------------------------------------+
