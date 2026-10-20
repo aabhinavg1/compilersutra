@@ -1,42 +1,417 @@
 ---
 title: "-Os"
 slug: "/tools/clang-flags/-Os/"
-description: "Optimize for size (like clang -Os)"
+description: "Understand Clang -Os through measured LLVM IR, generated assembly, code-size, and CompilerSutraPerf (csperf) benchmarks against -O2 and -Oz."
+keywords:
+  - -Os
+  - Clang
+  - LLVM
+  - code size optimization
+  - compiler benchmarks
+  - CompilerSutraPerf
+  - csperf
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import PerfReport from '@site/src/components/clang-flags/PerfReport';
+import Callout from '@site/src/components/clang-flags/Callout';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-Os">
+<Head>
+  <title>-Os — Clang Flags Explorer</title>
+  <meta
+    name="description"
+    content="Explore Clang -Os using measured LLVM IR, machine code, executable-size numbers, and CompilerSutraPerf runtime experiments."
+  />
+</Head>
 
-## What this flag actually does
+{/* HAND_AUTHORED */}
 
-Optimize for size (like clang -Os)
+<FlagArticleShell
+  flagPath="-Os"
+  summary="Optimize for smaller generated code while retaining optimizations that are useful for runtime performance."
+>
 
+<div style={{ marginBottom: '1.5rem', padding: '0.75rem 1rem', background: 'var(--ifm-color-emphasis-100)', borderRadius: '6px' }}>
+  <a
+    href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Subscribe to Weekly Compiler Notes
+  </a>
+</div>
 
+## At a glance
 
-It is an alias for -O.
+| Attribute | Detail |
+| :--- | :--- |
+| Flag | `-Os` |
+| Category | Optimization level / code size |
+| Compiler | Clang and GCC |
+| Primary goal | Reduce generated code size |
+| Optimization behavior | Size-aware optimization pipeline and transformation decisions |
+| Related flags | `-O0`, `-O1`, `-O2`, `-O3`, `-Oz` |
+| Main trade-off | Code size versus runtime performance |
+| Best evaluation method | Inspect IR and assembly, measure code size, and benchmark representative workloads |
+| Evidence on this page | Clang 18.1.3 · x86_64 · AMD Ryzen 7 9700X · csperf 0.3.0 |
 
-## When to use it
+## What does `-Os` actually do?
 
-- You are targeting &lt;clang-cl options> and want this flag behavior applied to the whole compilation.
+`-Os` tells Clang to optimize with code size as an important consideration.
 
-## When not to use it
+The objective is not simply to generate the fewest instructions. It is to generate compact code while retaining transformations that provide useful runtime benefits.
 
-- Your build targets a different architecture — this flag is accepted only when targeting &lt;clang-cl options>.
+The compiler may make different decisions about inlining, loop transformations, vectorization, and instruction selection depending on the optimization level and target.
 
-## Usage example
+For example, an inlined function may remove call overhead but duplicate instructions at several call sites. A loop transformation may improve execution time but increase the amount of generated machine code.
+
+With `-Os`, the compiler accounts for these trade-offs.
+
+<Callout tone="warning" title="No universal guarantees">
+  `-Os` does **not** guarantee a smaller executable, scalar loops, disabled vectorization, or performance close to `-O2`. Those outcomes depend on the program, target, compiler version, and build configuration. This page shows what **one** Clang 18.1.3 / x86_64 experiment measured — not a law of LLVM.
+</Callout>
+
+## How `-Os` differs from other optimization levels
+
+| Flag | General intent |
+| :--- | :--- |
+| `-O0` | Minimize optimization work, primarily for development and debugging |
+| `-O1` | Apply a moderate set of optimizations |
+| `-O2` | Apply a broad set of optimizations intended for good runtime performance |
+| `-O3` | Enable additional and more aggressive performance-oriented optimizations |
+| `-Os` | Optimize with an emphasis on code size while retaining useful performance optimizations |
+| `-Oz` | Prioritize reducing code size more aggressively, potentially sacrificing more runtime performance |
+
+These descriptions communicate the **intent** of each level, not a guarantee that one level always produces faster or smaller code than another.
+
+## A minimal C++ workload
+
+We use a simple buffer transformation to examine how optimization levels affect generated code.
+
+<SourceCode
+  file="process_buffer.cpp"
+  flag="-Os"
+  language="cpp"
+  code={`#include <cstddef>
+#include <cstdint>
+
+void process_buffer(std::uint32_t* buffer, std::size_t length) {
+    for (std::size_t i = 0; i < length; ++i) {
+        buffer[i] = (buffer[i] ^ 0x5A5A5A5Au) + 1u;
+    }
+}`}
+  note="Inspection kernel only. The timed csperf workload wraps this loop with a 4M-element buffer and 24 passes (see static/files/clang-flags/-Os/)."
+/>
+
+Depending on the target and compiler settings, LLVM may generate scalar instructions, vector instructions, or another equivalent sequence.
+
+Do not assume that `-O2` must vectorize this loop or that `-Os` must keep it scalar. Inspect the generated output to find out.
+
+## Inspect the compiler output
+
+Commands used for the listings on this page (same Clang installation for every flag):
 
 ```bash
-clang++ -Os main.cpp -o app
+clang++ --version
+# Ubuntu clang version 18.1.3 (1ubuntu1)
+# Target: x86_64-pc-linux-gnu
+
+clang++ -O2 -S -emit-llvm process_buffer.cpp -o loop-O2.ll
+clang++ -Os -S -emit-llvm process_buffer.cpp -o loop-Os.ll
+clang++ -Oz -S -emit-llvm process_buffer.cpp -o loop-Oz.ll
+
+clang++ -O2 -S -masm=intel process_buffer.cpp -o loop-O2.s
+clang++ -Os -S -masm=intel process_buffer.cpp -o loop-Os.s
+clang++ -Oz -S -masm=intel process_buffer.cpp -o loop-Oz.s
 ```
+
+Full IR/assembly artifacts: [`/files/clang-flags/-Os/generated/`](/files/clang-flags/-Os/generated/).
+
+### Measured assembly: `-O2` vs `-Os`
+
+On this host, Clang 18.1.3 **vectorized** the loop under `-O2` (SSE `xmm` loads/stores processing eight `u32`s per iteration) and kept a **scalar** loop under `-Os`. That is an observation for this source and target — not a promise that `-Os` always disables vectorization.
+
+<AsmDiff
+  beforeTitle="Clang -O2 (measured)"
+  afterTitle="Clang -Os (measured)"
+  note="Generated with clang++ 18.1.3 -S -masm=intel on x86_64. Function body only."
+  before={`_Z14process_bufferPjm:                  # @_Z14process_bufferPjm
+	.cfi_startproc
+# %bb.0:
+	test	rsi, rsi
+	je	.LBB0_8
+# %bb.1:
+	cmp	rsi, 8
+	jae	.LBB0_3
+# %bb.2:
+	xor	eax, eax
+	jmp	.LBB0_6
+.LBB0_3:
+	mov	rax, rsi
+	and	rax, -8
+	xor	ecx, ecx
+	movdqa	xmm0, xmmword ptr [rip + .LCPI0_0] # xmm0 = [1515870810,...]
+	pcmpeqd	xmm1, xmm1
+	.p2align	4, 0x90
+.LBB0_4:                                # vector body, 8×u32 / iter
+	movdqu	xmm2, xmmword ptr [rdi + 4*rcx]
+	movdqu	xmm3, xmmword ptr [rdi + 4*rcx + 16]
+	pxor	xmm2, xmm0
+	pxor	xmm3, xmm0
+	psubd	xmm2, xmm1
+	psubd	xmm3, xmm1
+	movdqu	xmmword ptr [rdi + 4*rcx], xmm2
+	movdqu	xmmword ptr [rdi + 4*rcx + 16], xmm3
+	add	rcx, 8
+	cmp	rax, rcx
+	jne	.LBB0_4
+# %bb.5:
+	cmp	rax, rsi
+	je	.LBB0_8
+.LBB0_6:
+	mov	ecx, 1515870810
+.LBB0_7:                                # scalar remainder
+	mov	edx, dword ptr [rdi + 4*rax]
+	xor	edx, ecx
+	inc	edx
+	mov	dword ptr [rdi + 4*rax], edx
+	inc	rax
+	cmp	rsi, rax
+	jne	.LBB0_7
+.LBB0_8:
+	ret`}
+  after={`_Z14process_bufferPjm:                  # @_Z14process_bufferPjm
+	.cfi_startproc
+# %bb.0:
+	test	rsi, rsi
+	je	.LBB0_3
+# %bb.1:
+	xor	eax, eax
+	mov	ecx, 1515870810
+.LBB0_2:                                # scalar loop only
+	mov	edx, dword ptr [rdi + 4*rax]
+	xor	edx, ecx
+	inc	edx
+	mov	dword ptr [rdi + 4*rax], edx
+	inc	rax
+	cmp	rsi, rax
+	jne	.LBB0_2
+.LBB0_3:
+	ret`}
+/>
+
+`-Oz` on the same source stayed scalar but reshaped the loop (compare-at-top / `jmp` back). See [`loop-Oz-excerpt.s`](/files/clang-flags/-Os/generated/loop-Oz-excerpt.s).
+
+## Understanding the LLVM IR attributes
+
+On this Clang 18.1.3 build:
+
+| Artifact | Size-related attributes on `process_buffer` |
+| :--- | :--- |
+| `loop-O2.ll` | none (`optsize` / `minsize` absent) |
+| `loop-Os.ll` | `optsize` |
+| `loop-Oz.ll` | `minsize` and `optsize` |
+
+```bash
+grep -nE 'optsize|minsize' loop-O2.ll loop-Os.ll loop-Oz.ll
+```
+
+### `optsize`
+
+Indicates a preference for smaller generated code, especially where that can be achieved without significantly affecting performance.
+
+### `minsize`
+
+Communicates a stronger preference for minimizing code size.
+
+These attributes are not interchangeable, and neither guarantees a particular number of instructions or bytes. Attribute placement can vary across LLVM releases — always inspect your own IR.
+
+## Real experiment: measure `-O2`, `-Os`, and `-Oz`
+
+Generated code tells us what changed. Benchmarking tells us whether those changes matter at runtime.
+
+Tooling: [CompilerSutraPerf](/docs/project/compilersutra-perf/) (`csperf` 0.3.0) via the documented folder-based [`compiler_diff_batch.py`](https://github.com/aabhinavg1/CompilerSutraPerfTool) workflow — not invented `csperf run` flag combinations.
+
+### Machine under test
+
+| Item | Value |
+| :--- | :--- |
+| CPU | AMD Ryzen 7 9700X 8-Core Processor |
+| OS | Linux 7.0.0-34-generic · x86_64 · glibc 2.39 |
+| Compiler | Ubuntu clang version 18.1.3 (1ubuntu1) |
+| csperf | 0.3.0 |
+| Profiler | linux-perf (counters from a **separate** execution; do not treat them as same-trial as wall time) |
+| Energy | unavailable on this host |
+
+### Workload
+
+`benchmarks/process_buffer_bench.cpp`: 4 194 304 `uint32_t` elements, 24 passes over `process_buffer`, checksum printed to defeat dead-code elimination. Warmup 2 · measured repeats 10.
+
+### Configurations
+
+| Config file | Flags passed to csperf |
+| :--- | :--- |
+| [`configs/clang_O2.json`](/files/clang-flags/-Os/configs/clang_O2.json) | `-O2` |
+| [`configs/clang_Os.json`](/files/clang-flags/-Os/configs/clang_Os.json) | `-Os` |
+| [`configs/clang_Oz.json`](/files/clang-flags/-Os/configs/clang_Oz.json) | `-Oz` |
+
+Schema matches CompilerSutraPerf sample configs (`cc` / `cxx` / `compiler_flags`).
+
+### Batch commands actually run
+
+From a CompilerSutraPerfTool checkout (with its `.venv`):
+
+```bash
+python3 scripts/compiler_diff_batch.py \
+  /path/to/static/files/clang-flags/-Os/benchmarks \
+  --config1 /path/to/.../configs/clang_O2.json \
+  --config2 /path/to/.../configs/clang_Os.json \
+  --results-dir /path/to/.../results/O2-vs-Os \
+  --warmup-runs 2 \
+  --repeat-runs 10 \
+  --skip-derived
+
+python3 scripts/compiler_diff_batch.py \
+  /path/to/static/files/clang-flags/-Os/benchmarks \
+  --config1 /path/to/.../configs/clang_O2.json \
+  --config2 /path/to/.../configs/clang_Oz.json \
+  --results-dir /path/to/.../results/O2-vs-Oz \
+  --warmup-runs 2 \
+  --repeat-runs 10 \
+  --skip-derived
+```
+
+JSON/CSV artifacts: [`/files/clang-flags/-Os/results/`](/files/clang-flags/-Os/results/).
+
+### Wall-clock: `-O2` vs `-Os`
+
+Per-trial wall times from `execution.trial_results` (ms). Mean `-Os` is about **3.0×** the mean `-O2` on this workload.
+
+<PerfReport
+  beforeTitle="-O2"
+  afterTitle="-Os"
+  without={[10.193, 10.216, 10.202, 10.22, 10.213, 10.211, 10.212, 10.23, 10.211, 10.216]}
+  with={[30.393, 30.42, 30.438, 30.431, 30.442, 30.433, 30.437, 30.449, 30.448, 30.456]}
+  note="csperf 0.3.0 · warmup 2 · repeat 10 · process_buffer_bench.cpp · Clang 18.1.3 · Ryzen 7 9700X. Source: results/O2-vs-Os/*.json"
+/>
+
+### Results table (measured)
+
+| Metric | `-O2` | `-Os` | `-Oz` |
+| :--- | :--- | :--- | :--- |
+| Object `.text` (`process_buffer` TU) | 195 B | 79 B | 76 B |
+| Executable `.text` (full bench) | 2860 B | 2676 B | **3352 B** |
+| On-disk file size (`stat`) | 16848 B | 16848 B | 17632 B |
+| Median wall time | 10.21 ms | 30.44 ms | 45.61 ms |
+| Mean wall time ± stdev | 10.21 ± 0.01 ms | 30.43 ± 0.02 ms | 45.61 ± 0.06 ms |
+| Instructions retired (perf, separate run) | ~157 M | ~735 M | ~868 M |
+| CPU cycles (perf, separate run) | ~46 M | ~151 M | ~232 M |
+| IPC (perf, separate run) | ~3.41 | ~4.85 | ~3.74 |
+
+Size rows come from `size` / `stat` on the same builds used for IR/asm. Runtime rows come from csperf trial summaries. Counter rows are Linux `perf` aggregates collected in a **separate** execution from the timed trials — useful for direction, not same-trial causation.
+
+<Callout tone="info" title="`-Oz` executable was larger here">
+  The `process_buffer` **object** shrunk under `-Oz` (76 B text vs 195 B at `-O2`), but the **linked bench executable** text grew to 3352 B and the file to 17632 B. File size, section size, and a single function's footprint are different measurements — publish all three when the question is “smaller binary?”
+</Callout>
+
+## How to interpret these results
+
+### Size
+
+`-Os` cut the kernel object text from 195 B to 79 B (~60% smaller) by dropping the SSE vector body. The full executable text shrank modestly (2860 → 2676 B); on-disk size matched `-O2` after page alignment.
+
+### Runtime
+
+`-Os` ran ~3× slower than `-O2`; `-Oz` ~4.5× slower. Instruction counts rose sharply without vectorization — enough to dominate wall time on this memory-bandwidth-friendly XOR/add loop. Higher IPC under `-Os` did **not** mean a faster program: more instructions still took more cycles.
+
+### What this does *not* prove
+
+- That `-Os` always disables vectorization (other loops/targets may still vectorize).
+- That `-Os` is always slower (I-cache sensitive apps can go the other way).
+- That `-Oz` is always smallest at link time (this bench shows the opposite for the final ELF).
+
+## When should you use `-Os`?
+
+### Good candidates
+
+- Firmware and embedded applications with constrained storage
+- Libraries where reducing code footprint matters
+- Applications with significant cold code or instruction-footprint constraints
+- Programs where **your** measurements show an acceptable performance trade-off
+
+### When to evaluate alternatives
+
+- Compute-heavy workloads where vectorization or loop transforms dominate (as in this buffer kernel)
+- Latency-sensitive code with strict performance requirements
+- Applications where executable size is not a meaningful constraint
+- Workloads where `-Oz` produces a smaller binary with an acceptable runtime cost — **verify** with `size` and a timer
+
+## Compatibility and usage
+
+```bash
+clang++ -O2 -c process_buffer.cpp -o loop-O2.o
+clang++ -Os -c process_buffer.cpp -o loop-Os.o
+clang++ -Oz -c process_buffer.cpp -o loop-Oz.o
+size loop-O2.o loop-Os.o loop-Oz.o
+```
+
+GCC also supports `-Os`, but its pipeline and codegen are not identical to Clang's. MSVC's `/O1` is a different product — do not equate flag names across vendors.
+
+## How it works inside Clang and LLVM
+
+| Stage | What to investigate |
+| :--- | :--- |
+| Driver | How Clang processes the requested optimization level |
+| Frontend and IR generation | IR emitted for the source program |
+| LLVM optimization pipeline | Transformations and size-aware decisions |
+| IR attributes | Whether relevant functions carry `optsize` / `minsize` |
+| Target backend | Instruction selection and target-specific cost decisions |
+| Object generation | Emitted sections and machine code |
+| Linking | Final executable size and linker settings |
+
+References: [Clang command guide](https://clang.llvm.org/docs/CommandGuide/clang.html), [Users Manual](https://clang.llvm.org/docs/UsersManual.html), [LLVM LangRef](https://llvm.org/docs/LangRef.html). Verify pass details against the LLVM version you are discussing.
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: CLOption
-- **Stage**: driver, category `CL Compatibility`
-- **Alias of**: `-O`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  entries={[
+    { key: "Driver option", value: "-Os" },
+    { key: "Primary goal", value: "Reduce generated code size" },
+    { key: "IR attribute (this Clang)", value: "optsize on process_buffer" },
+    { key: "Stronger size preference", value: "-Oz → minsize + optsize here" },
+    { key: "Runtime guarantee", value: "None — benchmark the actual workload" },
+    { key: "Recommended workflow", value: "IR → assembly → size → csperf batch" },
+  ]}
+/>
+
+## Reproducibility checklist
+
+Before publishing a result, record:
+
+- [x] Exact Clang version and target triple (18.1.3 · x86_64-pc-linux-gnu)
+- [x] CPU model and operating system (Ryzen 7 9700X · Linux 7.0.0-34-generic)
+- [x] Source code and input sizes (4M elements · 24 passes)
+- [x] Full compiler flags (`-O2` / `-Os` / `-Oz` only for this first experiment)
+- [x] Warm-up and measured run counts (2 / 10)
+- [x] Runtime distribution (min/mean/median/max/stdev in JSON)
+- [x] Available hardware counters and limitations (perf separate from wall time; energy N/A)
+- [x] Object-file and final executable sizes
+- [x] Generated IR, assembly, and CompilerSutraPerf artifacts under [`/files/clang-flags/-Os/`](/files/clang-flags/-Os/)
+
+If you change the compiler version, CPU, source, or build settings, treat the result as a **new** experiment.
+
+## Final takeaway
+
+`-Os` is a size-oriented optimization choice, not a guarantee of smaller or faster code.
+
+On this measured buffer kernel, `-Os` produced clearly smaller object code and clearly slower runtime than `-O2`, because Clang kept a scalar loop while `-O2` vectorized. `-Oz` made the kernel object slightly smaller still, but the linked executable grew — and runtime got worse again.
+
+Inspect LLVM IR and machine code to see what changed. Use CompilerSutraPerf's `compiler_diff_batch.py` workflow to measure runtime and available counters. Measure size with `size` / `stat` separately. Publish the machine, compiler, commands, and artifacts with the numbers.
+
+That is the difference between describing a compiler flag and evaluating its actual behavior.
 
 </FlagArticleShell>
