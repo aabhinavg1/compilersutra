@@ -66,8 +66,7 @@ A line here turns into a link when that lesson is published.
 - [Cache coherence and false sharing](cache-coherence-and-false-sharing.md)
 - Decomposition, tasks, and mapping
 - Communication cost and granularity
-- Speedup, efficiency, and scalability
-
+- [Speedup, efficiency, and scalability](speedup-efficiency-scalability.md)
 ### OpenMP and threads
 
 OpenMP in this section is the CPU version. Offload to a device is listed with the GPU lessons.
