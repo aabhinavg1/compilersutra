@@ -34,7 +34,7 @@ When an instruction in a pipelined processor cannot execute on time due to unres
 :::important What you should leave with
 - A **pipeline stall** holds earlier pipeline stages stationary while allowing downstream stages to proceed, which manifests as a **pipeline bubble** (a lost issue slot).
 - Load-use delays occur when an instruction immediately consumes the result of a memory load; even with hardware data forwarding, memory latency requires at least one delay slot.
-- In the CPU performance equation ($\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$), pipeline bubbles directly increase the average Cycles Per Instruction (CPI).
+- In the CPU performance equation ($\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$), pipeline bubbles directly increase the average Cycles Per Instruction (CPI).
 - Instruction scheduling in the compiler reorganizes independent operations into load-use and branch delay gaps without altering program semantics.
 :::
 
@@ -102,50 +102,50 @@ A bubble in the execution pipeline occupies the exact same temporal slot as an e
 
 To evaluate how stalls impact overall program speed, compiler engineers rely on the fundamental CPU Performance Equation:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Cycle Time\}$$
 
 where:
-- **Instruction Count ($\text{IC}$):** The total number of machine instructions executed for a given program run.
-- **Cycles Per Instruction ($\text{CPI}$):** The average number of clock cycles required to execute a single instruction.
+- **Instruction Count ($\text\{IC\}$):** The total number of machine instructions executed for a given program run.
+- **Cycles Per Instruction ($\text\{CPI\}$):** The average number of clock cycles required to execute a single instruction.
 - **Cycle Time ($T_c$):** The duration of one hardware clock period.
 
-In an ideal $N$-stage pipelined architecture executing continuous independent instructions, one instruction completes every single clock cycle, yielding an ideal base $\text{CPI}_{\text{ideal}} = 1.0$ (or $\text{CPI}_{\text{ideal}} = \frac{1}{\text{Issue Width}}$ on a superscalar machine). 
+In an ideal $N$-stage pipelined architecture executing continuous independent instructions, one instruction completes every single clock cycle, yielding an ideal base $\text\{CPI\}_\{\text\{ideal\}\} = 1.0$ (or $\text\{CPI\}_\{\text\{ideal\}\} = \frac\{1\}\{\text\{Issue Width\}\}$ on a superscalar machine). 
 
-When hardware stalls occur, additional stall cycles are added to the execution timeline. The actual $\text{CPI}$ is calculated as:
+When hardware stalls occur, additional stall cycles are added to the execution timeline. The actual $\text\{CPI\}$ is calculated as:
 
-$$\text{CPI}_{\text{actual}} = \text{CPI}_{\text{ideal}} + \text{CPI}_{\text{stall\_data}} + \text{CPI}_{\text{stall\_control}} + \text{CPI}_{\text{stall\_structural}}$$
+$$\text\{CPI\}_\{\text\{actual\}\} = \text\{CPI\}_\{\text\{ideal\}\} + \text\{CPI\}_\{\text\{stall\_data\}\} + \text\{CPI\}_\{\text\{stall\_control\}\} + \text\{CPI\}_\{\text\{stall\_structural\}\}$$
 
-Every pipeline bubble directly adds $1.0$ to the total execution cycle count without increasing the completed instruction count ($\text{IC}$). Consequently, bubbles directly inflate the $\text{CPI}_{\text{actual}}$ term in the performance equation.
+Every pipeline bubble directly adds $1.0$ to the total execution cycle count without increasing the completed instruction count ($\text\{IC\}$). Consequently, bubbles directly inflate the $\text\{CPI\}_\{\text\{actual\}\}$ term in the performance equation.
 
 <Tabs>
-  <TabItem value="ideal" label="Ideal Execution (No Stalls)">
+<TabItem value="ideal" label="Ideal Execution (No Stalls)">
 
   Assuming a 5-stage pipeline executing 4 independent instructions without hazards:
 
-  - **Instruction Count ($\text{IC}$):** 4
+  - **Instruction Count ($\text\{IC\}$):** 4
   - **Total Cycles:** 8 (4 cycles to fill pipeline + 4 completion cycles)
   - **Effective CPI:** 
-    $$\text{CPI} = \frac{\text{Total Cycles}}{\text{IC}} = \frac{8}{4} = 2.0 \quad (\text{approaches } 1.0 \text{ as } \text{IC} \to \infty)$$
+    $$\text\{CPI\} = \frac\{\text\{Total Cycles\}\}\{\text\{IC\}\} = \frac\{8\}\{4\} = 2.0 \quad (\text\{approaches \} 1.0 \text\{ as \} \text\{IC\} \to \infty)$$
 
   All pipeline slots are populated with architectural work.
 
-  </TabItem>
-  <TabItem value="stalled" label="Stalled Execution (2 Bubbles)">
+</TabItem>
+<TabItem value="stalled" label="Stalled Execution (2 Bubbles)">
 
   Assuming the same 4 instructions, but Instruction 2 experiences a 2-cycle load-use hazard:
 
-  - **Instruction Count ($\text{IC}$):** 4
+  - **Instruction Count ($\text\{IC\}$):** 4
   - **Total Cycles:** 10 (8 base cycles + 2 bubble cycles)
   - **Effective CPI:** 
-    $$\text{CPI} = \frac{\text{Total Cycles}}{\text{IC}} = \frac{10}{4} = 2.5$$
+    $$\text\{CPI\} = \frac\{\text\{Total Cycles\}\}\{\text\{IC\}\} = \frac\{10\}\{4\} = 2.5$$
 
   The 2 bubble cycles directly inflate overall CPU time by $25\%$.
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 :::caution
-While compiler transformations like loop unrolling or instruction scheduling may slightly alter total Instruction Count ($\text{IC}$), their primary objective in backend code generation is reducing total pipeline stall penalty cycles to push $\text{CPI}_{\text{actual}}$ as close as possible to $\text{CPI}_{\text{ideal}}$.
+While compiler transformations like loop unrolling or instruction scheduling may slightly alter total Instruction Count ($\text\{IC\}$), their primary objective in backend code generation is reducing total pipeline stall penalty cycles to push $\text\{CPI\}_\{\text\{actual\}\}$ as close as possible to $\text\{CPI\}_\{\text\{ideal\}\}$.
 :::
 
 ---
@@ -278,7 +278,7 @@ When optimizing code to eliminate stalls, a compiler operates within precise bou
 **Fact:** Modern pipelined ISAs handle data hazard stalls entirely through hardware Interlocking control logic (as in MIPS-ISA extensions and ARM/x86 architectures). Compilers do not emit explicit `nop` instructions to handle load-use hazards unless target architectures lack hardware interlocking mechanisms (such as early VLIW or classic un-interlocked RISC architectures). The compiler simply reorders real, functional instructions to cover latencies.
 
 ### Misconception 3: "A pipeline bubble increases both cycle count and instruction count."
-**Fact:** A bubble is an internal microarchitectural state where execution stage control signals are disabled (effectively doing no work). It consumes one clock cycle, directly inflating the total clock cycle count and raising the CPI metric. However, because no architectural state is updated, a bubble **does not** increment the retired Instruction Count ($\text{IC}$).
+**Fact:** A bubble is an internal microarchitectural state where execution stage control signals are disabled (effectively doing no work). It consumes one clock cycle, directly inflating the total clock cycle count and raising the CPI metric. However, because no architectural state is updated, a bubble **does not** increment the retired Instruction Count ($\text\{IC\}$).
 
 ---
 
