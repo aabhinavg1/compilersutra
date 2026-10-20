@@ -1,0 +1,7 @@
+{
+  "name": "clang_O2",
+  "compiler_family": "clang",
+  "cc": "clang",
+  "cxx": "clang++",
+  "compiler_flags": ["-O2"]
+}

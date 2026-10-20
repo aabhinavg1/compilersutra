@@ -1,0 +1,14 @@
+=== size objects ===
+   text	   data	    bss	    dec	    hex	filename
+    195	      0	      0	    195	     c3	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/loop-O2.o
+     79	      0	      0	     79	     4f	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/loop-Os.o
+     76	      0	      0	     76	     4c	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/loop-Oz.o
+=== size executables ===
+   text	   data	    bss	    dec	    hex	filename
+   2860	    696	      8	   3564	    dec	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-O2
+   2676	    696	      8	   3380	    d34	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-Os
+   3352	    704	      8	   4064	    fe0	/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-Oz
+=== stat executables ===
+/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-O2 16848 bytes
+/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-Os 16848 bytes
+/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/generated/bench-Oz 17632 bytes
