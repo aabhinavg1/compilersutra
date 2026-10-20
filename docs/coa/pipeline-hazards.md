@@ -100,7 +100,7 @@ Architectural correctness requires that hazards never produce incorrect calculat
 :::
 
 <Tabs>
-  <TabItem value="raw" label="RAW (Data Hazard)" default>
+<TabItem value="raw" label="RAW (Data Hazard)" default>
 
 ```text
 Instruction A: ADD R1, R2, R3    ; R1 = R2 + R3 (Writes to R1)
@@ -108,8 +108,8 @@ Instruction B: SUB R4, R1, R5    ; R4 = R1 - R5 (Reads from R1)
 ```
 
 Instruction $B$ requires the updated value of register `R1`. If Instruction $B$ reads `R1` from the register file before Instruction $A$ writes its completed execution result back into `R1`, Instruction $B$ operates on stale data.
-  </TabItem>
-  <TabItem value="control" label="Control Hazard">
+</TabItem>
+<TabItem value="control" label="Control Hazard">
 
 ```text
 Instruction A: BEQ R1, R2, Target ; Branch if R1 == R2
@@ -117,8 +117,8 @@ Instruction B: ADD R3, R4, R5    ; Next sequential instruction in fetch
 ```
 
 The pipeline fetches `Instruction B` in the cycle immediately following `Instruction A`. However, until `Instruction A` reaches the execution/comparison stage, the hardware does not know whether execution should proceed to `Instruction B` or jump to `Target`.
-  </TabItem>
-  <TabItem value="structural" label="Structural Hazard">
+</TabItem>
+<TabItem value="structural" label="Structural Hazard">
 
 ```text
 Instruction A: LOAD R1, [R2]     ; Requests Memory Read Port in MEM stage
@@ -126,7 +126,7 @@ Instruction B: FETCH Instruction ; Requests Memory Read Port in FETCH stage
 ```
 
 If the underlying hardware design contains only a single shared memory bus without separate L1 Instruction and L1 Data caches (a unified single-port memory structure), both operations attempt to access memory concurrently, creating a structural conflict.
-  </TabItem>
+</TabItem>
 </Tabs>
 
 ---
@@ -221,7 +221,7 @@ When static compilers reorder instructions across basic block boundaries to hide
 
 The compiler backend plays a primary role in maximizing instruction throughput by generating hazard-free machine code. Its impact can be evaluated directly using the classic **CPU Performance Equation**:
 
-$$\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Clock Cycle Time}$$
+$$\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Clock Cycle Time\}$$
 
 ```
                           CPU Execution Time
