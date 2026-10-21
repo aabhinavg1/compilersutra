@@ -298,6 +298,7 @@ const site = {
         'coa/assembler-linker-loader',
         'coa/integer-and-floating-point',
         'coa/isa-design-tradeoffs',
+        'coa/exceptions-and-precise-interrupts',
       ],
     },
   ],
