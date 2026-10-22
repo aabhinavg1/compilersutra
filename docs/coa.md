@@ -71,6 +71,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - Load-Store Architecture
 - [Instruction Formats and Encoding](/docs/coa/instruction-formats-and-encoding)
 - ISA Design Tradeoffs
+- [ISA Impact on Compiler Backend](/docs/coa/isa-and-the-compiler-backend)
 - Instruction Formats and Encoding
 - [ISA Design Tradeoffs](/docs/coa/isa-design-tradeoffs)
 - ISA Impact on Compiler Backend

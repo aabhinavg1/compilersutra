@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0284c7" />
+    </marker>
+    <marker id="arrowhead-dark" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569" />
+    </marker>
+  </defs>
+
+  <rect width="600" height="350" fill="#f8fafc" rx="8" />
+
+  <!-- Title Label -->
+  <text x="300" y="30" fill="#0f172a" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">
+    ISA Driven Compiler Backend Lowering Pipeline
+  </text>
+
+  <!-- Box 1: IR -->
+  <rect x="30" y="70" width="140" height="50" rx="6" fill="#0284c7" stroke="#0369a1" stroke-width="1.5" />
+  <text x="100" y="92" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Target-Independent</text>
+  <text x="100" y="108" fill="#ffffff" font-family="sans-serif" font-size="12" text-anchor="middle">LLVM IR (SSA)</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="170" y1="95" x2="222" y2="95" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- Box 2: Legalization & ISel -->
+  <rect x="230" y="70" width="140" height="50" rx="6" fill="#0284c7" stroke="#0369a1" stroke-width="1.5" />
+  <text x="300" y="92" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Instruction Selection</text>
+  <text x="300" y="108" fill="#ffffff" font-family="sans-serif" font-size="11" text-anchor="middle">&amp; Legalization</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="370" y1="95" x2="422" y2="95" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- Box 3: RegAlloc -->
+  <rect x="430" y="70" width="140" height="50" rx="6" fill="#0284c7" stroke="#0369a1" stroke-width="1.5" />
+  <text x="500" y="92" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Register Allocation</text>
+  <text x="500" y="108" fill="#ffffff" font-family="sans-serif" font-size="11" text-anchor="middle">&amp; Spill Insertion</text>
+
+  <!-- Down Arrow from Box 3 to Box 4 -->
+  <line x1="500" y1="120" x2="500" y2="162" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- Box 4: Frame Lowering -->
+  <rect x="430" y="170" width="140" height="50" rx="6" fill="#0284c7" stroke="#0369a1" stroke-width="1.5" />
+  <text x="500" y="192" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Frame Lowering</text>
+  <text x="500" y="208" fill="#ffffff" font-family="sans-serif" font-size="11" text-anchor="middle">&amp; ABI Prologue/Epilogue</text>
+
+  <!-- Left Arrow from Box 4 to Box 5 -->
+  <line x1="430" y1="195" x2="378" y2="195" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+
+  <!-- Box 5: Target Machine Code -->
+  <rect x="230" y="170" width="140" height="50" rx="6" fill="#475569" stroke="#334155" stroke-width="1.5" />
+  <text x="300" y="192" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Target Machine IR /</text>
+  <text x="300" y="208" fill="#ffffff" font-family="sans-serif" font-size="12" text-anchor="middle">Assembly Output</text>
+
+  <!-- ISA Constraints Box at bottom -->
+  <rect x="30" y="250" width="540" height="75" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="300" y="270" fill="#0f172a" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">ISA Architectural Constraints (Target Description Contract)</text>
+  <text x="300" y="290" fill="#334155" font-family="sans-serif" font-size="12" text-anchor="middle">• Legal types &amp; operations  • Addressing modes &amp; scale factors</text>
+  <text x="300" y="308" fill="#334155" font-family="sans-serif" font-size="12" text-anchor="middle">• Architectural register counts  • ABI callee/caller register roles</text>
+
+  <!-- Connecting lines from ISA Box up to lowering phases -->
+  <line x1="300" y1="250" x2="300" y2="228" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrowhead-dark)" />
+</svg>
