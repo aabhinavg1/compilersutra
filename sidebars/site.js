@@ -300,6 +300,7 @@ const site = {
         'coa/integer-and-floating-point',
         'coa/isa-design-tradeoffs',
         'coa/pipeline-hazards',
+        'coa/instruction-level-parallelism',
       ],
     },
   ],
