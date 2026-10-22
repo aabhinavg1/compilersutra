@@ -80,7 +80,7 @@ These pages are not written yet. Each one is linked here when it lands.
 
 - [Pipeline Hazards (Data, Control, Structural)](/docs/coa/pipeline-hazards)
 - Pipeline Stalls and Bubbles
-- Instruction-Level Parallelism (ILP)
+- [Instruction-Level Parallelism (ILP)](/docs/coa/instruction-level-parallelism)
 - Compiler Scheduling vs Pipeline
 
 ### Cache, branches, SIMD
