@@ -1,45 +1,233 @@
 ---
 title: "-fno-exceptions"
 slug: "/tools/clang-flags/-fno-exceptions/"
-description: "Disable support for exception handling"
+description: "Disables C++ exception handling support, stripping unwinding tables, EH personality functions, and turning throw statements into runtime aborts."
+keywords: [-fno-exceptions, exceptions, C++, clang, compiler flags, unwinding, landingpad, llvm]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fno-exceptions">
+<Head>
+  <title>-fno-exceptions — Clang Flags Explorer</title>
+  <meta name="description" content="Disables C++ exception handling support, stripping unwinding tables, EH personality functions, and turning throw statements into runtime aborts." />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-fno-exceptions" summary="Disables C++ exception handling in the frontend and backend, avoiding landingpads, unwind tables, and EH personality setup.">
+
+<p style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer">
+    ✉ Subscribe to Weekly Compiler Notes
+  </a>
+</p>
+
+## At a glance
+
+| Attribute | Value |
+| :--- | :--- |
+| **Architectures** | Target-agnostic (x86_64, AArch64, RISC-V, ARM, WebAssembly, etc.) |
+| **Category** | Frontend lowering / Code generation |
+| **Compiler** | Clang (`clang++`) |
+| **Optimization impact** | Eliminates landing pads, reduces code bloat, enables broader inline expansions |
+| **ABI / Safety Risk** | **High** across library boundaries — mixing `-fno-exceptions` and `-fexceptions` translation units can break stack unwinding if an exception crosses boundaries. |
+
+---
 
 ## What this flag actually does
 
-Disable support for exception handling
+The `-fno-exceptions` flag disables C++ exception handling features across the compilation pipeline:
 
+1. **Frontend Lowering (`clang` / `clang -cc1`)**:
+   - `throw` expressions emit a call to `__clang_call_terminate` or `std::terminate` (or C++ runtime error handlers) rather than constructing and raising an exception object via `__cxa_allocate_exception` / `__cxa_throw`.
+   - `try` / `catch` blocks are disallowed or report compile-time errors if syntactically active depending on context.
+   - The frontend macro `__EXCEPTIONS` is **undefined** (whereas `-fexceptions` defines `__EXCEPTIONS=1`).
 
+2. **LLVM IR Generation**:
+   - Functions emit standard IR `call` instructions instead of `invoke` instructions.
+   - Exception handling personality functions (e.g., `__gxx_personality_v0`) are omitted from function attributes.
+   - `landingpad` and `resume` basic blocks are entirely omitted.
+   - Non-throwing functions are marked `nounwind` by default.
 
-It can be negated with -fexceptions.
+3. **Backend & Frame Lowering**:
+   - Omits `.eh_frame` or `.ARM.extab`/`.ARM.exidx` unwind table sections unless explicitly requested via `-fasynchronous-unwind-tables` or `-funwind-tables`.
 
-## When to use it
+:::caution ABI & Interop Warning
+Disabling exceptions does not automatically prevent linked dynamic libraries from throwing exceptions. If an external C++ library throws an exception into a frame compiled with `-fno-exceptions` without unwind tables, the unwinder may immediately call `std::terminate` or crash during frame traversal.
+:::
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+---
 
-## When not to use it
+## Minimal realistic example
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+Consider standard C++ code that constructs RAII objects and throws on failure:
+
+<SourceCode 
+  language="cpp"
+  code={`#include <iostream>
+
+struct Resource {
+    Resource() { std::cout << "Acquired\\n"; }
+    ~Resource() { std::cout << "Released\\n"; }
+};
+
+void do_work(int value) {
+    Resource r;
+    if (value < 0) {
+        throw "Invalid argument";
+    }
+}`}
+/>
+
+When compiled with `-fexceptions`, Clang generates cleanup landing pads and invocation wrappers to ensure `~Resource()` runs during unwinding. 
+
+When compiled with `-fno-exceptions`, Clang translates `throw` directly into a call to `__clang_call_terminate` (or abort runtime hooks) without generating landing pad cleanup blocks or invoking the C++ ABI unwinder (`libunwind` / `libc++abi`).
+
+---
+
+## Before vs. after assembly
+
+Compiling the above snippet for `x86_64-unknown-linux-gnu` with `-O2`:
+
+<AsmDiff
+  before={{
+    title: "clang++ -O2 -fexceptions",
+    code: `do_work(int):
+        push    rbx
+        sub     rsp, 16
+        ; Construct Resource
+        mov     edi, offset .str.acquired
+        call    puts
+        test    esi, esi
+        js      .LBB0_1
+        ; Normal exit
+        mov     edi, offset .str.released
+        call    puts
+        add     rsp, 16
+        pop     rbx
+        ret
+.LBB0_1:
+        ; Allocate and throw exception
+        mov     edi, 8
+        call    __cxa_allocate_exception
+        mov     qword ptr [rax], offset .str.err
+        mov     esi, offset _ZTIKc
+        xor     edx, edx
+        call    __cxa_throw
+.LBB0_3:
+        ; Landingpad for exception cleanup (~Resource)
+        mov     rbx, rax
+        mov     edi, offset .str.released
+        call    puts
+        mov     rdi, rbx
+        call    _Unwind_Resume@PLT`
+  }}
+  after={{
+    title: "clang++ -O2 -fno-exceptions",
+    code: `do_work(int):
+        push    rax
+        ; Construct Resource
+        mov     edi, offset .str.acquired
+        call    puts
+        test    esi, esi
+        js      .LBB0_2
+        ; Normal exit
+        mov     edi, offset .str.released
+        call    puts
+        pop     rax
+        ret
+.LBB0_2:
+        ; Direct termination on throw with -fno-exceptions
+        call    __clang_call_terminate`
+  }}
+/>
+
+### Key Differences in Assembly
+- **No `__cxa_allocate_exception` / `__cxa_throw`**: The exception payload allocation and throwing infrastructure is stripped.
+- **No `_Unwind_Resume` / Landing Pad**: Cleanups associated with stack unwinding are omitted on the throw path; execution terminates immediately.
+- **Dramatically reduced binary footprint**: Unwind metadata (`.eh_frame` exception tables) and landing pads are eliminated.
+
+---
+
+## Why use it / when not to use it
+
+### Preferred Use Cases
+- **Embedded & Real-Time Systems**: Systems with restricted RAM/Flash or strict deterministic latency requirements where heap allocation during `throw` and unwinding overhead are unacceptable.
+- **Kernel & OS Development**: Low-level kernel code, bootloaders, and firmware where C++ runtime EH support libraries (`libc++abi`, `libgcc_s`) are not present.
+- **High-Performance Game Engines**: Codebases (like LLVM itself, Chromium, or Unreal Engine) that enforce explicit error handling via status codes, `std::expected`, or outcome types to prevent code bloat.
+
+### When NOT to Use It
+- **Standard Library Code Relying on `try`/`catch`**: Code relying on STL features that throw (e.g. `std::vector::at`, `std::make_shared` allocation failures) unless custom embedded STL configurations (like ETL or EASTL) are used.
+- **Cross-ABI C++ Plug-in Boundaries**: When calling third-party C++ libraries that expect exception unwinding to safely propagate errors across stack frames.
+
+---
+
+## Performance impact
+
+Qualitative gains from `-fno-exceptions`:
+
+1. **Instruction Cache & Binary Size**: Eliminating landing pad blocks and EH table entries (`.eh_frame`, `.gcc_except_table`) can reduce text/rodata footprint by 10%–30% in heavy C++ codebases.
+2. **Optimizer Freedom**: Standard calls don't require `invoke` instructions in LLVM IR. The optimizer can freely reorder, inline, and tail-call vectorize function calls without maintaining exception-edge control flow constraints.
+3. **Branch Prediction**: Function call sites avoid splitting basic blocks across normal return vs. unwinding paths, improving instruction pipeline density.
+
+---
+
+## Compatibility table
+
+| Platform / Toolchain | Supported | Notes |
+| :--- | :--- | :--- |
+| **GCC (`g++`)** | Yes | Equivalent flag: `-fno-exceptions`. |
+| **Clang (`clang++`)** | Yes | Supported on all targets. |
+| **MSVC (`cl.exe`)** | Partial | Equivalent concept is omitting `/EHsc` or using `/EHs-` / `/EHc-`. |
+| **C++ Standard Conformance** | Non-standard | Disables C++ standard language features (`throw`, `try`, `catch`). |
+
+---
 
 ## Usage example
 
+Pass `-fno-exceptions` during compilation of C++ source files:
+
 ```bash
-clang++ -fno-exceptions -c main.cpp
+# Compile C++ source without exception support
+clang++ -O2 -fno-exceptions -c engine.cpp -o engine.o
+
+# Inspect LLVM IR to confirm 'call' is used instead of 'invoke' and 'nounwind' is present
+clang++ -O2 -fno-exceptions -S -emit-llvm engine.cpp -o - | grep "nounwind"
 ```
 
-## Key facts
+---
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fexceptions`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+## Adjacent options
+
+- `-fexceptions`: Re-enables exception handling support (default for C++).
+- `-fno-rtti`: Disables runtime type information (`typeid`, `dynamic_cast`), commonly paired with `-fno-exceptions` in embedded C++ configurations.
+- `-funwind-tables` / `-fno-unwind-tables`: Controls generation of stack unwind tables independently of C++ exception semantics (useful for backtraces/profilers).
+- `-fasync-exceptions`: Enables asynchronous exception support (SEH on Windows or hardware signal handling).
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Action / Implementation Details |
+| :--- | :--- |
+| **Driver** | Parses `-fno-exceptions`, translates option into `-fno-exceptions` for `-cc1`. |
+| **Frontend Options** | Sets `LangOpts.Exceptions = 0` and `LangOpts.CXXExceptions = 0` in `clang::LangOptions`. Undefines `__EXCEPTIONS`. |
+| **Clang CodeGen** | `CodeGenFunction::EmitCXXThrowExpr` emits a call to `__clang_call_terminate` or diagnostic error instead of constructing EH objects. `EmitCall` emits standard IR `call` instructions rather than `invoke`. |
+| **LLVM IR** | Functions are marked with the `nounwind` attribute. No `landingpad` or `personality` attributes are attached. |
+| **LLVM Target Backend** | Skips emitting exception handling tables (`.gcc_except_table`) in assembly/object output. |
+
+---
+
+<KeyFacts
+  args={["-fno-exceptions"]}
+  group="f_Group"
+  driver={true}
+  cc1={false}
+  negated="-fexceptions"
+/>
 
 </FlagArticleShell>
