@@ -35,7 +35,7 @@ An Instruction Set Architecture (ISA) defines the software-hardware interface, e
 - Orthogonal ISAs simplify target lowering and instruction selection, reducing compiler backend pass complexity.
 - Fixed-length encodings streamline hardware fetch and decode but increase instruction count and code size relative to variable-length encodings.
 - Complex, non-orthogonal instructions can cause register allocation pitfalls and force early phase-ordering decisions during backend code generation.
-- The CPU performance equation ($\text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Clock Cycle Time}$) reflects direct tradeoffs between ISA density, dynamic instruction count, and hardware cycle constraints.
+- The CPU performance equation ($\text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Clock Cycle Time\}$) reflects direct tradeoffs between ISA density, dynamic instruction count, and hardware cycle constraints.
 :::
 
 :::caution Who this is not for
@@ -126,7 +126,7 @@ When an ISA lacks orthogonality:
 To handle non-orthogonal targets, compiler backends (such as LLVM's SelectionDAG or GlobalISel) must maintain extensive pattern-matching tables. Non-orthogonal constraints often create phase-ordering problems: the instruction selector must decide which instruction sequence to emit before register allocation is complete, yet the optimal instruction choice depends on which registers are free.
 
 <Tabs>
-  <TabItem value="orthogonal" label="Orthogonal RISC" default>
+<TabItem value="orthogonal" label="Orthogonal RISC" default>
 
   ```
   ; Operands can be any general-purpose register
@@ -138,8 +138,8 @@ To handle non-orthogonal targets, compiler backends (such as LLVM's SelectionDAG
 
   *Characteristics:* Clean separation of memory access from computation. Instruction selection is local and context-free. Register allocation operates uniformly across all general-purpose registers (`r0`–`r15`).
 
-  </TabItem>
-  <TabItem value="non-orthogonal" label="Non-Orthogonal / Complex">
+</TabItem>
+<TabItem value="non-orthogonal" label="Non-Orthogonal / Complex">
 
   ```
   ; Operands tied to implicit registers or specific memory forms
@@ -150,7 +150,7 @@ To handle non-orthogonal targets, compiler backends (such as LLVM's SelectionDAG
 
   *Characteristics:* Tight coupling between operations and target registers. Register allocator must insert copy operations (`MOV`) or introduce register spills if `EAX` or `EDX` are live across the multiply instruction.
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 :::caution
@@ -190,7 +190,7 @@ Using compressed 16-bit instruction encodings reduces register choice from 32 ge
 
 Consider calculating an array element address and performing an addition with memory:
 
-$$ \text{array}[i] = \text{array}[i] + x $$
+$$ \text\{array\}[i] = \text\{array\}[i] + x $$
 
 Below is a comparison of how this logical operation maps across an orthogonal RISC target versus a complex non-orthogonal target.
 
@@ -238,7 +238,7 @@ ADD   [rbx + rcx * 4], eax ; Memory operand destination directly specified
 
 The fundamental baseline for execution time is defined by the classical CPU performance equation:
 
-$$ \text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Clock Cycle Time} $$
+$$ \text\{CPU Time\} = \text\{Instruction Count\} \times \text\{CPI\} \times \text\{Clock Cycle Time\} $$
 
 Compiler writers operate within rigid boundaries defined by this equation and the target ISA:
 

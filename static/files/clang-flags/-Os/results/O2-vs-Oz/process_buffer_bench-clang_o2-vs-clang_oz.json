@@ -1,0 +1,296 @@
+{
+  "compiler1": {
+    "name": "clang++-O2",
+    "input_file": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp",
+    "input_type": "cpp",
+    "backend": "cpu",
+    "status": "executed"
+  },
+  "compiler2": {
+    "name": "clang++-Oz",
+    "input_file": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp",
+    "input_type": "cpp",
+    "backend": "cpu",
+    "status": "executed"
+  },
+  "metrics": {
+    "amd_l2_ic_dc_miss_in_l2": {
+      "compiler1": 389037.0,
+      "compiler2": 323433.0,
+      "diff": -65604.0,
+      "diff_percent": -16.863178,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "branch_instructions": {
+      "compiler1": 16569397.0,
+      "compiler2": 224053057.0,
+      "diff": 207483660.0,
+      "diff_percent": 1252.210083,
+      "unit": "branches",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "branch_mispredictions": {
+      "compiler1": 14988.0,
+      "compiler2": 12563.0,
+      "diff": -2425.0,
+      "diff_percent": -16.17961,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "branch_miss_rate_pct": {
+      "compiler1": 0.0905,
+      "compiler2": 0.0056,
+      "diff": -0.0849,
+      "diff_percent": -93.812155,
+      "unit": "%",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "cache_miss_rate_pct": {
+      "compiler1": 2.6973,
+      "compiler2": 2.4281,
+      "diff": -0.2692,
+      "diff_percent": -9.980351,
+      "unit": "%",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "cache_misses": {
+      "compiler1": 398088.0,
+      "compiler2": 355266.0,
+      "diff": -42822.0,
+      "diff_percent": -10.756918,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "cache_references": {
+      "compiler1": 14758821.0,
+      "compiler2": 14631415.0,
+      "diff": -127406.0,
+      "diff_percent": -0.863253,
+      "unit": "references",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "cpu_cycles": {
+      "compiler1": 45233863.0,
+      "compiler2": 231983015.0,
+      "diff": 186749152.0,
+      "diff_percent": 412.852539,
+      "unit": "cycles",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "dtlb_load_misses": {
+      "compiler1": 90280.0,
+      "compiler2": 63836.0,
+      "diff": -26444.0,
+      "diff_percent": -29.291094,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "execution_time_ms": {
+      "compiler1": 10.2097,
+      "compiler2": 45.612,
+      "diff": 35.4023,
+      "diff_percent": 346.751619,
+      "unit": "ms",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": true,
+      "verdict": "significant",
+      "noise_percent": 0.5779,
+      "which_is_better": "clang++-O2"
+    },
+    "frontend_stall_cycles": {
+      "compiler1": 4672936.0,
+      "compiler2": 5320630.0,
+      "diff": 647694.0,
+      "diff_percent": 13.860537,
+      "unit": "cycles",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "frontend_stall_ratio_pct": {
+      "compiler1": 10.3306,
+      "compiler2": 2.2935,
+      "diff": -8.0371,
+      "diff_percent": -77.798966,
+      "unit": "%",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "instruction_count": {
+      "compiler1": 161238446.0,
+      "compiler2": 867862282.0,
+      "diff": 706623836.0,
+      "diff_percent": 438.247734,
+      "unit": "instructions",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "ipc": {
+      "compiler1": 3.5646,
+      "compiler2": 3.7411,
+      "diff": 0.1765,
+      "diff_percent": 4.951467,
+      "unit": "insn/cycle",
+      "direction": "higher_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "itlb_load_misses": {
+      "compiler1": 299.0,
+      "compiler2": 309.0,
+      "diff": 10.0,
+      "diff_percent": 3.344482,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "l1_cache_misses": {
+      "compiler1": 7186069.0,
+      "compiler2": 7195676.0,
+      "diff": 9607.0,
+      "diff_percent": 0.133689,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "l1_icache_misses": {
+      "compiler1": 58334.0,
+      "compiler2": 76005.0,
+      "diff": 17671.0,
+      "diff_percent": 30.292797,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "l2_cache_misses": {
+      "compiler1": 389037.0,
+      "compiler2": 323433.0,
+      "diff": -65604.0,
+      "diff_percent": -16.863178,
+      "unit": "misses",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "l2_per_l1_miss_pct": {
+      "compiler1": 5.4138,
+      "compiler2": 4.4948,
+      "diff": -0.919,
+      "diff_percent": -16.975138,
+      "unit": "%",
+      "direction": "lower_is_better",
+      "change_label": "improvement",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    },
+    "ref_cycles": {
+      "compiler1": 31944057.0,
+      "compiler2": 160095426.0,
+      "diff": 128151369.0,
+      "diff_percent": 401.174369,
+      "unit": "cycles",
+      "direction": "lower_is_better",
+      "change_label": "regression",
+      "significant": false,
+      "verdict": "unverified",
+      "noise_percent": null,
+      "which_is_better": "unverified"
+    }
+  },
+  "derived_metrics": {},
+  "bottlenecks": {
+    "compiler1": {
+      "matched": [],
+      "evaluations": []
+    },
+    "compiler2": {
+      "matched": [],
+      "evaluations": []
+    }
+  },
+  "skipped_metrics": [
+    {
+      "metric": "execution_time_summary_ms",
+      "reason": "non-numeric or unavailable on one side"
+    }
+  ],
+  "warnings": []
+}
