@@ -37,6 +37,7 @@ const parallel = {
             'parallel-computing/decomposition-tasks-and-mapping',
             'parallel-computing/cache-coherence-and-false-sharing',
             'parallel-computing/communication-cost-and-granularity',
+            'parallel-computing/pthreads-mutex-and-barrier',
           ],
         },
         {
