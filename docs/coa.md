@@ -78,6 +78,8 @@ These pages are not written yet. Each one is linked here when it lands.
 
 ### Pipeline
 
+- Pipeline Hazards (Data, Control, Structural)
+- [Pipeline Stalls and Bubbles](/docs/coa/pipeline-stalls-and-bubbles)
 - [Pipeline Hazards (Data, Control, Structural)](/docs/coa/pipeline-hazards)
 - Pipeline Stalls and Bubbles
 - Instruction-Level Parallelism (ILP)

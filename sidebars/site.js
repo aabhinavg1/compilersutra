@@ -299,6 +299,7 @@ const site = {
         'coa/isa-and-the-compiler-backend',
         'coa/integer-and-floating-point',
         'coa/isa-design-tradeoffs',
+        'coa/pipeline-stalls-and-bubbles',
         'coa/pipeline-hazards',
       ],
     },
