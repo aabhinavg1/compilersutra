@@ -1,0 +1,20 @@
+---
+title: "Communication cost and granularity quiz"
+description: "Five questions for Communication cost and granularity. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Communication cost and granularity quiz
+
+Lesson: [Communication cost and granularity](/docs/parallel-computing/communication-cost-and-granularity/)
+
+<Question question="1. In the linear equation for communication time, what does t_s represent?" options={["The fixed startup time required to prepare, route, and acknowledge a message", "The total time spent executing arithmetic instructions", "The number of bytes or words transmitted in the message", "The inverse of transmission bandwidth"]} answer="The fixed startup time required to prepare, route, and acknowledge a message" />
+
+<Question question="2. How is task granularity defined in the provided text?" options={["The ratio of computation time to communication time", "The total number of floating-point operations divided by thread count", "The ratio of startup latency to message size", "The speedup achieved by adding parallel workers"]} answer="The ratio of computation time to communication time" />
+
+<Question question="3. Which term in the communication cost formula represents the per-byte or per-word transfer time?" options={["t_w", "t_s", "m", "N"]} answer="t_w" />
+
+<Question question="4. What technique does the coarse-grained C example use to amortize fixed startup latency?" options={["Grouping elements into aggregated chunks before sending", "Sending each double floating-point value in a separate message", "Increasing the total number of network calls", "Removing memory allocation from the runtime"]} answer="Grouping elements into aggregated chunks before sending" />
+
+<Question question="5. According to the text, what can a compiler do to help manage task granularity?" options={["Combine loop iterations through techniques like unrolling and tiling", "Eliminate startup latency entirely for linked list traversals", "Automatically increase the total problem size N", "Remove L1/L2 cache miss overheads"]} answer="Combine loop iterations through techniques like unrolling and tiling" />
