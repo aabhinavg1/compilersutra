@@ -1,0 +1,20 @@
+---
+title: "OpenMP regions, reductions, and loop-carried dependence quiz"
+description: "Five questions for OpenMP regions, reductions, and loop-carried dependence. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# OpenMP regions, reductions, and loop-carried dependence quiz
+
+Lesson: [OpenMP regions, reductions, and loop-carried dependence](/docs/parallel-computing/openmp-reduction-and-dependence/)
+
+<Question question="1. What execution model does OpenMP use to manage worker threads?" options={["Fork-join model", "Actor model", "Master-slave queue model", "Pipeline model"]} answer="Fork-join model" />
+
+<Question question="2. What is inserted at the end of an OpenMP loop construct created by `#pragma omp for`?" options={["An implicit barrier", "A critical section", "An explicit lock", "A thread cancellation point"]} answer="An implicit barrier" />
+
+<Question question="3. To what value is a thread's local copy initialized when using `reduction(+:var)`?" options={["0", "1", "The global variable's initial value", "-1"]} answer="0" />
+
+<Question question="4. What happens if a programmer places `#pragma omp parallel for` on a loop with a loop-carried dependency?" options={["The runtime executes the code and may silently yield incorrect results", "The compiler throws a fatal error and stops building", "The runtime automatically detects the dependency and cancels execution", "The compiler fixes the loop order automatically"]} answer="The runtime executes the code and may silently yield incorrect results" />
+
+<Question question="5. How are thread-private scalar variables handled during loop execution when using an OpenMP reduction?" options={["Threads update private local copies without locks and combine them at the loop barrier", "Threads lock a shared mutex on every iteration", "Threads perform atomic memory writes to shared memory on every iteration", "Threads send message-passing updates to the master thread after each iteration"]} answer="Threads update private local copies without locks and combine them at the loop barrier" />

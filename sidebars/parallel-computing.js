@@ -38,6 +38,7 @@ const parallel = {
             'parallel-computing/cache-coherence-and-false-sharing',
             'parallel-computing/communication-cost-and-granularity',
             'parallel-computing/pthreads-mutex-and-barrier',
+            'parallel-computing/openmp-reduction-and-dependence',
           ],
         },
         {
