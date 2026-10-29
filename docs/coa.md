@@ -83,8 +83,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - [Pipeline Hazards (Data, Control, Structural)](/docs/coa/pipeline-hazards)
 - Pipeline Stalls and Bubbles
 - Instruction-Level Parallelism (ILP)
-- Compiler Scheduling vs Pipeline
-
+- [Compiler Scheduling vs Pipeline](/docs/coa/compiler-scheduling-vs-pipeline)
 ### Cache, branches, SIMD
 
 - Cache Mapping (Direct, Set-Associative, Fully Associative)
