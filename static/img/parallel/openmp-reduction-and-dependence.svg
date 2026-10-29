@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 220" width="100%" height="100%">
+  <style>
+    .bg { fill: #0f172a; }
+    .box { fill: #1e293b; stroke: #38bdf8; stroke-width: 2; rx: 6px; }
+    .box-dep { fill: #1e293b; stroke: #f43f5e; stroke-width: 2; rx: 6px; }
+    .text { fill: #f8fafc; font-family: monospace; font-size: 13px; text-anchor: middle; }
+    .label { fill: #94a3b8; font-family: sans-serif; font-size: 12px; font-weight: bold; }
+    .arrow { stroke: #38bdf8; stroke-width: 2; fill: none; marker-end: url(#blue-arrow); }
+    .arrow-dep { stroke: #f43f5e; stroke-width: 2; fill: none; marker-end: url(#red-arrow); }
+  </style>
+  
+  <defs>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8" />
+    </marker>
+    <marker id="red-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" class="bg" />
+
+  <!-- Independent Iterations -->
+  <text x="180" y="30" class="label">Independent Iterations (Parallelizable)</text>
+  
+  <rect x="40" y="55" width="80" height="40" class="box" />
+  <text x="80" y="80" class="text">i = 0</text>
+
+  <rect x="140" y="55" width="80" height="40" class="box" />
+  <text x="180" y="80" class="text">i = 1</text>
+
+  <rect x="240" y="55" width="80" height="40" class="box" />
+  <text x="280" y="80" class="text">i = 2</text>
+
+  <path d="M 80,105 L 80,140" class="arrow" />
+  <path d="M 180,105 L 180,140" class="arrow" />
+  <path d="M 280,105 L 280,140" class="arrow" />
+
+  <rect x="30" y="145" width="100" height="35" fill="#0284c7" rx="4" />
+  <text x="80" y="167" class="text">Thread 0</text>
+
+  <rect x="130" y="145" width="100" height="35" fill="#0284c7" rx="4" />
+  <text x="180" y="167" class="text">Thread 1</text>
+
+  <rect x="230" y="145" width="100" height="35" fill="#0284c7" rx="4" />
+  <text x="280" y="167" class="text">Thread 2</text>
+
+  <!-- Loop-Carried Dependence -->
+  <text x="510" y="30" class="label">Loop-Carried Dependence (Data Race)</text>
+
+  <rect x="380" y="55" width="80" height="40" class="box-dep" />
+  <text x="420" y="80" class="text">i = 0</text>
+
+  <rect x="480" y="55" width="80" height="40" class="box-dep" />
+  <text x="520" y="80" class="text">i = 1</text>
+
+  <rect x="580" y="55" width="80" height="40" class="box-dep" />
+  <text x="620" y="80" class="text">i = 2</text>
+
+  <!-- Dependence arrows -->
+  <path d="M 460,75 L 474,75" class="arrow-dep" />
+  <path d="M 560,75 L 574,75" class="arrow-dep" />
+
+  <text x="520" y="130" fill="#f43f5e" font-family="sans-serif" font-size="11" text-anchor="middle">
+    Iteration i reads A[i-1] written by iteration i-1
+  </text>
+  <text x="520" y="150" fill="#f43f5e" font-family="sans-serif" font-size="11" text-anchor="middle">
+    Cannot split across threads safely
+  </text>
+</svg>

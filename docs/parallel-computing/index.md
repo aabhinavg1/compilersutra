@@ -73,7 +73,7 @@ A line here turns into a link when that lesson is published.
 OpenMP in this section is the CPU version. Offload to a device is listed with the GPU lessons.
 
 - [Pthreads: create, join, mutex, and barrier](pthreads-mutex-and-barrier.md)
-- OpenMP regions, reductions, and loop-carried dependence
+- [OpenMP regions, reductions, and loop-carried dependence](openmp-reduction-and-dependence.md)
 - OpenMP schedules
 - OpenMP tasks and sections
 - C++ atomics and memory order
