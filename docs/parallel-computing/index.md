@@ -76,7 +76,7 @@ OpenMP in this section is the CPU version. Offload to a device is listed with th
 
 - [Pthreads: create, join, mutex, and barrier](pthreads-mutex-and-barrier.md)
 - OpenMP regions, reductions, and loop-carried dependence
-- OpenMP schedules
+- [OpenMP schedules](openmp-schedules.md)
 - OpenMP tasks and sections
 - C++ atomics and memory order
 - C++ parallel algorithms
