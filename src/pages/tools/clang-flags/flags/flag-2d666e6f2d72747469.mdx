@@ -1,45 +1,212 @@
 ---
 title: "-fno-rtti"
 slug: "/tools/clang-flags/-fno-rtti/"
-description: "Disable generation of rtti information"
+description: "Disables C++ Run-Time Type Information (RTTI), omitting type_info structures, vtable type descriptors, and dynamic_cast support for smaller binaries."
+keywords: ["-fno-rtti", "rtti", "clang", "c++", "vtable", "dynamic_cast", "typeid", "binary size", "type_info"]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fno-rtti">
+<Head>
+  <title>-fno-rtti — Clang Flags Explorer</title>
+  <meta name="description" content="Disables C++ Run-Time Type Information (RTTI), omitting type_info structures, vtable type descriptors, and dynamic_cast support for smaller binaries." />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-fno-rtti" summary="Disables standard C++ Run-Time Type Information (RTTI). Omits type_info structures and vtable RTTI pointers, while causing dynamic_cast and typeid on polymorphic types to produce compilation errors.">
+
+<div style={{ padding: '0.75rem 1.25rem', marginBottom: '1.25rem', borderRadius: '8px', border: '1px solid var(--ifm-color-primary-light)', backgroundColor: 'var(--ifm-hover-overlay)' }}>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 'bold', textDecoration: 'none' }}>
+    ✉ Subscribe to Weekly Compiler Notes
+  </a> — Deep dives on LLVM backend optimizations, ABI subtleties, and Clang internals.
+</div>
+
+## At a glance
+
+| Attribute | Details |
+| :--- | :--- |
+| **Category** | Frontend / Language Semantics / Binary Size |
+| **Default** | `-frtti` (RTTI enabled for C++) |
+| **Architectures** | Target-independent (x86_64, AArch64, RISC-V, ARM, WebAssembly, etc.) |
+| **Optimization impact** | Shrinks binary size, eliminates static type metadata, reduces link-time string duplication |
+| **Safety / Risk** | Breaks code relying on standard C++ `dynamic_cast` or `typeid` |
+
+---
 
 ## What this flag actually does
 
-Disable generation of rtti information
+The `-fno-rtti` flag instructs the Clang frontend to disable language support for C++ Run-Time Type Information (RTTI). When set, Clang sets the internal option `LangOpts.RTTI = 0` and `LangOpts.RTTIData = 0`.
 
+This alters frontend analysis and LLVM IR code generation in three distinct ways:
 
+1. **Language Construct Enforcement**: Usage of `dynamic_cast` (when downcasting or cross-casting polymorphic types) or `typeid` on expressions with dynamic type causes the frontend to emit a hard diagnostic error (`error: 'dynamic_cast' not allowed with -fno-rtti`).
+2. **Vtable RTTI Pointer Nullification**: Under the Itanium C++ ABI, virtual function tables contain an RTTI pointer slot positioned immediately before the virtual function pointers (offset `-8` on 64-bit architectures). With `-fno-rtti`, Clang sets this vtable slot to `0` (`i8* null`) instead of pointing to a `type_info` structure global.
+3. **Type Info Symbol Omission**: Clang entirely suppresses emission of `typeid` metadata objects (`_ZTIN...` typeinfo symbols and `_TSN...` typeinfo name strings in Itanium ABI).
 
-It can be negated with -frtti.
+:::note Exception Handling Interaction
+Disabling RTTI (`-fno-rtti`) does **not** automatically disable C++ exceptions (`-fexceptions`). However, exception matching in thrown objects (`catch (const MyException& e)`) relies on exception type descriptors emitted by the personality function. Under `-fno-rtti`, Clang still generates minimal C++ exception type descriptors required for exception unwinding unless `-fno-exceptions` is also specified.
+:::
 
-## When to use it
+---
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+## Minimal realistic example
 
-## When not to use it
+Consider a polymorphic base class `Base` and derived class `Derived`:
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+<SourceCode language="cpp" code={`// example.cpp
+class Base {
+public:
+    virtual ~Base() = default;
+};
+
+class Derived : public Base {
+public:
+    void work() {}
+};
+
+const void* get_rtti_ptr(Base* b) {
+    // Under -fno-rtti, using dynamic_cast or typeid triggers compile error:
+    // dynamic_cast<Derived*>(b); // Error if uncommented
+    return nullptr;
+}
+`} />
+
+Compiling with `-frtti` vs `-fno-rtti` changes the vtable declaration emitted in LLVM IR:
+
+```llvm
+; Default (-frtti):
+; Offset -8 points to the global _ZTI4Base (type_info for Base)
+@_ZTV4Base = unnamed_addr constant { [3 x i8*] } { [3 x i8*] [
+    i8* null,
+    i8* bitcast ({ i8*, i8* }* @_ZTI4Base to i8*),
+    i8* bitcast (void (%class.Base*)* @_ZN4BaseD2Ev to i8*)
+] }, align 8
+
+; With -fno-rtti:
+; Offset -8 is set to null pointer (0)
+@_ZTV4Base = unnamed_addr constant { [3 x i8*] } { [3 x i8*] [
+    i8* null,
+    i8* null,
+    i8* bitcast (void (%class.Base*)* @_ZN4BaseD2Ev to i8*)
+] }, align 8
+```
+
+---
+
+## Before vs. after assembly
+
+Below is the generated assembly difference for the vtable and associated metadata symbols under x86-64 System V ABI:
+
+<AsmDiff
+  beforeCode={`# Default (-frtti)
+.section .rodata,"a",@progbits
+_ZTV4Base:
+    .quad 0
+    .quad _ZTI4Base        # Pointer to type_info descriptor
+    .quad _ZN4BaseD2Ev
+
+.section .rodata._ZTI4Base,"aG",@progbits,_ZTI4Base,comdat
+_ZTI4Base:
+    .quad _ZTVN10__cxxabiv117__class_type_infoE+16
+    .quad _ZTS4Base        # Pointer to type name string "_ZTS4Base"
+
+.section .rodata._ZTS4Base,"aG",@progbits,_ZTS4Base,comdat
+_ZTS4Base:
+    .asciz "4Base"         # Type name string in memory`}
+  afterCode={`# With -fno-rtti
+.section .rodata,"a",@progbits
+_ZTV4Base:
+    .quad 0
+    .quad 0                # RTTI slot zeroed out
+    .quad _ZN4BaseD2Ev
+
+# _ZTI4Base and _ZTS4Base metadata completely omitted`}
+/>
+
+---
+
+## Why use it / when not to use it
+
+### Why use `-fno-rtti`
+* **Binary Size Reduction**: Large C++ codebases with thousands of polymorphic classes incur non-trivial `.rodata` overhead from type names (`_ZTS...`) and `type_info` structures (`_ZTI...`). Disabling RTTI strips this static overhead.
+* **Embedded & Bare-Metal Targets**: Embedded systems or microcontrollers with constrained flash memory frequently strip RTTI to save space.
+* **Custom Type Systems**: High-performance C++ engines (such as LLVM itself, Game Engines, or Chromium) implement custom, low-overhead RTTI mechanisms (e.g., `isa<>`, `cast<>`, `dyn_cast<>` via enum class discriminators) that do not require runtime dynamic dispatch or string tables.
+
+### When NOT to use it
+* **Dependency on Standard RTTI**: Libraries that rely on `std::any`, `std::bad_cast`, `dynamic_cast`, or `typeid` will fail to compile.
+* **Interoperability with RTTI-enabled Shared Libraries**: Mixing C++ objects compiled with `-fno-rtti` and `-frtti` across boundary interfaces can lead to ODR violation warnings or runtime dynamic casting failures when crossing library boundaries.
+
+---
+
+## Performance impact
+
+Qualitatively, `-fno-rtti` yields:
+1. **Binary Size**: Reduction in `.rodata` footprint. In LLVM-scale projects, disabling standard RTTI eliminates megabytes of mangled type name string tables and COMDAT relocations.
+2. **Instruction Cache (i-cache) & Memory**: Omitting type metadata improves cache locality for vtable accesses since vtables no longer reference scattered `type_info` metadata symbols.
+3. **Execution Time**: Modern C++ Virtual function call overhead is unchanged; however, avoiding dynamic type check operations replacing `dynamic_cast` with custom enum class discriminators avoids indirect calls and library helper invocations (`__dynamic_cast`).
+
+---
+
+## Compatibility table
+
+| Environment / Standard | Compatibility | Notes |
+| :--- | :--- | :--- |
+| **Itanium C++ ABI** | Fully Supported | Nullifies offset `-8` slot in vtable; omits `_ZTI` / `_ZTS` symbols. |
+| **MSVC / Windows ABI** | Fully Supported | Disables `Complete Object Locator` metadata and `??_R...` type descriptors. |
+| **C++11 / 14 / 17 / 20 / 23** | Fully Supported | Dialect independent. |
+| **Clang / GCC / MSVC** | Compatible Flag | Supported across Clang (`-fno-rtti`), GCC (`-fno-rtti`), and MSVC (`/GR-`). |
+
+---
 
 ## Usage example
 
+Pass `-fno-rtti` directly to `clang++` during compilation:
+
 ```bash
-clang++ -fno-rtti -c main.cpp
+# Compile single translation unit without RTTI
+clang++ -O2 -fno-rtti -c module.cpp -o module.o
+
+# Inspect vtable symbol references with llvm-readelf
+llvm-readelf -s module.o | grep _ZTI
+
+# Disable both RTTI and C++ exceptions for embedded targets
+clang++ -O3 -fno-rtti -fno-exceptions -target armv7m-none-eabi -c embedded.cpp
 ```
 
-## Key facts
+---
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option
-- **Stage**: cc1 (frontend), category `Code Generation`
-- **Negated by**: `-frtti`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+## Adjacent options
+
+* `-frtti`: Re-enables RTTI generation (default behavior).
+* `-fno-rtti-data`: Advanced option that generates type_info structures for `typeid` expressions but omits vtable RTTI pointers.
+* `-fno-exceptions`: Disables C++ exception handling (`try`/`catch`/`throw`), commonly paired with `-fno-rtti` in embedded builds.
+* `-fvisibility-inlines-hidden`: Frequently used alongside `-fno-rtti` to reduce binary symbol footprint.
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Module / File | Mechanism |
+| :--- | :--- | :--- |
+| **Driver Options** | `clang/include/clang/Driver/Options.td` | Option `-fno-rtti` maps to `LangOpts.RTTI = 0` and `LangOpts.RTTIData = 0`. |
+| **Frontend Sema** | `clang/lib/Sema/SemaExprCXX.cpp` | `BuildCXXDynamicCast` and `BuildCXXTypeId` check `getLangOpts().RTTI`; raise diagnostic error if false. |
+| **AST / Type Info** | `clang/lib/AST/ASTContext.cpp` | Suppresses `getTypeInfo` layout metadata for dynamic type lookup tables. |
+| **CodeGen / VTable** | `clang/lib/CodeGen/CGVTables.cpp` | Inspects `LangOpts.RTTI`. Emits null pointers for vtable RTTI slots in `ItaniumCXXABI.cpp` and `MicrosoftCXXABI.cpp`. |
+
+---
+
+<KeyFacts
+  args={[]}
+  form="Flag (no argument)"
+  driverOption={true}
+  cc1Option={true}
+  negatedBy="-frtti"
+  stage="Frontend (Sema) & CodeGen"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>
