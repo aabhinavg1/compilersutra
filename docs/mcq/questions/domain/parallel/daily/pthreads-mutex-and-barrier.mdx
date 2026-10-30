@@ -1,0 +1,20 @@
+---
+title: "Pthreads: create, join, mutex, and barrier quiz"
+description: "Five questions for Pthreads: create, join, mutex, and barrier. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Pthreads: create, join, mutex, and barrier quiz
+
+Lesson: [Pthreads: create, join, mutex, and barrier](/docs/parallel-computing/pthreads-mutex-and-barrier/)
+
+<Question question="1. What is the primary function of pthread_join in POSIX threads?" options={["It initializes a new thread execution stack.", "It blocks the calling thread until the target thread finishes execution and reclaims stack resources.", "It forces all threads to halt indefinitely until a signal is received.", "It guarantees that threads execute in strict FIFO order."]} answer="It blocks the calling thread until the target thread finishes execution and reclaims stack resources." />
+
+<Question question="2. Which POSIX primitive ensures that at most one thread executes inside a critical section at a given time?" options={["pthread_barrier_t", "pthread_create", "pthread_mutex_t", "pthread_join"]} answer="pthread_mutex_t" />
+
+<Question question="3. What special return value does exactly one thread receive from pthread_barrier_wait?" options={["PTHREAD_BARRIER_SERIAL_THREAD", "PTHREAD_MUTEX_DEFAULT", "PTHREAD_LEADER_SUCCESS", "PTHREAD_BARRIER_PRIMARY"]} answer="PTHREAD_BARRIER_SERIAL_THREAD" />
+
+<Question question="4. What happens if a program repeatedly fails to call pthread_join or pthread_detach on terminated threads?" options={["The operating system automatically breaks potential deadlocks.", "It leads to memory leaks of kernel thread descriptors and stack memory.", "The compiler automatically converts fine-grained locks into local buffers.", "The program executes sequentially on a single CPU core."]} answer="It leads to memory leaks of kernel thread descriptors and stack memory." />
+
+<Question question="5. According to the article, do standard POSIX mutexes guarantee strict FIFO ordering for waiting threads?" options={["Yes, threads are always unlocked in the exact order they called pthread_mutex_lock.", "Yes, but only if pthread_barrier_wait is used concurrently.", "No, a thread on a warm core may re-acquire the lock before a sleeping thread wakes up.", "No, because the compiler reorders lock and unlock function calls freely."]} answer="No, a thread on a warm core may re-acquire the lock before a sleeping thread wakes up." />

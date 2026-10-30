@@ -67,11 +67,14 @@ A line here turns into a link when that lesson is published.
 - Decomposition, tasks, and mapping
 - Communication cost and granularity
 - [Speedup, efficiency, and scalability](speedup-efficiency-scalability.md)
+- [Communication cost and granularity](communication-cost-and-granularity.md)
+- Speedup, efficiency, and scalability
+
 ### OpenMP and threads
 
 OpenMP in this section is the CPU version. Offload to a device is listed with the GPU lessons.
 
-- Pthreads: create, join, mutex, and barrier
+- [Pthreads: create, join, mutex, and barrier](pthreads-mutex-and-barrier.md)
 - OpenMP regions, reductions, and loop-carried dependence
 - OpenMP schedules
 - OpenMP tasks and sections
