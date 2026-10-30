@@ -65,6 +65,8 @@ A line here turns into a link when that lesson is published.
 - [Decomposition, tasks, and mapping](decomposition-tasks-and-mapping.md)
 - [Cache coherence and false sharing](cache-coherence-and-false-sharing.md)
 - Decomposition, tasks, and mapping
+- Communication cost and granularity
+- [Speedup, efficiency, and scalability](speedup-efficiency-scalability.md)
 - [Communication cost and granularity](communication-cost-and-granularity.md)
 - Speedup, efficiency, and scalability
 
