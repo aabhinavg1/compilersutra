@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" height="100%">
+  <style>
+    .bg { fill: #0f172a; }
+    .title { fill: #f8fafc; font-family: monospace; font-size: 14px; font-weight: bold; }
+    .label { fill: #94a3b8; font-family: sans-serif; font-size: 12px; }
+    .box-static { fill: #1e3a8a; stroke: #3b82f6; stroke-width: 1.5; }
+    .box-dynamic { fill: #065f46; stroke: #10b981; stroke-width: 1.5; }
+    .box-idle { fill: #334155; stroke: #64748b; stroke-width: 1; stroke-dasharray: 3 3; }
+    .text-box { fill: #f8fafc; font-family: monospace; font-size: 11px; text-anchor: middle; }
+    .line { stroke: #475569; stroke-width: 1; }
+  </style>
+  <rect width="720" height="280" class="bg" rx="6"/>
+
+  <!-- Static Section -->
+  <text x="20" y="30" class="title">schedule(static): Fixed chunk distribution upfront</text>
+  <text x="20" y="60" class="label">Thread 0</text>
+  <rect x="90" y="45" width="260" height="22" class="box-static"/>
+  <text x="220" y="60" class="text-box">Chunk 0 (Iterations 0..3999)</text>
+
+  <text x="20" y="95" class="label">Thread 1</text>
+  <rect x="90" y="80" width="560" height="22" class="box-static"/>
+  <text x="370" y="95" class="text-box">Chunk 1 (Iterations 4000..7999)</text>
+  <rect x="90" y="60" width="260" height="0" class="box-idle"/>
+  <rect x="350" y="45" width="300" height="22" class="box-idle"/>
+  <text x="500" y="60" class="text-box" fill="#94a3b8">Idle at barrier</text>
+
+  <line x1="20" y1="125" x2="700" y2="125" class="line"/>
+
+  <!-- Dynamic Section -->
+  <text x="20" y="150" class="title">schedule(dynamic, 1000): On-demand queue dispatch</text>
+  <text x="20" y="180" class="label">Thread 0</text>
+  <rect x="90" y="165" width="60" height="22" class="box-dynamic"/>
+  <text x="120" y="180" class="text-box">C0</text>
+  <rect x="155" y="165" width="80" height="22" class="box-dynamic"/>
+  <text x="195" y="180" class="text-box">C2</text>
+  <rect x="240" y="165" width="110" height="22" class="box-dynamic"/>
+  <text x="295" y="180" class="text-box">C4</text>
+  <rect x="355" y="165" width="150" height="22" class="box-dynamic"/>
+  <text x="430" y="180" class="text-box">C6</text>
+
+  <text x="20" y="215" class="label">Thread 1</text>
+  <rect x="90" y="200" width="70" height="22" class="box-dynamic"/>
+  <text x="125" y="215" class="text-box">C1</text>
+  <rect x="165" y="200" width="95" height="22" class="box-dynamic"/>
+  <text x="212" y="215" class="text-box">C3</text>
+  <rect x="265" y="200" width="130" height="22" class="box-dynamic"/>
+  <text x="330" y="215" class="text-box">C5</text>
+  <rect x="400" y="200" width="180" height="22" class="box-dynamic"/>
+  <text x="490" y="215" class="text-box">C7</text>
+
+  <text x="90" y="255" class="label">Threads fetch small chunks dynamically, keeping work balanced across uneven loop iterations.</text>
+</svg>

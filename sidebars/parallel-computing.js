@@ -39,6 +39,7 @@ const parallel = {
             'parallel-computing/speedup-efficiency-scalability',
             'parallel-computing/communication-cost-and-granularity',
             'parallel-computing/pthreads-mutex-and-barrier',
+            'parallel-computing/openmp-schedules',
           ],
         },
         {
