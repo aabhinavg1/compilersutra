@@ -301,6 +301,7 @@ const site = {
         'coa/isa-design-tradeoffs',
         'coa/pipeline-stalls-and-bubbles',
         'coa/pipeline-hazards',
+        'coa/branch-prediction',
       ],
     },
   ],

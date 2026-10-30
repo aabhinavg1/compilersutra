@@ -88,7 +88,7 @@ These pages are not written yet. Each one is linked here when it lands.
 ### Cache, branches, SIMD
 
 - Cache Mapping (Direct, Set-Associative, Fully Associative)
-- Static vs Dynamic Branch Prediction
+- [Static vs Dynamic Branch Prediction](/docs/coa/branch-prediction)
 - Misprediction Penalty
 - SIMD Basics and Vector Registers
 
