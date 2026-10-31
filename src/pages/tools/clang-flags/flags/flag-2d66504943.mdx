@@ -1,45 +1,210 @@
 ---
 title: "-fPIC"
 slug: "/tools/clang-flags/-fPIC/"
-description: "Reference entry for a Clang compiler flag."
+description: "Deep dive into Clang's -fPIC flag: emitting Position-Independent Code for shared libraries, GOT/PLT indirection, relocation models, and performance implications."
+keywords: ["clang", "fPIC", "position-independent code", "compiler flags", "GOT", "PLT", "shared library"]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fPIC">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fPIC — Clang Flags Explorer</title>
+  <meta name="description" content="Deep dive into Clang's -fPIC flag: emitting Position-Independent Code for shared libraries, GOT/PLT indirection, relocation models, and performance implications." />
+</Head>
+
+<FlagArticleShell
+  flagPath="-fPIC"
+  summary="Emits Position-Independent Code (PIC) suitable for dynamic shared libraries by referencing global symbols via the Global Offset Table (GOT) and Procedure Linkage Table (PLT)."
+>
+
+<Callout type="tip" title="Stay Updated on Compiler Engineering">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer">
+    ✉ Subscribe to Weekly Compiler Notes
+  </a> — Architecture, codegen analysis, and LLVM internal deep-dives delivered to your inbox.
+</Callout>
+
+## At a glance
+
+| Attribute | Details |
+| :--- | :--- |
+| **Architectures** | Target-agnostic (x86_64, AArch64, RISC-V, ARM, PPC64, SystemZ) |
+| **Category** | Code Generation / Relocation Model |
+| **Compiler Support** | Clang, GCC, Flang |
+| **Optimization Level** | Active across `-O0` through `-O3`, `-Os`, `-Oz` |
+| **ABI / Memory Risk** | High — mismatched PIC/non-PIC code can lead to linker relocation errors (`R_X86_64_PC32` overflows) or unexpected text relocations (`DT_TEXTREL`). |
+| **Primary Effect** | Instructs the backend to avoid absolute symbol addresses, using PC-relative GOT offsets and PLT stubs instead. |
+
+---
 
 ## What this flag actually does
 
-No help text is available in the imported LLVM metadata.
+The `-fPIC` option instructs Clang to generate **Position-Independent Code**. Code compiled with `-fPIC` can be loaded at any arbitrary virtual memory address without requiring dynamic text relocations at load time. This is mandatory when building dynamic shared libraries (`.so` or `.dylib`) shared across multiple OS processes.
 
+### Key Mechanics
 
+1. **Global Offset Table (GOT) Indirection**: All references to global/static data variables are rewritten to read address pointers stored in a dedicated read-only memory region allocated by the dynamic linker (`.got`).
+2. **Procedure Linkage Table (PLT) Stubs**: Global function calls bypass absolute or relative static displacements, routing instead through PLT stubs (`func@plt`) for lazy dynamic binding.
+3. **Difference between `-fPIC` and `-fpic`**:
+   - On architectures with explicit displacement limits (such as SPARC or S/390), `-fpic` generates small GOT relocation instructions (limited GOT size), while `-fPIC` handles arbitrary or large GOT sizes.
+   - On modern 64-bit architectures (like x86_64 or AArch64), `-fpic` and `-fPIC` produce identical codegen in Clang.
 
-It can be negated with -fno-PIC.
+```
++-------------------------------------------------------------------+
+|                        Non-PIC Execution                          |
+|  [ mov rax, qword ptr [0x401050] ] --> Hardcoded Virtual Address  |
++-------------------------------------------------------------------+
 
-## When to use it
++-------------------------------------------------------------------+
+|                        Position-Independent                       |
+|  [ mov rax, qword ptr [rip + bar@GOTPCREL] ]                      |
+|                           |                                       |
+|                           v                                       |
+|         Reads runtime address pointer from .got                   |
++-------------------------------------------------------------------+
+```
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+---
 
-## When not to use it
+## Minimal realistic example
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+Consider a global counter incremented across multiple translation units:
+
+<SourceCode
+  language="cpp"
+  code={`extern int global_counter;
+
+void increment() {
+    global_counter++;
+}`}
+/>
+
+When targeting non-PIC execution, the compiler assumes `global_counter` resides at a fixed offset relative to the code section or symbol base. Under `-fPIC`, the compiler assumes `global_counter` may be interposable or located in a separate dynamic shared object, forcing an instruction sequence that fetches its runtime address from the GOT.
+
+---
+
+## Assembly difference
+
+Below is the x86_64 System V assembly generation for the `increment()` function, comparing non-PIC (`-fno-PIC`) against position-independent code (`-fPIC`).
+
+<AsmDiff
+  before={{
+    label: "-fno-PIC (Absolute / Position-Dependent)",
+    code: `increment:
+    mov     rax, qword ptr [rip + global_counter]
+    inc     eax
+    mov     qword ptr [rip + global_counter], rax
+    ret`
+  }}
+  after={{
+    label: "-fPIC (Position-Independent Code)",
+    code: `increment:
+    mov     rax, qword ptr [rip + global_counter@GOTPCREL]
+    mov     ecx, dword ptr [rax]
+    inc     ecx
+    mov     dword ptr [rax], ecx
+    ret`
+  }}
+/>
+
+### Key Takeaways from Assembly Diff
+
+- **Direct relative load vs double pointer lookup**: Without PIC, `global_counter` is resolved with PC-relative static linkage. With `-fPIC`, `rip + global_counter@GOTPCREL` loads the *pointer* to `global_counter` from the GOT, followed by a second memory read (`dword ptr [rax]`) to fetch the value.
+- **Symbol Interposition**: `-fPIC` assumes symbols can be overridden by preemptive definitions in higher-priority dynamic objects unless explicitly marked visibility hidden (`__attribute__((visibility("hidden")))`).
+
+---
+
+## Why use it / when not to use it
+
+### When to use it
+- **Building Shared Libraries (`.so` / `.dylib`)**: Essential for code mapped into shared memory pages across multiple processes.
+- **Plugins and Dynamically Loaded Modules**: Mandatory when compiling objects intended to be opened via `dlopen()`.
+
+### When not to use it
+- **Standalone Executables**: Use `-fPIE` (Position-Independent Executable) instead. `-fPIE` provides security benefits (ASLR) while allowing the compiler to emit non-preemptible local symbol references.
+- **Static Binaries & Embedded Systems**: Static executables avoid GOT/PLT indirections entirely. Avoid `-fPIC` in tight embedded loops where register pressure or pointer dereferences impact execution performance.
+
+:::caution Interposition Overhead
+By default, `-fPIC` marks all non-static symbols as *interposable*. To avoid GOT indirection overhead inside a shared library while keeping `-fPIC`, mark internal functions and variables with hidden visibility:
+```cpp
+__attribute__((visibility("hidden"))) void internal_helper();
+```
+:::
+
+---
+
+## Performance impact
+
+- **Register Pressure**: On 32-bit targets (x86), `-fPIC` reserves a general-purpose register (`EBX`) as the GOT base pointer, increasing spill/reload cycles in tight loops.
+- **Indirect Memory Access**: Reading global data requires an extra dereference step via the GOT.
+- **Branch Target Buffer (BTB) & Call Cost**: Calls through PLT stubs require indirect jumps (`jmp qword ptr [rip + func@GOTPCREL]`), which can cause minor BTB branch mispredictions compared to direct relative calls.
+
+---
+
+## Compatibility table
+
+| Driver / Tool | Support Status | Notes |
+| :--- | :--- | :--- |
+| **Clang (`clang` / `clang++`)** | Fully Supported | Driver translates `-fPIC` to `-mrelocation-model pic -pic-level 2` for `clang -cc1`. |
+| **GCC (`gcc` / `g++`)** | Fully Supported | Identical syntax and semantic behavior. |
+| **Flang (`flang`)** | Fully Supported | Maps to equivalent Fortran relocation semantics. |
+| **LLD (`lld`)** | Target Consumer | Enforces GOT/PLT relocation constraints emitted by objects built with `-fPIC`. |
+
+---
 
 ## Usage example
 
+### Compiling a dynamic shared library
+
 ```bash
-clang++ -fPIC -c main.cpp
+# 1. Compile source files to object files with -fPIC
+clang++ -O3 -fPIC -c engine.cpp -o engine.o
+clang++ -O3 -fPIC -c render.cpp -o render.o
+
+# 2. Link objects into dynamic shared object
+clang++ -shared engine.o render.o -o libengine.so
 ```
 
-## Key facts
+### Inspecting driver lowering to -cc1
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fno-PIC`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+```bash
+clang++ -fPIC -### -c main.cpp 2>&1 | grep pic
+```
+
+---
+
+## Adjacent options
+
+- **`-fpic`**: Emits small-model position-independent code (on targets with explicit small GOT size limits).
+- **`-fPIE` / `-fpie`**: Emits Position-Independent Code tailored for main executables (allows symbol non-preemption optimizations).
+- **`-fno-PIC`**: Forces absolute / position-dependent code generation.
+- **`-fvisibility=hidden`**: Complements `-fPIC` by removing symbol interposition overhead for internal dynamic library functions.
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Role |
+| :--- | :--- |
+| **Driver** | `clang/lib/Driver/ToolChains/Clang.cpp` parses `-fPIC`, `-fpic`, `-fPIE`, and `-fpie`. Determines target defaults and appends `-mrelocation-model pic -pic-level 2` to the `-cc1` invocation. |
+| **Frontend / CC1** | `clang/lib/Frontend/CompilerInvocation.cpp` sets `CodeGenOpts.RelocationModel = llvm::Reloc::PIC_` and `CodeGenOpts.PICLevel = 2`. |
+| **LLVM IR Generation** | `clang/lib/CodeGen/CodeGenModule.cpp` attaches the `PIC Level` module flag (`!{i32 1, !"PIC Level", i32 2}`) to the `llvm::Module`. |
+| **Backend & SelectionDAG** | Target lowering (e.g., `X86TargetLowering` or `AArch64TargetLowering`) checks `TargetMachine::getRelocationModel()` and emits target-specific `TargetGlobalAddress` nodes wrapping `GOT` / `GOTPCREL` flags. |
+
+---
+
+<KeyFacts
+  args="None"
+  acceptingCompilers="Clang, GCC, Flang"
+  stage="Driver / CodeGen Lowering"
+  negatedBy="-fno-PIC"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>
