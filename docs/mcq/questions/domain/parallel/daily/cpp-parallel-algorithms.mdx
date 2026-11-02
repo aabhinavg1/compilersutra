@@ -1,0 +1,20 @@
+---
+title: "C++ parallel algorithms quiz"
+description: "Five questions for C++ parallel algorithms. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# C++ parallel algorithms quiz
+
+Lesson: [C++ parallel algorithms](/docs/parallel-computing/cpp-parallel-algorithms/)
+
+<Question question="1. Which C++ execution policy permits both execution across multiple threads and SIMD vectorization within each thread?" options={["std::execution::seq", "std::execution::unseq", "std::execution::par", "std::execution::par_unseq"]} answer="std::execution::par_unseq" />
+
+<Question question="2. In which header are the standard C++ execution policies defined?" options={["<algorithm>", "<execution>", "<numeric>", "<vector>"]} answer="<execution>" />
+
+<Question question="3. How does std::reduce differ from std::accumulate regarding execution order?" options={["std::reduce guarantees strict left-to-right sequential evaluation.", "std::reduce permits out-of-order and grouped evaluation.", "std::accumulate executes in parallel by default.", "std::reduce requires all operations to be non-commutative."]} answer="std::reduce permits out-of-order and grouped evaluation." />
+
+<Question question="4. Is lock acquisition permitted in a callable passed to std::execution::par_unseq?" options={["Yes, locks are automatically managed by the runtime.", "Yes, but only if standard mutexes are used.", "No, because it carries a risk of deadlock if a vector lane is blocked.", "No, because SIMD instructions forbid memory access."]} answer="No, because it carries a risk of deadlock if a vector lane is blocked." />
+
+<Question question="5. What happens if a shared non-atomic state variable is mutated inside a std::for_each callable using std::execution::par without explicit synchronization?" options={["The compiler automatically generates a lock around the mutation.", "The runtime converts the policy to std::execution::seq.", "The program experiences a data race resulting in undefined behavior.", "The compiler throws a compile-time syntax error."]} answer="The program experiences a data race resulting in undefined behavior." />
