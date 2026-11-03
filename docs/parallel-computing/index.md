@@ -80,8 +80,7 @@ OpenMP in this section is the CPU version. Offload to a device is listed with th
 - OpenMP tasks and sections
 - C++ atomics and memory order
 - C++ parallel algorithms
-- Thread pools, work stealing, and oneTBB
-
+- [Thread pools, work stealing, and oneTBB](thread-pools-and-onetbb.md)
 ### A cluster
 
 OpenMP ends at the node. MPI is the library the nodes use to talk.

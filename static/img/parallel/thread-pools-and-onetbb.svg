@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#0f172a" rx="8"/>
+  
+  <!-- Worker 0 Container -->
+  <rect x="40" y="30" width="280" height="260" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6"/>
+  <text x="180" y="55" fill="#f8fafc" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Worker Thread 0 (Busy)</text>
+  
+  <!-- Worker 0 Deque -->
+  <rect x="80" y="80" width="200" height="150" fill="#0f172a" stroke="#475569" stroke-width="1.5" rx="4"/>
+  <rect x="90" y="90" width="180" height="30" fill="#2563eb" rx="3"/>
+  <text x="180" y="110" fill="#ffffff" font-family="monospace" font-size="12" text-anchor="middle">Task A (Oldest)</text>
+  <rect x="90" y="125" width="180" height="30" fill="#1d4ed8" rx="3"/>
+  <text x="180" y="145" fill="#ffffff" font-family="monospace" font-size="12" text-anchor="middle">Task B</text>
+  <rect x="90" y="160" width="180" height="30" fill="#1e40af" rx="3"/>
+  <text x="180" y="180" fill="#ffffff" font-family="monospace" font-size="12" text-anchor="middle">Task C (Newest)</text>
+  
+  <!-- Worker 0 operations -->
+  <path d="M 180 230 L 180 260" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="180" y="275" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">Push / Pop (LIFO - Bottom)</text>
+  <text x="180" y="72" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">TOP (Oldest)</text>
+
+  <!-- Worker 1 Container -->
+  <rect x="400" y="30" width="280" height="260" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6"/>
+  <text x="540" y="55" fill="#f8fafc" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Worker Thread 1 (Idle)</text>
+  
+  <!-- Worker 1 Deque (Empty) -->
+  <rect x="440" y="80" width="200" height="150" fill="#0f172a" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3" rx="4"/>
+  <text x="540" y="160" fill="#64748b" font-family="monospace" font-size="12" text-anchor="middle">[ Empty Deque ]</text>
+
+  <!-- Steal Arrow -->
+  <path d="M 440 105 L 290 105" stroke="#f59e0b" stroke-width="3" fill="none" marker-end="url(#steal-arrow)"/>
+  <text x="365" y="95" fill="#f59e0b" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">STEAL (FIFO - Top)</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="steal-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+</svg>

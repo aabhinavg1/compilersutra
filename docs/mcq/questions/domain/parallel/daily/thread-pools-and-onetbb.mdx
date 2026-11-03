@@ -1,0 +1,20 @@
+---
+title: "Thread pools, work stealing, and oneTBB quiz"
+description: "Five questions for Thread pools, work stealing, and oneTBB. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Thread pools, work stealing, and oneTBB quiz
+
+Lesson: [Thread pools, work stealing, and oneTBB](/docs/parallel-computing/thread-pools-and-onetbb/)
+
+<Question question="1. In the work-stealing algorithm, from where does a worker thread push and pop its own local tasks on its deque?" options={["The top", "The bottom", "The middle", "A random location"]} answer="The bottom" />
+
+<Question question="2. From where does a thief thread steal a task when targeting a victim thread's deque?" options={["The top", "The bottom", "The middle", "Both ends simultaneously"]} answer="The top" />
+
+<Question question="3. Why do worker threads locally process tasks in LIFO order from the bottom of their deque?" options={["It reduces the total number of worker threads needed", "It maintains high data locality and processes smaller, finer-grained tasks", "It guarantees strict FIFO fairness across all execution units", "It avoids allocating stack memory for worker threads"]} answer="It maintains high data locality and processes smaller, finer-grained tasks" />
+
+<Question question="4. What does calling `tbb::task_group::wait()` cause the active worker thread to do?" options={["Put the CPU core to sleep until signaled", "Terminate the underlying OS thread immediately", "Actively execute other pending local or stolen tasks", "Acquire a central queue lock"]} answer="Actively execute other pending local or stolen tasks" />
+
+<Question question="5. Which responsibility rests with the application developer when using task-based runtimes like oneTBB?" options={["Allocating individual OS threads for each task", "Managing dynamic work stealing across idle cores", "Setting a sequential fallback threshold to ensure reasonable task granularity", "Preventing compiler context switches"]} answer="Setting a sequential fallback threshold to ensure reasonable task granularity" />
