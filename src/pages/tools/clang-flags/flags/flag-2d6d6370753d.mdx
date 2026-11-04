@@ -1,41 +1,238 @@
 ---
 title: "-mcpu="
 slug: "/tools/clang-flags/-mcpu%3D/"
-description: "For a list of available CPUs for the target use '-mcpu=help'"
+description: "Selects a specific target CPU microarchitecture, controlling instruction set extensions and backend scheduling models in Clang."
+keywords: [-mcpu, clang, llvm, microarchitecture, target-cpu, march, mtune, codegen]
 ---
 
+import { Head } from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-mcpu%3D">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-mcpu= - Clang Flags Explorer | CompilerSutra</title>
+  <meta name="description" content="Selects a specific target CPU microarchitecture, controlling instruction set extensions and backend scheduling models in Clang." />
+</Head>
+
+<FlagArticleShell
+  flagPath="-mcpu%3D"
+  summary="Selects a target CPU microarchitecture, setting both instruction set features and backend pipeline tuning models simultaneously for targets like Arm, AArch64, RISC-V, and SystemZ."
+>
+
+<div style={{ margin: '1rem 0 1.5rem 0' }}>
+  <a
+    href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      inlineSize: '100%',
+      boxSizing: 'border-box',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      fontWeight: 600,
+      backgroundColor: '#1b1b1d',
+      color: '#e3e3e3',
+      border: '1px solid #444446',
+      padding: '10px 16px',
+      borderRadius: '8px',
+      textDecoration: 'none',
+    }}
+  >
+    ✉ Subscribe to Weekly Compiler Notes
+  </a>
+</div>
+
+## At a glance
+
+| Property | Value |
+| :--- | :--- |
+| **Architecture** | Target-dependent (Arm, AArch64, RISC-V, PowerPC, SystemZ, Sparc, Hexagon, etc.) |
+| **Category** | Target Selection / Code Generation |
+| **Compiler** | Clang Driver / Flang |
+| **Optimization Level** | Applies across `-O0` through `-O3` / `-Ofast` |
+| **Risk / Impact** | **High**: Emits architecture-specific instructions that will fault (SIGILL) if run on unsupported hardware. |
+
+**One-line summary**: `-mcpu=` targets a specific microarchitecture implementation (e.g., `cortex-a78`, `neoverse-n1`, `sifive-p550`), configuring both target ISA feature flags and backend instruction scheduling/hazard models.
+
+---
 
 ## What this flag actually does
 
-For a list of available CPUs for the target use '-mcpu=help'
+The `-mcpu=` option tells Clang and LLVM to generate machine code optimized for and restricted to a specific CPU microarchitecture. 
 
+It acts as a dual-purpose selector:
+1. **Target ISA Features**: Enables target ISA extension flags implied by that microarchitecture (equivalent to `-march=` or target features passed via `-target-feature`).
+2. **Backend Machine Model / Scheduling**: Configures the LLVM Machine Instruction scheduling model (`TargetSchedModel`), pipeline hazard recognizers, register costs, and loop alignment parameters (equivalent to `-mtune=`).
 
+### Target-Specific Semantics: x86 vs. AArch64/Arm/RISC-V
 
-This option expects an argument.
+:::caution Architecture Conventions Differ
+On **x86/x86_64**, GCC and Clang traditionally use `-march=` to set both ISA features and tuning parameters, while `-mtune=` overrides only the scheduling model. Passing `-mcpu=` on x86 is largely an alias or legacy option. 
 
-## When to use it
+Conversely, on **AArch64, Arm, RISC-V, and PowerPC**, `-mcpu=` is the primary mechanism to target a specific core implementation (e.g., `-mcpu=neoverse-v1`), while `-march=` defines abstract architecture baseline levels (e.g., `-march=armv8.4-a`).
+:::
 
-- You are targeting Target-dependent compilation options and want this joined behavior applied to the whole compilation.
+To see supported CPU names for your active target triple, pass `help` as the value:
 
-## When not to use it
+```bash
+clang --target=aarch64-linux-gnu -mcpu=help -c main.c
+```
 
-- Your build targets a different architecture — this joined is accepted only when targeting Target-dependent compilation options.
+---
+
+## Minimal realistic example
+
+Consider a simple vector arithmetic function compiled for AArch64:
+
+<SourceCode
+  code={`void vector_add(float *restrict a, float *restrict b, float *restrict c, int n) {
+    for (int i = 0; i < n; ++i) {
+        c[i] = a[i] + b[i];
+    }
+}`}
+  language="c"
+  title="vec.c"
+/>
+
+When targeting generic AArch64 (`-mcpu=generic`), the compiler generates baseline NEON 128-bit SIMD vector instructions. When targeting a modern Neoverse core (`-mcpu=neoverse-v1`), Clang enables SVE (Scalable Vector Extension) automatically and adjusts vector auto-vectorization costing strategies based on VLA/VLS (vector length agnostic/specific) heuristics.
+
+---
+
+## Before vs. after assembly
+
+Compiling for generic AArch64 versus `-mcpu=neoverse-v1`:
+
+<AsmDiff
+  before={`# clang -target aarch64-linux-gnu -O3 -mcpu=generic
+vector_add:
+    cbz     w3, .LBB0_3
+    mov     w8, w3
+    cmp     w3, #3
+    b.hi    .LBB0_4
+    mov     x9, xzr
+.LBB0_2:
+    ldr     s0, [x0, x9, lsl #2]
+    ldr     s1, [x1, x9, lsl #2]
+    fadd    s0, s0, s1
+    str     s0, [x2, x9, lsl #2]
+    add     x9, x9, #1
+    cmp     w8, w9
+    b.ne    .LBB0_2
+.LBB0_3:
+    ret
+.LBB0_4:
+    // ... baseline Advanced SIMD (NEON) loop ...
+    ld1     { v0.4s }, [x1], #16
+    ld1     { v1.4s }, [x0], #16
+    fadd    v0.4s, v0.4s, v1.4s
+    st1     { v0.4s }, [x2], #16`}
+  after={`# clang -target aarch64-linux-gnu -O3 -mcpu=neoverse-v1
+vector_add:
+    cbz     w3, .LBB0_2
+    sxtw    x8, w3
+    ptrue   p0.s
+    mov     x9, xzr
+.LBB0_1:
+    whilelt p1.s, x9, x8
+    ld1w    { z0.s }, p1/z, [x1, x9, lsl #2]
+    ld1w    { z1.s }, p1/z, [x0, x9, lsl #2]
+    fadd    z0.s, p1/m, z0.s, z1.s
+    st1w    { z0.s }, p1, [x2, x9, lsl #2]
+    incw    x9
+    whilelt p1.s, x9, x8
+    b.first .LBB0_1
+.LBB0_2:
+    ret`}
+  title="AArch64 Assembly: -mcpu=generic vs. -mcpu=neoverse-v1"
+/>
+
+---
+
+## Why use it / when not to use it
+
+### When to use it
+- **Targeted deployments**: When building binaries exclusively destined for known server fleets, edge nodes, or embedded system CPUs (e.g., AWS Graviton 3: `-mcpu=neoverse-v1`).
+- **Maximum microarchitecture throughput**: When you want LLVM's Machine Instruction Scheduler to use precise pipeline latency and itinerary tables for modern execution units.
+- **Enabling CPU extensions automatically**: Avoids manually listing individual target flags (e.g., `-mcpu=cortex-a710` automatically enables FP16, DotProd, Atomics, SVE, SVE2, and LSE).
+
+### When not to use it
+- **Distributing portable binaries**: Binaries built with explicit `-mcpu=` selections for advanced microarchitectures will fail with invalid instruction exceptions on older generations of the architecture.
+- **When tuning only is desired**: If you want a portable binary that runs everywhere on an architecture but performs best on a specific CPU, use `-mtune=<cpu>` without `-mcpu=`.
+
+---
+
+## Performance impact
+
+`-mcpu=` influences code performance in two ways:
+
+1. **Instruction Set Selection**: Allows the LLVM target lowering layer (`TargetLowering`) to materialize instructions unavailable on generic targets (e.g., hardware atomics, SIMD gather/scatter, crypto instructions).
+2. **Instruction Scheduling & Costing**: LLVM's `MachineScheduler` uses the subtarget scheduling model (`MCSchedModel`) associated with the specified CPU. This alters loop unrolling factors, instruction reordering for pipeline issue slots, execution unit reservation, and vectorization cost model decisions.
+
+:::note
+If `-mcpu=` is omitted, Clang defaults to a baseline CPU model for the specified target (such as `generic` or `armv8-a`), which uses safe, minimal instruction sets and conservative scheduling assumptions.
+:::
+
+---
+
+## Compatibility table
+
+| Driver Flag | Architecture | Backend Feature Flag Translated | Notes |
+| :--- | :--- | :--- | :--- |
+| `-mcpu=neoverse-n1` | AArch64 | `-target-cpu neoverse-n1` | Enables LSE, RDM, DotProd, CRC, AES, SHA2 |
+| `-mcpu=cortex-m4` | ARM (32-bit) | `-target-cpu cortex-m4` | Target Thumb-2 with DSP extensions |
+| `-mcpu=sifive-u74` | RISC-V | `-target-cpu sifive-u74` | Sets RV64GC extensions and SiFive scheduling |
+| `-mcpu=pwr9` | PowerPC | `-target-cpu pwr9` | Enables Power ISA v3.0B instructions |
+
+---
 
 ## Usage example
 
 ```bash
-clang++ -mcpu= -c main.cpp
+# 1. Inspect supported CPUs for a given architecture target
+clang --target=aarch64-unknown-linux-gnu -mcpu=help
+
+# 2. Compile for AWS Graviton 2 (Neoverse N1)
+clang -O3 --target=aarch64-unknown-linux-gnu -mcpu=neoverse-n1 -c compute.c -o compute.o
+
+# 3. Microarchitecture target with explicit feature modifier additions/subtractions
+clang -O3 --target=aarch64-unknown-linux-gnu -mcpu=neoverse-v1+nosve -c compute.c
 ```
 
-## Key facts
+---
 
-- **Argument form**: Joined (takes an argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Target-Specific Code Generation`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+## Adjacent options
+
+- **`-mtune=`**: Tunes instruction scheduling and pipeline optimization for a specific CPU microarchitecture without enabling instructions that break backward compatibility.
+- **`-march=`**: Defines the target architecture profile/version and base ISA feature set (e.g., `-march=armv8.5-a`).
+- **`-target` / `--target=`**: Specifies the target triple (e.g., `aarch64-linux-gnu`).
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Detail |
+| :--- | :--- |
+| **Driver Parsing** | `clang/lib/Driver/ToolChains/Clang.cpp` extracts `-mcpu=` argument from `ArgList`. |
+| **Target Feature Mapping** | `clang/lib/Driver/ToolChains/Arch/` (e.g., `AArch64.cpp`, `ARM.cpp`) resolves the CPU string into internal feature strings and appends `-target-cpu <cpu>` to CC1 options. |
+| **LLVM IR Translation** | `clang/lib/CodeGen/TargetInfo.cpp` attaches `"target-cpu"="<cpu>"` function attributes to emitted LLVM IR functions. |
+| **LLVM Backend** | `llvm/lib/Target/<Arch>/` uses `<Arch>Subtarget` and `MCSubtargetInfo` to initialize target instruction info, register info, and `MCSchedModel`. |
+
+---
+
+<KeyFacts
+  args={[
+    { name: "-mcpu=<cpu>", desc: "Target CPU microarchitecture string" }
+  ]}
+  group="Target-Specific Code Generation"
+  driver="clang"
+  cc1="Passed down to CC1 via -target-cpu <cpu>"
+/>
 
 </FlagArticleShell>
