@@ -40,6 +40,7 @@ const parallel = {
             'parallel-computing/communication-cost-and-granularity',
             'parallel-computing/pthreads-mutex-and-barrier',
             'parallel-computing/openmp-schedules',
+            'parallel-computing/what-a-cluster-is',
           ],
         },
         {
