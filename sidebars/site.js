@@ -302,6 +302,7 @@ const site = {
         'coa/pipeline-stalls-and-bubbles',
         'coa/pipeline-hazards',
         'coa/misprediction-penalty',
+        'coa/simd-basics',
       ],
     },
   ],
