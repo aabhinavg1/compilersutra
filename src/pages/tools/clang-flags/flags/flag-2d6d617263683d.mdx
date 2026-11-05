@@ -1,41 +1,213 @@
 ---
 title: "-march="
 slug: "/tools/clang-flags/-march%3D/"
-description: "For a list of available architectures for the target use '-mcpu=help'"
+description: "Selects the target ISA architecture version, base extension set, and microarchitectural feature extensions for code generation."
+keywords: ["clang", "march", "target", "isa", "cpu", "x86", "arm64", "riscv", "optimization"]
 ---
 
+import { Head } from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-march%3D">
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-march=" summary="Selects the target ISA architecture, base instruction extensions, and feature sets for backend code generation.">
+
+<Head>
+  <title>-march= — Clang Flags Explorer</title>
+  <meta name="description" content="Detailed guide on Clang's -march= driver flag: target ISA selection, backend feature lowering, cross-architecture behavior, and assembly differences." />
+</Head>
+
+<div style={{ marginBottom: '1.5rem', padding: '0.75rem 1rem', background: 'var(--ifm-color-emphasis-100)', borderRadius: '6px' }}>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>
+    ✉ Subscribe to Weekly Compiler Notes
+  </a> — Deep dives into LLVM backend code generation, ABI mechanics, and optimization flags.
+</div>
+
+## At a glance
+
+| Property | Value |
+| :--- | :--- |
+| **Architectures** | x86/x86-64, ARM, AArch64, RISC-V, SystemZ, WebAssembly, etc. |
+| **Category** | Code Generation / Target Selection |
+| **Compiler Interface** | Clang Driver (Translates to `-target-cpu` / `-target-feature` for `cc1`) |
+| **Optimization Level** | Enables target-specific instructions, vector extensions, and autovectorization |
+| **Binary Risk** | High — Generating instructions unsupported by the execution host causes `SIGILL` |
+
+---
 
 ## What this flag actually does
 
-For a list of available architectures for the target use '-mcpu=help'
+The `-march=` option dictates the explicit Instruction Set Architecture (ISA) target tier, base architecture revision, and optional architectural features for backend code generation. 
 
+Unlike `-mtune=`, which adjusts scheduling models and pipeline costs without introducing non-baseline instructions, `-march=` directly alters instruction availability. It authorizes the LLVM backend selection DAG/GlobalISel stages to emit instructions, vector registers, and addressing modes specific to that architecture or extension set.
 
+### Target-Specific Semantics
 
-This option expects an argument.
+The syntax and behavioral impact of `-march=` vary fundamentally across target architectures:
 
-## When to use it
+*   **x86 / x86-64**: Configures both the architectural generation and implied microarchitectural feature set (e.g., `-march=haswell`, `-march=x86-64-v3`, `-march=native`). On x86, `-march=` implies both instruction availability and default microarchitectural tuning.
+*   **AArch64**: Sets the base architecture version and optional extension modifiers (e.g., `-march=armv8.2-a+crypto+fp16+sve`).
+*   **RISC-V**: Defines the exact RISC-V ISA string according to the RISC-V unprivileged specification, including base integer model and standard/custom extensions (e.g., `-march=rv64gc`, `-march=rv64imafcv_zba_zbb`).
+*   **ARM (32-bit)**: Selects the ARM architecture profile and architecture version (e.g., `-march=armv7-a`, `-march=armv8-m.main`).
 
-- You are targeting Target-dependent compilation options and want this joined behavior applied to the whole compilation.
+### Driver Execution & Target Translation
 
-## When not to use it
+The Clang driver parses `-march=`, resolves architecture-specific feature aliases, and passes low-level target features down to `clang -cc1` via `-target-cpu` and `-target-feature` flags.
 
-- Your build targets a different architecture — this joined is accepted only when targeting Target-dependent compilation options.
+```text
+Host Call:
+  clang -march=x86-64-v3 -O3 -c example.c
+
+Driver Translation (-cc1 invocation):
+  clang -cc1 -triple x86_64-unknown-linux-gnu \
+    -target-cpu x86-64-v3 \
+    -target-feature +avx \
+    -target-feature +avx2 \
+    -target-feature +bmi \
+    -target-feature +bmi2 \
+    -target-feature +fma \
+    ...
+```
+
+:::caution Portability Risk
+Binaries compiled with aggressive `-march=` flags (such as `-march=native` or target architectures newer than the execution host) will crash with an Illegal Instruction signal (`SIGILL`) if an unsupported opcode path is hit.
+:::
+
+---
+
+## Minimal realistic example
+
+The C code below demonstrates vector reduction across a array of single-precision floating point values:
+
+<SourceCode 
+  language="cpp"
+  code={`void vector_sum(const float* __restrict src, float* __restrict dst, int count) {
+    for (int i = 0; i < count; ++i) {
+        dst[i] = src[i] * 2.0f + 1.0f;
+    }
+}`}
+/>
+
+When compiled for baseline x86-64 (`-march=x86-64`), the auto-vectorizer emits SSE2 instructions (using `addps` / `mulps`). When compiled with `-march=x86-64-v3` or `-march=haswell`, the backend replaces SSE pairs with 256-bit AVX2 vector instructions and fused multiply-add (`vfmadd213ps`).
+
+---
+
+## Before vs. after assembly
+
+Comparing x86-64 baseline (`-march=x86-64`) against AVX2/FMA baseline (`-march=x86-64-v3`):
+
+<AsmDiff 
+  before={`# -march=x86-64 -O2 (Baseline x86-64 / SSE2)
+.LBB0_2:
+    movups  (%rdi,%rax,4), %xmm0
+    movups  16(%rdi,%rax,4), %xmm1
+    mulps   %xmm2, %xmm0
+    mulps   %xmm2, %xmm1
+    addps   %xmm3, %xmm0
+    addps   %xmm3, %xmm1
+    movups  %xmm0, (%rsi,%rax,4)
+    movups  %xmm1, 16(%rsi,%rax,4)
+    addq    $8, %rax
+    cmpq    %rcx, %rax
+    jl      .LBB0_2`}
+  after={`# -march=x86-64-v3 -O2 (AVX2 + FMA Enabled)
+.LBB0_2:
+    vmovups (%rdi,%rax,4), %ymm1
+    vmovups 32(%rdi,%rax,4), %ymm2
+    vfmadd213ps %ymm0, %ymm3, %ymm1
+    vfmadd213ps %ymm0, %ymm3, %ymm2
+    vmovups %ymm1, (%rsi,%rax,4)
+    vmovups %ymm2, 32(%rsi,%rax,4)
+    addq    $16, %rax
+    cmpq    %rcx, %rax
+    jl      .LBB0_2`}
+/>
+
+### Key Assembly Differences
+1. **Register Width**: The baseline uses 128-bit `%xmm` registers (4 floats per register). The `-march=x86-64-v3` target unlocks 256-bit `%ymm` registers (8 floats per register), doubling loop unrolling throughput.
+2. **Instruction Fusing**: Unlocks FMA3 instructions (`vfmadd213ps`), merging multiplication and addition into single-cycle pipeline executions with higher precision.
+3. **VEX Encoding**: Enforces three-operand VEX-encoded AVX instructions, removing non-destructive register copy operations.
+
+---
+
+## Why use it / when not to use it
+
+### Recommended Use Cases
+
+1. **Targeted Deployment to Known Hardware**: When building microservices or HPC workloads deployed to homogeneous server fleets (e.g., AWS Graviton3 with `-march=armv8.4-a+sve` or Xeon Ice Lake with `-march=icelake-server`).
+2. **Exploiting Hardware Vector Units**: Enabling autovectorization for specialized SIMD/vector ISAs such as AVX-512, Arm SVE/SVE2, or RISC-V Vector (`rv64gcv`).
+3. **Local Developer Builds**: Using `-march=native` during iterative local builds maximizes instruction set utilization on the host hardware.
+
+### Anti-Patterns and Prohibitions
+
+1. **Generic Software Distribution**: Packaging binaries meant for general distribution (Linux distros, macOS, Windows client applications) with aggressive `-march=` options risks crashing end-user machines lacking those instructions.
+2. **Multi-Architecture Support without Function Multiversioning**: If host CPU feature checking is required at runtime, use target attributes (`__attribute__((target("...")))`) or `__builtin_cpu_supports()` instead of global compilation flags.
+3. **Replacing Microarchitectural Tuning**: Do not use `-march=` if your goal is solely to tune scheduling for a specific CPU architecture without breaking backwards compatibility. Use `-mtune=` instead.
+
+---
+
+## Performance impact
+
+Target ISA selection via `-march=` is often the single most influential driver flag for numerical and vector performance:
+
+*   **Vectorization Scaling**: Moving from SSE4.2 (`-march=nehalem`) to AVX2 (`-march=haswell`) or AVX-512 (`-march=skylake-avx512`) increases SIMD register widths from 128 to 256 or 512 bits, unlocking proportional throughput improvements in SIMD-heavy loops.
+*   **Bit Manipulation & Cryptography**: Subtarget expansions like `+bmi2`, `+crypto`, or `+zbb` substitute multi-instruction logic sequences with single-cycle dedicated opcodes.
+*   **Pipeline Frequency Throttling**: On older x86 hardware (e.g., Haswell/Skylake), enabling heavy AVX-512 code via `-march=` can trigger core frequency downclocking (AVX offset). Profile workloads carefully on the specific hardware generation.
+
+---
+
+## Compatibility table
+
+| Target Triple | Example Usage | Notes |
+| :--- | :--- | :--- |
+| `x86_64-linux-gnu` | `-march=x86-64-v3` | Supports modern x86-64 microarchitecture levels (v1, v2, v3, v4). |
+| `x86_64-linux-gnu` | `-march=native` | Detects host CPU features via `cpuid` at compile time. |
+| `aarch64-linux-gnu` | `-march=armv8.5-a+rng+memtag` | Architecture revision combined with optional extension feature flags. |
+| `riscv64-unknown-elf` | `-march=rv64gc_zba_zbb` | Standard RISC-V canonical ISA naming convention. |
+| `armv7a-none-eabi` | `-march=armv7-a` | ARM 32-bit target specification. |
+
+---
 
 ## Usage example
 
 ```bash
-clang++ -march= -c main.cpp
+# Compile for standard x86-64 microarchitecture level 3 (AVX2, FMA, BMI1/2, LZCNT)
+clang++ -O3 -march=x86-64-v3 -c workload.cpp -o workload.o
+
+# Target ARMv8.4-A with SVE and Crypto extensions
+clang++ -O3 --target=aarch64-linux-gnu -march=armv8.4-a+sve+crypto -c crypto.cpp
+
+# Target RISC-V 64-bit with GC base extensions + Bit Manipulation
+clang -O2 --target=riscv64-unknown-elf -march=rv64gc_zba_zbb -c algorithm.c
+
+# Inspect host CPU detection when using -march=native
+clang -march=native -### -E - < /dev/null 2>&1 | grep -E "(-target-cpu|-target-feature)"
 ```
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Details |
+| :--- | :--- |
+| **Driver Option Parsing** | `clang/include/clang/Driver/Options.td` defines `-march=`. Parsed by `clang::driver::Driver`. |
+| **Target Driver Translation** | Target-specific driver logic (e.g., `clang/lib/Driver/ToolChains/Arch/X86.cpp`, `AArch64.cpp`, `RISCV.cpp`) resolves the architecture string into specific target CPUs and feature sets. |
+| **Frontend Options Pass** | Driver translates `-march=` into `-target-cpu <cpu>` and explicit `-target-feature +<feature>` / `-target-feature -<feature>` arguments for the `clang -cc1` execution phase. |
+| **LLVM Target Machine Setup** | `llvm::TargetMachine` initializes the `MCSubtargetInfo` and backend target triples. |
+| **Instruction Selection** | SelectionDAG and GlobalISel consult `Subtarget.hasFeature(...)` to enable architecture-specific node patterns during lowering. |
+
+---
 
 ## Key facts
 
-- **Argument form**: Joined (takes an argument)
-- **Accepted by**: ClangOption, CLOption, DXCOption, FlangOption
-- **Stage**: driver, category `Target-Specific Code Generation`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts 
+  args={["Joined option taking an architecture identifier string (e.g., x86-64-v3, armv8-a, rv64gc, native)"]}
+  accepts={["Clang Driver", "Flang Driver"]}
+  stage="Driver (translates to CC1 -target-cpu and -target-feature options)"
+  seeAlso={["-mtune=", "-mcpu=", "-mcmodel=", "-mcpu=help"]}
+/>
 
 </FlagArticleShell>
