@@ -56,6 +56,8 @@ Requirements:
    - Use a centered, visible Docusaurus CTA: `className="button button--primary button--lg"`.
    - Label it `✉ Subscribe to Weekly Compiler Notes` and add a short supporting line about practical LLVM/Clang/compiler-engineering notes.
    - Open external links with `target="_blank"` and `rel="noopener noreferrer"`; include an accessible `aria-label`.
+   - MDX-critical: keep the entire `<a>...</a>` on a single line. Do not put the link text on its own line between the tags (MDX treats that as a markdown paragraph and the build fails with `end-tag-mismatch` on `</a>`). Prefer this exact shape:
+     `<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>`
 10. Tone: technical reference for compiler engineers. Concrete, measured, ABI-honest. No hype, no “AI/agent” voice, no filler.
 11. Keep CSS/components as-is unless a small prop/CSS fix is required for this flag’s content.
 12. After writing, sanity-check:
