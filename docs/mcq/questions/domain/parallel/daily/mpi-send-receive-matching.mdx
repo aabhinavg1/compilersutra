@@ -1,0 +1,20 @@
+---
+title: "MPI send, receive, and matching quiz"
+description: "Five questions for MPI send, receive, and matching. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# MPI send, receive, and matching quiz
+
+Lesson: [MPI send, receive, and matching](/docs/parallel-computing/mpi-send-receive-matching/)
+
+<Question question="1. What wildcard value can a receiver specify in MPI_Recv to match any incoming source rank?" options={["MPI_ANY_SOURCE", "MPI_ALL_RANKS", "MPI_ANY_TAG", "MPI_STATUS_IGNORE"]} answer="MPI_ANY_SOURCE" />
+
+<Question question="2. When does the blocking operation MPI_Send return?" options={["Only after the receiver calls MPI_Finalize", "When the application buffer can be safely modified without overwriting the message payload", "Immediately without waiting or copying data", "Only when the program completes execution"]} answer="When the application buffer can be safely modified without overwriting the message payload" />
+
+<Question question="3. What ordering guarantee does MPI provide for messages sent with identical source, destination, communicator, and tag?" options={["LIFO ordering", "Non-overtaking ordering", "Random ordering", "Strict FIFO ordering across all communicators"]} answer="Non-overtaking ordering" />
+
+<Question question="4. Which combined MPI operation allows a rank to safely execute a send and receive in a single call without manual rank branching?" options={["MPI_COMM_WORLD", "MPI_Sendrecv", "MPI_STATUS_IGNORE", "MPI_Init"]} answer="MPI_Sendrecv" />
+
+<Question question="5. Why can a C or C++ compiler not automatically reorder MPI calls to prevent deadlocks?" options={["MPI libraries encrypt function calls at compile time", "Compilers treat MPI calls as opaque function calls with potential side effects", "MPI disables compiler optimizations by default", "Compilers only work on shared-memory hardware"]} answer="Compilers treat MPI calls as opaque function calls with potential side effects" />
