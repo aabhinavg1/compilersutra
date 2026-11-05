@@ -1,45 +1,207 @@
 ---
 title: "-fPIE"
 slug: "/tools/clang-flags/-fPIE/"
-description: "Reference entry for a Clang compiler flag."
+description: "Detailed compiler flag reference for -fPIE in Clang. Learn how it affects Position-Independent Executable generation, codegen, relocation types, and performance."
+keywords: [clang, -fPIE, Position-Independent Executable, ASLR, relocations, GOT, compiler flag]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fPIE">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fPIE flag reference - CompilerSutra</title>
+  <meta name="description" content="Technical guide for Clang's -fPIE flag: behavior, GOT access patterns, assembly differences, target defaults, and ABI interactions." />
+</Head>
+
+<FlagArticleShell flagPath="-fPIE" summary="Generates position-independent code intended strictly for main executables, enabling Address Space Layout Randomization (ASLR).">
+
+<Callout type="info" title="CompilerSutra Updates">
+  <p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer">
+      ✉ Subscribe to Weekly Compiler Notes
+    </a> — Deep dives into compiler implementation, LLVM backends, and optimization passes.
+  </p>
+</Callout>
+
+## At a glance
+
+| Field | Value |
+| :--- | :--- |
+| **Architecture** | Target-independent (X86, AArch64, RISC-V, ARM, etc.) |
+| **Category** | Code Generation / Security / Linking |
+| **Compiler** | Clang, GCC |
+| **Optimization Level** | Compatible with all optimization levels (`-O0` to `-O3`, `-Os`) |
+| **ABI Impact** | Modifies codegen relocation model; code must link into a Position-Independent Executable |
+| **Risk Level** | Low (standard security baseline on modern Linux distributions) |
+
+---
 
 ## What this flag actually does
 
-No help text is available in the imported LLVM metadata.
+The `-fPIE` flag instructs the compiler to generate position-independent code suitable for linking into a Position-Independent Executable (PIE). Unlike general position-independent code (`-fPIC`), `-fPIE` assumes that symbol definitions originating in the current translation unit will **not** be interprosed by dynamic libraries at runtime.
 
+When `-fPIE` is enabled:
+1. **Driver Behavior**: The Clang driver translates `-fPIE` into frontend/cc1 options (`-mrelocation-model pic -pic-level 2 -pic-is-pie`). It also passes appropriate flags to the linker (such as `-pie` or dynamic linker flags depending on the target OS).
+2. **LLVM IR Level**: Global symbols defined in the translation unit receive `dso_local` linkage indicators in LLVM IR because they belong to the main executable dynamic shared object (DSO).
+3. **Backend / Codegen**: Because local symbols are marked `dso_local`, the backend can emit direct PC-relative address calculations (e.g., `lea symbol(%rip), %reg` on x86_64) for local functions and global variables instead of routing access through the Global Offset Table (GOT). External symbols non-local to the executable still access memory via the GOT.
 
+### PIC Levels: `-fpie` vs `-fPIE` vs `-fpic` vs `-fPIC`
 
-It can be negated with -fno-PIE.
+- **`-fpie` vs `-fPIE`**: On target architectures like X86 and AArch64, `-fpie` sets PIC/PIE level 1 while `-fPIE` sets PIC/PIE level 2. Level 1 may use smaller displacement relocations on architectures with small GOT size constraints (e.g., System/390 or 32-bit SPARC), but on x86_64 and AArch64, `-fpie` and `-fPIE` produce functionally equivalent codegen.
+- **`-fPIC` vs `-fPIE`**: Shared libraries (`-fPIC`) must assume local non-hidden functions and variables could be pre-empted/interposed by another library. Executables (`-fPIE`) do not support interposition for locally defined symbols, enabling direct PC-relative addressing.
 
-## When to use it
+---
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+## Minimal realistic example
 
-## When not to use it
+Consider accessing a defined global variable `counter` and calling a local static function `increment`:
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+<SourceCode 
+  language="cpp"
+  code={`int counter = 0;
+
+void increment() {
+    counter++;
+}
+
+int main() {
+    increment();
+    return counter;
+}`}
+/>
+
+When compiled with `-fPIE`, the backend emits direct relative addressing (`%rip`-relative on x86_64) for `counter` because it is marked `dso_local`. If compiled with `-fPIC`, variable accesses might route through GOT relocations depending on symbol visibility defaults.
+
+---
+
+## Before vs. after assembly
+
+Below is the x86_64 assembly output comparison between non-PIE (`-fno-PIE`) and large PIE (`-fPIE`) when referencing an external symbol `ext_var` and a local symbol `local_var`.
+
+<AsmDiff 
+  beforeTitle="-fno-PIE"
+  beforeCode={`get_local:
+    movl    local_var(%rip), %eax
+    ret
+
+get_ext:
+    movl    ext_var, %eax
+    ret`}
+  afterTitle="-fPIE"
+  afterCode={`get_local:
+    movl    local_var(%rip), %eax
+    ret
+
+get_ext:
+    movl    ext_var@GOTPCREL(%rip), %rax
+    movl    (%rax), %eax
+    ret`}
+/>
+
+### Key Differences:
+1. **Local Symbol Access (`get_local`)**: Both `-fno-PIE` and `-fPIE` compile `local_var` using direct `%rip`-relative addressing because the symbol is local to the binary.
+2. **External Symbol Access (`get_ext`)**: 
+   - Under `-fno-PIE`, the executable assumes absolute addresses or direct absolute relocations (e.g., `R_X86_64_32S`).
+   - Under `-fPIE`, `ext_var` requires a GOT-relative load (`R_X86_64_GOTPCREL` or `R_X86_64_REX_GOTPCRELX`) to allow the dynamic linker (`ld.so`) to randomize executable load addresses via ASLR without patching code segments directly.
+
+---
+
+## Why use it / when not to use it
+
+### Why use it
+- **Address Space Layout Randomization (ASLR)**: Required by modern OS security standards (Linux distros, macOS, Android) to harden binaries against return-oriented programming (ROP) and buffer overflow exploits.
+- **Executable Optimization over PIC**: Faster than `-fPIC` for main executables because local functions and data do not suffer from dynamic symbol interposition overhead.
+
+### When not to use it
+- **Building Shared Libraries (`.so` / `.dylib`)**: Do not use `-fPIE` when building shared objects; use `-fPIC` instead. `-fPIE` assumes symbols are bound to the main binary, which causes dynamic linker errors or invalid relocations inside shared objects.
+- **Bare-metal / Embedded Systems**: Firmware, bootloaders, and real-time kernels running without virtual memory or dynamic loaders usually disable PIE (`-fno-PIE`) to avoid GOT overhead and load-time relocation code.
+- **Maximum Execution Speed on Legacy x86**: On older 32-bit x86 targets, PIE requires dedicated register usage (`%ebx`) for the GOT base pointer, increasing register pressure and adding load penalties.
+
+---
+
+## Performance impact
+
+Qualitative performance traits of `-fPIE`:
+
+- **x86_64 / AArch64 / RISC-V**: Negligible performance delta compared to non-PIE due to native PC-relative instruction support (`%rip`-relative addressing, `adrp/add`, `auipc`).
+- **External Global Access**: Marginal overhead (1 additional memory dereference) when reading external global variables defined in external dynamic libraries via the GOT.
+- **Branch Overhead**: Function calls to external dynamic libraries use Procedure Linkage Table (PLT) stubs, identical to `-fPIC`. Local calls are direct relative jumps.
+
+---
+
+## Compatibility table
+
+| Driver / Toolchain | Option | Notes |
+| :--- | :--- | :--- |
+| **Clang** | `-fPIE` | Converts driver flag to `-mrelocation-model pic -pic-level 2 -pic-is-pie`. Default on most modern Linux targets. |
+| **GCC** | `-fPIE` | Identical semantics; driver auto-enables `-pie` during linking phase. |
+| **MSVC (`cl.exe`)** | N/A | Windows uses `/DYNAMICBASE` for ASLR; image relocations are recorded in `.reloc` sections rather than GOT/PLT. |
+| **Flang** | `-fPIE` | Supported via driver option inheritance. |
+
+---
 
 ## Usage example
 
+### Standard build and link flow
+
 ```bash
-clang++ -fPIE -c main.cpp
+# Compile object file with PIE code generation
+clang -fPIE -c main.c -o main.o
+
+# Link object file into a Position-Independent Executable
+clang -pie main.o -o main_app
 ```
+
+### Single-step compilation
+
+```bash
+clang -fPIE main.c -o main_app
+```
+
+### Inspecting backend IR lowering
+
+```bash
+clang -fPIE -S -emit-llvm main.c -o - | grep -E "dso_local|target-features"
+```
+
+---
+
+## Adjacent options
+
+- **`-fpie`**: Enables PIE level 1 (used on architectures with small GOT displacement windows).
+- **`-fno-PIE`**: Disables PIE generation; emits absolute relocations for main executables.
+- **`-fPIC`**: Generates position-independent code for shared libraries (allows symbol interposition).
+- **`-pie`**: Linker-driver flag instructing `ld` / `lld` to emit a position-independent executable header and dynamic relocation tables.
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Action / Behavior |
+| :--- | :--- |
+| **Driver (`clang::driver::tools`)** | Parses `-fPIE` from `Options.td`. Translates arguments into `-mrelocation-model pic -pic-level 2 -pic-is-pie` for `-cc1`. Passes `-pie` to the linker invocation. |
+| **Frontend (`clang::CodeGenOptions`)** | Populates `CodeGenOpts.RelocationModel = llvm::Reloc::PIC_`, `CodeGenOpts.PICLevel = 2`, and `CodeGenOpts.IsPIE = 1`. |
+| **LLVM IR Lowering (`clang::CodeGenModule`)** | Decorates global variables and functions with `dso_local` linkage attributes if they are defined within the binary context. |
+| **LLVM Target Backend** | Inspects `isDSOLocal()` on symbols. Emits target-specific PC-relative relocations (e.g., `R_X86_64_PC32` or `R_X86_64_GOTPCREL`) based on relocation model configuration. |
+
+Verify exact behavior against `clang/lib/Driver/ToolChains/Clang.cpp` and `clang/lib/CodeGen/CodeGenModule.cpp` on tip of `llvm-project`.
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fno-PIE`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  argumentForm="Flag (no argument)"
+  acceptedBy="Clang Driver, GCC Driver, Flang Driver"
+  stage="Driver, CodeGen, LLVM Backend"
+  negatedBy="-fno-PIE"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>
