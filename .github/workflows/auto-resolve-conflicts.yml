@@ -1,8 +1,8 @@
-name: Auto Resolve Conflicts
+name: Auto Resolve Conflicts (compilersutra)
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'compilersutra'
     steps:
-      - name: Checkout PR
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Git
+      - name: Set git config
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Fetch base
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
-      - name: Attempt merge with strategy
+      - name: Add upstream and merge
         run: |
-          git merge origin/${{ github.event.pull_request.base.ref }} -X theirs --no-edit || {
+          git remote add upstream https://github.com/${{ github.event.pull_request.base.repo.full_name }}.git || true
+          git fetch upstream ${{ github.event.pull_request.base.ref }}
+          git merge upstream/${{ github.event.pull_request.base.ref }} -X theirs --no-edit || (
             git add -A
-            git commit -m "Auto-resolve merge conflicts by accepting both changes" --allow-empty || true
-          }
+            git commit -m "chore: auto-resolve merge conflicts (accept incoming changes)" --no-edit
+          )
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
