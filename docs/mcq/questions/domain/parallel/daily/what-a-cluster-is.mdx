@@ -1,0 +1,20 @@
+---
+title: "What a cluster is quiz"
+description: "Five questions for What a cluster is. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# What a cluster is quiz
+
+Lesson: [What a cluster is](/docs/parallel-computing/what-a-cluster-is/)
+
+<Question question="1. Where do OpenMP directives and hardware cache coherence stop in a cluster environment?" options={["At the loop boundary", "At the thread boundary", "At the node boundary", "At the socket boundary"]} answer="At the node boundary" />
+
+<Question question="2. What happens when a process attempts to pass pointers between different cluster nodes?" options={["The runtime automatically creates a network thread", "The compiler silently converts the access into an MPI message", "It yields invalid reads or segmentation faults", "Hardware cache coherence synchronizes the pointers"]} answer="It yields invalid reads or segmentation faults" />
+
+<Question question="3. What is the primary role of OpenMP relative to node boundaries?" options={["It manages communication between separate nodes over Ethernet", "It works inside a node by scheduling threads within a single process address space", "It handles network hardware packets across cluster switches", "It converts invalid loads into inter-node messaging"]} answer="It works inside a node by scheduling threads within a single process address space" />
+
+<Question question="4. What does the compiler NOT have the ability to do automatically according to the article?" options={["Vectorize loop structures within a process space", "Generate thread dispatch constructs for local pragmas", "Optimize local OpenMP pragmas", "Convert load instructions into network transfers"]} answer="Convert load instructions into network transfers" />
+
+<Question question="5. Is it true that OpenMP can run across multiple cluster nodes if configured correctly?" options={["True", "False", "Only when using Ethernet switches", "Only when compiled with maximum optimization"]} answer="False" />
