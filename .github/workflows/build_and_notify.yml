@@ -55,16 +55,13 @@ jobs:
           echo "HEAD_COMMIT=$HEAD" >> "$GITHUB_ENV"
 
       # ---------------------------------
-      # 2️⃣ Enforce commit policy (prepare notification)
+      # 2️⃣ Enforce commit policy
       # ---------------------------------
-      - name: Enforce commit policy and prepare notification
-        id: commit_policy
+      - name: Enforce commit policy
         env:
           DOCS_CHANGED: ${{ env.DOCS_CHANGED }}
           BASE_COMMIT: ${{ env.BASE_COMMIT }}
           HEAD_COMMIT: ${{ env.HEAD_COMMIT }}
-          DISCORD_WEBHOOK_GENERAL: ${{ secrets.DISCORD_WEBHOOK_GENERAL }}
-          DISCORD_WEBHOOK_LLVM_DISCUSSION: ${{ secrets.DISCORD_WEBHOOK_LLVM_DISCUSSION }}
         run: |
           python3 .ci/commit_policy.py
 
@@ -89,22 +86,7 @@ jobs:
           npm run build
           echo "Build completed successfully"
 
-      # ---------------------------------
-      # 4️⃣ Notify Discord (only after successful build on main)
-      # ---------------------------------
-      - name: Send Discord notification
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success() && steps.commit_policy.outputs.discord_message != ''
-        env:
-          DISCORD_MESSAGE: ${{ steps.commit_policy.outputs.discord_message }}
-          DISCORD_WEBHOOK: ${{ steps.commit_policy.outputs.discord_webhook }}
-        run: |
-          if [ -z "$DISCORD_WEBHOOK" ]; then
-            echo "No Discord webhook configured, skipping notification"
-            exit 0
-          fi
-          python3 -c 'import json, os, urllib.request; req = urllib.request.Request(os.environ["DISCORD_WEBHOOK"], data=json.dumps({"content": os.environ["DISCORD_MESSAGE"]}).encode(), headers={"Content-Type": "application/json"}); resp = urllib.request.urlopen(req, timeout=15); status = getattr(resp, "status", 204); print(f"Discord notified (status={status})"); raise SystemExit(0 if status in (200, 204) else 1)'
-
-      - name: Notify
+      - name: Pipeline complete
         run: |
           echo "Documentation changed: $DOCS_CHANGED"
-          echo "CI pipeline finished"
+          echo "CI pipeline finished (Discord notifications are sent only after a successful Production deployment)"
