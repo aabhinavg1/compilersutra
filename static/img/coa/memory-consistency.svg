@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" width="100%" height="100%">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="350" fill="#f8fafc" rx="8" />
+
+  <!-- Core 0 Block -->
+  <rect x="30" y="30" width="240" height="150" fill="#ffffff" stroke="#0284c7" stroke-width="2" rx="6" />
+  <text x="150" y="55" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0284c7" text-anchor="middle">Thread 1 (Core 0)</text>
+
+  <rect x="50" y="70" width="200" height="35" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="4" />
+  <text x="150" y="92" font-family="sans-serif" font-size="12" fill="#0369a1" text-anchor="middle">1. Store A = 1 (Payload)</text>
+
+  <rect x="50" y="125" width="200" height="40" fill="#f1f5f9" stroke="#475569" stroke-width="1" rx="4" />
+  <text x="150" y="142" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">Core 0 Store Buffer</text>
+  <text x="150" y="157" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">(Private Pending Writes)</text>
+
+  <!-- Core 1 Block -->
+  <rect x="330" y="30" width="240" height="150" fill="#ffffff" stroke="#0284c7" stroke-width="2" rx="6" />
+  <text x="450" y="55" font-family="sans-serif" font-size="14" font-weight="bold" fill="#0284c7" text-anchor="middle">Thread 2 (Core 1)</text>
+
+  <rect x="350" y="70" width="200" height="35" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="4" />
+  <text x="450" y="92" font-family="sans-serif" font-size="12" fill="#0369a1" text-anchor="middle">2. Load B (Flag check)</text>
+
+  <rect x="350" y="125" width="200" height="40" fill="#f1f5f9" stroke="#475569" stroke-width="1" rx="4" />
+  <text x="450" y="142" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">Core 1 Load Pipeline</text>
+  <text x="450" y="157" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="middle">(Speculative Read Engine)</text>
+
+  <!-- Shared Interconnect / Cache -->
+  <rect x="30" y="240" width="540" height="70" fill="#f1f5f9" stroke="#475569" stroke-width="2" rx="6" />
+  <text x="300" y="270" font-family="sans-serif" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">Shared Interconnect &amp; Cache Hierarchy (L2/L3)</text>
+  <text x="300" y="290" font-family="sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Coherence Protocol (MESI / MOESI) Global Ordering Boundary</text>
+
+  <!-- Connectors -->
+  <!-- Core 0 to Store Buffer -->
+  <path d="M 150 105 L 150 125" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- Store Buffer to Shared Cache -->
+  <path d="M 150 165 L 150 240" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+
+  <!-- Shared Cache to Core 1 Load -->
+  <path d="M 450 240 L 450 165" stroke="#475569" stroke-width="2" stroke-dasharray="4" fill="none" marker-end="url(#arrowhead)" />
+
+  <!-- Core 1 Speculation to Load -->
+  <path d="M 450 125 L 450 105" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+
+</svg>
