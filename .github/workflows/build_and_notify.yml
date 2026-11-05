@@ -55,9 +55,10 @@ jobs:
           echo "HEAD_COMMIT=$HEAD" >> "$GITHUB_ENV"
 
       # ---------------------------------
-      # 2️⃣ Enforce commit policy & send Discord
+      # 2️⃣ Enforce commit policy (prepare notification)
       # ---------------------------------
-      - name: Enforce commit policy and notify
+      - name: Enforce commit policy and prepare notification
+        id: commit_policy
         env:
           DOCS_CHANGED: ${{ env.DOCS_CHANGED }}
           BASE_COMMIT: ${{ env.BASE_COMMIT }}
@@ -70,14 +71,39 @@ jobs:
       # ---------------------------------
       # 3️⃣ Build project
       # ---------------------------------
+      - name: Setup Node.js
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npm ci
+
       - name: Build project
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "Starting build"
+          npm run build
           echo "Build completed successfully"
 
       # ---------------------------------
-      # 4️⃣ Notify pipeline completion
+      # 4️⃣ Notify Discord (only after successful build on main)
       # ---------------------------------
+      - name: Send Discord notification
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success() && steps.commit_policy.outputs.discord_message != ''
+        env:
+          DISCORD_MESSAGE: ${{ steps.commit_policy.outputs.discord_message }}
+          DISCORD_WEBHOOK: ${{ steps.commit_policy.outputs.discord_webhook }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "No Discord webhook configured, skipping notification"
+            exit 0
+          fi
+          python3 -c 'import json, os, urllib.request; req = urllib.request.Request(os.environ["DISCORD_WEBHOOK"], data=json.dumps({"content": os.environ["DISCORD_MESSAGE"]}).encode(), headers={"Content-Type": "application/json"}); resp = urllib.request.urlopen(req, timeout=15); status = getattr(resp, "status", 204); print(f"Discord notified (status={status})"); raise SystemExit(0 if status in (200, 204) else 1)'
+
       - name: Notify
         run: |
           echo "Documentation changed: $DOCS_CHANGED"

@@ -73,7 +73,7 @@ def send_discord(message: str, webhook_url: str):
     headers = {"Content-Type": "application/json"}
     try:
         response = requests.post(webhook_url, headers=headers, data=json.dumps(payload), timeout=10)
-        if response.status_code != 204:
+        if response.status_code not in (200, 204):
             log(f"Failed to send Discord message: {response.status_code} {response.text}")
             sys.exit(1)
         log(f"Discord message sent successfully to {webhook_url}")
@@ -81,14 +81,17 @@ def send_discord(message: str, webhook_url: str):
         log(f"Error sending Discord message: {e}")
         sys.exit(1)
 
-# --- Write GitHub Actions output safely (encode newlines) ---
+# --- Write GitHub Actions output safely ---
 def write_output(name: str, value: str):
     output_file = os.environ.get("GITHUB_OUTPUT")
     if output_file:
-        safe_value = value.replace("\n", "%0A")  # Encode newlines
         with open(output_file, "a") as f:
-            f.write(f"{name}={safe_value}\n")
-        log(f"Set GitHub output {name}={safe_value}")
+            if "\n" in value:
+                delimiter = f"EOF_{name}"
+                f.write(f"{name}<<{delimiter}\n{value}\n{delimiter}\n")
+            else:
+                f.write(f"{name}={value}\n")
+        log(f"Set GitHub output {name}")
     else:
         log(f"GITHUB_OUTPUT not set, skipping output {name}")
 
@@ -136,11 +139,15 @@ def main():
         article_url = f"https://www.compilersutra.com/docs{clean_link}"
         message = f"New article published on CompilerSutra\n{article_url}"
         write_output("discord_message", message)
-        log(f"Discord message: {message}")
-
-        # Select webhook based on link
         webhook = llvm_webhook if clean_link.lower().startswith("/llvm") else general_webhook
-        send_discord(message, webhook)
+        write_output("discord_webhook", webhook)
+        log(f"Discord message prepared: {message}")
+
+        # Send immediately only when explicitly requested (default: off; workflow controls timing).
+        if os.environ.get("SEND_DISCORD_NOW", "").lower() == "true":
+            send_discord(message, webhook)
+        else:
+            log("Discord send deferred to workflow (notify after successful build)")
 
     log("Commit message policy passed")
 
