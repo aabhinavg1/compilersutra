@@ -90,8 +90,7 @@ These pages are not written yet. Each one is linked here when it lands.
 - Cache Mapping (Direct, Set-Associative, Fully Associative)
 - Static vs Dynamic Branch Prediction
 - [Misprediction Penalty](/docs/coa/misprediction-penalty)
-- SIMD Basics and Vector Registers
-
+- [SIMD Basics and Vector Registers](/docs/coa/simd-basics)
 ### Later
 
 - Multicore and memory ordering
