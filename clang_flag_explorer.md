@@ -43,6 +43,7 @@ Requirements:
 7. SEO and page metadata are required:
    - Add a useful frontmatter `keywords` list with the flag spelling, inverse/sibling spellings, Clang/GCC terms, language terms, LLVM/TBAA terms, and relevant optimization concepts.
    - Write a descriptive, search-friendly frontmatter `description` that names the flag, Clang, the affected compiler mechanism, and C/C++ or target scope as applicable.
+   - Import Head as a default export only: `import Head from '@docusaurus/Head';`. Never `import { Head }` (undefined → Vercel `Element type is invalid`).
    - Keep `Head` metadata aligned with the page: `keywords`, `og:title`, `og:description`, `og:type`, and Twitter title/description. Do not keyword-stuff or make claims unsupported by the article.
 8. Use Docusaurus Markdown extensions where they improve clarity:
    - Use `:::tip` for practical guidance or a safe workflow.
