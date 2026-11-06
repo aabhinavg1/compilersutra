@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" width="100%" height="100%">
+  <rect width="720" height="300" fill="#0f172a" rx="8" />
+  
+  <!-- Title -->
+  <text x="360" y="30" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">Tree Broadcast vs Tree Reduction Flow</text>
+  
+  <!-- Level 0: Root -->
+  <rect x="310" y="60" width="100" height="36" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4" />
+  <text x="360" y="83" fill="#38bdf8" font-family="monospace" font-size="14" text-anchor="middle">Rank 0 (Root)</text>
+  
+  <!-- Level 1 -->
+  <rect x="150" y="140" width="100" height="36" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4" />
+  <text x="200" y="163" fill="#f8fafc" font-family="monospace" font-size="14" text-anchor="middle">Rank 0</text>
+
+  <rect x="470" y="140" width="100" height="36" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4" />
+  <text x="520" y="163" fill="#f8fafc" font-family="monospace" font-size="14" text-anchor="middle">Rank 4</text>
+  
+  <!-- Level 2 -->
+  <rect x="70" y="220" width="80" height="36" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" rx="4" />
+  <text x="110" y="243" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle">Rank 0</text>
+
+  <rect x="230" y="220" width="80" height="36" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" rx="4" />
+  <text x="270" y="243" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle">Rank 2</text>
+
+  <rect x="390" y="220" width="80" height="36" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" rx="4" />
+  <text x="430" y="243" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle">Rank 4</text>
+
+  <rect x="550" y="220" width="80" height="36" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" rx="4" />
+  <text x="590" y="243" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle">Rank 6</text>
+
+  <!-- Broadcast Arrows (Downwards) -->
+  <path d="M 330 96 L 220 140" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+  <path d="M 390 96 L 500 140" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+
+  <path d="M 180 176 L 120 220" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+  <path d="M 220 176 L 260 220" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+  
+  <path d="M 500 176 L 440 220" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+  <path d="M 540 176 L 580 220" stroke="#4ade80" stroke-width="2" marker-end="url(#arrow-green)" fill="none" />
+
+  <!-- Labels -->
+  <text x="250" y="110" fill="#4ade80" font-family="monospace" font-size="11">Broadcast Flow (Down)</text>
+  <text x="490" y="110" fill="#f43f5e" font-family="monospace" font-size="11">Reduction Flow (Up)</text>
+
+  <defs>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4ade80" />
+    </marker>
+  </defs>
+</svg>
