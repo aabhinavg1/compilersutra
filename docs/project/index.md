@@ -6,6 +6,8 @@ keywords:
   - CompilerSutra projects
   - project catalogue
   - CompilerSutraPerf
+  - CompilerSutra AppFarm
+  - csfarm
   - LLVM projects
   - VELOX
   - C++ project ideas
@@ -25,6 +27,7 @@ Add a new row to the catalogue when you start a project. Keep long write-ups und
 | Project | What it is | Status | Start here |
 | --- | --- | --- | --- |
 | [CompilerSutraPerf](/docs/project/compilersutra-perf/) | `csperf` — release-first docs; compile, run, profile, compare · [PyPI](https://pypi.org/project/compilersutra-perf/) | Active · Alpha 0.2.0 | [0.2.0 release](/docs/project/compilersutra-perf/releases/0.2.0/) |
+| [CompilerSutra AppFarm](/docs/project/compilersutra-appfarm/) | `csfarm` — typed OSS app farm; fetch → build → test → measure for toolchain/flag regressions | Active · Alpha 0.1.2 | [Getting started](/docs/project/compilersutra-appfarm/getting-started/) |
 | [LLVM Projects](./llvm/) | Guided LLVM labs, starting with the VELOX compiler | Active | [VELOX](./llvm/VELOX/) |
 | [C++ Project Ideas](./cpp-project-ideas) | Domain-specific C++ project ideas by skill level | Reference | [Browse ideas](./cpp-project-ideas) |
 | [Python Automation](./python_automation/python_automation) | Automation scripts and productivity projects | Active | [Python Automation](./python_automation/python_automation) |
@@ -38,6 +41,15 @@ Performance experimentation CLI (**CompilerSutraPerf** / `csperf`) for C/C++, HI
 - Install from PyPI, profile with Linux `perf`, export JSON/HTML reports
 - Hub: [CompilerSutraPerf](/docs/project/compilersutra-perf/) · [0.2.0](/docs/project/compilersutra-perf/releases/0.2.0/) · [Tutorial](/docs/project/compilersutra-perf/tutorial/) · [Observatory](/docs/project/compilersutra-perf/observatory/)
 - Package: [PyPI — `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)
+
+### CompilerSutra AppFarm
+
+Open typed **application farm** (`csfarm`) for compiler and flag regression testing — pick an app/version, compose overlays, then fetch → build → test → measure.
+
+- Trust the **tier-1** core; do not claim the full catalog as validated
+- Hub: [CompilerSutra AppFarm](/docs/project/compilersutra-appfarm/) · [Tutorial](/docs/project/compilersutra-appfarm/tutorial/) · [Claims](/docs/project/compilersutra-appfarm/methodology/)
+- Repo: [github.com/compilersutra/CompilerSutraAppFarm](https://github.com/compilersutra/CompilerSutraAppFarm) (`v0.1.2`)
+- Pairs with [CompilerSutraPerf](/docs/project/compilersutra-perf/) when you need real counters
 
 ### LLVM Projects
 
