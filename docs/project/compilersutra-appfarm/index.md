@@ -54,3 +54,4 @@ python3 scripts/paper_eval.py --run
 ```
 
 Part of the [Projects catalogue](/docs/project/).
+
