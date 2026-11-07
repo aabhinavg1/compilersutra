@@ -1,0 +1,20 @@
+---
+title: "MPI collectives quiz"
+description: "Five questions for MPI collectives. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# MPI collectives quiz
+
+Lesson: [MPI collectives](/docs/parallel-computing/mpi-collectives/)
+
+<Question question="1. Which MPI collective operation splits an array from a root process into contiguous chunks and sends a chunk to each rank?" options={["MPI_Bcast", "MPI_Scatter", "MPI_Gather", "MPI_Reduce"]} answer="MPI_Scatter" />
+
+<Question question="2. Which MPI collective operation performs a reduction and distributes the final combined result to every rank in the communicator?" options={["MPI_Reduce", "MPI_Gather", "MPI_Allreduce", "MPI_Scatter"]} answer="MPI_Allreduce" />
+
+<Question question="3. Unlike point-to-point operations such as MPI_Send and MPI_Recv, what do MPI collective operations NOT use for matching?" options={["Communicators", "Process ranks", "Call sequence", "Message tags"]} answer="Message tags" />
+
+<Question question="4. What algorithm performance complexity step count does replacing MPI_Bcast with a naive loop of point-to-point calls degrade performance to?" options={["O(1)", "O(log N)", "O(N)", "O(N^2)"]} answer="O(N)" />
+
+<Question question="5. What special value or feature must be explicitly supported by an MPI collective call to allow using the same memory buffer for both input and output without undefined behavior?" options={["MPI_IN_PLACE", "MPI_COMM_WORLD", "MPI_SUM", "MPI_BYTE"]} answer="MPI_IN_PLACE" />
