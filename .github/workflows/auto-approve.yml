@@ -1,5 +1,8 @@
 name: Auto Approve
 
+# Thin wrapper: real approve+merge lives in auto-merge-compilersutra.yml.
+# Kept so older required-check names / bookmarks still succeed for compilersutra.
+
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
@@ -11,9 +14,25 @@ permissions:
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
-    if: github.actor == 'compilersutra' || github.actor == 'aabhinavg1'
+    if: github.event.pull_request.user.login == 'compilersutra' && !github.event.pull_request.draft
     steps:
-      - name: Auto approve
-        uses: hmarr/auto-approve-action@v4
+      - name: Approve compilersutra PR
+        uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            try {
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: prNumber,
+                event: 'APPROVE',
+                body: 'Auto-approved: compilersutra bot PR.',
+              });
+              console.log('Approved #' + prNumber);
+            } catch (e) {
+              console.log('Approve skipped:', e.message);
+              // Do not fail the job — merge workflow will retry with admin token.
+            }

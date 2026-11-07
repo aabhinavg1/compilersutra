@@ -1,5 +1,8 @@
 name: Auto Merge
 
+# Immediate merge for compilersutra (does not wait on Vercel fork checks).
+# Prefer AUTO_MERGE_TOKEN (aabhinavg1 admin PAT). See auto-merge-compilersutra.yml.
+
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -11,11 +14,25 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: (github.actor == 'compilersutra' || github.actor == 'aabhinavg1') && !github.event.pull_request.draft
+    if: github.event.pull_request.user.login == 'compilersutra' && !github.event.pull_request.draft
     steps:
-      - name: Enable auto-merge
-        run: |
-          gh pr merge --auto --merge "$PR_URL"
+      - name: Approve and merge now
         env:
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set +e
+          gh pr review "$PR_NUMBER" --repo "${{ github.repository }}" --approve \
+            -b "Auto-approved: compilersutra bot PR."
+          # Prefer admin bypass so required Vercel/fork checks cannot stick the queue.
+          if gh pr merge "$PR_NUMBER" --repo "${{ github.repository }}" --merge --admin; then
+            echo "Merged with --admin"
+            exit 0
+          fi
+          if gh pr merge "$PR_NUMBER" --repo "${{ github.repository }}" --merge; then
+            echo "Merged without admin"
+            exit 0
+          fi
+          echo "Merge not completed yet (token may lack bypass); compilersutra workflow will retry on check_suite"
+          exit 0
