@@ -88,8 +88,8 @@ OpenMP ends at the node. MPI is the library the nodes use to talk.
 
 - [What a cluster is](what-a-cluster-is.md)
 - MPI send, receive, and matching
-- [Broadcast and reduction as a tree](broadcast-and-reduction-trees.md)
-- MPI collectives
+- Broadcast and reduction as a tree
+- [MPI collectives](mpi-collectives.md)
 - Overlap communication with computation
 - Hybrid MPI and OpenMP
 
