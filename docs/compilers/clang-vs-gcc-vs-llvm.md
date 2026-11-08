@@ -1,16 +1,17 @@
 ---
 id: clang-vs-gcc-vs-llvm
-title: Clang vs GCC vs LLVM Explained
-description: Compare Clang vs GCC vs LLVM with benchmarks, IR examples, tooling tradeoffs, and practical guidance for C, C++, compilers, and systems work.
+title: "Clang vs GCC vs LLVM: Comparison & Differences"
+description: "Understand Clang vs GCC vs LLVM differences: toolchain architectures, C/C++ compilation, diagnostics, and LLVM vs GCC infrastructure tradeoffs."
 slug: /compilers/clang-vs-gcc-vs-llvm/
 keywords:
-  - clang vs gcc
-  - gcc vs clang
-  - clang vs gcc vs llvm
-  - llvm vs gcc
-  - gcc vs llvm
-  - clang vs gcc benchmarks
-  - llvm vs gcc explained
+  - "clang vs gcc"
+  - "gcc vs clang"
+  - "clang vs gcc vs llvm"
+  - "llvm vs gcc"
+  - "gcc vs llvm"
+  - "difference between clang and gcc"
+  - "llvm vs gcc comparison"
+  - "clang vs gcc compiler performance"
   - compiler comparison
 ---
 
