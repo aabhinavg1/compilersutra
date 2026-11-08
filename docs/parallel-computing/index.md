@@ -90,7 +90,7 @@ OpenMP ends at the node. MPI is the library the nodes use to talk.
 - [MPI send, receive, and matching](mpi-send-receive-matching.md)
 - Broadcast and reduction as a tree
 - [MPI collectives](mpi-collectives.md)
-- Overlap communication with computation
+- [Overlap communication with computation](overlap-communication-and-computation.md)
 - Hybrid MPI and OpenMP
 
 ### Before a GPU could run your loop

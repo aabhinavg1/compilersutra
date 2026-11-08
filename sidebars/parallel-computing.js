@@ -42,6 +42,7 @@ const parallel = {
             'parallel-computing/openmp-schedules',
             'parallel-computing/what-a-cluster-is',
             'parallel-computing/mpi-collectives',
+            'parallel-computing/overlap-communication-and-computation',
           ],
         },
         {

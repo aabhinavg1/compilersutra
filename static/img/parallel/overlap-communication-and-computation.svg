@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" width="100%" height="100%">
+  <style>
+    .bg { fill: #0d1117; }
+    .box-block { fill: #da3633; fill-opacity: 0.25; stroke: #f85149; stroke-width: 1.5; }
+    .box-comp { fill: #238636; fill-opacity: 0.25; stroke: #3fb950; stroke-width: 1.5; }
+    .box-comm { fill: #1f6feb; fill-opacity: 0.25; stroke: #58a6ff; stroke-width: 1.5; }
+    .text-title { fill: #c9d1d9; font-family: monospace; font-size: 14px; font-weight: bold; }
+    .text-label { fill: #b1bac4; font-family: sans-serif; font-size: 12px; }
+    .axis { stroke: #30363d; stroke-width: 1; stroke-dasharray: 4; }
+  </style>
+
+  <rect width="720" height="250" class="bg" rx="6" />
+
+  <!-- Blocking Timeline -->
+  <text x="20" y="35" class="text-title">Blocking (Sequential Latency)</text>
+  <rect x="180" y="20" width="180" height="30" class="box-block" rx="4" />
+  <text x="210" y="40" class="text-label" fill="#f85149">Network Idle Wait</text>
+  
+  <rect x="365" y="20" width="160" height="30" class="box-comp" rx="4" />
+  <text x="395" y="40" class="text-label" fill="#3fb950">Compute All</text>
+
+  <!-- Line separator -->
+  <line x1="20" y1="75" x2="700" y2="75" stroke="#30363d" stroke-width="1" />
+
+  <!-- Nonblocking Timeline -->
+  <text x="20" y="115" class="text-title">Nonblocking (Overlapped)</text>
+  
+  <!-- CPU Core -->
+  <text x="40" y="145" class="text-label">CPU Core:</text>
+  <rect x="120" y="130" width="60" height="25" class="box-comm" rx="3" />
+  <text x="127" y="147" class="text-label" font-size="10">Init Requests</text>
+  
+  <rect x="185" y="130" width="220" height="25" class="box-comp" rx="3" />
+  <text x="220" y="147" class="text-label" fill="#3fb950">Compute Interior Grid</text>
+  
+  <rect x="410" y="130" width="70" height="25" class="box-block" rx="3" />
+  <text x="422" y="147" class="text-label" font-size="10">MPI_Wait</text>
+
+  <rect x="485" y="130" width="120" height="25" class="box-comp" rx="3" />
+  <text x="495" y="147" class="text-label" fill="#3fb950">Compute Boundary</text>
+
+  <!-- Network Engine -->
+  <text x="40" y="195" class="text-label">NIC / Network:</text>
+  <rect x="180" y="180" width="280" height="25" class="box-comm" rx="3" />
+  <text x="240" y="197" class="text-label" fill="#58a6ff">Background Data Transfer (RDMA / DMA)</text>
+
+  <!-- Bracket for Overlap -->
+  <line x1="185" y1="215" x2="410" y2="215" stroke="#58a6ff" stroke-width="1.5" />
+  <line x1="185" y1="210" x2="185" y2="220" stroke="#58a6ff" stroke-width="1.5" />
+  <line x1="410" y1="210" x2="410" y2="220" stroke="#58a6ff" stroke-width="1.5" />
+  <text x="245" y="235" class="text-label" fill="#58a6ff" font-weight="bold">Effective Latency Hidden</text>
+</svg>
