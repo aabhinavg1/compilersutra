@@ -334,6 +334,7 @@ const site = {
         'coa/pipeline-hazards',
         'coa/misprediction-penalty',
         'coa/simd-basics',
+        'coa/smt-multicore-false-sharing',
       ],
     },
   ],
