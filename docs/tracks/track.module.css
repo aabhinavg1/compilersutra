@@ -48,6 +48,17 @@
   color: var(--t-muted);
 }
 
+.lead {
+  margin: 0 0 0.55rem;
+  max-width: 36rem;
+  font-family: var(--t-display);
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--t-ink);
+}
+
 .heroMeta {
   display: flex;
   flex-wrap: wrap;
@@ -393,13 +404,230 @@
   }
 }
 
+.progression {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 16rem;
+  border: 1px solid var(--t-line);
+  border-radius: 14px;
+  background: var(--t-surface);
+  box-shadow: var(--t-shadow);
+  overflow: hidden;
+}
+
+.progression li {
+  position: relative;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--t-ink);
+  border-top: 1px solid var(--t-line);
+}
+
+.progression li:first-child {
+  border-top: 0;
+}
+
+.progression li:not(:last-child)::after {
+  content: '↓';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--t-faint);
+  font-weight: 700;
+}
+
+.codeBlock {
+  margin: 0 0 0.85rem;
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--t-line);
+  background: var(--t-soft);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: none;
+}
+
+.codeBlock code {
+  font-family: var(--ifm-font-family-monospace, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  white-space: pre;
+  color: var(--t-ink);
+}
+
+.prereqRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.capabilityList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.capabilityList li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--t-line);
+  background: var(--t-surface);
+  box-shadow: var(--t-shadow);
+}
+
+.capabilityList strong {
+  font-size: 0.95rem;
+  color: var(--t-ink);
+}
+
+.capabilityList span {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--t-muted);
+}
+
+.gpuFamily {
+  padding: 1rem 1.05rem;
+  border-radius: 14px;
+  border: 1px solid var(--t-line);
+  background: var(--t-surface);
+  box-shadow: var(--t-shadow);
+}
+
+.gpuFamilyRoot {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--t-faint);
+  text-align: center;
+}
+
+.gpuFamilyGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.gpuFamilyItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--t-line);
+  background: var(--t-soft);
+  text-decoration: none !important;
+  color: inherit !important;
+  min-height: 4.5rem;
+}
+
+.gpuFamilyItem:hover {
+  border-color: color-mix(in srgb, var(--t-blue) 40%, var(--t-line));
+  background: var(--t-blue-soft);
+}
+
+.gpuFamilyItem strong {
+  font-size: 0.92rem;
+}
+
+.gpuFamilyItem span {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--t-muted);
+}
+
+.practiceBlock {
+  margin-bottom: 0.85rem;
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--t-line);
+  background: var(--t-surface);
+  box-shadow: var(--t-shadow);
+}
+
+.practiceBlock .subTitle {
+  margin-top: 0;
+}
+
+.practiceBlock .codeBlock {
+  margin-top: 0.55rem;
+}
+
+.nextGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.nextItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--t-line);
+  background: var(--t-surface);
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.nextItem:hover {
+  border-color: color-mix(in srgb, var(--t-blue) 40%, var(--t-line));
+  background: var(--t-blue-soft);
+}
+
+.nextItem strong {
+  font-size: 0.95rem;
+}
+
+.nextItem span {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--t-muted);
+}
+
 @media (max-width: 640px) {
-  .infoRow {
+  .infoRow,
+  .prereqRow,
+  .capabilityList,
+  .nextGrid,
+  .gpuFamilyGrid {
     grid-template-columns: 1fr;
   }
 
   .stepCopy em {
     display: none;
+  }
+
+  .hero {
+    margin-bottom: 1.25rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+  }
+
+  .progression {
+    max-width: none;
+  }
+
+  .progression li {
+    padding-right: 2.25rem;
   }
 }
 
