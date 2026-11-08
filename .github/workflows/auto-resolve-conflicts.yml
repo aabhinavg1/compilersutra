@@ -20,7 +20,7 @@ jobs:
       - name: Resolve conflicts and trigger merge
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.COMPILERSUTRA_BOT_TOKEN || secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
             const allowed = new Set(['compilersutra']);
@@ -65,7 +65,7 @@ jobs:
 
       - name: Resolve each conflicting PR
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.COMPILERSUTRA_BOT_TOKEN || secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -e
           git config --global user.name "github-actions[bot]"
@@ -104,7 +104,7 @@ jobs:
         if: always()
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.COMPILERSUTRA_BOT_TOKEN || secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             // Nudge merge workflow via a label toggle is noisy; instead just re-run merge logic by dispatch is not available here.
             // Merge workflow also runs on synchronize/checks; resolved pushes trigger synchronize.
