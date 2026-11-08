@@ -1,8 +1,13 @@
-name: Auto Resolve Conflicts (compilersutra)
+name: Auto Resolve Conflicts (compilersutra PRs)
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number (optional; processes open compilersutra PRs with conflicts if empty)
+        required: false
 
 permissions:
   contents: write
@@ -11,27 +16,96 @@ permissions:
 jobs:
   resolve:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'compilersutra'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Resolve conflicts and trigger merge
+        uses: actions/github-script@v7
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const allowed = new Set(['compilersutra']);
 
-      - name: Set git config
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            async function resolvePR(pr) {
+              if (!allowed.has(pr.user.login)) return;
+              // Skip PRs from the same repo where base branch checkout is fine; for forks use head repo
+              const headRepo = pr.head.repo.full_name;
+              const baseRef = pr.base.ref;
+              const headRef = pr.head.ref;
+              core.info(`Resolving conflicts for #${pr.number} (${headRepo}:${headRef} <- ${baseRef})`);
+              return { headRepo, baseRef, headRef, number: pr.number };
+            }
 
-      - name: Add upstream and merge
+            let prs = [];
+            if (context.payload.pull_request) {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: context.payload.pull_request.number });
+              prs = [data];
+            } else if (context.payload.inputs?.pr_number) {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: Number(context.payload.inputs.pr_number) });
+              prs = [data];
+            } else {
+              const { data } = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 100 });
+              prs = data.filter(pr => allowed.has(pr.user.login));
+            }
+
+            const fs = require('fs');
+            const targets = [];
+            for (const pr of prs) {
+              let p = pr;
+              if (p.mergeable === null || p.mergeable_state === 'unknown') {
+                await new Promise(r => setTimeout(r, 5000));
+                ({ data: p } = await github.rest.pulls.get({ owner, repo, pull_number: pr.number }));
+              }
+              if (p.mergeable_state !== 'dirty' && !context.payload.inputs?.pr_number && context.eventName !== 'pull_request_target') continue;
+              if (p.mergeable_state === 'dirty' || context.payload.inputs?.pr_number || context.eventName === 'pull_request_target') {
+                if (allowed.has(p.user.login)) targets.push({ number: p.number, headRepo: p.head.repo.full_name, headRef: p.head.ref, baseRef: p.base.ref, mergeable_state: p.mergeable_state });
+              }
+            }
+            fs.writeFileSync('/tmp/conflict_targets.json', JSON.stringify(targets));
+            core.info(`Targets: ${JSON.stringify(targets)}`);
+
+      - name: Resolve each conflicting PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git remote add upstream https://github.com/${{ github.event.pull_request.base.repo.full_name }}.git || true
-          git fetch upstream ${{ github.event.pull_request.base.ref }}
-          git merge upstream/${{ github.event.pull_request.base.ref }} -X theirs --no-edit || (
-            git add -A
-            git commit -m "chore: auto-resolve merge conflicts (accept incoming changes)" --no-edit
-          )
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          set -e
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python3 - << 'PY'
+          import json, os, subprocess, sys
+          targets = json.load(open('/tmp/conflict_targets.json'))
+          for t in targets:
+            if t.get('mergeable_state') not in ('dirty', None) and os.environ.get('GITHUB_EVENT_NAME') != 'pull_request_target':
+              # on dispatch without number context we filtered; allow dirty
+              pass
+            num=t['number']; head=t['headRepo']; ref=t['headRef']; base=t['baseRef']
+            print(f"::group::Resolve PR #{num} {head}:{ref}")
+            d=f"/tmp/pr-{num}"
+            subprocess.run(['rm','-rf',d], check=False)
+            # Checkout PR head (works for forks via refs/pull)
+            repo=os.environ['GITHUB_REPOSITORY']
+            subprocess.run(['git','clone','--no-tags','--filter=blob:none',f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/{repo}.git",d], check=True)
+            subprocess.run(['git','fetch','origin',f"pull/{num}/head:prhead", base], cwd=d, check=True)
+            subprocess.run(['git','checkout','prhead'], cwd=d, check=True)
+            rc=subprocess.run(['git','merge',f'origin/{base}','-X','theirs','--no-edit','-m',f'chore: auto-resolve merge conflicts with {base} (#{num})'], cwd=d)
+            if rc.returncode!=0:
+              subprocess.run(['git','add','-A'], cwd=d, check=True)
+              subprocess.run(['git','commit','--no-edit','-m',f'chore: auto-resolve merge conflicts with {base} (#{num})'], cwd=d, check=False)
+            # Push back to PR head
+            push_url=f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/{head}.git"
+            prc=subprocess.run(['git','push',push_url,f'HEAD:{ref}'], cwd=d)
+            if prc.returncode!=0:
+              print(f"::warning::Could not push to {head}:{ref} (fork permission?). PR #{num} needs manual/conflict resolution token.")
+            else:
+              subprocess.run(['gh','pr','comment',str(num),'--repo',repo,'--body','🤖 Auto-resolved merge conflicts (`-X theirs`) and pushed.'], check=False)
+            print('::endgroup::')
+          PY
+
+      - name: Trigger auto-merge pass
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Nudge merge workflow via a label toggle is noisy; instead just re-run merge logic by dispatch is not available here.
+            // Merge workflow also runs on synchronize/checks; resolved pushes trigger synchronize.
+            core.info('Conflict resolution pass complete; synchronize/auto-merge workflows will handle merge.');

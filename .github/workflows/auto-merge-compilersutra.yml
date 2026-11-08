@@ -1,189 +1,88 @@
-name: Auto Merge (compilersutra)
-
-# Any non-draft PR from compilersutra:
-# - request reviewer aabhinavg1
-# - auto-approve as aabhinavg1 (AUTO_MERGE_TOKEN)
-# - merge (admin bypass when needed)
-#
-# Repo secret AUTO_MERGE_TOKEN = PAT for aabhinavg1 with contents + pull-requests
-# write and permission to bypass required checks.
+name: Auto Approve & Merge (compilersutra PRs)
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  pull_request_review:
+    types: [submitted]
   check_suite:
     types: [completed]
+  status: {}
   workflow_dispatch:
     inputs:
       pr_number:
-        description: Optional PR number to force-merge
+        description: PR number (optional; processes all open compilersutra PRs if empty)
         required: false
 
 permissions:
   contents: write
   pull-requests: write
-  checks: read
-  statuses: read
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Reviewer aabhinavg1 + approve + merge compilersutra PRs
+      - name: Approve and merge compilersutra PRs
         uses: actions/github-script@v7
-        env:
-          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
-          FORCE_PR: ${{ github.event.inputs.pr_number || '' }}
         with:
-          github-token: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const ALLOWED = new Set(['compilersutra']);
-            const REVIEWER = 'aabhinavg1';
             const { owner, repo } = context.repo;
-            const { execFileSync } = require('child_process');
+            const allowed = new Set(['compilersutra', 'aabhinavg1']);
 
-            function gh(args) {
-              return execFileSync('gh', args, {
-                encoding: 'utf8',
-                env: { ...process.env, GH_TOKEN: process.env.GH_TOKEN },
-              }).trim();
+            let prs = [];
+            if (context.payload.pull_request) {
+              prs = [context.payload.pull_request];
+            } else if (context.payload.inputs?.pr_number) {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: Number(context.payload.inputs.pr_number) });
+              prs = [data];
+            } else {
+              const { data } = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 100 });
+              prs = data.filter(pr => allowed.has(pr.user.login));
             }
 
-            async function sleep(ms) {
-              await new Promise((r) => setTimeout(r, ms));
-            }
+            for (const pr0 of prs) {
+              const pull_number = pr0.number;
+              let { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number });
+              if (!allowed.has(pr.user.login) || pr.draft) continue;
 
-            async function candidateNumbers() {
-              if (process.env.FORCE_PR) {
-                return [Number(process.env.FORCE_PR)];
-              }
-
-              if (context.payload.pull_request) {
-                const pr = context.payload.pull_request;
-                if (pr.draft) return [];
-                if (!ALLOWED.has(pr.user.login)) return [];
-                return [pr.number];
-              }
-
-              if (context.eventName === 'check_suite') {
-                const sha = context.payload.check_suite.head_sha;
-                const pulls = await github.paginate(github.rest.pulls.list, {
-                  owner,
-                  repo,
-                  state: 'open',
-                  per_page: 100,
-                });
-                return pulls
-                  .filter((pr) => ALLOWED.has(pr.user.login) && !pr.draft && pr.head.sha === sha)
-                  .map((pr) => pr.number);
-              }
-
-              return [];
-            }
-
-            async function requestReviewer(prNumber) {
-              try {
-                await github.rest.pulls.requestReviewers({
-                  owner,
-                  repo,
-                  pull_number: prNumber,
-                  reviewers: [REVIEWER],
-                });
-                console.log('Requested reviewer ' + REVIEWER + ' on #' + prNumber);
-              } catch (e) {
-                console.log('requestReviewers skipped for #' + prNumber + ':', e.message);
-              }
-            }
-
-            async function approve(prNumber) {
-              try {
-                await github.rest.pulls.createReview({
-                  owner,
-                  repo,
-                  pull_number: prNumber,
-                  event: 'APPROVE',
-                  body: 'Auto-approved by aabhinavg1 for compilersutra bot PR.',
-                });
-                console.log('Approved #' + prNumber);
-              } catch (e) {
-                console.log('Approve skipped for #' + prNumber + ':', e.message);
-              }
-            }
-
-            async function waitMergeable(prNumber) {
-              let pr;
-              for (let i = 0; i < 8; i++) {
-                pr = (
-                  await github.rest.pulls.get({
-                    owner,
-                    repo,
-                    pull_number: prNumber,
-                  })
-                ).data;
-                if (pr.merged) return pr;
-                if (pr.mergeable !== null) return pr;
-                await sleep(2000);
-              }
-              return pr;
-            }
-
-            async function mergePr(prNumber) {
-              const pr = await waitMergeable(prNumber);
-              if (!pr || pr.merged) {
-                console.log('#' + prNumber + ' already merged or missing');
-                return;
-              }
-              if (pr.user && !ALLOWED.has(pr.user.login)) {
-                console.log('Skip #' + prNumber + ': author ' + pr.user.login);
-                return;
-              }
-              if (pr.draft) {
-                console.log('Skip #' + prNumber + ': draft');
-                return;
-              }
-              if (pr.mergeable === false && pr.mergeable_state === 'dirty') {
-                console.log('Skip #' + prNumber + ': merge conflicts');
-                return;
-              }
-
-              await requestReviewer(prNumber);
-              await approve(prNumber);
+              core.info(`Processing PR #${pull_number} by ${pr.user.login} (${pr.mergeable_state}/${pr.mergeable})`);
 
               try {
-                await github.rest.pulls.merge({
-                  owner,
-                  repo,
-                  pull_number: prNumber,
-                  merge_method: 'merge',
-                });
-                console.log('Merged #' + prNumber + ' via API');
-                return;
+                await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'APPROVE' });
+                core.info(`Approved #${pull_number}`);
               } catch (e) {
-                console.log('API merge failed for #' + prNumber + ':', e.message);
+                core.info(`Approve #${pull_number}: ${e.message}`);
               }
 
-              try {
-                const out = gh([
-                  'pr', 'merge', String(prNumber), '--merge', '--admin',
-                  '--repo', `${owner}/${repo}`,
-                ]);
-                console.log('Merged #' + prNumber + ' via gh --admin:', out);
-              } catch (e) {
-                console.log('Admin merge failed for #' + prNumber + ':', e.message);
+              // Refresh; UNKNOWN often means GitHub is computing mergeability
+              if (pr.mergeable === null || pr.mergeable_state === 'unknown') {
+                await new Promise(r => setTimeout(r, 5000));
+                ({ data: pr } = await github.rest.pulls.get({ owner, repo, pull_number }));
+              }
+
+              if (pr.mergeable_state === 'dirty') {
                 try {
-                  const out = gh([
-                    'pr', 'merge', String(prNumber), '--merge',
-                    '--repo', `${owner}/${repo}`,
-                  ]);
-                  console.log('Merged #' + prNumber + ' via gh:', out);
+                  await github.rest.issues.addLabels({ owner, repo, issue_number: pull_number, labels: ['auto-resolve-conflicts'] });
+                } catch (e) {}
+                core.info(`#${pull_number} has conflicts; conflict resolver should run`);
+                continue;
+              }
+
+              if (pr.merged) continue;
+
+              try {
+                await github.rest.pulls.merge({ owner, repo, pull_number, merge_method: 'merge' });
+                core.info(`Merged #${pull_number}`);
+              } catch (e) {
+                core.info(`Merge #${pull_number} failed: ${e.message}`);
+                // Try enabling auto-merge (GraphQL) when blocked by checks
+                try {
+                  const q = `mutation($pr:ID!){ enablePullRequestAutoMerge(input:{pullRequestId:$pr, mergeMethod:MERGE}){ pullRequest{ number } } }`;
+                  await github.graphql(q, { pr: pr.node_id });
+                  core.info(`Enabled auto-merge for #${pull_number}`);
                 } catch (e2) {
-                  console.log('All merge attempts failed for #' + prNumber + ':', e2.message);
+                  core.info(`Auto-merge enable failed: ${e2.message}`);
                 }
               }
-            }
-
-            const numbers = await candidateNumbers();
-            console.log('Candidates:', JSON.stringify(numbers), 'event=', context.eventName);
-            for (const n of numbers) {
-              await mergePr(n);
             }
