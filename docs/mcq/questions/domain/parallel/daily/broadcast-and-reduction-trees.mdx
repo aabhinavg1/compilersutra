@@ -1,0 +1,20 @@
+---
+title: "Broadcast and reduction as a tree quiz"
+description: "Five questions for Broadcast and reduction as a tree. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Broadcast and reduction as a tree quiz
+
+Lesson: [Broadcast and reduction as a tree](/docs/parallel-computing/broadcast-and-reduction-trees/)
+
+<Question question="1. What is the step count complexity achieved when using binary or binomial tree structures for broadcast and reduction operations instead of sequential point-to-point loops?" options={["O(1)", "O(P)", "O(log2 P)", "O(P^2)"]} answer="O(log2 P)" />
+
+<Question question="2. For 1,024 ranks, how many sequential message transmission steps are required in a binomial tree broadcast?" options={["10", "512", "1,023", "1,024"]} answer="10" />
+
+<Question question="3. Which MPI communication tree algorithm is used by runtimes to minimize latency for small messages?" options={["Ring algorithm", "Binomial tree", "Linear loop", "Scatter-gather-allgather"]} answer="Binomial tree" />
+
+<Question question="4. Why might floating-point results from a tree reduction differ slightly from a sequential reduction loop?" options={[" Floating-point operations incur network dropouts", "Floating-point addition is non-associative", "Integer masks alter the underlying values", "Root ranks truncate 64-bit doubles to 32-bit floats"]} answer="Floating-point addition is non-associative" />
+
+<Question question="5. Why is a pure binary tree not always optimal for distributing very large payloads?" options={["Leaf nodes only receive and never transmit, leaving bandwidth underutilized", "Leaf nodes overflow memory buffers", "Root processes execute in linear O(P) time", "Tree depth increases linearly with message size"]} answer="Leaf nodes only receive and never transmit, leaving bandwidth underutilized" />

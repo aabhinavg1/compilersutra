@@ -41,7 +41,7 @@ const parallel = {
             'parallel-computing/pthreads-mutex-and-barrier',
             'parallel-computing/openmp-schedules',
             'parallel-computing/what-a-cluster-is',
-            'parallel-computing/mpi-send-receive-matching',
+            'parallel-computing/mpi-collectives',
           ],
         },
         {
