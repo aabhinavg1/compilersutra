@@ -74,6 +74,7 @@ jobs:
         with:
           node-version: "20"
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
