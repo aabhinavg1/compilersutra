@@ -1,6 +1,6 @@
 ---
 title: "Energy & reports"
-description: "Energy backends and HTML/PDF reports for compilersutra-perf 0.2.0."
+description: "Energy backends and HTML/PDF reports for compilersutra-perf 0.3.0."
 displayed_sidebar: csperfSidebar
 keywords:
   - csperf energy
@@ -10,7 +10,7 @@ keywords:
 
 # Energy & reports
 
-Energy backends and HTML/PDF reports for **CompilerSutraPerf** 0.2.0 ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)).
+Energy backends and HTML/PDF reports for **CompilerSutraPerf** 0.3.0 ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)).
 
 ## Energy
 

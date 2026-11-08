@@ -40,6 +40,7 @@ const site = {
             id: 'project/compilersutra-perf/releases/index',
           },
           items: [
+            'project/compilersutra-perf/releases/0.3.0',
             'project/compilersutra-perf/releases/0.2.0',
             'project/compilersutra-perf/releases/0.1.2',
             'project/compilersutra-perf/releases/0.1.1',
@@ -86,6 +87,7 @@ const site = {
                 id: 'project/compilersutra-perf/releases/index',
               },
               items: [
+                'project/compilersutra-perf/releases/0.3.0',
                 'project/compilersutra-perf/releases/0.2.0',
                 'project/compilersutra-perf/releases/0.1.2',
                 'project/compilersutra-perf/releases/0.1.1',

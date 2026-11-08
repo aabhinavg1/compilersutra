@@ -1,6 +1,6 @@
 ---
 title: "Usage"
-description: "How-to guides and CLI reference for CompilerSutraPerf (csperf) 0.2.0."
+description: "How-to guides and CLI reference for CompilerSutraPerf (csperf) 0.3.0."
 displayed_sidebar: csperfSidebar
 keywords:
   - csperf CLI
@@ -10,7 +10,7 @@ keywords:
 
 # Usage
 
-Task recipes and flags for **CompilerSutraPerf** **0.2.0** ([PyPI](https://pypi.org/project/compilersutra-perf/)). First install: [Getting started](/docs/project/compilersutra-perf/getting-started/) · [Tutorial](/docs/project/compilersutra-perf/tutorial/).
+Task recipes and flags for **CompilerSutraPerf** **0.3.0** ([PyPI](https://pypi.org/project/compilersutra-perf/)). First install: [Getting started](/docs/project/compilersutra-perf/getting-started/) · [Tutorial](/docs/project/compilersutra-perf/tutorial/).
 
 ## Support level (summary)
 
@@ -18,9 +18,10 @@ Task recipes and flags for **CompilerSutraPerf** **0.2.0** ([PyPI](https://pypi.
 - **`--backend gpu`:** `.hip` → HIP, `.cl` → OpenCL, shaders → Vulkan  
 - **HIP:** `hipcc` + ROCm; rocprofv3 → v2 → v1; `kernel_time_ms` ≠ `hip_profiler_*`  
 - **OpenCL:** build, launch, argument binding, warmup/repeat  
-- **Vulkan:** GLSL → SPIR-V + shader-module validate (no full dispatch)  
+- **Vulkan:** prefers `csrun` execute when available; else GLSL → SPIR-V + shader-module validate (`partial`)  
 - **CUDA / Metal:** planned, not executable  
 - **macOS CPU:** experimental; use `--no-perf`; powermetrics needs passwordless `sudo`  
+
 
 ## How do I…
 

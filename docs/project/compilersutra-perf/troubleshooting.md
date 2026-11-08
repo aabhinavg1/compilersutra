@@ -9,7 +9,7 @@ keywords:
 
 # Troubleshooting
 
-Common first-run issues for **CompilerSutraPerf** 0.2.0 ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)).
+Common first-run issues for **CompilerSutraPerf** 0.3.0 ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)).
 
 ## First check
 
