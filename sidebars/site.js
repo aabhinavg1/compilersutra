@@ -58,6 +58,23 @@ const site = {
     },
   ],
 
+  csfarmSidebar: [
+    {
+      type: 'category',
+      label: 'CompilerSutra AppFarm',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'project/compilersutra-appfarm/index',
+      },
+      items: [
+        'project/compilersutra-appfarm/getting-started',
+        'project/compilersutra-appfarm/tutorial',
+        'project/compilersutra-appfarm/methodology',
+      ],
+    },
+  ],
+
   projectSidebar: [
     {
       type: 'category',
@@ -100,6 +117,20 @@ const site = {
             'project/compilersutra-perf/architecture',
             'project/compilersutra-perf/energy-and-reports',
             'project/compilersutra-perf/troubleshooting',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'CompilerSutra AppFarm',
+          collapsed: false,
+          link: {
+            type: 'doc',
+            id: 'project/compilersutra-appfarm/index',
+          },
+          items: [
+            'project/compilersutra-appfarm/getting-started',
+            'project/compilersutra-appfarm/tutorial',
+            'project/compilersutra-appfarm/methodology',
           ],
         },
         {
@@ -303,7 +334,7 @@ const site = {
         'coa/pipeline-hazards',
         'coa/misprediction-penalty',
         'coa/simd-basics',
-        'coa/memory-consistency',
+        'coa/smt-multicore-false-sharing',
       ],
     },
   ],
