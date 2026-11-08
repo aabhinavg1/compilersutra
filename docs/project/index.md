@@ -39,7 +39,7 @@ Add a new row to the catalogue when you start a project. Keep long write-ups und
 Performance experimentation CLI (**CompilerSutraPerf** / `csperf`) for C/C++, HIP, OpenCL, and Vulkan — with an observatory roadmap for honest compiler research.
 
 - Install from PyPI, profile with Linux `perf`, export JSON/HTML reports
-- Hub: [CompilerSutraPerf](/docs/project/compilersutra-perf/) · [0.2.0](/docs/project/compilersutra-perf/releases/0.2.0/) · [Tutorial](/docs/project/compilersutra-perf/tutorial/) · [Observatory](/docs/project/compilersutra-perf/observatory/)
+- Hub: [CompilerSutraPerf](/docs/project/compilersutra-perf/) · [0.3.0](/docs/project/compilersutra-perf/releases/0.3.0/) · [Tutorial](/docs/project/compilersutra-perf/tutorial/) · [Observatory](/docs/project/compilersutra-perf/observatory/)
 - Package: [PyPI — `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)
 
 ### CompilerSutra AppFarm

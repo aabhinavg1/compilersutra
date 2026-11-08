@@ -11,7 +11,7 @@ keywords:
 
 # Observatory
 
-Research framing for **CompilerSutraPerf** (`csperf`, [PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)). This is the north star. Alpha **0.2.0** already ships the Linux CPU path; GPU and static-analysis pieces grow toward this vision.
+Research framing for **CompilerSutraPerf** (`csperf`, [PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)). This is the north star. Alpha **0.3.0** ships plugins, schema v2, and `csrun` Vulkan execute; static-analysis observatory runners grow in 0.4+.
 
 ## Problem
 
@@ -44,15 +44,16 @@ Different numbers are different kinds of evidence. Keep them labeled:
 | Label | Examples |
 | --- | --- |
 | **Hardware measurement** | Wall time, `perf` / PAPI, rocprof, RAPL |
+| **Emulated** | QEMU user-mode wall time (not silicon PMU) |
 | **Model-based estimation** | `llvm-mca`, cost models (roadmap) |
 | **Static analysis only** | IR/asm size, instruction count (roadmap) |
 
 Never present theoretical analysis as measured hardware performance. Never claim GPU speed without running on that GPU. Details: [Methodology](/docs/project/compilersutra-perf/methodology/).
 
-## What you can run today (0.2.0)
+## What you can run today (0.3.0)
 
 ```python
-pip install compilersutra-perf
+pip install 'compilersutra-perf==0.3.0'
 csperf doctor
 csperf quickstart --output-dir results/quickstart
 
@@ -70,10 +71,11 @@ csperf run --input examples/cpp/matrix_traversal.cpp \
 | --- | --- |
 | Common CLI | Shipped |
 | CPU compile / run / profile | Solid on Linux |
-| HIP / OpenCL / Vulkan | Experimental (Vulkan = validate) |
+| Plugins / schema v2 | Shipped in 0.3.0 |
+| HIP / OpenCL / Vulkan | Experimental (Vulkan via `csrun` when available) |
 | Result schema + diff + HTML/PDF | Shipped |
 | Energy backends | Partial (RAPL / AMD GPU / macOS) |
-| LLVM discovery, asm / llvm-mca suites | Planned |
+| LLVM discovery, asm / llvm-mca suites | Planned (0.4+) |
 | Android / embedded telemetry | Planned |
 
 ## Target workflow
@@ -99,8 +101,8 @@ IR emission (clang) is best-effort today. Full assembly extraction, static instr
 | Milestone | Theme |
 | --- | --- |
 | **0.2.0** (shipped) | run / profile / diff / report, energy, quickstart, honesty docs |
-| **0.3.0** | Plugins, schema, registries |
-| **0.4.0** | Observatory MVP: LLVM discovery, IR/asm JSON, first static experiments |
+| **0.3.0** (shipped) | Plugins, schema v2, registries, `list-toolchains`, csrun Vulkan |
+| **0.4.0** | Observatory MVP: runners on ToolchainProvider, IR/asm JSON, first static experiments |
 | **0.5.0** | Asm analyzer, llvm-mca, research Markdown reports |
 | **0.6.0** | Regression taxonomy, A-vs-B research diffs, vendor reports |
 | **0.7.0** | Android / embedded field telemetry |
