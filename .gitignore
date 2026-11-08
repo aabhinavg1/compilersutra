@@ -27,3 +27,7 @@ dsa_skills.sh
 basic_terminology.md
 package-lock.json
 package-lock.json
+
+# Python cache
+__pycache__/
+*.py[cod]

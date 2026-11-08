@@ -34,19 +34,22 @@ def get_base_commit() -> str:
         return base
 
 # --- Get commit log ---
-def get_commit_log(docs_changed_flag: bool, base: str = "") -> str:
+def get_commit_log(docs_changed_flag: bool, base: str = "", head: str = "HEAD") -> str:
     if docs_changed_flag:
         base = base or get_base_commit()
-        log(f"Docs changed: reading commits from {base} to HEAD")
-        return run(f"git log {base}..HEAD --no-merges --pretty=format:'---%n%B'")
+        log(f"Docs changed: reading commits from {base} to {head}")
+        # Include merge commits: push-to-main merges (e.g. PR merges) may carry docs without
+        # a 'link:'/'nodoc' line in the merge subject; the underlying commits are still checked.
+        return run(f"git log {base}..{head} --pretty=format:'---%n%B'")
     else:
         log("No docs changed: reading latest commit only")
-        return run("git log -1 --no-merges --pretty=format:'---%n%B'")
+        return run(f"git log -1 --no-merges --pretty=format:'---%n%B' {head}")
 
 # --- Parse commit log ---
 def parse_commit_log(log_text: str):
     link = None
     nodoc = False
+    pr_merge = False
     log("Parsing commit log")
 
     for line in log_text.splitlines():
@@ -61,7 +64,11 @@ def parse_commit_log(log_text: str):
             nodoc = True
             log("Found nodoc marker")
 
-    return link, nodoc
+        # Common merge subjects on protected/main pushes: "Merge pull request #N ..." or "... (#N)"
+        if re.match(r'(?i)^merge pull request #\d+\b', line) or re.search(r'\(#\d+\)\s*$', line):
+            pr_merge = True
+
+    return link, nodoc, pr_merge
 
 # --- Send Discord message ---
 def send_discord(message: str, webhook_url: str):
@@ -114,17 +121,20 @@ def main():
         head = run("git rev-parse HEAD")
         log(f"Fallback head commit: {head}")
 
-    commit_log = get_commit_log(docs_flag, base)
+    commit_log = get_commit_log(docs_flag, base, head)
     print("\n===== COMMIT LOG =====")
     print(commit_log)
     print("=====================\n")
 
-    link, nodoc = parse_commit_log(commit_log)
+    link, nodoc, pr_merge = parse_commit_log(commit_log)
 
     # Enforce commit message policy
     if docs_flag and not link:
-        log("Policy violation: docs changed but missing 'link:'")
-        sys.exit(1)
+        if pr_merge and os.environ.get("GITHUB_EVENT_NAME", "") == "push":
+            log("Docs changed in merge/push; no 'link:' found (merge commit has no link line). Allowing; Discord notification will be skipped unless a link is present.")
+        else:
+            log("Policy violation: docs changed but missing 'link:'")
+            sys.exit(1)
     if not docs_flag and not nodoc:
         log("Policy violation: no docs changed but missing 'nodoc'")
         sys.exit(1)
