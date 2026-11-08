@@ -43,6 +43,7 @@ Requirements:
 7. SEO and page metadata are required:
    - Add a useful frontmatter `keywords` list with the flag spelling, inverse/sibling spellings, Clang/GCC terms, language terms, LLVM/TBAA terms, and relevant optimization concepts.
    - Write a descriptive, search-friendly frontmatter `description` that names the flag, Clang, the affected compiler mechanism, and C/C++ or target scope as applicable.
+   - Import Head as a default export only: `import Head from '@docusaurus/Head';`. Never `import { Head }` (undefined → Vercel `Element type is invalid`).
    - Keep `Head` metadata aligned with the page: `keywords`, `og:title`, `og:description`, `og:type`, and Twitter title/description. Do not keyword-stuff or make claims unsupported by the article.
 8. Use Docusaurus Markdown extensions where they improve clarity:
    - Use `:::tip` for practical guidance or a safe workflow.
@@ -56,6 +57,8 @@ Requirements:
    - Use a centered, visible Docusaurus CTA: `className="button button--primary button--lg"`.
    - Label it `✉ Subscribe to Weekly Compiler Notes` and add a short supporting line about practical LLVM/Clang/compiler-engineering notes.
    - Open external links with `target="_blank"` and `rel="noopener noreferrer"`; include an accessible `aria-label`.
+   - MDX-critical: keep the entire `<a>...</a>` on a single line. Do not put the link text on its own line between the tags (MDX treats that as a markdown paragraph and the build fails with `end-tag-mismatch` on `</a>`). Prefer this exact shape:
+     `<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>`
 10. Tone: technical reference for compiler engineers. Concrete, measured, ABI-honest. No hype, no “AI/agent” voice, no filler.
 11. Keep CSS/components as-is unless a small prop/CSS fix is required for this flag’s content.
 12. After writing, sanity-check:

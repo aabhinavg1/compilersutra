@@ -1,40 +1,193 @@
 ---
 title: "-fstack-protector-all"
 slug: "/tools/clang-flags/-fstack-protector-all/"
-description: "Enable stack protectors for all functions"
+description: "Forces stack canary generation for every function regardless of local stack frame contents or array buffers."
+keywords: [clang, -fstack-protector-all, stack canary, ssp, security, compiler flags, llvm]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fstack-protector-all">
+{/* HAND_AUTHORED */}
+<Head>
+  <title>-fstack-protector-all — Clang Flags Explorer</title>
+  <meta name="description" content="Forces stack canary generation for every function regardless of local stack frame contents or array buffers." />
+</Head>
+
+<FlagArticleShell flagPath="-fstack-protector-all" summary="Enforces stack canary instrumentation across all functions unconditionally.">
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+## At a glance
+
+| Field | Details |
+| :--- | :--- |
+| **Architecture** | Target-independent (x86_64, AArch64, ARM, RISC-V, etc.) |
+| **Category** | Code Generation / Security |
+| **Compiler** | Clang, GCC |
+| **Optimization Level** | Compatible with all (`-O0` through `-O3`, `-Os`, `-Oz`) |
+| **Risk / Overhead** | High code size overhead; non-negligible CPU runtime cost for leaf/tiny functions |
 
 ## What this flag actually does
 
-Enable stack protectors for all functions
+`-fstack-protector-all` instructs the compiler to insert stack canary checks into the prologue and epilogue of **every single function**, regardless of whether the function allocates stack buffers, local arrays, or references addresses of local variables.
 
-## When to use it
+When Clang processes code with this flag:
+1. The frontend (`clang -cc1`) attaches the `stack_protect_req` attribute to every function in the emitted LLVM IR.
+2. During code generation, the `StackProtector` target-independent LLVM pass identifies functions carrying `stack_protect_req` (level 3 enforcement) and unconditionally marks them for instrumentation.
+3. The SelectionDAG / GlobalISel backends insert code in the function prologue to load a canary value (typically from global thread-local storage like `%fs:0x28` on Linux x86_64, `__stack_chk_guard`, or a dedicated register on embedded targets) and write it onto the stack frame directly adjacent to the saved frame pointer and return address.
+4. In the function epilogue, the compiler emits a check comparing the frame-allocated canary against the source guard value. If a mismatch is detected (indicating a buffer overflow corrupted the stack frame), the runtime invokes `__stack_chk_fail()`, terminating execution immediately.
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+### Stack protector modes comparison
 
-## When not to use it
+| Flag | Trigger Condition | LLVM Attribute |
+| :--- | :--- | :--- |
+| `-fno-stack-protector` | Never instrument | *(none)* |
+| `-fstack-protector` | Functions allocating character arrays $\ge 8$ bytes (or target threshold) | `ssp` |
+| `-fstack-protector-strong` | Functions with local arrays, address-taken locals, or struct buffers | `sspstrong` |
+| **`-fstack-protector-all`** | **All functions unconditionally** | `sspreq` (`stack_protect_req`) |
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+## Code representation (LLVM IR)
+
+Consider a function that takes no parameters and performs simple arithmetic:
+
+<SourceCode 
+  language="cpp"
+  code={`int add(int a, int b) {
+    return a + b;
+}`}
+/>
+
+When compiled with `-fstack-protector-strong` or default settings, this function receives no stack protector because it contains no stack allocations. However, under `-fstack-protector-all`, Clang attaches the explicit `stack_protect_req` attribute to the function definition:
+
+```llvm
+define dso_local i32 @add(i32 %a, i32 %b) #0 {
+  ; ...
+}
+
+attributes #0 = { stack_protect_req ... }
+```
+
+## Assembly generation diff
+
+Here is how `-fstack-protector-all` alters the generated assembly on x86_64 System V ABI for a function without array buffers:
+
+<AsmDiff
+  before={`# -fno-stack-protector or default (x86_64)
+add:
+    mov     eax, edi
+    add     eax, esi
+    ret`}
+  after={`# -fstack-protector-all (x86_64)
+add:
+    sub     rsp, 24
+    mov     rax, qword ptr fs:[40]
+    mov     qword ptr [rsp + 8], rax
+    mov     eax, edi
+    add     eax, esi
+    mov     rcx, qword ptr [rsp + 8]
+    cmp     rcx, qword ptr fs:[40]
+    jne     .LBB0_2
+    add     rsp, 24
+    ret
+.LBB0_2:
+    call    __stack_chk_fail@PLT`}
+/>
+
+Notice that a function that originally reduced to 3 instructions (`mov`, `add`, `ret`) and required no stack allocation now allocates a 24-byte stack frame, reads TLS memory at `%fs:40`, stores the guard value, performs the arithmetic, re-reads TLS memory, compares values, conditionally branches, and potentially calls `__stack_chk_fail`.
+
+## Why use it / when not to use it
+
+### Why use it
+* **Hardened Security Baselines**: Used in high-security environments, embedded critical systems, or defense systems where strict compliance mandates that zero functions exist without canary protection.
+* **Compiler Debugging & Testing**: Compiler developers testing the `StackProtector` pass implementation use `-fstack-protector-all` to ensure the prologue/epilogue instrumentation pipeline functions across all supported ABI frame layouts.
+
+### When NOT to use it
+* **General Production Builds**: Use `-fstack-protector-strong` instead. `-fstack-protector-strong` captures virtually all realistic stack-smashing vectors (arrays, address-of local variable vectors, structure member arrays) with a fraction of the performance cost.
+* **High-Frequency Utility Functions**: Instrumenting small math, inline getter, or accessor functions adds instruction cache footprint, spills registers to setup stack space, and degrades execution throughput without providing meaningful security benefit.
+* **Bare-Metal / Kernel Environments without Runtime Support**: If the target environment does not provide `__stack_chk_guard` and `__stack_chk_fail`, binaries built with `-fstack-protector-all` will fail to link.
+
+## Performance impact
+
+`-fstack-protector-all` introduces substantial qualitative performance penalties compared to standard or `-fstack-protector-strong` builds:
+
+1. **Prologue/Epilogue Bloat**: Every function call site forces a stack frame allocation, at least two memory operations (TLS load + stack store, stack load + TLS load/compare), and a branch.
+2. **Register Pressure**: On architectures with limited general-purpose registers (such as x86-32 or ARM Thumb-1), storing and comparing canary guards consumes working registers, forcing extra spills.
+3. **Inlining Suppression**: The presence of canary checks increases LLVM's internal inline cost metric for candidate functions, preventing small functions from being inlined into caller loops.
+4. **Cache Footprint**: Binary size increases across all text sections, degrading instruction cache hit rates.
+
+:::caution
+For standard software distribution, `-fstack-protector-strong` is recommended over `-fstack-protector-all` by GCC and Clang security teams. `-fstack-protector-strong` strikes the optimal security/performance tradeoff.
+:::
+
+## Compatibility table
+
+| Compiler / Toolchain | Switch Support | Notes |
+| :--- | :--- | :--- |
+| **Clang / LLVM** | Supported | Emits `stack_protect_req` attribute in LLVM IR |
+| **GCC** | Supported | Identical flag syntax and semantics |
+| **Apple Clang** | Supported | Default system configurations prefer `-fstack-protector-strong` |
+| **MSVC (`cl.exe`)** | Unsupported (`/GS` equivalent) | MSVC `/GS` uses heuristic-based canary insertion akin to `-fstack-protector` |
 
 ## Usage example
 
+<Tabs>
+  <TabItem value="driver" label="Clang Driver Command" default>
+
 ```bash
-clang++ -fstack-protector-all -c main.cpp
+# Compile and link C/C++ program forcing stack canaries on all functions
+clang -O2 -fstack-protector-all -o secure_app main.c
+
+# Verify symbol references for stack check handler
+nm secure_app | grep __stack_chk_fail
 ```
 
-## Key facts
+  </TabItem>
+  <TabItem value="ir" label="Inspecting LLVM IR Output">
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption
-- **Stage**: driver, category `Code Generation`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+```bash
+# Observe stack_protect_req attribute addition in emitted IR
+clang -S -emit-llvm -fstack-protector-all test.c -o - | grep stack_protect_req
+```
+
+  </TabItem>
+</Tabs>
+
+## Adjacent options
+
+* `-fstack-protector`: Standard protection for functions containing character buffers $\ge 8$ bytes.
+* `-fstack-protector-strong`: Heuristic-based protection (covers arrays of any type, address-taken local variables, and struct members).
+* `-fno-stack-protector`: Disables stack canary generation completely.
+* `-mstack-protector-guard=kind`: Specifies the guard region for canary storage (e.g., `tls` vs `global`).
+* `-mstack-protector-guard-reg=reg`: Specifies the register used for TLS stack canary storage (e.g., `%fs` or `%gs`).
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Detail |
+| :--- | :--- |
+| **Driver Option Parsing** | Defined in `clang/include/clang/Driver/Options.td`. The driver maps `-fstack-protector-all` to `LangOpts.setStackProtector(LangOptions::SSPReq)`. |
+| **Frontend IR Gen** | `clang::CodeGen::CodeGenModule` applies the LLVM attribute `Attribute::StackProtectReq` (`stack_protect_req`) to emitted `llvm::Function` objects. |
+| **LLVM Target-Independent IR Pass** | `llvm::StackProtectorPass` inspects `Attribute::StackProtectReq`. If present, it marks the function for layout modification unconditionally. |
+| **CodeGen & SelectionDAG** | `SelectionDAGISel` or `GlobalISel` emits target-specific prologue load of TLS/global guard and epilogue validation logic branching to `__stack_chk_fail`. |
+
+To verify the exact frontend translation logic in the LLVM source tree:
+* Option mapping: `clang/lib/Driver/ToolChains/Clang.cpp`
+* Attribute emission: `clang/lib/CodeGen/CGCall.cpp`
+* Target-independent canary insertion: `llvm/lib/CodeGen/StackProtector.cpp`
+*(Verify against tip of llvm-project).*
+
+<KeyFacts
+  args="Flag (no argument)"
+  acceptingCompilers="Clang, GCC"
+  category="Code Generation / Security"
+  stage="Driver -> Frontend Lowering -> LLVM Target-Independent Pass"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>

@@ -1,0 +1,20 @@
+---
+title: "OpenMP schedules quiz"
+description: "Five questions for OpenMP schedules. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# OpenMP schedules quiz
+
+Lesson: [OpenMP schedules](/docs/parallel-computing/openmp-schedules/)
+
+<Question question="1. What is the default chunk size for a dynamic schedule if chunk_size is omitted?" options={["0", "1", "16", "64"]} answer="1" />
+
+<Question question="2. Which OpenMP environment variable is used to specify the loop schedule when using schedule(runtime)?" options={["OMP_NUM_THREADS", "OMP_SCHEDULE", "OMP_DYNAMIC", "OMP_LOOP_CHOICE"]} answer="OMP_SCHEDULE" />
+
+<Question question="3. Which schedule starts with large chunks and hands out exponentially decreasing chunk sizes as the loop progresses?" options={["static", "dynamic", "guided", "runtime"]} answer="guided" />
+
+<Question question="4. What primary tradeoff does static scheduling make compared to dynamic scheduling?" options={["Higher runtime overhead for better memory access", "Minimal runtime overhead but poor load balancing for uneven loops", "Guaranteed thread safety at the expense of memory locality", "Elimination of loop-carried data dependencies"]} answer="Minimal runtime overhead but poor load balancing for uneven loops" />
+
+<Question question="5. What can an OpenMP schedule clause NOT do?" options={["Control work assignment to threads", "Alter how iterations map to execution threads", "Remove or resolve a loop-carried data dependence", "Defer schedule choice to runtime environment variables"]} answer="Remove or resolve a loop-carried data dependence" />

@@ -1,0 +1,88 @@
+name: Auto Approve & Merge (compilersutra PRs)
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  status: {}
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number (optional; processes all open compilersutra PRs if empty)
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve and merge compilersutra PRs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.COMPILERSUTRA_BOT_TOKEN || secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const allowed = new Set(['compilersutra', 'aabhinavg1']);
+
+            let prs = [];
+            if (context.payload.pull_request) {
+              prs = [context.payload.pull_request];
+            } else if (context.payload.inputs?.pr_number) {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: Number(context.payload.inputs.pr_number) });
+              prs = [data];
+            } else {
+              const { data } = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 100 });
+              prs = data.filter(pr => allowed.has(pr.user.login));
+            }
+
+            for (const pr0 of prs) {
+              const pull_number = pr0.number;
+              let { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number });
+              if (!allowed.has(pr.user.login) || pr.draft) continue;
+
+              core.info(`Processing PR #${pull_number} by ${pr.user.login} (${pr.mergeable_state}/${pr.mergeable})`);
+
+              try {
+                await github.rest.pulls.createReview({ owner, repo, pull_number, event: 'APPROVE' });
+                core.info(`Approved #${pull_number}`);
+              } catch (e) {
+                core.info(`Approve #${pull_number}: ${e.message}`);
+              }
+
+              // Refresh; UNKNOWN often means GitHub is computing mergeability
+              if (pr.mergeable === null || pr.mergeable_state === 'unknown') {
+                await new Promise(r => setTimeout(r, 5000));
+                ({ data: pr } = await github.rest.pulls.get({ owner, repo, pull_number }));
+              }
+
+              if (pr.mergeable_state === 'dirty') {
+                try {
+                  await github.rest.issues.addLabels({ owner, repo, issue_number: pull_number, labels: ['auto-resolve-conflicts'] });
+                } catch (e) {}
+                core.info(`#${pull_number} has conflicts; conflict resolver should run`);
+                continue;
+              }
+
+              if (pr.merged) continue;
+
+              try {
+                await github.rest.pulls.merge({ owner, repo, pull_number, merge_method: 'merge' });
+                core.info(`Merged #${pull_number}`);
+              } catch (e) {
+                core.info(`Merge #${pull_number} failed: ${e.message}`);
+                // Try enabling auto-merge (GraphQL) when blocked by checks
+                try {
+                  const q = `mutation($pr:ID!){ enablePullRequestAutoMerge(input:{pullRequestId:$pr, mergeMethod:MERGE}){ pullRequest{ number } } }`;
+                  await github.graphql(q, { pr: pr.node_id });
+                  core.info(`Enabled auto-merge for #${pull_number}`);
+                } catch (e2) {
+                  core.info(`Auto-merge enable failed: ${e2.message}`);
+                }
+              }
+            }

@@ -55,30 +55,38 @@ jobs:
           echo "HEAD_COMMIT=$HEAD" >> "$GITHUB_ENV"
 
       # ---------------------------------
-      # 2️⃣ Enforce commit policy & send Discord
+      # 2️⃣ Enforce commit policy
       # ---------------------------------
-      - name: Enforce commit policy and notify
+      - name: Enforce commit policy
         env:
           DOCS_CHANGED: ${{ env.DOCS_CHANGED }}
           BASE_COMMIT: ${{ env.BASE_COMMIT }}
           HEAD_COMMIT: ${{ env.HEAD_COMMIT }}
-          DISCORD_WEBHOOK_GENERAL: ${{ secrets.DISCORD_WEBHOOK_GENERAL }}
-          DISCORD_WEBHOOK_LLVM_DISCUSSION: ${{ secrets.DISCORD_WEBHOOK_LLVM_DISCUSSION }}
         run: |
           python3 .ci/commit_policy.py
 
       # ---------------------------------
       # 3️⃣ Build project
       # ---------------------------------
+      - name: Setup Node.js
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npm ci
+
       - name: Build project
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "Starting build"
+          npm run build
           echo "Build completed successfully"
 
-      # ---------------------------------
-      # 4️⃣ Notify pipeline completion
-      # ---------------------------------
-      - name: Notify
+      - name: Pipeline complete
         run: |
           echo "Documentation changed: $DOCS_CHANGED"
-          echo "CI pipeline finished"
+          echo "CI pipeline finished (Discord notifications are sent only after a successful Production deployment)"

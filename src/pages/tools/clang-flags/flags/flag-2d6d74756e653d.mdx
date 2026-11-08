@@ -1,41 +1,198 @@
 ---
 title: "-mtune="
 slug: "/tools/clang-flags/-mtune%3D/"
-description: "Only supported on AArch64, PowerPC, RISC-V, SPARC, SystemZ, and X86"
+description: "Tunes code generation and instruction scheduling for a specific CPU microarchitecture without altering the target ISA baseline."
+keywords: [-mtune, clang, llvm, microarchitecture, instruction scheduling, aarch64, x86, target CPU]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-mtune%3D">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-mtune= — Clang Flags Explorer — CompilerSutra</title>
+  <meta name="description" content="Tunes code generation and instruction scheduling for a specific CPU microarchitecture without altering the target ISA baseline." />
+</Head>
+
+<FlagArticleShell flagPath="-mtune=" summary="Optimizes instruction selection, scheduling, and alignment choices for a specific CPU microarchitecture while keeping the target ISA baseline fixed.">
+
+<Callout variant="info" title="✉ Subscribe to Weekly Compiler Notes">
+  Get deep-dives into compiler backend engineering, ISA design, and LLVM codegen optimizations delivered directly to your inbox. <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer">Sign up for free</a>.
+</Callout>
+
+## At a glance
+
+| Field | Details |
+| :--- | :--- |
+| **Architecture** | AArch64, PowerPC, RISC-V, SPARC, SystemZ, X86 |
+| **Category** | Code Generation / Microarchitecture Tuning |
+| **Compiler** | Clang, Flang |
+| **Optimization impact** | Microarchitecture-specific instruction scheduling, loop unrolling thresholds, instruction fusion, vectorizer costs |
+| **Portability risk** | **Low**. Code generated with `-mtune=` executes safely on any CPU matching the target ISA baseline. |
+
+---
 
 ## What this flag actually does
 
-Only supported on AArch64, PowerPC, RISC-V, SPARC, SystemZ, and X86
+The `-mtune=` flag controls microarchitectural optimizations in LLVM's code generator without altering the target Instruction Set Architecture (ISA). Unlike `-march=` or `-mcpu=`, which enable target-specific vector/crypto extensions and render binaries incompatible with older hardware, `-mtune=` strictly adjusts cost models, instruction scheduling latencies, pipeline hazard avoidance, branch alignment, and machine-level instruction fusion.
 
+When passed to the driver, `-mtune=<cpu>` translates into target-specific backend target features (such as `+tune-cpu=<cpu>`) or target-cpu attributes in LLVM IR. 
 
+Key backend parameters governed by `-mtune=`:
+- **Instruction Scheduling**: Reorders assembly instructions based on the pipeline depth, execution port distribution, and functional unit latencies of the tuned core.
+- **Instruction Selection & Fusion**: Prefers macro-fusion pairs (e.g., `cmp` + `jmp` on modern x86 cores) or micro-fusion opportunities.
+- **Loop & Unrolling Heuristics**: Adjusts software pipelining costs, unroll factors, and loop vectorization cost models.
+- **Memory & Alignment**: Adjusts preferred branch target alignment, code block padding, and cache line prefetch behavior.
 
-This option expects an argument.
+```
+       -march=x86-64-v2 (Sets ABI baseline: SSE4.2, POPCNT)
+              │
+              ├── -mtune=generic (Default scheduling/cost model)
+              │
+              └── -mtune=znver3  (Optimized pipeline scheduling for AMD Zen 3; same binary ISA)
+```
 
-## When to use it
+:::note
+If `-mcpu=` is specified, it sets both the target ISA capabilities and the tuning target. Specifying `-mtune=` explicitly overrides the tuning target while keeping the target ISA unchanged.
+:::
 
-- You are targeting Target-dependent compilation options and want this joined behavior applied to the whole compilation.
+---
 
-## When not to use it
+## Minimal realistic example
 
-- Your build targets a different architecture — this joined is accepted only when targeting Target-dependent compilation options.
+Consider a simple function that computes an inner product over a array of floating-point values:
+
+<SourceCode
+  language="cpp"
+  code={`float dot_product(const float* a, const float* b, int n) {
+    float sum = 0.0f;
+    for (int i = 0; i < n; ++i) {
+        sum += a[i] * b[i];
+    }
+    return sum;
+}`}
+/>
+
+When compiled with `-O2 -march=x86-64-v3`, setting `-mtune=skylake` vs `-mtune=znver3` changes how LLVM's Machine Instruction Scheduler orders memory loads relative to floating-point operations, and adjusts vector loop unrolling depth based on L1 bus bandwidth and execution port throughput.
+
+---
+
+## Before vs. after assembly
+
+Below is an assembly comparison for an unrolled vector kernel compiled for `aarch64` under `-O3 -march=armv8-a`. The target ISA remains baseline ARMv8-A, but tuning for `cortex-a53` (in-order dual-issue core) versus `cortex-a78` (out-of-order wide core) alters instruction interleaving and register allocation to avoid pipeline stalls on the in-order pipeline.
+
+<AsmDiff
+  before={{
+    title: "AArch64 (-O3 -march=armv8-a -mtune=cortex-a53)",
+    code: `.LBB0_2:
+    ldr     q0, [x0], #16
+    ldr     q1, [x1], #16
+    fmul    v0.4s, v0.4s, v1.4s
+    fadd    v2.4s, v2.4s, v0.4s
+    subs    w2, w2, #4
+    b.ne    .LBB0_2
+    ; In-order scheduling: loads interleave 
+    ; strictly to minimize pipeline dependency stalls`
+  }}
+  after={{
+    title: "AArch64 (-O3 -march=armv8-a -mtune=cortex-a78)",
+    code: `.LBB0_2:
+    ldr     q0, [x0, x3]
+    ldr     q1, [x1, x3]
+    ldr     q3, [x0, x4]
+    ldr     q4, [x1, x4]
+    fmul    v0.4s, v0.4s, v1.4s
+    fmul    v3.4s, v3.4s, v4.4s
+    fadd    v2.4s, v2.4s, v0.4s
+    fadd    v5.4s, v5.4s, v3.4s
+    add     x3, x3, #32
+    add     x4, x4, #32
+    subs    w2, w2, #8
+    b.ne    .LBB0_2
+    ; Out-of-order scheduling: aggressive unrolling 
+    ; to leverage execution port capacity`
+  }}
+/>
+
+---
+
+## Why use it / when not to use it
+
+### Recommended Use Cases
+- **Generic Binary Distribution with Target Fleet Tuning**: When building binaries that must run on older baseline hardware (e.g., standard x86-64-v2 cloud instances) but the majority of your deployment fleet runs on a specific newer generation (e.g., `znver3` or `neoverse-n1`).
+- **Performance Profiling**: Isolating pipeline bottleneck differences across microarchitectural generations without dealing with ISA capability drift.
+
+### When Not to Use It
+- **When `-march=` or `-mcpu=` is already precise**: If you are compiling locally for host hardware using `-march=native` or `-mcpu=native`, `-mtune=` is already set implicitly to match your machine.
+- **Target cross-compilation without ISA restrictions**: If your code will strictly run on a controlled microarchitecture, use `-mcpu=<target>` (ARM/RISC-V) or `-march=<target>` (x86) to allow full ISA extensions (AVX-512, SVE, BMI2) alongside microarchitecture tuning.
+
+---
+
+## Performance impact
+
+`-mtune=` yields purely qualitative, execution-pipeline-level trade-offs:
+
+- **Positive Impact**: Better hardware resource utilization (execution ports, load/store queues, latency hiding) on the specified microarchitecture.
+- **Negative/Neutral Impact**: On legacy or non-matching hardware architectures, tuned code remains 100% functionally correct, but instruction reordering or aggressive loop unrolling tuned for a wide out-of-order pipeline may cause minor register pressure or cache footprint overhead on narrower cores.
+
+---
+
+## Compatibility table
+
+| Target Architecture | Driver Support | CC1 Driver Translation | Primary Impact in LLVM Backend |
+| :--- | :--- | :--- | :--- |
+| **AArch64** | Yes | `-target-feature +tune-cpu=<name>` / `target-cpu` | Macro-op fusion, instruction scheduler latencies |
+| **x86 / x86-64** | Yes | `-target-feature +tune-cpu=<name>` | Vectorizer cost model, branch alignment, FP latencies |
+| **RISC-V** | Yes | `-target-feature +tune-cpu=<name>` | Pipeline scheduling, load-store alignment choices |
+| **PowerPC** | Yes | `-target-feature +tune-cpu=<name>` | Core-specific latency models |
+| **SystemZ / SPARC** | Yes | Target-specific backend flags | Scheduler subtarget features |
+
+---
 
 ## Usage example
 
 ```bash
-clang++ -mtune= -c main.cpp
+# 1. Target a generic x86-64 baseline while tuning pipeline for Intel Sapphire Rapids
+clang++ -O3 -march=x86-64-v3 -mtune=sapphirerapids -c core_loop.cpp -o core_loop.o
+
+# 2. Cross-compiling for ARMv8-A baseline, tuned specifically for AWS Graviton2 (Neoverse-N1)
+clang -O3 --target=aarch64-linux-gnu -march=armv8-a -mtune=neoverse-n1 service.c -o service
+
+# 3. Inspecting the exact driver flag forwarding and backend feature strings
+clang -O2 -mtune=znver3 -### -c test.c
 ```
 
-## Key facts
+---
 
-- **Argument form**: Joined (takes an argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Target-Specific Code Generation`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+## Adjacent options
+
+- **`-march=`**: Defines the minimum baseline Instruction Set Architecture (ISA) available to the compiler.
+- **`-mcpu=`**: On architectures like AArch64 and PowerPC, sets both the baseline target ISA (`-march=`) and the microarchitectural tuning (`-mtune=`) simultaneously.
+- **`-mtune=generic`**: Resets microarchitecture tuning back to LLVM's balanced, target-agnostic cost model.
+
+---
+
+## How it works inside Clang
+
+| Compilation Stage | Component | Execution / Transformation |
+| :--- | :--- | :--- |
+| **Driver Options** | `clang/include/clang/Driver/Options.td` | Driver parses `-mtune=` via `Joined<["-"], "mtune=">`. |
+| **Driver Translation** | `clang/lib/Driver/ToolChains/Arch/` | Target-specific driver logic (e.g., `X86.cpp`, `AArch64.cpp`) translates the tuned CPU name into target features (`+tune-cpu=...`) or LLVM IR attributes. |
+| **LLVM IR Generation** | `clang/lib/CodeGen/CodeGenModule.cpp` | Emits `"tune-cpu"="<cpu_name>"` as a function-level IR attribute on generated functions. |
+| **LLVM Target Backend** | `llvm/lib/Target/<Arch>/` | Subtarget features query the core-specific `ProcessorModel` defined in TableGen (`.td`) files to populate `TargetSchedModel` and `TargetTransformInfo`. |
+
+---
+
+<KeyFacts
+  args="Joined (e.g., -mtune=cortex-a78)"
+  acceptedBy="Clang, Flang"
+  stage="Driver -> Backend Subtarget Parsing"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>

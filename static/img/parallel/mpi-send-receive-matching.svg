@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" height="100%">
+  <rect width="720" height="280" fill="#0f172a" rx="8" />
+  
+  <!-- Rank 0 Column -->
+  <rect x="30" y="30" width="300" height="220" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6" />
+  <text x="40" y="55" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold">Rank 0 (Sender)</text>
+  <rect x="45" y="75" width="270" height="155" fill="#0f172a" stroke="#475569" rx="4" />
+  <text x="55" y="100" fill="#38bdf8" font-family="monospace" font-size="13">MPI_Send(buf, count, type,</text>
+  <text x="75" y="125" fill="#38bdf8" font-family="monospace" font-size="13">dest = 1,</text>
+  <text x="75" y="150" fill="#38bdf8" font-family="monospace" font-size="13">tag = 100,</text>
+  <text x="75" y="175" fill="#38bdf8" font-family="monospace" font-size="13">comm = MPI_COMM_WORLD)</text>
+
+  <!-- Rank 1 Column -->
+  <rect x="390" y="30" width="300" height="220" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6" />
+  <text x="400" y="55" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold">Rank 1 (Receiver)</text>
+  <rect x="405" y="75" width="270" height="155" fill="#0f172a" stroke="#475569" rx="4" />
+  <text x="415" y="100" fill="#4ade80" font-family="monospace" font-size="13">MPI_Recv(buf, count, type,</text>
+  <text x="435" y="125" fill="#4ade80" font-family="monospace" font-size="13">source = 0 (or ANY_SOURCE),</text>
+  <text x="435" y="150" fill="#4ade80" font-family="monospace" font-size="13">tag = 100 (or ANY_TAG),</text>
+  <text x="435" y="175" fill="#4ade80" font-family="monospace" font-size="13">comm = MPI_COMM_WORLD)</text>
+
+  <!-- Matching Arrow -->
+  <path d="M 315 145 L 405 145" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrow)" />
+  <text x="332" y="135" fill="#f59e0b" font-family="sans-serif" font-size="12" font-weight="bold">Match</text>
+
+  <!-- Arrowhead definition -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+</svg>
