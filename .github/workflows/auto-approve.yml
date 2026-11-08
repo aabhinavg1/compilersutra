@@ -1,11 +1,14 @@
 name: Auto Approve
 
-# Thin wrapper: real approve+merge lives in auto-merge-compilersutra.yml.
-# Kept so older required-check names / bookmarks still succeed for compilersutra.
+# For every non-draft PR from compilersutra:
+# 1) request aabhinavg1 as reviewer
+# 2) auto-approve as aabhinavg1 (via AUTO_MERGE_TOKEN PAT)
+#
+# Secret AUTO_MERGE_TOKEN must be a PAT for aabhinavg1 (not compilersutra).
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   pull-requests: write
@@ -16,23 +19,39 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'compilersutra' && !github.event.pull_request.draft
     steps:
-      - name: Approve compilersutra PR
+      - name: Request aabhinavg1 + approve as aabhinavg1
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
+            const REVIEWER = 'aabhinavg1';
+
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner,
+                repo,
+                pull_number: prNumber,
+                reviewers: [REVIEWER],
+              });
+              console.log('Requested reviewer ' + REVIEWER + ' on #' + prNumber);
+            } catch (e) {
+              console.log('requestReviewers skipped:', e.message);
+            }
+
             try {
               await github.rest.pulls.createReview({
                 owner,
                 repo,
                 pull_number: prNumber,
                 event: 'APPROVE',
-                body: 'Auto-approved: compilersutra bot PR.',
+                body: 'Auto-approved by aabhinavg1 for compilersutra bot PR.',
               });
-              console.log('Approved #' + prNumber);
+              console.log('Approved #' + prNumber + ' as token user (expect aabhinavg1)');
             } catch (e) {
-              console.log('Approve skipped:', e.message);
-              // Do not fail the job — merge workflow will retry with admin token.
+              console.log(
+                'Approve skipped (set AUTO_MERGE_TOKEN to an aabhinavg1 PAT):',
+                e.message
+              );
             }

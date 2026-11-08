@@ -1,7 +1,7 @@
 name: Auto Merge
 
-# Immediate merge for compilersutra (does not wait on Vercel fork checks).
-# Prefer AUTO_MERGE_TOKEN (aabhinavg1 admin PAT). See auto-merge-compilersutra.yml.
+# Immediate path for compilersutra PRs: request aabhinavg1, approve, merge.
+# AUTO_MERGE_TOKEN must be an aabhinavg1 PAT.
 
 on:
   pull_request_target:
@@ -16,23 +16,30 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'compilersutra' && !github.event.pull_request.draft
     steps:
-      - name: Approve and merge now
+      - name: Request aabhinavg1, approve, merge
         env:
           GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN != '' && secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
           set +e
-          gh pr review "$PR_NUMBER" --repo "${{ github.repository }}" --approve \
-            -b "Auto-approved: compilersutra bot PR."
-          # Prefer admin bypass so required Vercel/fork checks cannot stick the queue.
-          if gh pr merge "$PR_NUMBER" --repo "${{ github.repository }}" --merge --admin; then
+          gh api -X POST "repos/${REPO}/pulls/${PR_NUMBER}/requested_reviewers" \
+            -f "reviewers[]=aabhinavg1" \
+            && echo "Requested reviewer aabhinavg1" \
+            || echo "request reviewers skipped"
+
+          gh pr review "$PR_NUMBER" --repo "$REPO" --approve \
+            -b "Auto-approved by aabhinavg1 for compilersutra bot PR." \
+            && echo "Approved" \
+            || echo "Approve skipped (need AUTO_MERGE_TOKEN = aabhinavg1 PAT)"
+
+          if gh pr merge "$PR_NUMBER" --repo "$REPO" --merge --admin; then
             echo "Merged with --admin"
             exit 0
           fi
-          if gh pr merge "$PR_NUMBER" --repo "${{ github.repository }}" --merge; then
+          if gh pr merge "$PR_NUMBER" --repo "$REPO" --merge; then
             echo "Merged without admin"
             exit 0
           fi
-          echo "Merge not completed yet (token may lack bypass); compilersutra workflow will retry on check_suite"
+          echo "Merge not completed yet; auto-merge-compilersutra will retry on check_suite"
           exit 0
