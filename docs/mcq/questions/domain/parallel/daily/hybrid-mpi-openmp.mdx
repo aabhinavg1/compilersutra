@@ -1,0 +1,20 @@
+---
+title: "Hybrid MPI and OpenMP quiz"
+description: "Five questions for Hybrid MPI and OpenMP. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Hybrid MPI and OpenMP quiz
+
+Lesson: [Hybrid MPI and OpenMP](/docs/parallel-computing/hybrid-mpi-openmp/)
+
+<Question question="1. What function should be called to initialize MPI when OpenMP is used in an application?" options={["MPI_Init", "MPI_Init_thread", "omp_init_lock", "MPI_Comm_spawn"]} answer="MPI_Init_thread" />
+
+<Question question="2. Under the MPI_THREAD_FUNNELED support level, which thread is allowed to make MPI calls?" options={["Any thread using critical sections", "All threads concurrently", "Only the main thread", "Only worker threads"]} answer="Only the main thread" />
+
+<Question question="3. Which MPI thread support level allows multiple threads to make MPI calls concurrently without restrictions?" options={["MPI_THREAD_SINGLE", "MPI_THREAD_FUNNELED", "MPI_THREAD_SERIALIZED", "MPI_THREAD_MULTIPLE"]} answer="MPI_THREAD_MULTIPLE" />
+
+<Question question="4. What issue occurs if the total number of ranks and threads on a node exceeds the physical core count?" options={["Network link bandwidth increases", "Thread oversubscription causing context switching overhead", "Process memory overhead decreases to zero", "Automatic SIMD vectorization"]} answer="Thread oversubscription causing context switching overhead" />
+
+<Question question="5. Under the MPI_THREAD_SERIALIZED support level, how may multiple threads execute MPI calls?" options={["Concurrently without locks", "Not concurrently, requiring application-level serialization", "Only from inside master regions", "Concurrently using multiple main threads"]} answer="Not concurrently, requiring application-level serialization" />
