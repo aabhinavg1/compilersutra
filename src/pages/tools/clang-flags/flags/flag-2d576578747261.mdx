@@ -70,11 +70,8 @@ This option does not repair invalid source, undefined behavior, data races, or a
 
 ## Performance impact
 
--Wextra does not intentionally change the generated machine code when compilation succeeds. Its cost is paid during compilation while Clang runs additional diagnostic checks and formats any warnings. The practical impact is therefore compile-time and developer attention, not application runtime.
+`-Wextra` is a diagnostic enablement flag. It does not rewrite LLVM IR or the machine code of a clean program. The cost that matters is **compile-time** warning analysis, not `csperf` wall time of the linked binary. Measure compiler wall time separately if warning overhead matters in CI; use CompilerSutraPerf when you change generated code, not when you only enable diagnostics.
 
-CompilerSutraPerf measures the runtime of the compiled workload, so a runtime PerfReport would not measure the relevant cost of this diagnostic flag. No runtime benchmark is reported here. To measure diagnostic overhead, compare compiler wall time separately with the same source, compiler version, filesystem state, and repeated trials; keep that result distinct from program-performance measurements.
-
-If warnings are promoted with -Werror, the larger build impact is semantic: a warning can change a successful build into a failed build. That affects CI throughput and build policy, but it is not a runtime performance claim.
 
 ## Compatibility
 

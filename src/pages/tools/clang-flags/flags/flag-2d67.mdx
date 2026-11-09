@@ -7,6 +7,7 @@ keywords: ["clang -g", "C", "C++", "compiler options", "LLVM", "Debug informatio
 
 import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import PerfReport from '@site/src/components/clang-flags/PerfReport';
 import SourceCode from '@site/src/components/clang-flags/SourceCode';
 import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
 import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
@@ -51,7 +52,18 @@ This option does not repair invalid source, undefined behavior, data races, or a
 
 ## Performance impact
 
-The qualitative impact depends on the target and workload. No performance numbers are included because no controlled CompilerSutraPerf run was performed for this flag.
+`-g` adds debug information. Optimized runtime is often nearly unchanged; binary size and link time usually grow. Measure both when debug info is part of a release-adjacent build.
+
+The following measurements were produced with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) using `csperf` 0.3.0, Ubuntu clang 18.1.3, x86_64-pc-linux-gnu, CPU affinity 0, one warmup run, five measured trials, profiling disabled:
+
+<PerfReport
+  beforeTitle="Clang -O2"
+  afterTitle="Clang -O2 -g"
+  without={[30.743, 31.231, 30.547, 31.212, 30.648]}
+  with={[31.221, 31.212, 31.319, 31.198, 31.126]}
+  note="Mean wall time: 30.876 ms at -O2 versus 31.215 ms at -O2 -g on prefix_sum.cpp. Runtime is essentially flat here; size/link cost is the usual tradeoff."
+/>
+
 
 ## Compatibility
 

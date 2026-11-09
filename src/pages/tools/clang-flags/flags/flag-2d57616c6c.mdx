@@ -51,7 +51,8 @@ This option does not repair invalid source, undefined behavior, data races, or a
 
 ## Performance impact
 
-The qualitative impact depends on the target and workload. No performance numbers are included because no controlled CompilerSutraPerf run was performed for this flag.
+This option is not a runtime optimizer. It does not change generated code by itself the way `-O2` or `-fvectorize` does. If a macro, include path, language mode, or warning set changes which code you build, measure **that program** with [CompilerSutraPerf](/docs/project/compilersutra-perf/) (`csperf run` / `csperf diff`) the same as any other code change. Do not treat frontend flags as free speedups.
+
 
 ## Compatibility
 

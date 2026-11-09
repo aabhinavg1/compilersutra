@@ -21,6 +21,7 @@ import FlagArticleShell from "@site/src/components/clang-flags/FlagArticleShell"
 import AsmDiff from "@site/src/components/clang-flags/AsmDiff";
 import SourceCode from "@site/src/components/clang-flags/SourceCode";
 import KeyFacts from "@site/src/components/clang-flags/KeyFacts";
+import PerfReport from '@site/src/components/clang-flags/PerfReport';
 
 <Head>
   <meta name="keywords" content="clang optimization levels,clang -O0,clang -O1,clang -O2,clang -O3,clang -Os,clang -Oz,LLVM optimization passes,compiler optimization" />
@@ -133,7 +134,16 @@ Do not choose `-O3` or `-Ofast` because the number is larger. Benchmark represen
 
 ## Performance impact
 
-Higher levels generally cost more compile time. Runtime effects depend on hot loops, inlining, target ISA, code size, and the workload. This page omits `PerfReport` because no controlled CompilerSutraPerf matrix was actually run for this flag.
+The following measurements were produced with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) using `csperf` 0.3.0, Ubuntu clang 18.1.3, x86_64-pc-linux-gnu, CPU affinity 0, one warmup run, five measured trials, profiling disabled:
+
+<PerfReport
+  beforeTitle="Clang -O0"
+  afterTitle="Clang -O"
+  without={[159.057, 158.911, 162.719, 157.39, 162.256]}
+  with={[30.88, 32.137, 32.064, 30.884, 31.335]}
+  note="Mean wall time: 160.067 ms at -O0 versus 31.460 ms at -O on prefix_sum.cpp. One CPU, one workload, five trials — not a universal speedup matrix for every -O level."
+/>
+
 
 ## Compatibility
 

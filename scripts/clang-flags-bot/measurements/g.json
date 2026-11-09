@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-11-09T04:23:56.221Z",
+  "csperf": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf",
+  "input": "/home/aitr/compilersutra/FixIt_Compilersutra/docs/articles/gcc_vs_clang_cases/prefix_sum.cpp",
+  "clang": "clang (csperf default)",
+  "before": {
+    "label": "Clang -O2",
+    "flags": [
+      "-O2"
+    ],
+    "trials_ms": [
+      30.743,
+      31.231,
+      30.547,
+      31.212,
+      30.648
+    ]
+  },
+  "after": {
+    "label": "Clang -O2 -g",
+    "flags": [
+      "-O2",
+      "-g"
+    ],
+    "trials_ms": [
+      31.221,
+      31.212,
+      31.319,
+      31.198,
+      31.126
+    ]
+  },
+  "repro": {
+    "before": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/articles/gcc_vs_clang_cases/prefix_sum.cpp --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2",
+    "after": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/articles/gcc_vs_clang_cases/prefix_sum.cpp --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2 --compiler-flag=-g"
+  }
+}
