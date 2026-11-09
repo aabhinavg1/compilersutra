@@ -1,45 +1,213 @@
 ---
 title: "-fno-omit-frame-pointer"
 slug: "/tools/clang-flags/-fno-omit-frame-pointer/"
-description: "Reference entry for a Clang compiler flag."
+description: "Detailed compiler engineering guide for Clang's -fno-omit-frame-pointer flag, covering code generation, call stack unwinding, frame pointer preservation, and LLVM backend lowering."
+keywords: [clang, -fno-omit-frame-pointer, frame pointer, stack frame, ebp, rbp, x29, unwinding, perf, profiling]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fno-omit-frame-pointer">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fno-omit-frame-pointer | Clang Flags Explorer</title>
+  <meta name="description" content="In-depth breakdown of -fno-omit-frame-pointer: stack frame layout, LLVM IR attributes, call stack unwinding overhead, and register allocation mechanics." />
+</Head>
+
+<FlagArticleShell
+  flagPath="-fno-omit-frame-pointer"
+  summary="Forces the compiler to reserve and setup a dedicated architectural frame pointer register (e.g., RBP on x86-64, X29 on AArch64) for every function prologue, enabling zero-DWARF frame-pointer-based stack unwinding."
+>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+## At a glance
+
+| Attribute | Value |
+| :--- | :--- |
+| **Architectures** | x86, x86-64, AArch64, ARM, RISC-V, PowerPC |
+| **Category** | Code Generation / ABI & Frame Layout |
+| **Compiler Support** | Clang, GCC, Flang |
+| **Optimization Effect** | Disables frame-pointer elimination; preserves designated FP register |
+| **ABI Impact** | Preserves standard architectural frame chain layout; consumes 1 general-purpose register |
 
 ## What this flag actually does
 
-No help text is available in the imported LLVM metadata.
+The `-fno-omit-frame-pointer` flag instructs the compiler front-end and code generator to generate function prologues and epilogues that establish a backchain of frame pointers. 
 
+When frame-pointer omission is disabled:
+1. The standard architectural frame register (`%rbp` on x86-64, `x29` on AArch64, `s0`/`fp` on RISC-V) is saved onto the stack at function entry.
+2. The current stack pointer (`%rsp`/`sp`) is copied into the frame pointer register.
+3. Local variables and dynamic stack allocations (`alloca`) are typically referenced relative to the frame pointer rather than offset directly from the shifting stack pointer.
+4. The frame pointer register is removed from the general register allocator's pool of available scratch registers for the duration of the function.
 
+At the LLVM IR level, Clang lowers this flag into function attributes: `"frame-pointer"="all"` or `"frame-pointer"="non-leaf"`. In the LLVM backend (`TargetLowering` and target-specific `FrameLowering` passes), this attribute forces `hasFP(MF)` to return `true`, blocking the target frame layout pass from optimizing away prologue frame setup instructions.
 
-It can be negated with -fomit-frame-pointer.
+```text
+       Stack Memory Layout (-fno-omit-frame-pointer)
+     +-----------------------------------------------+
+     |  ... Caller's Stack Frame ...                 |
+     +-----------------------------------------------+
+     |  Return Address                               |
+     +-----------------------------------------------+  <-- Previous RSP
+FP ->|  Saved Previous FP (RBP/X29)                  |
+     +-----------------------------------------------+
+     |  Local Variables & Spilled Registers          |
+SP ->+-----------------------------------------------+
+```
 
-## When to use it
+### Frame Pointer Defaults across Targets
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+The default behavior varies by target architecture, operating system, and optimization level:
 
-## When not to use it
+- **x86-64 (Linux/macOS)**: Historically, `-O1` and higher implicitly enabled `-fomit-frame-pointer`. Modern Linux distributions (such as Fedora 38+ and Ubuntu 24.04+) ship toolchains configured to default to `-fno-omit-frame-pointer` for system profiling.
+- **AArch64 / ARM64**: AAPCS64 strongly recommends frame pointers (`x29`/`x30` link pair setup). Clang defaults to preserving frame pointers on AArch64 across optimization levels unless explicitly overridden.
+- **x86-32**: Frame pointers are frequently kept by default due to strict calling conventions and limited unwinding unwind-table availability.
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+## Minimal realistic example
+
+Consider a basic C function that performs local allocation and calls an external procedure:
+
+<SourceCode
+  language="cpp"
+  title="example.c"
+  code={`extern void target_function(int *data);
+
+void process_data(int count) {
+    int buffer[64];
+    buffer[0] = count;
+    target_function(buffer);
+}`}
+/>
+
+When compiled with `-O2 -fno-omit-frame-pointer`, Clang emits explicit frame-setup prologues.
+
+## Before vs. after assembly
+
+Comparing compilation output at `-O2` on x86-64:
+
+<AsmDiff
+  beforeTitle="-O2 -fomit-frame-pointer"
+  beforeCode={`process_data:
+    sub    rsp, 264
+    mov    dword ptr [rsp], edi
+    mov    rdi, rsp
+    call   target_function@PLT
+    add    rsp, 264
+    ret`}
+  afterTitle="-O2 -fno-omit-frame-pointer"
+  afterCode={`process_data:
+    push   rbp
+    mov    rbp, rsp
+    sub    rsp, 272
+    mov    dword ptr [rsp], edi
+    mov    rdi, rsp
+    call   target_function@PLT
+    add    rsp, 272
+    pop    rbp
+    ret`}
+/>
+
+### Key observations:
+1. **Prologue Overhead**: The `-fno-omit-frame-pointer` variant inserts `push rbp` and `mov rbp, rsp` (2 instructions, 1 extra stack store).
+2. **Epilogue Overhead**: Executes `pop rbp` before `ret`.
+3. **Stack Alignment**: The stack frame allocation increases (from 264 to 272 bytes) to maintain 16-byte stack alignment after pushing the 8-byte `%rbp` frame pointer.
+
+## Why use it / when not to use it
+
+### Why use it
+- **Low-Overhead Sampling Profilers**: Tools like Linux `perf`, `BPF` (ebpf stack traces), and Google's `gperftools` can crawl call stacks in micro-seconds by following the linked list formed by stored frame pointers (`*RBP -> previous RBP`). They do not need to parse complex `.eh_frame` or DWARF CFI debug info tables.
+- **Real-Time Crash Diagnostics**: Standard signal handlers or panic routines can generate clean stack traces without relying on heavyweight unwinder libraries (`libunwind`).
+- **Debugging & Tracing**: Debuggers like `gdb` and `lldb` produce reliable stack traces under optimized binary execution even if debug symbols are stripped or DWARF data is corrupted.
+
+### When not to use it
+- **Register-Constrained Architectures**: On 32-bit x86 (`i386`), losing one of only 6 usable general-purpose registers (`%ebp`) causes severe register pressure, introducing extra stack spills and measurable throughput regression.
+- **Compute-Dense Inner Loops**: High-throughput leaf functions that make heavy use of vector/scalar registers may experience degraded instruction scheduling or extra register spill instructions if the frame pointer is anchored.
+
+## Performance impact
+
+Qualitatively, the performance cost of `-fno-omit-frame-pointer` breaks down as follows:
+
+1. **Instruction Overhead & Code Size**: Every non-leaf function pays a 2-instruction prologue and 1-instruction epilogue penalty. Code size expands slightly (typically 1-3%).
+2. **Register Pressure**: Sacrifices 1 general-purpose register. On 64-bit architectures (x86-64 with 16 GPRs, AArch64 with 31 GPRs), this impact is minimal in most real-world workloads (often sub-1% throughput cost). On 32-bit targets (x86 with 8 GPRs), throughput loss can reach 2–5% in register-heavy code.
+3. **Memory Bandwidth**: Stores and restores the old frame pointer to cache/RAM on function invocation.
+
+:::note
+Modern hardware branch predictors and L1 data caches effectively eliminate memory latency for frame pointer pushes/pops, rendering the execution overhead negligent for most enterprise and server software.
+:::
+
+## Compatibility table
+
+| Target | Core Support | Default Setting (`-O0`) | Default Setting (`-O2`) |
+| :--- | :--- | :--- | :--- |
+| **x86-64 (Linux)** | Full | Frame pointer kept | Target/distro dependent (Historically omitted; modern Linux distro defaults keep FP) |
+| **x86-64 (macOS)** | Full | Frame pointer kept | Frame pointer kept |
+| **AArch64** | Full | Frame pointer kept | Frame pointer kept |
+| **x86-32** | Full | Frame pointer kept | Frame pointer omitted |
+| **RISC-V (rv64)** | Full | Frame pointer kept | Frame pointer omitted |
 
 ## Usage example
 
+Enabling frame pointers explicitly across different compilation pipelines:
+
 ```bash
-clang++ -fno-omit-frame-pointer -c main.cpp
+# Direct C/C++ compilation with frame pointers preserved
+clang++ -O3 -fno-omit-frame-pointer -c engine.cpp -o engine.o
+
+# Clang driver invocation forcing non-leaf frame pointer preservation
+clang -O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer main.c -o main
+
+# Inspecting LLVM IR attributes generated by Clang
+clang -S -emit-llvm -O2 -fno-omit-frame-pointer main.c -o - | grep "frame-pointer"
 ```
+
+## Adjacent options
+
+- **`-fomit-frame-pointer`**: The inverse flag. Instructs the backend to eliminate frame pointers whenever possible and compute stack references using fixed stack pointer (`SP`) offsets.
+- **`-momit-leaf-frame-pointer` / `-mno-omit-leaf-frame-pointer`**: Fine-grained control allowing frame pointer elimination specifically for leaf functions (functions that invoke no other functions and require no dynamic frame adjustments).
+- **`-fasynchronous-unwind-tables`**: Generates DWARF `.eh_frame` call frame information tables to enable accurate unwinding without relying on physical frame pointer backchains.
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Detail |
+| :--- | :--- |
+| **Driver** | `clang/lib/Driver/ToolChains/Clang.cpp` parses `-fno-omit-frame-pointer` and translates it to internal code generation options. |
+| **Frontend Options** | Sets `CodeGenOptions::FramePointer` enum (`FramePointerKind::All` or `FramePointerKind::NonLeaf`). |
+| **AST Lowering (`clang::CodeGen`)** | `clang::CodeGen::CodeGenModule` attaches the attribute `"frame-pointer"="all"` (or `"non-leaf"`) to every emitted `llvm::Function`. |
+| **LLVM IR Output** | IR functions carry attributes: `attributes #0 = { ... "frame-pointer"="all" ... }`. |
+| **LLVM Target Lowering** | `TargetFrameLowering::hasFP(const MachineFunction &MF)` checks function attributes and enforces physical frame register reservation. |
+| **Asm Printer** | `X86FrameLowering` / `AArch64FrameLowering` emits machine instructions to save and update frame registers (`push rbp; mov rbp, rsp` / `stp x29, x30, [sp, #-16]!`). |
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fomit-frame-pointer`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  entries={[
+    {
+      label: "Argument form",
+      detail: "Boolean flag (no argument required)"
+    },
+    {
+      label: "Negated by",
+      detail: "-fomit-frame-pointer"
+    },
+    {
+      label: "LLVM IR Attribute Target",
+      detail: "\"frame-pointer\"=\"all\" or \"frame-pointer\"=\"non-leaf\""
+    },
+    {
+      label: "Primary Architectural Register",
+      detail: "%rbp (x86-64), %ebp (x86-32), x29 / FP (AArch64), s0 / fp (RISC-V)"
+    },
+    {
+      label: "Primary Use Case",
+      detail: "Enabling high-frequency, low-overhead unwinding for eBPF, perf, and external profilers"
+    }
+  ]}
+/>
 
 </FlagArticleShell>
