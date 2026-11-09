@@ -183,6 +183,36 @@ clang -S -emit-llvm -O2 -fno-omit-frame-pointer main.c -o - | grep "frame-pointe
 | **LLVM Target Lowering** | `TargetFrameLowering::hasFP(const MachineFunction &MF)` checks function attributes and enforces physical frame register reservation. |
 | **Asm Printer** | `X86FrameLowering` / `AArch64FrameLowering` emits machine instructions to save and update frame registers (`push rbp; mov rbp, rsp` / `stp x29, x30, [sp, #-16]!`). |
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend / code generation. **No direct LLVM IR optimization pass.** Inverse of `-fomit-frame-pointer`.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Frame-pointer keep policy | Clang CodeGen | Directly controlled | Forces `"frame-pointer"` keep policy (`all` / non-leaf depending on other flags) |
+| `"frame-pointer"` function attribute | LLVM IR | Directly controlled | Backend sees an explicit keep request |
+| `TargetFrameLowering::hasFP()` | Target backend | Backend mechanism | Typically returns true when policy requests FP |
+| Register allocation | Machine backend | Indirectly affected | Dedicated FP register is reserved for frame chaining |
+| Prologue / epilogue | Machine backend | Indirectly affected | FP setup/teardown emitted when `hasFP()` is true |
+| Sampling / sanitizer tooling | Runtime ecosystem | Related mechanism | FP-based stack walking and sanitizer traces prefer kept FPs |
+
+### How to verify
+
+```bash
+clang -O2 -fno-omit-frame-pointer -S -emit-llvm example.c -o keep.ll
+rg 'frame-pointer' keep.ll
+clang -O2 -fno-omit-frame-pointer -S example.c -o keep.s
+# Expect FP prologue on x86_64; do not use opt -passes for this flag.
+```
+
+### Source investigation
+
+- [Options.td (`-fno-omit-frame-pointer`)](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3615)
+- Driver: `clang/lib/Driver/ToolChains/Clang.cpp`
+- Backend: `llvm/include/llvm/CodeGen/TargetFrameLowering.h` (`hasFP`)
+
+---
+
 ## Key facts
 
 <KeyFacts

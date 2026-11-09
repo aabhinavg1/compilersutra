@@ -194,6 +194,30 @@ Key driver-generated flags observed:
 | **LLVM IR Generation** | `clang::EmitBackendOutput` writes bitcode to the destination `.o` file instead of passing the module to the target machine code generator. |
 | **Linker Integration** | During link step, LTO plugin (`libLTO` or LLD internal LTO engine) invokes `llvm::lto::LTO::run()` to merge modules, run IR pass pipeline, and emit final object. |
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Link-time optimization / IR linking. Changes **when** and **where** optimization runs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Emit LLVM bitcode instead of final machine code at compile step | Driver / CodeGen | Directly controlled | `.o` files contain bitcode (full/thin depending on mode) |
+| LTO/ThinLTO pipelines at link time | Linker + LLVMLTO | Directly controlled | Cross-TU optimization happens at link |
+| Regular per-TU O2/O3 pipeline | Compile-time Passes | Related mechanism | Still relevant, but whole-program opts move to LTO |
+
+### How to verify
+
+```bash
+clang -O2 -flto -c w.c -o w.o
+llvm-readobj -file-headers w.o   # or file(1) / llvm-bcanalyzer for bitcode
+clang -O2 -flto w.c -o w -### 2>&1 | rg -i 'lto|lld'
+```
+
+### Source investigation
+
+- Options.td LTO flags; `llvm/lib/LTO/`; linker plugin / lld LTO paths for your toolchain
+
+---
+
 ## Key facts
 
 <KeyFacts

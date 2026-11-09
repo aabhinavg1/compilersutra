@@ -199,6 +199,30 @@ clang -march=native -### -E - < /dev/null 2>&1 | grep -E "(-target-cpu|-target-f
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend / target CPU feature selection. Not an IR “optimization pass”, though it enables ISA-specific codegen and may unlock vectorization profitability.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Target CPU / feature flags | Driver → TargetMachine | Directly controlled | Sets `target-cpu` / `target-features` |
+| Instruction selection | Machine backend | Backend mechanism | May emit ISA-specific instructions |
+| Cost models for vectorize/unroll | LLVM IR | Indirectly affected | Passes still run; profitability changes with features |
+
+### How to verify
+
+```bash
+clang -O2 -march=native -S -emit-llvm w.c -o n.ll
+rg 'target-cpu|target-features' n.ll
+clang -### -march=haswell -c w.c 2>&1 | rg target-cpu\|target-feature
+```
+
+### Source investigation
+
+- Options.td `-march=`; target `MCTargetOptions` / Subtarget feature tables
+
+---
+
 ## Key facts
 
 <KeyFacts 

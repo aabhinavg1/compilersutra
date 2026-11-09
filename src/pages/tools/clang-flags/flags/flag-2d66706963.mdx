@@ -258,6 +258,30 @@ clang -fpic -O2 -### -c file.c 2>&1 | rg 'pic|relocation|code-model'
 - **`-shared`** — linker flag to produce a shared object (used after `-fpic` compile).
 - **`-fvisibility=hidden`** — often combined with shared libraries to trim exported symbols.
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Code generation / relocation model. **No direct IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Relocation model (PIC) | Driver → TargetMachine | Directly controlled | Emits position-independent code sequences |
+| GOT/PC-relative addressing | Machine backend | Backend mechanism | Indirect data/code refs via GOT/PLT as needed |
+| IR dso_local / local_unnamed_addr etc. | LLVM IR | Indirectly affected | Visibility/locality attributes may change |
+
+### How to verify
+
+```bash
+clang -O2 -fpic -S w.c -o pic.s
+clang -O2 -fno-pic -S w.c -o nopic.s   # where supported
+clang -### -fpic -c w.c 2>&1 | rg -i 'pic|relocation'
+```
+
+### Source investigation
+
+- Options.td PIC/PIE flags; target lowering for GOT accesses
+
+---
+
 ## Key facts
 
 <KeyFacts

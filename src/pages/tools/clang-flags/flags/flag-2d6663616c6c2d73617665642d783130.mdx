@@ -268,6 +268,32 @@ def fcall_saved_x10 : Flag<["-"], "fcall-saved-x10">,
 
 At driver time, `getAArch64TargetFeatures()` in `clang/lib/Driver/ToolChains/Arch/AArch64.cpp` translates the presence of the option into the subtarget feature string `+call-saved-x10`, which is passed to the backend. There it is parsed by `AArch64Subtarget`, which records the register in its `CustomCallSavedXRegs` bit vector. Finally, in `AArch64RegisterInfo::UpdateCustomCalleeSavedRegs()` and `UpdateCustomCallPreservedMask()`, `x10` is appended to both the callee-saved register list (so the prologue/epilogue spills it) and the call-preserved mask (so the register allocator and call lowering treat it as preserved).
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** ABI / calling convention (AArch64 register). **No direct LLVM IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Call-saved register assignment for `x10` | Clang driver / target options | Directly controlled | Treats `x10` as callee-saved for code generation |
+| Register allocation constraints | Machine backend | Backend mechanism | Allocator / prolog-epilog must preserve `x10` across calls as required |
+| Caller/callee contract | ABI | Related mechanism | Changes which side saves `x10`; mismatches across TUs are ABI bugs |
+| AArch64 instruction selection | Machine backend | Indirectly affected | May alter spill/reload patterns around `x10` |
+
+### How to verify
+
+```bash
+clang --target=aarch64-linux-gnu -O2 -fcall-saved-x10 -S example.c -o with.s
+clang --target=aarch64-linux-gnu -O2 -S example.c -o default.s
+# Compare callee-saved saves involving x10; IR opt pipelines are the wrong tool.
+```
+
+### Source investigation
+
+- [Options.td](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5371)
+- AArch64 target register info / calling convention under `llvm/lib/Target/AArch64/` (verify symbols on tip)
+
+---
+
 ## Key facts
 
 <KeyFacts

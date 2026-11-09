@@ -182,6 +182,28 @@ To verify the exact frontend translation logic in the LLVM source tree:
 * Target-independent canary insertion: `llvm/lib/CodeGen/StackProtector.cpp`
 *(Verify against tip of llvm-project).*
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Instrumentation / codegen hardening (`all` functions).
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Stack protector for all functions | CodeGen | Directly controlled | Broader canary coverage than `strong` |
+| Canary runtime hook | Link/runtime | Related mechanism | Uses `__stack_chk_fail` / guard symbols |
+
+### How to verify
+
+```bash
+clang -O2 -fstack-protector-all -S w.c -o ssp.s
+rg 'stack_chk' ssp.s
+```
+
+### Source investigation
+
+- Options.td; CodeGen stack protector
+
+---
+
 <KeyFacts
   args="Flag (no argument)"
   acceptingCompilers="Clang, GCC"

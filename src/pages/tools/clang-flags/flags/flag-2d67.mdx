@@ -104,6 +104,31 @@ flowchart LR
 ~~~
 
 The -g spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Debug info generation. **No direct LLVM IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Debug info kind / DWARF emission | Clang CodeGen | Directly controlled | Emits DI metadata and object debug sections |
+| Optimizer interaction with debug info | LLVM IR | Indirectly affected | Debugify/salvage may preserve locations; `-g` is not an opt pipeline selector |
+| Object `.debug_*` sections | Object emission | Backend mechanism | Visible via `llvm-readobj` / `llvm-dwarfdump` |
+
+### How to verify
+
+```bash
+clang -O2 -g -c w.c -o w.o
+llvm-dwarfdump w.o | head
+clang -O2 -g -S -emit-llvm w.c -o w.ll
+rg 'DILocation|!dbg' w.ll | head
+```
+
+### Source investigation
+
+- Options.td debug flags; `clang/lib/CodeGen/CGDebugInfo.cpp`
+
+---
+
 ## Key facts
 
 <KeyFacts items={[{label:'Flag',value:'-g'},{label:'Category',value:'Debug information'},{label:'Primary stage',value:'Clang driver / frontend'},{label:'ABI or semantics',value:'Verify project-wide consistency'},{label:'Evidence',value:'Use -###, -E, -S, IR, or object inspection'}]} />

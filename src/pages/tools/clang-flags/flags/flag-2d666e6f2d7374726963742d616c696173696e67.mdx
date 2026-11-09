@@ -313,6 +313,31 @@ clang -O2 -fstrict-aliasing -S -emit-llvm alias.c -o alias-strict.ll
 
 The important implementation detail is that the flag does not make incompatible type-punning defined. It changes the TBAA facts attached during Clang code generation, which limits the alias-based transformations available to LLVM. `TargetInfo`, instruction selection, object emission, and linking proceed normally after that IR-level decision.
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** LLVM IR optimization / analysis (TBAA). Affects alias analysis, not a single named “aliasing pass”.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| TBAA metadata emission | Clang CodeGen | Directly controlled | Disabling strict aliasing suppresses / weakens TBAA metadata |
+| Alias analysis consumers (GVN, LICM, vectorize, …) | LLVM IR | Indirectly affected | Fewer type-based no-alias facts → more conservative transforms |
+| Language UB rules for type-based aliasing | Frontend semantics | Related mechanism | Flag does not “fix” UB; it changes optimizer assumptions |
+
+### How to verify
+
+```bash
+clang -O2 -S -emit-llvm w.c -o strict.ll
+clang -O2 -fno-strict-aliasing -S -emit-llvm w.c -o nostrict.ll
+rg 'TBA|!tbaa' strict.ll nostrict.ll
+```
+
+### Source investigation
+
+- [Options.td](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3636)
+- `clang/lib/CodeGen/CodeGenTBAA.cpp` (verify on tip)
+
+---
+
 ## Key facts
 
 <KeyFacts items={[

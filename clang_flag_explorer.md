@@ -32,6 +32,7 @@ Requirements:
    - **Usage example**: exact, copy-pasteable Clang command lines; include `-###` or IR inspection when useful.
    - **Adjacent options**: siblings, inverse/negative form, related optimization controls, and internal options only when clearly labeled.
    - **How it works inside Clang**: include an `Implementation` subsection and a compact stage table covering option definition, driver parsing/forwarding, invocation setup, code generation, LLVM IR/TBAA or target effect, backend, and linker.
+   - **Related LLVM Optimizations & Backend Mechanisms** (required; see §13): after “How it works inside Clang”, before “Key facts”. Map optimization passes and/or backend mechanisms with relationship classification, verification commands, and upstream source links. Do not invent passes. Diagnostic/frontend flags may state `No direct pass` with a short justification instead of a fake optimization table.
    - **Key facts** footer using `KeyFacts`.
 6. Implementation/source-link requirements:
    - Link directly to the current upstream LLVM source on GitHub, not just plain file paths.
@@ -69,6 +70,130 @@ Requirements:
    - all links and source paths are correct;
    - Mermaid/MDX syntax is valid;
    - `git diff --check` passes;
-   - no fake measurements or unsupported source claims were introduced.
+   - no fake measurements or unsupported source claims were introduced;
+   - Related LLVM Optimizations & Backend Mechanisms uses only evidence-backed pass/mechanism names and relationship labels.
+
+13. Related LLVM Optimizations & Backend Mechanisms (shared standard)
+
+Every published flag article must help the reader trace:
+
+**Clang flag → Driver → Frontend → LLVM IR → Optimization passes / Backend mechanisms → Machine code → Runtime behavior**
+
+using source evidence and, where applicable, IR/asm/`csperf` verification. Do **not** assume every Clang flag corresponds to an LLVM IR optimization pass.
+
+### 13.1 Classify the flag before mapping
+
+| Category | Examples | Investigate |
+| :--- | :--- | :--- |
+| **A. LLVM IR optimization** | `-fvectorize`, `-fslp-vectorize`, `-fstrict-aliasing`, `-fmerge-functions`, `-O*` | IR passes / analyses actually gated or influenced by the flag |
+| **B. Backend / code generation** | `-fomit-frame-pointer`, `-fno-omit-frame-pointer`, `-ffixed-x10`, `-fcall-saved-x10` | Frame lowering, regalloc, ISel, prologue/epilogue, spills — **not** IR opt passes by default |
+| **C. Instrumentation** | `-fsanitize=*`, `-fprofile-instr-generate` | Frontend instrumentation, IR instrumentation passes, metadata, runtimes, link deps |
+| **D. Diagnostic / frontend** | `-Wall`, `-Wextra`, `-Werror`, `-D`, `-I`, `-std=` | Diagnostics, preprocessing, language mode — **No direct pass** unless evidence shows otherwise |
+| **E. ABI / calling convention** | register / visibility / ABI flags | Calling convention, register preservation, param/return lowering, `RegisterLayout` when useful |
+
+### 13.2 Relationship labels (required vocabulary)
+
+| Relationship | Meaning |
+| :--- | :--- |
+| **Directly controlled** | The flag directly enables, disables, or configures the pass/mechanism |
+| **Indirectly affected** | The flag changes compiler state or IR that influences later optimization/codegen |
+| **Backend mechanism** | Target-specific ISel, regalloc, frame lowering, or emission |
+| **Related mechanism** | Useful context; not directly controlled by the flag |
+| **No direct pass** | No LLVM IR optimization pass correspondence |
+
+Never invent a pass name. Never claim a backend mechanism is “directly enabled” without source evidence.
+
+### 13.3 Per-entry fields
+
+For each relevant mechanism/pass, document:
+
+- Name
+- Compiler stage
+- LLVM pass name or source symbol (when applicable)
+- Relationship classification
+- What it changes
+- How to verify
+- Upstream LLVM source link (current revision; prefer the commit recorded in `static/data/clang-flags.json` when available)
+
+### 13.4 Section presentation
+
+Place this section **after** `## How it works inside Clang` and **before** `## Key facts`.
+
+Title:
+
+```markdown
+## Related LLVM Optimizations & Backend Mechanisms
+```
+
+Preferred table:
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| … | Backend / LLVM IR / Frontend / … | Directly controlled / … | Concrete behavior |
+
+Then:
+
+#### How to verify
+
+Give commands that match the mechanism. Valid tools include `clang -###`, `clang -emit-llvm -S`, `opt -passes=...`, `llc`, `llvm-objdump`, `llvm-readobj`, and `-mllvm -print-pipeline-passes` / `-debug-pass-manager` when supported.
+
+- Do **not** suggest `opt` for behavior that exists only in target machine-code generation.
+- Distinguish Clang’s pipeline from a separately constructed `opt` pipeline.
+- When useful, show IR function attributes, metadata, optimization remarks, MIR, assembly, object sections, or unwind info.
+
+#### Source investigation
+
+Link the actual files/symbols involved (for example under `clang/include/clang/Driver/Options.td` or `clang/include/clang/Options/Options.td`, `clang/lib/Driver/`, `clang/lib/CodeGen/`, `llvm/lib/Passes/`, `llvm/lib/Transforms/`, `llvm/lib/CodeGen/`, `llvm/lib/Target/`). Do not pad with unrelated paths.
+
+### 13.5 Investigation method (source + IR verification)
+
+For optimization-related flags, perform two independent stages before writing claims:
+
+1. **Source-code pipeline discovery**: Options.td → driver → cc1/codegen options → PassBuilder / target lowering. Record symbols and line ranges from the checked-out LLVM revision.
+2. **IR-level experimental verification**: generate IR with/without the flag; print the pass pipeline when supported; run targeted `opt` only when the pass is IR-level; diff IR; compare assembly for codegen flags.
+
+Three-way rule:
+
+- Source explains **why** something is scheduled.
+- Pipeline logs confirm **what executed**.
+- IR/asm diffs confirm **what changed**.
+
+Do not confuse: registered ≠ scheduled ≠ executed ≠ transformed IR ≠ better machine code.
+
+For backend-only flags (reference: `-fomit-frame-pointer`):
+
+- Report `No direct pass` / backend mechanisms.
+- Do **not** call the flag an LLVM optimization pass.
+- Do **not** claim it universally frees a GPR or that all stack allocations disappear.
+- Distinguish **frame-pointer omission** from **stack-frame elimination**.
+- Separate unwind/CFI metadata from dedicated FP register usage.
+- Note target-specific defaults (e.g. Darwin often keeps frame pointers).
+
+Gold structural example for this section: the hand-authored `-fomit-frame-pointer` article.
+
+### 13.6 Optional explorer metadata (`optimizationMapping`)
+
+`static/data/clang-flags.json` is generated from Options.td with a fixed option field set. Optional, backward-compatible enrichment may add:
+
+```json
+{
+  "optimizationMapping": {
+    "category": "backend",
+    "passes": [],
+    "mechanisms": [
+      {
+        "name": "Machine Frame Lowering",
+        "stage": "backend",
+        "relationship": "directly-controlled",
+        "description": "Controls target-specific frame-pointer decisions.",
+        "sourceFiles": ["llvm/lib/CodeGen/"],
+        "verification": ["clang -S", "llc"]
+      }
+    ]
+  }
+}
+```
+
+Use empty arrays or omit the field when nothing applies. Do **not** fabricate mappings in bulk JSON. Hand-authored MDX remains the source of truth until a generator consumes this field. Preserve existing option keys and page-generation scripts.
 
 Deliverable: the completed MDX and only necessary tiny component tweaks.
