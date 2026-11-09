@@ -188,6 +188,27 @@ clang -O2 -mtune=znver3 -### -c test.c
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend tuning. Often affects scheduling/cost without requiring a different ISA.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Tune CPU | Driver → TargetMachine | Directly controlled | Prefer schedule/cost for a CPU while keeping `-march` ISA |
+| Machine scheduler / cost model | Machine backend | Backend mechanism | May change instruction order/selection heuristics |
+
+### How to verify
+
+```bash
+clang -### -march=x86-64 -mtune=generic -c w.c 2>&1 | rg tune\|target-cpu
+```
+
+### Source investigation
+
+- Options.td `-mtune=`; target tune CPU handling
+
+---
+
 <KeyFacts
   args="Joined (e.g., -mtune=cortex-a78)"
   acceptedBy="Clang, Flang"

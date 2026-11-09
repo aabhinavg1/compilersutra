@@ -93,6 +93,28 @@ flowchart LR
 ~~~
 
 The -std= spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Diagnostic / frontend (or driver glue). **No direct LLVM IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| language standard selection | Frontend / Driver | Directly controlled | Changes inputs, language mode, diagnostics, or link libs — not PassBuilder membership |
+| Downstream optimization pipeline | LLVM IR | Related mechanism | May see different IR only if the flag changes which code is compiled |
+
+### How to verify
+
+```bash
+clang -### -std=c11 -c w.c 2>&1 | head
+# Do not map this flag to InstCombine/GVN/etc. without evidence it gates those passes.
+```
+
+### Source investigation
+
+- Options.td entry for this flag in the Clang Flags Explorer inventory
+
+---
+
 ## Key facts
 
 <KeyFacts items={[{label:'Flag',value:'-std='},{label:'Category',value:'Language mode'},{label:'Primary stage',value:'Clang driver / frontend'},{label:'ABI or semantics',value:'Verify project-wide consistency'},{label:'Evidence',value:'Use -###, -E, -S, IR, or object inspection'}]} />

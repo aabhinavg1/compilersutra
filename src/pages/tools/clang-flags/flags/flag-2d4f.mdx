@@ -209,6 +209,34 @@ flowchart LR
 
 The family is declared in [`Options.td:839-843`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L839-L843), with the driver-facing `-O` form at [`Options.td:9029`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L9029). The driver resolves the effective level and forwards frontend/code-generation state to `cc1`; LLVM PassBuilder then constructs the optimization pipeline. The target backend lowers transformed IR and does not independently interpret `-O2` as a source-language rule.
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** LLVM IR optimization + backend pipeline selection (umbrella). Not a single pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Optimization level → `CodeGenOptions` / PassBuilder pipeline | Driver → LLVM | Directly controlled | Selects O0/O1/O2/O3/Os/Oz-style pipelines |
+| Module / function simplification pipelines | LLVM Passes | Indirectly affected | Which passes run depends on level and other flags |
+| Backend instruction selection / regalloc aggressiveness | Machine backend | Indirectly affected | Higher levels often enable more MI opts |
+| Individual IR passes (InstCombine, GVN, LoopVectorize, …) | LLVM IR | Related mechanism | Members of the selected pipeline — not each “owned” by `-O` alone |
+
+### How to verify
+
+```bash
+clang -O0 -S -emit-llvm w.c -o O0.ll
+clang -O2 -S -emit-llvm w.c -o O2.ll
+clang -O2 -mllvm -print-pipeline-passes -c w.c -o /dev/null 2>&1 | head
+# Prefer Clang's pipeline log over assuming opt -passes='default<O2>' is identical.
+```
+
+### Source investigation
+
+- [Options.td (`-O`)](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L9029)
+- `llvm/lib/Passes/PassBuilderPipelines.cpp` (`buildPerModuleDefaultPipeline`, etc.)
+- `clang/lib/CodeGen/BackendUtil.cpp` (pipeline setup from CodeGenOptions)
+
+---
+
 ## Key facts
 
 <KeyFacts items={[

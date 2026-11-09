@@ -192,6 +192,29 @@ Verify exact behavior against `clang/lib/Driver/ToolChains/Clang.cpp` and `clang
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Code generation / PIE relocation for executables. **No direct IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| PIE relocation model | Driver → TargetMachine | Directly controlled | Position-independent executable codegen |
+| Dynamic loader / ASLR contract | Link + OS | Related mechanism | Complements linker `-pie` |
+
+### How to verify
+
+```bash
+clang -O2 -fPIE -pie w.c -o w
+readelf -d w | rg FLAGS_1\|PIE || true
+clang -### -fPIE -c w.c 2>&1 | rg -i pie
+```
+
+### Source investigation
+
+- Options.td PIE flags; linker PIE handling for your platform
+
+---
+
 ## Key facts
 
 <KeyFacts

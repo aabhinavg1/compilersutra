@@ -221,6 +221,30 @@ clang -fstack-protector-strong -S -emit-llvm main.c -o - | grep "sspstrong"
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Instrumentation / codegen hardening. Not a classical IR optimization pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Stack protector instrumentation | CodeGen / IR | Directly controlled | Inserts canary checks for selected functions |
+| Prologue/epilogue canary code | Machine backend | Backend mechanism | Loads/compares guard values |
+| SSP level selection | Driver | Directly controlled | `strong` heuristic vs `all` / basic |
+
+### How to verify
+
+```bash
+clang -O2 -fstack-protector-strong -S -emit-llvm w.c -o ssp.ll
+rg 'stackprotect|__stack_chk' ssp.ll | head
+clang -O2 -fstack-protector-strong -S w.c -o ssp.s
+```
+
+### Source investigation
+
+- Options.td stack-protector flags; Clang CodeGen stack protector emission
+
+---
+
 <KeyFacts 
   args="None"
   acceptedBy="Clang Driver, GCC Driver"

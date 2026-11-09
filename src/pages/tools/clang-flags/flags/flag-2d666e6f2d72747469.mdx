@@ -195,6 +195,29 @@ clang++ -O3 -fno-rtti -fno-exceptions -target armv7m-none-eabi -c embedded.cpp
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Language / CodeGen ABI for C++ RTTI. **No direct IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| RTTI / typeinfo emission | Clang CodeGen | Directly controlled | Suppresses RTTI data generation |
+| `dynamic_cast` / `typeid` usability | Language | Related mechanism | Features needing RTTI become unavailable/ill-formed as documented |
+| Binary size / linkage | Link | Indirectly affected | Fewer typeinfo symbols |
+
+### How to verify
+
+```bash
+clang++ -O2 -fno-rtti -S -emit-llvm w.cpp -o nortti.ll
+rg 'typeinfo|TypeInfo' nortti.ll || true
+```
+
+### Source investigation
+
+- Options.td `-fno-rtti`; C++ CodeGen RTTI emission paths
+
+---
+
 <KeyFacts
   args={[]}
   form="Flag (no argument)"

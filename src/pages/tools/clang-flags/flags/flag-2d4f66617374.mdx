@@ -176,6 +176,29 @@ Verify flag translation logic against tip of `llvm-project` in `clang/lib/Driver
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Optimization umbrella + fast-math / standards tradeoffs. Not a single IR pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Aggressive opt level (typically O3-class) | PassBuilder | Directly controlled | Selects an aggressive pipeline |
+| Fast-math / non-standards-compliant FP modes | Frontend / IR attrs | Directly controlled / related | Often implies flags like `-ffast-math` family — verify with `-###` |
+| Individual math/loop passes | LLVM IR | Indirectly affected | May transform FP math under relaxed flags |
+
+### How to verify
+
+```bash
+clang -### -Ofast -c w.c 2>&1 | tr ' ' '\n' | rg 'ffast|ffinite|O3|Ofast'
+clang -Ofast -S -emit-llvm w.c -o Ofast.ll
+```
+
+### Source investigation
+
+- Driver expansion of `-Ofast` in `Clang.cpp` / Options.td — expand with `-###` before claiming exact implied flags for your Clang version.
+
+---
+
 ## Key facts
 
 <KeyFacts

@@ -226,6 +226,29 @@ clang -O3 --target=aarch64-unknown-linux-gnu -mcpu=neoverse-v1+nosve -c compute.
 
 ---
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend CPU selection (esp. non-x86 and some targets). **No direct IR opt pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Target CPU selection | Driver → TargetMachine | Directly controlled | Sets CPU for ISel/scheduling |
+| Scheduling / latencies | Machine backend | Backend mechanism | CPU-specific itineraries / sched models |
+
+### How to verify
+
+```bash
+clang -### -mcpu=generic -c w.c 2>&1 | rg mcpu\|target-cpu
+clang -O2 -mcpu=generic -S -emit-llvm w.c -o w.ll
+rg 'target-cpu' w.ll
+```
+
+### Source investigation
+
+- Options.td `-mcpu=`; target Subtarget constructors
+
+---
+
 <KeyFacts
   args={[
     { name: "-mcpu=<cpu>", desc: "Target CPU microarchitecture string" }

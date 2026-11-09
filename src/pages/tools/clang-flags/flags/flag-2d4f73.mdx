@@ -367,6 +367,31 @@ GCC also supports `-Os`, but its pipeline and codegen are not identical to Clang
 
 References: [Clang command guide](https://clang.llvm.org/docs/CommandGuide/clang.html), [Users Manual](https://clang.llvm.org/docs/UsersManual.html), [LLVM LangRef](https://llvm.org/docs/LangRef.html). Verify pass details against the LLVM version you are discussing.
 
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** LLVM IR optimization pipeline tuned for size (`Os`).
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Size-oriented pipeline | PassBuilder | Directly controlled | Prefers size-friendly pass choices vs O2/O3 |
+| Inlining / unrolling thresholds | LLVM IR | Indirectly affected | Typically more conservative than O3 |
+| Codegen size heuristics | Machine backend | Indirectly affected | May favor smaller sequences |
+
+### How to verify
+
+```bash
+clang -Os -S -emit-llvm w.c -o Os.ll
+clang -O2 -S -emit-llvm w.c -o O2.ll
+llvm-size Os.o O2.o   # after compiling objects
+clang -Os -mllvm -print-pipeline-passes -c w.c -o /dev/null 2>&1 | head
+```
+
+### Source investigation
+
+- `PassBuilderPipelines.cpp` size pipelines; Options.td optimization aliases
+
+---
+
 ## Key facts
 
 <KeyFacts
