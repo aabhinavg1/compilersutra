@@ -6,6 +6,122 @@
   line-height: 1.3;
 }
 
+.roadmapList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+.roadmapCard {
+  margin: 0;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  background: var(--ifm-background-surface-color);
+  overflow: hidden;
+}
+
+.roadmapCard + .roadmapCard,
+.roadmapList + .roadmapCard,
+.roadmapCard + .roadmapList {
+  margin-top: 0.65rem;
+}
+
+.roadmapCard > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.roadmapCard > summary::-webkit-details-marker {
+  display: none;
+}
+
+.roadmapCard > summary:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.roadmapNum {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+}
+
+.roadmapLabel {
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ifm-font-color-base);
+}
+
+.roadmapCard[open] > summary .chevron {
+  transform: rotate(225deg);
+}
+
+.roadmapBody {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.roadmapQuestion {
+  margin: 0.85rem 0 0.35rem;
+  font-size: 1.02rem;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--ifm-font-color-base);
+}
+
+.roadmapActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0.75rem 0 0.35rem;
+}
+
+.roadmapCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base-inverse, #fff) !important;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.roadmapCta:hover {
+  color: var(--ifm-font-color-base-inverse, #fff) !important;
+  filter: brightness(0.96);
+}
+
+.quizLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: var(--ifm-color-emphasis-700) !important;
+}
+
+.quizLink:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary) !important;
+}
+
 .syllabus {
   display: flex;
   flex-direction: column;
@@ -65,7 +181,7 @@
 .chapterRow,
 .lessonRow {
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
   gap: 0.35rem 0.85rem;
   align-items: center;
   padding: 0.7rem 0.35rem;
@@ -296,6 +412,15 @@ a.material:focus-visible {
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
+  }
+
+  .roadmapCard > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.35rem 0.75rem;
+  }
+
+  .roadmapNum {
+    grid-column: 1 / -1;
   }
 
   .chapterRow,

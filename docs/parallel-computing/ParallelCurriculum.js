@@ -6,28 +6,13 @@ import styles from '../tracks/curriculum.module.css';
 const DOC = '/docs/parallel-computing';
 const QUIZ = '/docs/mcq/questions/domain/parallel';
 
-const MATERIALS = [
-  {name: 'PPT', path: 'M5 4h10a1 1 0 0 1 1 1v12H4V5a1 1 0 0 1 1-1zm0 11h10M8 7h4'},
-  {name: 'Video', path: 'M7 6.5v11l9-5.5-9-5.5z'},
-  {name: 'Examples', path: 'M9 8 5 12l4 4M15 8l4 4-4 4'},
-  {name: 'MCQ', path: 'M6 7h12M6 12h12M6 17h8'},
-];
-
-const COURSE = [
+const ROADMAP = [
   {
-    label: 'Start Here',
-    href: `${DOC}/start-here/`,
-    title: 'Start Here',
-    mcq: `${QUIZ}/start-here/quiz/`,
-    lessons: [
-      ['1', 'How to use this course', 'Read one page, then do the short exercise on that page.', `${DOC}/start-here/how-to-use-this-course/`],
-      ['2', 'The list of numbers we keep reusing', 'One list of integers is the example for the whole course.', `${DOC}/start-here/the-list-of-numbers/`],
-    ],
-  },
-  {
-    label: 'Chapter 1. Parallel Thinking',
+    num: '1',
+    label: 'Parallel Thinking',
     href: `${DOC}/chapter-1/`,
-    title: 'Chapter 1: Parallel Thinking',
+    question: 'What does it mean to run work at the same time?',
+    covers: 'Sequential execution, concurrency, parallelism, races.',
     mcq: `${QUIZ}/chapter-1/quiz/`,
     lessons: [
       ['1.1', 'A program is a list of steps', 'A program is steps in an order.', `${DOC}/chapter-1/a-program-is-a-list-of-steps/`],
@@ -38,9 +23,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 2. CPU',
+    num: '2',
+    label: 'CPU',
     href: `${DOC}/chapter-2/`,
-    title: 'Chapter 2: CPU Parallelism',
+    question: 'How does a CPU run multiple pieces of work?',
+    covers: 'Threads, cores, mutexes, atomics, barriers.',
     mcq: `${QUIZ}/chapter-2/quiz/`,
     lessons: [
       ['2.1', 'CPU cores', 'Each core can walk its own instruction stream.', `${DOC}/chapter-2/cpu-cores/`],
@@ -53,9 +40,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 3. OpenMP',
+    num: '3',
+    label: 'OpenMP',
     href: `${DOC}/chapter-3/`,
-    title: 'Chapter 3: OpenMP',
+    question: 'How do we parallelize loops without manually managing every thread?',
+    covers: 'Parallel regions, worksharing, reductions, scheduling.',
     mcq: `${QUIZ}/chapter-3/quiz/`,
     lessons: [
       ['3.1', 'parallel and for', 'parallel starts a team of threads.', `${DOC}/chapter-3/parallel-and-for/`],
@@ -65,9 +54,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 4. Algorithms',
+    num: '4',
+    label: 'Algorithms',
     href: `${DOC}/chapter-4/`,
-    title: 'Chapter 4: Parallel Algorithms',
+    question: 'Which algorithms are naturally parallel?',
+    covers: 'Map, reduce, histogram, stencil, scan, sort.',
     mcq: `${QUIZ}/chapter-4/quiz/`,
     lessons: [
       ['4.1', 'Map', 'Map applies one function to each item, independently.', `${DOC}/chapter-4/map/`],
@@ -80,9 +71,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 5. SIMD',
+    num: '5',
+    label: 'SIMD',
     href: `${DOC}/chapter-5/`,
-    title: 'Chapter 5: SIMD',
+    question: 'What if one instruction processes several values?',
+    covers: 'Vector lanes, vectorization, alignment, SIMD + threads.',
     mcq: `${QUIZ}/chapter-5/quiz/`,
     lessons: [
       ['5.1', 'What SIMD is', 'SIMD is one instruction applied to several values.', `${DOC}/chapter-5/what-simd-is/`],
@@ -91,9 +84,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 6. GPU',
+    num: '6',
+    label: 'GPU',
     href: `${DOC}/chapter-6/`,
-    title: 'Chapter 6: GPU Programming',
+    question: 'What changes when thousands of workers execute on a device?',
+    covers: 'GPU execution, memory, kernels, CUDA, ROCm, OpenCL, Vulkan.',
     mcq: `${QUIZ}/chapter-6/quiz/`,
     lessons: [
       ['6.1', 'Why GPUs', 'A GPU has a great many simple arithmetic units.', `${DOC}/chapter-6/why-gpus/`],
@@ -109,9 +104,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 7. Distributed',
+    num: '7',
+    label: 'Distributed',
     href: `${DOC}/chapter-7/`,
-    title: 'Chapter 7: Distributed Computing',
+    question: 'What happens when workers do not share memory?',
+    covers: 'Processes, ranks, communication, collectives, MPI.',
     mcq: `${QUIZ}/chapter-7/quiz/`,
     lessons: [
       ['7.1', 'Why a cluster', 'A cluster is several machines, each with its own memory.', `${DOC}/chapter-7/why-a-cluster/`],
@@ -122,9 +119,11 @@ const COURSE = [
     ],
   },
   {
-    label: 'Chapter 8. Measuring',
+    num: '8',
+    label: 'Measuring',
     href: `${DOC}/chapter-8/`,
-    title: 'Chapter 8: Measuring',
+    question: 'Did we actually make the program faster?',
+    covers: "Timing, speedup, efficiency, Amdahl's law, bandwidth, cache, profiling.",
     mcq: `${QUIZ}/chapter-8/quiz/`,
     lessons: [
       ['8.1', 'Speedup and Amdahl', 'Speedup is serial time divided by parallel time, on the same work.', `${DOC}/chapter-8/speedup-and-amdahl/`],
@@ -134,84 +133,25 @@ const COURSE = [
       ['8.5', 'Profiling', 'A profile is a measurement from a tool.', `${DOC}/chapter-8/profiling/`],
     ],
   },
-  {
-    label: 'Projects',
-    href: `${DOC}/projects/`,
-    title: 'Projects',
-    mcq: `${QUIZ}/projects/quiz/`,
-    lessons: [
-      ['1', 'Project 1: CPU', 'Serial sum and OpenMP reduction, same total.', `${DOC}/projects/cpu-project/`],
-      ['2', 'Project 2: SIMD', 'A scalar loop and a widened loop, or a compiler vectorization report.', `${DOC}/projects/simd-project/`],
-      ['3', 'Project 3: GPU', 'Host total and device total.', `${DOC}/projects/gpu-project/`],
-      ['4', 'Final project', 'One problem, two implementations, matching results.', `${DOC}/projects/final-project/`],
-    ],
-  },
 ];
 
-const WRITTEN = [
-  ['What a parallel program is', 'What is parallel computing?', '/docs/parallel-computing/fundamentals/what-is-parallel-computing'],
-  ['Process, thread, core', 'Program, process, thread, core', '/docs/parallel-computing/fundamentals/program-process-thread-core'],
-  ['Hardware picture', 'Parallel hardware', '/docs/parallel-computing/fundamentals/parallel-hardware-overview'],
-  ['Amdahl and Gustafson', "Amdahl's and Gustafson's laws", '/docs/parallel-computing/fundamentals/amdahls-and-gustafsons-law'],
-  ['How to measure a run', 'Measuring parallel performance', '/docs/parallel-computing/fundamentals/measuring-parallel-performance'],
-  ['Memory models', 'Memory models', '/docs/parallel-computing/fundamentals/memory-models'],
-  ['GPU, in one page', 'What is a GPU?', '/docs/gpu/what_is_gpu'],
-  ['NVIDIA', 'CUDA', '/docs/gpu/platforms/cuda'],
-  ['AMD', 'ROCm', '/docs/gpu/platforms/rocm'],
-  ['Portable kernel language', 'OpenCL', '/docs/gpu/opencl/basic/what_is_opencl'],
-  ['Cross-vendor compute', 'Vulkan', '/docs/gpu/platforms/vulkan'],
-  ['Occupancy, memory, divergence', 'GPU optimizations', '/docs/gpu/optimizations'],
-  ['Register pressure', 'Why GPU kernels fail', '/docs/compilers/techblog/register-pressure-on-gpu/'],
-  ['C++ threads', 'Threads', '/docs/c++/advanced/threads'],
-  ['OpenCL on AMD', 'Getting started on AMDGPU', '/docs/gpu/opencl/basic/getting_started_with_opencl_on_amdgpu'],
-  ['GPU programming overview', 'GPU programming overview', '/docs/gpu/gpu_programming/gpu_programming_toc'],
-  ['GPU platforms', 'GPU platforms', '/docs/gpu/platforms/'],
-];
+const START_HERE = {
+  href: `${DOC}/start-here/`,
+  mcq: `${QUIZ}/start-here/quiz/`,
+  lessons: [
+    ['1', 'How to use this course', 'Read one page, then do the short exercise on that page.', `${DOC}/start-here/how-to-use-this-course/`],
+    ['2', 'The list of numbers we keep reusing', 'One list of integers is the example for the whole course.', `${DOC}/start-here/the-list-of-numbers/`],
+  ],
+};
 
-const LATER = [
-  ['Why', ['Why a parallel program is a different program', 'Concurrent, parallel, and distributed']],
-  ['The machine you already have', ['One core, made busier', 'SIMD, MIMD, and the interconnect', 'Shared memory versus distributed memory', 'Cache coherence and false sharing', 'Decomposition, tasks, and mapping', 'Communication cost and granularity', 'Speedup, efficiency, and scalability']],
-  ['OpenMP and threads', ['Pthreads: create, join, mutex, and barrier', 'OpenMP regions, reductions, and loop-carried dependence', 'OpenMP schedules', 'OpenMP tasks and sections', 'C++ atomics and memory order', 'C++ parallel algorithms', 'Thread pools, work stealing, and oneTBB']],
-  ['A cluster', ['What a cluster is', 'MPI send, receive, and matching', 'Broadcast and reduction as a tree', 'MPI collectives', 'Overlap communication with computation', 'Hybrid MPI and OpenMP']],
-  ['Before a GPU could run your loop', ['The CPU ran out of cheap speed', 'Thousands of arithmetic units that could only draw', 'No language for those units']],
-  ['CUDA', ['From the graphics pipeline to a processor you can program', 'CUDA: host, device, and the copy', 'CUDA grids, blocks, and threads', 'CUDA memory spaces', 'Coalescing and latency hiding', 'Floating point on the device', 'Decomposition for a GPU']],
-  ['ROCm', ['The ROCm stack', 'HIP next to CUDA']],
-  ['OpenCL, Vulkan, SYCL', ['OpenCL next to CUDA', 'Vulkan compute and SPIR-V', 'SYCL', 'OpenMP target offload']],
-  ['After you have a number', ['A profile, not a guess']],
-  ['Same example, two machines', ['Matrix-vector, by rows and by columns', 'Odd-even transposition sort', 'Parallel search, and speedup that lies', 'n-body: all pairs and the reduced force', 'FFT communication: exchange versus transpose']],
-];
-
-function Icon({d}) {
+function QuizLink({mcq}) {
+  if (!mcq) {
+    return null;
+  }
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.glyph}>
-      <path d={d} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function Materials({mcq}) {
-  return (
-    <ul className={styles.materials}>
-      {MATERIALS.map((item) => {
-        const ready = item.name === 'MCQ' && mcq;
-        const label = ready ? 'MCQ' : `${item.name}, coming soon`;
-        const icon = <Icon d={item.path} />;
-        return (
-          <li key={item.name}>
-            {ready ? (
-              <Link className={styles.material} to={mcq} title={label} aria-label={label}>
-                {icon}
-              </Link>
-            ) : (
-              <span className={styles.material} title={label}>
-                {icon}
-                <span className={styles.srOnly}>{label}</span>
-              </span>
-            )}
-          </li>
-        );
-      })}
-    </ul>
+    <Link className={styles.quizLink} to={mcq} title="Chapter quiz" aria-label="Chapter quiz">
+      Quiz
+    </Link>
   );
 }
 
@@ -223,97 +163,101 @@ function LessonTitle({href, children}) {
     <Link className={styles.lessonLink} to={href}>
       <span className={styles.lessonTitle}>{children}</span>
       <span className={styles.go} aria-hidden="true">
-        Start
+        Open
       </span>
     </Link>
   );
 }
 
-function LessonRow({id, title, covers, href, mcq, chapter}) {
+function LessonRow({id, title, covers, href}) {
   return (
-    <div className={chapter ? styles.chapterRow : styles.lessonRow}>
+    <div className={styles.lessonRow}>
       <span className={styles.id}>{id}</span>
       <div className={styles.copy}>
         <LessonTitle href={href}>{title}</LessonTitle>
         {covers ? <p className={styles.desc}>{covers}</p> : null}
       </div>
-      <Materials mcq={mcq} />
     </div>
+  );
+}
+
+function ChapterCard({chapter, openByDefault}) {
+  return (
+    <details className={styles.roadmapCard} open={openByDefault}>
+      <summary>
+        <span className={styles.roadmapNum}>Chapter {chapter.num}</span>
+        <span className={styles.roadmapLabel}>{chapter.label}</span>
+        <span className={styles.chevron} aria-hidden="true" />
+      </summary>
+      <div className={styles.roadmapBody}>
+        <p className={styles.roadmapQuestion}>{chapter.question}</p>
+        <p className={styles.desc}>{chapter.covers}</p>
+        <div className={styles.roadmapActions}>
+          <Link className={styles.roadmapCta} to={chapter.href}>
+            Open chapter
+            <span aria-hidden="true">→</span>
+          </Link>
+          <QuizLink mcq={chapter.mcq} />
+        </div>
+        <div className={styles.partBody}>
+          {chapter.lessons.map(([id, title, covers, href]) => (
+            <LessonRow key={href} id={id} title={title} covers={covers} href={href} />
+          ))}
+        </div>
+      </div>
+    </details>
   );
 }
 
 export default function ParallelCurriculum() {
   return (
-    <>
-      <section className={track.section} id="syllabus" aria-labelledby="parallel-syllabus-title">
-        <div className={track.sectionHead}>
-          <span className={track.sectionStep}>Syllabus</span>
-          <h2 id="parallel-syllabus-title" className={styles.syllabusTitle}>
-            Follow the chapters in order
-          </h2>
-          <p className={track.sectionDesc}>
-            Open a chapter to see its lessons. A title opens that page. The quiz icon opens the chapter quiz.
-          </p>
-        </div>
-        <div className={styles.syllabus}>
-          {COURSE.map((chapter, index) => (
-            <details key={chapter.label} className={styles.part} open={index === 0}>
-              <summary>
-                <span>{chapter.label}</span>
-                <span className={styles.chevron} aria-hidden="true" />
-              </summary>
-              <div className={styles.partBody}>
-                <LessonRow id="" title={chapter.title} href={chapter.href} mcq={chapter.mcq} chapter />
-                {chapter.lessons.map(([id, title, covers, href]) => (
-                  <LessonRow key={href} id={id} title={title} covers={covers} href={href} />
-                ))}
-              </div>
-            </details>
-          ))}
-        </div>
-        <div className={styles.resume}>
-          <Link className={styles.resumeLink} to={`${DOC}/start-here/`}>
-            Start here
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </section>
-
-      <section className={track.section} id="already-written">
-        <div className={track.sectionHead}>
-          <span className={track.sectionStep}>Already written</span>
-          <h2 className={track.sectionTitle}>Pages that were already on the site</h2>
-          <p className={track.sectionDesc}>
-            The CUDA, ROCm, OpenCL, and Vulkan links are existing tracks. The matching chapters above are the course lessons.
-          </p>
-        </div>
-        <div className={styles.syllabus}>
-          {WRITTEN.map(([topic, title, href], index) => (
-            <LessonRow
-              key={href}
-              id={String(index + 1).padStart(2, '0')}
-              title={title}
-              covers={topic}
-              href={href}
-            />
-          ))}
-        </div>
-      </section>
-
-      <details className={styles.fold}>
-        <summary>Still to write</summary>
+    <section className={track.section} id="roadmap" aria-labelledby="parallel-roadmap-title">
+      <div className={track.sectionHead}>
+        <span className={track.sectionStep}>Course roadmap</span>
+        <h2 id="parallel-roadmap-title" className={styles.syllabusTitle}>
+          Eight chapters, one problem
+        </h2>
         <p className={track.sectionDesc}>
-          A line here turns into a link when that lesson is published.
+          Follow the chapters in order. Each chapter answers one question about the same
+          computation. Open a chapter for its lessons; use Quiz only when a chapter quiz exists.
         </p>
-        {LATER.map(([label, items]) => (
-          <div key={label} className={styles.chapterBlock}>
-            <p className={styles.lessonTitle}>{label}</p>
-            {items.map((item) => (
-              <LessonRow key={item} id="" title={item} />
+      </div>
+
+      <details className={styles.roadmapCard}>
+        <summary>
+          <span className={styles.roadmapNum}>Start</span>
+          <span className={styles.roadmapLabel}>Start Here</span>
+          <span className={styles.chevron} aria-hidden="true" />
+        </summary>
+        <div className={styles.roadmapBody}>
+          <p className={styles.roadmapQuestion}>How do you use this course, and what is the shared example?</p>
+          <div className={styles.roadmapActions}>
+            <Link className={styles.roadmapCta} to={START_HERE.href}>
+              Open Start Here
+              <span aria-hidden="true">→</span>
+            </Link>
+            <QuizLink mcq={START_HERE.mcq} />
+          </div>
+          <div className={styles.partBody}>
+            {START_HERE.lessons.map(([id, title, covers, href]) => (
+              <LessonRow key={href} id={id} title={title} covers={covers} href={href} />
             ))}
           </div>
-        ))}
+        </div>
       </details>
-    </>
+
+      <div className={styles.roadmapList}>
+        {ROADMAP.map((chapter, index) => (
+          <ChapterCard key={chapter.num} chapter={chapter} openByDefault={index === 0} />
+        ))}
+      </div>
+
+      <div className={styles.resume}>
+        <Link className={styles.resumeLink} to={`${DOC}/start-here/how-to-use-this-course/`}>
+          Start the course
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </section>
   );
 }
