@@ -9,7 +9,7 @@ keywords:
 
 # Getting started
 
-Short path to a first JSON with **CompilerSutraPerf**. Full walkthrough: [Tutorial](/docs/project/compilersutra-perf/tutorial/). Aligned with **[0.2.0](/docs/project/compilersutra-perf/releases/0.2.0/)**. Package: [PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/).
+Short path to a first JSON with **CompilerSutraPerf**. Full walkthrough: [Tutorial](/docs/project/compilersutra-perf/tutorial/). Aligned with **[0.3.0](/docs/project/compilersutra-perf/releases/0.3.0/)**. Package: [PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/).
 
 ## 1. Install
 
@@ -169,7 +169,7 @@ csperf run \
   --output results/my-opencl.json
 ```
 
-**Vulkan** — compile + validate only (`status: partial`), not full dispatch:
+**Vulkan** — prefers CompilerSutraRun (`csrun`) execute when available; without `csrun`, compile + validate only (`status: partial`):
 
 ```python
 csperf run --input path/to/my_shader.comp --backend vulkan \

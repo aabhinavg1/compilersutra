@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" height="100%">
+  <style>
+    .bg { fill: #0d1117; }
+    .box { fill: #161b22; stroke: #30363d; stroke-width: 1.5; rx: 6; }
+    .worker-box { fill: #1f242d; stroke: #58a6ff; stroke-width: 1.5; rx: 6; }
+    .text { fill: #c9d1d9; font-family: monospace; font-size: 13px; }
+    .title { fill: #58a6ff; font-family: monospace; font-size: 14px; font-weight: bold; }
+    .edge { stroke: #8b949e; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .comm-edge { stroke: #f85149; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; marker-end: url(#red-arrow); }
+    .label { fill: #8b949e; font-family: monospace; font-size: 11px; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b949e" />
+    </marker>
+    <marker id="red-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f85149" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" class="bg" />
+
+  <!-- Task DAG Side -->
+  <text x="20" y="30" class="title">1. Task Dependency Graph (DAG)</text>
+  
+  <rect x="40" y="50" width="80" height="35" class="box" />
+  <text x="58" y="72" class="text">Task A</text>
+
+  <rect x="20" y="120" width="80" height="35" class="box" />
+  <text x="38" y="142" class="text">Task B</text>
+
+  <rect x="120" y="120" width="80" height="35" class="box" />
+  <text x="138" y="142" class="text">Task C</text>
+
+  <rect x="70" y="190" width="80" height="35" class="box" />
+  <text x="88" y="212" class="text">Task D</text>
+
+  <path d="M 70 85 L 50 120" class="edge" />
+  <path d="M 90 85 L 140 120" class="edge" />
+  <path d="M 60 155 L 100 190" class="edge" />
+  <path d="M 140 155 L 120 190" class="edge" />
+
+  <!-- Mapping Arrow -->
+  <path d="M 230 135 L 280 135" class="edge" stroke-width="2" />
+  <text x="235" y="125" class="label">Mapping</text>
+
+  <!-- Worker Assignment Side -->
+  <text x="310" y="30" class="title">2. Worker Assignment</text>
+
+  <rect x="310" y="50" width="180" height="200" class="worker-box" />
+  <text x="320" y="75" class="title">Worker Thread 0</text>
+  <rect x="330" y="95" width="140" height="35" class="box" />
+  <text x="370" y="117" class="text">Task A</text>
+  <rect x="330" y="145" width="140" height="35" class="box" />
+  <text x="370" y="167" class="text">Task B</text>
+
+  <rect x="510" y="50" width="180" height="200" class="worker-box" />
+  <text x="520" y="75" class="title">Worker Thread 1</text>
+  <rect x="530" y="95" width="140" height="35" class="box" />
+  <text x="570" y="117" class="text">Task C</text>
+  <rect x="530" y="145" width="140" height="35" class="box" />
+  <text x="570" y="167" class="text">Task D</text>
+
+  <!-- Inter-Worker Edge -->
+  <path d="M 470 162 L 530 162" class="comm-edge" />
+  <text x="473" y="180" class="label" fill="#f85149">Inter-worker interaction</text>
+</svg>

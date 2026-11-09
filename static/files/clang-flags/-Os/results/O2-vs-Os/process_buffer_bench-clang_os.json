@@ -1,0 +1,356 @@
+{
+  "input_file": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp",
+  "input_type": "cpp",
+  "backend": "cpu",
+  "experiments": [],
+  "pipeline": {
+    "frontend": "clang",
+    "compiler_steps": [
+      "source -> clang frontend",
+      "clang -> llvm ir",
+      "llvm ir -> native code"
+    ],
+    "execution_backend": "cpu",
+    "profiler": "perf/papi"
+  },
+  "commands": [
+    "clang++ -std=c++17 -Os -emit-llvm -S /home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp -o /home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench.ll",
+    "clang++ -std=c++17 -Os /home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp -o /home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+    "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench"
+  ],
+  "hardware": {
+    "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "detected_platform": "linux",
+    "cpu_architecture": "x86_64",
+    "cpu_vendor": "amd",
+    "profiler": "auto",
+    "tools": {
+      "lscpu": true,
+      "perf": true,
+      "papi_command": false,
+      "papi_command_line": true,
+      "papi_avail": true,
+      "powermetrics": false,
+      "nvidia-smi": false,
+      "rocminfo": true
+    },
+    "papi": {
+      "pmu_available": true,
+      "hardware_counters": 5,
+      "force_pmu": "amd64_fam19h_zen4",
+      "detail": "libpfm_force_pmu=amd64_fam19h_zen4"
+    },
+    "cpu_model": "AMD Ryzen 7 9700X 8-Core Processor",
+    "collector": "linux-perf",
+    "supported_metrics": [
+      "amd_l2_ic_dc_miss_in_l2",
+      "cache_misses",
+      "cache_references",
+      "cpu_cycles",
+      "dtlb_load_misses",
+      "execution_time_ms",
+      "fma_instructions",
+      "fp_instructions",
+      "frontend_stall_cycles",
+      "instruction_count",
+      "ipc",
+      "itlb_load_misses",
+      "l1_icache_misses",
+      "ref_cycles",
+      "vec_instructions"
+    ],
+    "collector_available": true
+  },
+  "metrics": {
+    "execution_time_ms": 30.4347,
+    "execution_time_summary_ms": {
+      "count": 10,
+      "min": 30.393,
+      "max": 30.456,
+      "mean": 30.4347,
+      "median": 30.4375,
+      "stdev": 0.017876
+    },
+    "cpu_cycles": 151418446,
+    "ref_cycles": 104437571,
+    "frontend_stall_cycles": 13704653,
+    "instruction_count": 734987242,
+    "branch_instructions": 102814221,
+    "branch_mispredictions": 15277,
+    "cache_references": 14461885,
+    "cache_misses": 336454,
+    "l1_cache_misses": 7151365,
+    "l1_icache_misses": 69783,
+    "dtlb_load_misses": 90811,
+    "itlb_load_misses": 308,
+    "amd_l2_ic_dc_miss_in_l2": 343571,
+    "ipc": 4.854014,
+    "l2_cache_misses": 343571
+  },
+  "artifacts": {
+    "json": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/process_buffer_bench-clang_os.json",
+    "csv": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/process_buffer_bench-clang_os.csv",
+    "xlsx": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/process_buffer_bench-clang_os.xlsx",
+    "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench"
+  },
+  "execution": {
+    "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+    "cpu_affinity": "",
+    "papi_enabled": false,
+    "stdout": "47646196800",
+    "stderr": "",
+    "returncode": 0,
+    "terminated_by": "exit",
+    "wall_time_ms": 30.4347,
+    "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner",
+    "warmup_runs": 2,
+    "repeat_runs": 10,
+    "timing_summary_ms": {
+      "count": 10,
+      "min": 30.393,
+      "max": 30.456,
+      "mean": 30.4347,
+      "median": 30.4375,
+      "stdev": 0.017876
+    },
+    "mode": "executed",
+    "compiler": "clang++",
+    "compiler_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+    "compiler_flags": [
+      "-Os"
+    ],
+    "program_args": [],
+    "stdin_file": null,
+    "execution_timeout_s": null,
+    "trial_results": [
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.393,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.42,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.438,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.431,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.442,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.433,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.437,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.449,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.448,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      },
+      {
+        "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+        "cpu_affinity": "",
+        "papi_enabled": false,
+        "stdout": "47646196800",
+        "stderr": "",
+        "returncode": 0,
+        "terminated_by": "exit",
+        "papi_metrics": {},
+        "papi_error": "",
+        "wall_time_ms": 30.456,
+        "runner": "/home/aitr/projects/CompilerSutraPerfTool/build-native/bin/csperf_native_runner"
+      }
+    ],
+    "measurement": {
+      "wall_time_source": "native_runner",
+      "perf_source": "perf_stat",
+      "same_execution": false,
+      "status": "separate_execution"
+    },
+    "ir": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench.ll",
+    "perf_status": "collected",
+    "profiling_status": "collected",
+    "routing": {
+      "input_type": "cpp",
+      "requested_backend": "cpu",
+      "selected_backend": "cpu",
+      "reason": "requested backend resolved for input type"
+    },
+    "opt_level": "-Os",
+    "host_platform": "linux",
+    "metrics_availability": {
+      "run_status": "executed",
+      "collected": [
+        "amd_l2_ic_dc_miss_in_l2",
+        "branch_instructions",
+        "branch_mispredictions",
+        "cache_misses",
+        "cache_references",
+        "cpu_cycles",
+        "dtlb_load_misses",
+        "execution_time_ms",
+        "execution_time_summary_ms",
+        "frontend_stall_cycles",
+        "instruction_count",
+        "ipc",
+        "itlb_load_misses",
+        "l1_cache_misses",
+        "l1_icache_misses",
+        "l2_cache_misses",
+        "ref_cycles"
+      ],
+      "collected_count": 17,
+      "profiling_status": "collected"
+    },
+    "measurement_type": "hardware"
+  },
+  "power": {
+    "status": "unavailable",
+    "sources": [],
+    "domains": [],
+    "availability": {},
+    "energy_backends": [],
+    "errors": [
+      "energy measurement unavailable: no supported backend detected"
+    ]
+  },
+  "provenance": {
+    "schema_version": 1,
+    "tool": {
+      "name": "compilersutra-perf",
+      "version": "0.3.0",
+      "git_commit": "849e943"
+    },
+    "hashes": {
+      "input_sha256": "049ebaaa8352f068d928e369a137fd1893fbd2882021f813be0320e1371e6503",
+      "compiler_config_sha256": null,
+      "policy_config_sha256": null,
+      "binary_sha256": "8f7c908ddbc21bfe39e19aab2aeac7d40b18ac5d5734a1f9758407315d371921",
+      "ir_sha256": "fc4acf0db18f6af14eee1a5602a537780a8931b7f21fd30e58408458ab5240ae"
+    },
+    "paths": {
+      "input_file": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/benchmarks/process_buffer_bench.cpp",
+      "compiler_config": null,
+      "policy_config": null,
+      "binary": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench",
+      "ir": "/home/aitr/compilersutra/FixIt_Compilersutra/static/files/clang-flags/-Os/results/O2-vs-Os/build/process_buffer_bench/clang_os/process_buffer_bench.ll"
+    },
+    "toolchain": {
+      "backend": "cpu",
+      "compiler": {
+        "path": "clang++",
+        "version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+        "family": null,
+        "flags": [
+          "-Os"
+        ]
+      },
+      "cpu_profiler": "auto",
+      "hipcc": null,
+      "clinfo": null,
+      "vulkaninfo": null
+    }
+  },
+  "status": "executed",
+  "measurement_type": "hardware",
+  "workload_id": "process_buffer_bench",
+  "comparison_key": "process_buffer_bench/cpu",
+  "timestamp_utc": "2026-10-18T05:40:53.341560+00:00",
+  "schema_version": 2,
+  "tool_version": "0.3.0",
+  "generated_at_utc": "2026-10-18T05:40:53.341560+00:00"
+}

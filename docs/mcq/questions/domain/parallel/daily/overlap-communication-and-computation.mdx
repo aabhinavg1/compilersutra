@@ -1,0 +1,20 @@
+---
+title: "Overlap communication with computation quiz"
+description: "Five questions for Overlap communication with computation. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Overlap communication with computation quiz
+
+Lesson: [Overlap communication with computation](/docs/parallel-computing/overlap-communication-and-computation/)
+
+<Question question="1. What opaque handle is returned immediately upon initiating a nonblocking communication call such as MPI_Isend or MPI_Irecv?" options={["MPI_Status", "MPI_Request", "MPI_Comm", "MPI_Group"]} answer="MPI_Request" />
+
+<Question question="2. What is required before an application can safely read from an MPI_Irecv receive buffer?" options={["A call to MPI_Barrier", "Calling a completion routine such as MPI_Wait", "Reallocating the buffer", "Modifying the communicator tag"]} answer="Calling a completion routine such as MPI_Wait" />
+
+<Question question="3. What local computation can be executed during the overlapped execution window to hide network latency?" options={["Interior domain elements that do not depend on external halos", "Boundary updates that require neighbor halos", "Deallocating all grid memory", "Re-initializing the MPI runtime"]} answer="Interior domain elements that do not depend on external halos" />
+
+<Question question="4. According to the article, what lock condition applies to a buffer passed to MPI_Isend during an active transfer?" options={["Locked for reads; the application must not write to or mutate it", "Locked for writes; the application must not read from it", "Unlocked; it can be freely mutated", "Locked for both reads and writes by the CPU compiler"]} answer="Locked for reads; the application must not write to or mutate it" />
+
+<Question question="5. Do nonblocking MPI calls increase the physical network link bandwidth?" options={["Yes, they double the transfer speed", "No, they merely permit the CPU to execute independent instructions while data is in transit", "Yes, by automatically compressing network packets", "No, they reduce overall link bandwidth by half"]} answer="No, they merely permit the CPU to execute independent instructions while data is in transit" />

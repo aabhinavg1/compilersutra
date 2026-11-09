@@ -12,16 +12,16 @@ keywords:
 
 # Tutorial
 
-CompilerSutraPerf is a performance experimentation tool for Linux-first workflows that abstracts compile, run, and profile steps for C/C++ programs and GPU kernels (OpenCL, HIP, Vulkan shaders) behind a simple command-line interface. It orchestrates existing toolchains (Clang, GCC, hipcc, and others) and, on Linux, builds on the kernel `perf_events` interface via `perf` (with optional PAPI fallback) so hardware differences are handled by the same counting path you would use with `perf stat`. The CLI entry point is `csperf` ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)). This article demonstrates CompilerSutraPerf through example runs. Commands target the **0.2.0** Alpha line (`pip install 'compilersutra-perf==0.2.0'`). For readability, some output and paths are abbreviated with ellipsis (`[...]`).
+CompilerSutraPerf is a performance experimentation tool for Linux-first workflows that abstracts compile, run, and profile steps for C/C++ programs and GPU kernels (OpenCL, HIP, Vulkan shaders) behind a simple command-line interface. It orchestrates existing toolchains (Clang, GCC, hipcc, and others) and, on Linux, builds on the kernel `perf_events` interface via `perf` (with optional PAPI fallback) so hardware differences are handled by the same counting path you would use with `perf stat`. The CLI entry point is `csperf` ([PyPI: `compilersutra-perf`](https://pypi.org/project/compilersutra-perf/)). This article demonstrates CompilerSutraPerf through example runs. Commands target the **0.3.0** Alpha line (`pip install 'compilersutra-perf==0.3.0'`). For readability, some output and paths are abbreviated with ellipsis (`[...]`).
 
 :::note Prerequisites
 - Linux recommended (CPU + `perf` path)  
 - Python 3.11+  
-- Release notes: [0.2.0](/docs/project/compilersutra-perf/releases/0.2.0/)  
+- Release notes: [0.3.0](/docs/project/compilersutra-perf/releases/0.3.0/)  
 :::
 
 ```python
-pip install 'compilersutra-perf==0.2.0'
+pip install 'compilersutra-perf==0.3.0'
 csperf doctor
 ```
 

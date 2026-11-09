@@ -1,0 +1,51 @@
+name: Notify Discord on successful production deploy
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deployed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+          fetch-depth: 0
+
+      - name: Prepare notification
+        id: commit_policy
+        env:
+          BASE_COMMIT: ${{ github.event.deployment.sha }}~1
+          HEAD_COMMIT: ${{ github.event.deployment.sha }}
+          DISCORD_WEBHOOK_GENERAL: ${{ secrets.DISCORD_WEBHOOK_GENERAL }}
+          DISCORD_WEBHOOK_LLVM_DISCUSSION: ${{ secrets.DISCORD_WEBHOOK_LLVM_DISCUSSION }}
+        run: |
+          # Detect docs changes for this deployed commit
+          BASE="$BASE_COMMIT"
+          if ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            BASE="$(git rev-list --max-parents=0 HEAD)"
+          fi
+          export BASE_COMMIT="$BASE"
+          if git diff --name-only "$BASE_COMMIT" "$HEAD_COMMIT" | grep -q '^docs/'; then
+            export DOCS_CHANGED=true
+          else
+            export DOCS_CHANGED=false
+          fi
+          python3 .ci/commit_policy.py || true
+
+      - name: Send Discord notification
+        if: steps.commit_policy.outputs.discord_message != ''
+        env:
+          DISCORD_MESSAGE: ${{ steps.commit_policy.outputs.discord_message }}
+          DISCORD_WEBHOOK: ${{ steps.commit_policy.outputs.discord_webhook }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "No Discord webhook configured, skipping notification"
+            exit 0
+          fi
+          python3 -c 'import json, os, urllib.request; req = urllib.request.Request(os.environ["DISCORD_WEBHOOK"], data=json.dumps({"content": os.environ["DISCORD_MESSAGE"]}).encode(), headers={"Content-Type": "application/json"}); resp = urllib.request.urlopen(req, timeout=15); status = getattr(resp, "status", 204); print(f"Discord notified (status={status})"); raise SystemExit(0 if status in (200, 204) else 1)'

@@ -19,19 +19,20 @@ This hub is **release-first**. Open a version page for what shipped, how to inst
 
 | Release | Date | Status | Page |
 | --- | --- | --- | --- |
-| **0.2.0** | 2026-09-02 | Current · Alpha | [0.2.0 release notes](/docs/project/compilersutra-perf/releases/0.2.0/) |
+| **0.3.0** | 2026-11-08 | Current · Alpha | [0.3.0 release notes](/docs/project/compilersutra-perf/releases/0.3.0/) |
+| 0.2.0 | 2026-09-02 | Previous · Alpha | [0.2.0 release notes](/docs/project/compilersutra-perf/releases/0.2.0/) |
 | 0.1.2 | — | Maintenance | [0.1.2 release notes](/docs/project/compilersutra-perf/releases/0.1.2/) |
 | 0.1.1 | — | Infrastructure | [0.1.1 release notes](/docs/project/compilersutra-perf/releases/0.1.1/) |
 | 0.1.0 | — | First MVP | [0.1.0 release notes](/docs/project/compilersutra-perf/releases/0.1.0/) |
 
-**Start here for the current line:** [Release 0.2.0](/docs/project/compilersutra-perf/releases/0.2.0/)
+**Start here for the current line:** [Release 0.3.0](/docs/project/compilersutra-perf/releases/0.3.0/)
 
 ```python
-pip install 'compilersutra-perf==0.2.0'
+pip install 'compilersutra-perf==0.3.0'
 csperf quickstart --output-dir results/quickstart
 ```
 
-## Docs (current line · 0.2.x)
+## Docs (current line · 0.3.x)
 
 | Page | Role |
 | --- | --- |

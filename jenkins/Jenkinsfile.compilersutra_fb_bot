@@ -1,0 +1,44 @@
+pipeline {
+  agent any
+  options {
+    disableConcurrentBuilds()
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+  }
+  triggers {
+    // Local monitoring loop: poll every 2 minutes. (Or run the Python script as a long-lived service.)
+    cron('H/2 * * * *')
+  }
+  environment {
+    GITHUB_REPO = 'aabhinavg1/compilersutra'
+    FB_PAGE_ID = '61577245012547'
+    STATE_FILE = "${WORKSPACE}/.compilersutra_fb_bot_state.json"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Monitor deploy & post to Facebook') {
+      steps {
+        withCredentials([
+          string(credentialsId: 'compilersutra-github-token', variable: 'GITHUB_TOKEN'),
+          string(credentialsId: 'compilersutra-fb-page-access-token', variable: 'FB_PAGE_ACCESS_TOKEN')
+        ]) {
+          sh '''
+            set -e
+            python3 --version
+            # One check per build; cron trigger provides continuous local monitoring.
+            python3 scripts/compilersutra_fb_bot.py --once
+          '''
+        }
+      }
+    }
+  }
+  post {
+    failure {
+      echo 'compilersutra_fb_bot check failed; see logs.'
+    }
+  }
+}

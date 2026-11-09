@@ -40,6 +40,7 @@ const site = {
             id: 'project/compilersutra-perf/releases/index',
           },
           items: [
+            'project/compilersutra-perf/releases/0.3.0',
             'project/compilersutra-perf/releases/0.2.0',
             'project/compilersutra-perf/releases/0.1.2',
             'project/compilersutra-perf/releases/0.1.1',
@@ -54,6 +55,23 @@ const site = {
         'project/compilersutra-perf/architecture',
         'project/compilersutra-perf/energy-and-reports',
         'project/compilersutra-perf/troubleshooting',
+      ],
+    },
+  ],
+
+  csfarmSidebar: [
+    {
+      type: 'category',
+      label: 'CompilerSutra AppFarm',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'project/compilersutra-appfarm/index',
+      },
+      items: [
+        'project/compilersutra-appfarm/getting-started',
+        'project/compilersutra-appfarm/tutorial',
+        'project/compilersutra-appfarm/methodology',
       ],
     },
   ],
@@ -86,6 +104,7 @@ const site = {
                 id: 'project/compilersutra-perf/releases/index',
               },
               items: [
+                'project/compilersutra-perf/releases/0.3.0',
                 'project/compilersutra-perf/releases/0.2.0',
                 'project/compilersutra-perf/releases/0.1.2',
                 'project/compilersutra-perf/releases/0.1.1',
@@ -100,6 +119,20 @@ const site = {
             'project/compilersutra-perf/architecture',
             'project/compilersutra-perf/energy-and-reports',
             'project/compilersutra-perf/troubleshooting',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'CompilerSutra AppFarm',
+          collapsed: false,
+          link: {
+            type: 'doc',
+            id: 'project/compilersutra-appfarm/index',
+          },
+          items: [
+            'project/compilersutra-appfarm/getting-started',
+            'project/compilersutra-appfarm/tutorial',
+            'project/compilersutra-appfarm/methodology',
           ],
         },
         {
@@ -296,7 +329,14 @@ const site = {
         'coa/load-store-architecture',
         'coa/calling-conventions-and-abi',
         'coa/assembler-linker-loader',
+        'coa/isa-and-the-compiler-backend',
+        'coa/integer-and-floating-point',
         'coa/isa-design-tradeoffs',
+        'coa/pipeline-stalls-and-bubbles',
+        'coa/pipeline-hazards',
+        'coa/misprediction-penalty',
+        'coa/simd-basics',
+        'coa/smt-multicore-false-sharing',
       ],
     },
   ],

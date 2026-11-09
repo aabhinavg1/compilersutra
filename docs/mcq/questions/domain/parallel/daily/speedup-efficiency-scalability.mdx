@@ -1,0 +1,20 @@
+---
+title: "Speedup, efficiency, and scalability quiz"
+description: "Five questions for Speedup, efficiency, and scalability. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Speedup, efficiency, and scalability quiz
+
+Lesson: [Speedup, efficiency, and scalability](/docs/parallel-computing/speedup-efficiency-scalability/)
+
+<Question question="1. What is the primary goal of Strong Scaling?" options={["Minimize latency for a fixed task", "Maximize problem size per worker", "Keep memory capacity constant per core", "Eliminate interconnect bandwidth constraints"]} answer="Minimize latency for a fixed task" />
+
+<Question question="2. In the formula for speedup (S_p = T_1 / T_p), what does T_1 represent?" options={["The execution time of the 1-thread parallel implementation", "The execution time of the optimal sequential algorithm on 1 core", "The total time spent on communication across all cores", "The average runtime across all worker threads"]} answer="The execution time of the optimal sequential algorithm on 1 core" />
+
+<Question question="3. What is Weak Scalability?" options={["Keeping worker count fixed while reducing problem size", "Increasing problem size proportionally with worker count", "Decreasing worker count while increasing memory bandwidth", "Keeping execution time fixed while reducing core availability"]} answer="Increasing problem size proportionally with worker count" />
+
+<Question question="4. Why can superlinear speedup (S_p > p) occasionally occur?" options={["The compiler removes all sequential code dependencies", "The baseline sequential code is automatically parallelized", "Subdivided data fits entirely within high-speed hardware caches", "Dynamic RAM bandwidth increases exponentially with thread count"]} answer="Subdivided data fits entirely within high-speed hardware caches" />
+
+<Question question="5. Why should speedup be measured against a pure sequential baseline instead of a 1-thread parallel execution?" options={["A 1-thread parallel run incurs thread management overhead that inflates speedup metrics", "A 1-thread parallel run cannot produce accurate numerical outputs", "Compilers refuse to optimize 1-thread parallel executions", "Sequential baselines automatically autovectorize across multiple cores"]} answer="A 1-thread parallel run incurs thread management overhead that inflates speedup metrics" />
