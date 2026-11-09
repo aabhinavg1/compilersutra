@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-11-09T04:23:53.772Z",
+  "csperf": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf",
+  "input": "/home/aitr/compilersutra/FixIt_Compilersutra/docs/tools/clang-flags-workloads/asan_bench.c",
+  "clang": "clang (csperf default)",
+  "before": {
+    "label": "Clang -O2",
+    "flags": [
+      "-O2"
+    ],
+    "trials_ms": [
+      5.181,
+      5.14,
+      5.138,
+      5.184,
+      5.129
+    ]
+  },
+  "after": {
+    "label": "Clang -O2 -fsanitize=address",
+    "flags": [
+      "-O2",
+      "-fsanitize=address"
+    ],
+    "trials_ms": [
+      15.637,
+      15.457,
+      15.494,
+      15.452,
+      15.462
+    ]
+  },
+  "repro": {
+    "before": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/tools/clang-flags-workloads/asan_bench.c --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2",
+    "after": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/tools/clang-flags-workloads/asan_bench.c --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2 --compiler-flag=-fsanitize=address"
+  }
+}

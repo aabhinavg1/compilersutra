@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-11-09T04:23:54.786Z",
+  "csperf": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf",
+  "input": "/home/aitr/compilersutra/FixIt_Compilersutra/docs/tools/clang-flags-workloads/pic_bench.c",
+  "clang": "clang (csperf default)",
+  "before": {
+    "label": "Clang -O2 -fno-omit-frame-pointer",
+    "flags": [
+      "-O2",
+      "-fno-omit-frame-pointer"
+    ],
+    "trials_ms": [
+      40.521,
+      41.508,
+      41.473,
+      41.428,
+      40.506
+    ]
+  },
+  "after": {
+    "label": "Clang -O2 -fomit-frame-pointer",
+    "flags": [
+      "-O2",
+      "-fomit-frame-pointer"
+    ],
+    "trials_ms": [
+      40.534,
+      41.628,
+      40.625,
+      41.286,
+      41.073
+    ]
+  },
+  "repro": {
+    "before": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/tools/clang-flags-workloads/pic_bench.c --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2 --compiler-flag=-fno-omit-frame-pointer",
+    "after": "/home/aitr/projects/CompilerSutraPerfTool/.venv/bin/csperf run --input docs/tools/clang-flags-workloads/pic_bench.c --backend cpu --cpu-affinity 0 --warmup-runs 1 --repeat-runs 5 --no-perf --compiler-flag=-O2 --compiler-flag=-fomit-frame-pointer"
+  }
+}
