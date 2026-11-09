@@ -43,6 +43,7 @@ const parallel = {
             'parallel-computing/what-a-cluster-is',
             'parallel-computing/mpi-collectives',
             'parallel-computing/overlap-communication-and-computation',
+            'parallel-computing/hybrid-mpi-openmp',
           ],
         },
         {
