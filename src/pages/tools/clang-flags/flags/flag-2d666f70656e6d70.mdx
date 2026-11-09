@@ -1,45 +1,187 @@
 ---
 title: "-fopenmp"
 slug: "/tools/clang-flags/-fopenmp/"
-description: "Parse OpenMP pragmas and generate parallel code."
+description: "Enables parsing of OpenMP pragmas and lowers structured parallel constructs to runtime calls."
+keywords: [clang, -fopenmp, openmp, parallel, concurrency, llvm, libomp, multithreading]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fopenmp">
+<Head>
+  <title>-fopenmp — CompilerSutra Clang Flags Explorer</title>
+  <meta name="description" content="Enables parsing of OpenMP pragmas and lowers structured parallel constructs to runtime calls." />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-fopenmp" summary="Enables OpenMP directive parsing, semantic analysis, and IR generation targeting runtime support libraries (e.g., libomp).">
+
+<div className="cs-cta-box" style={{ background: 'var(--ifm-code-background)', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem' }}>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 'bold' }}>✉ Subscribe to Weekly Compiler Notes</a>
+  <span style={{ marginLeft: '0.5rem', color: 'var(--ifm-color-emphasis-700)' }}>— Deep dives into LLVM internals, AST lowering, and codegen optimization.</span>
+</div>
+
+## At a glance
+
+| Attribute | Details |
+| :--- | :--- |
+| **Category** | Language Frontend / Parallel Execution |
+| **Compiler Support** | Clang, Flang (Driver & Frontend `-cc1`) |
+| **Default State** | Disabled (`-fno-openmp`) |
+| **ABI Impact** | Modifies function boundaries; extracts region bodies into microtasks (`.omp_outlined.`) |
+| **Runtime Dependency** | Requires OpenMP runtime library (typically `libomp` / `libgomp`) during linking |
+
+---
 
 ## What this flag actually does
 
-Parse OpenMP pragmas and generate parallel code.
+The `-fopenmp` flag instructs Clang to recognize, parse, and semantically analyze `#pragma omp` directives in C/C++ source code. Without this flag, Clang treats unrecognized OpenMP directives as unknown pragmas and ignores them (emitting `-Wunknown-pragmas` warnings by default).
 
+When `-fopenmp` is enabled, Clang executes three main pipeline transformations:
+1. **Frontend Parsing & AST Creation**: Parses directives into AST nodes (e.g., `OMPParallelDirective`, `OMPForDirective`).
+2. **Code Lowering (CodeGen)**: Intercepts AST nodes in `CGOpenMPRuntime` and lowers structured parallel regions into outlining calls. Lexical blocks inside directives are moved into runtime-callable microtasks (`.omp_outlined.`).
+3. **Driver Linking**: Automatically appends OpenMP runtime flags (such as `-lomp` or `-lgomp` depending on toolchain target and default settings) during the link step.
 
+To specify a non-default runtime library target (e.g., LLVM `libomp` vs. GNU `libgomp`), pass `-fopenmp-targets=` or `-fopenmp=libomp`.
 
-It can be negated with -fno-openmp.
+---
 
-## When to use it
+## Minimal realistic example
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+Below is a parallel loop using `#pragma omp parallel for`.
 
-## When not to use it
+<SourceCode 
+  language="cpp" 
+  title="omp_example.cpp" 
+  code={`void process_data(double *data, int n) {
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i) {
+        data[i] *= 2.0;
+    }
+}`} 
+/>
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+When compiled without `-fopenmp`, Clang ignores the directive and generates standard sequential loop code. When compiled with `-fopenmp`, Clang restructures the loop into an outlined task function and emits standard runtime dispatch calls (`__kmpc_fork_call`).
+
+---
+
+## Before vs. after assembly
+
+Comparing LLVM IR / Assembly output highlights how `-fopenmp` changes control flow.
+
+<AsmDiff 
+  beforeTitle="Without -fopenmp (Sequential Loop)" 
+  beforeCode={`process_data:
+    test    esi, esi
+    jle     .LBB0_2
+    movsxd  rax, esi
+    xor     ecx, ecx
+.LBB0_1:
+    vmovsd  xmm0, qword ptr [rdi + 8*rcx]
+    vaddsd  xmm0, xmm0, xmm0
+    vmovsd  qword ptr [rdi + 8*rcx], xmm0
+    inc     rcx
+    cmp     rax, rcx
+    jne     .LBB0_1
+.LBB0_2:
+    ret`} 
+  afterTitle="With -fopenmp (Outlined Microtask Dispatch)" 
+  afterCode={`process_data:
+    sub     rsp, 24
+    lea     rax, [rsp + 16]
+    mov     qword ptr [rsp + 16], rdi
+    mov     dword ptr [rsp + 12], esi
+    lea     rdx, [rip + process_data..omp_outlined.]
+    lea     rdi, [rip + .loc.1]
+    mov     esi, 2
+    call    __kmpc_fork_call
+    add     rsp, 24
+    ret
+
+process_data..omp_outlined.:
+    # Outlined body handling loop chunks per thread via __kmpc_for_static_init
+    ...`} 
+/>
+
+---
+
+## Why use it / when not to use it
+
+### Why use it
+* **Multithreading**: Easily parallelize CPU-bound loops, reduction operations, and task queues across shared-memory architecture.
+* **Target Offloading**: Paired with `-fopenmp-targets=`, enables heterogeneous offloading to GPU hardware (NVIDIA PTX, AMD HSACO).
+
+### When not to use it
+* **Single-threaded Contexts**: If multi-threading introduces unacceptable context-switching or synchronization overhead for tiny workloads.
+* **Missing Runtime Support**: If linking against an embedded toolchain lacking an OpenMP runtime implementation (`libomp`).
+* **Strict ABI Interfaces**: Outlining alters how internal symbols are generated; ensure exported library boundaries account for OpenMP runtime dependency initialization.
+
+---
+
+## Performance impact
+
+* **Thread Overhead**: Spawning or synchronizing thread pools via `__kmpc_fork_call` carries non-zero latency. Workloads with extremely short iterations may experience performance regression unless protected by `if` clauses or schedule tuning.
+* **False Sharing**: Unintended concurrent writes to adjacent memory locations within the same cache line across threads can cause hardware cache thrashing.
+* **Vectorization Interference**: Outlining and dynamic scheduling calls can prevent loop vectorization unless explicit `#pragma omp simd` or `#pragma clang loop vectorize` annotations are combined.
+
+---
+
+## Compatibility table
+
+| Driver / Frontend Option | Supported Platform | Notes |
+| :--- | :--- | :--- |
+| `-fopenmp` | x86-64, AArch64, RISC-V, PowerPC | Standard host parallel execution support |
+| `-fopenmp=libomp` | Clang native toolchains | Default LLVM OpenMP runtime |
+| `-fopenmp=libgomp` | GCC-compatible Linux toolchains | Uses GNU OpenMP runtime support library |
+| `-fno-openmp` | All Targets | Disables parsing and runtime code generation |
+
+---
 
 ## Usage example
 
 ```bash
-clang++ -fopenmp -c main.cpp
+# Compile and link a C++ application with LLVM OpenMP runtime
+clang++ -O3 -fopenmp main.cpp -o main_omp
+
+# Generate LLVM IR showing OpenMP outlined regions
+clang++ -O2 -fopenmp -S -emit-llvm main.cpp -o main_omp.ll
+
+# Specify target GPU offloading alongside host OpenMP
+clang++ -O3 -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda main.cpp -o main_gpu
 ```
 
-## Key facts
+---
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option, FlangOption, FC1Option
-- **Stage**: cc1 (frontend), category `Code Generation`
-- **Negated by**: `-fno-openmp`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+## Adjacent options
+
+* `-fopenmp-simd`: Enables only SIMD-related OpenMP directives without generating thread fork calls or linking `libomp`.
+* `-fopenmp-targets=<targets>`: Specifies offload targets for `#pragma omp target` constructs.
+* `-fno-openmp`: Completely ignores OpenMP directives in the AST stage.
+
+---
+
+## How it works inside Clang
+
+| Pipeline Stage | Implementation Detail |
+| :--- | :--- |
+| **Driver** | Parses `-fopenmp`, handles runtime linking flags (`-lomp`/`-lgomp`), passes `-fopenmp` to `-cc1`. |
+| **Frontend (Parser)** | ParseOMP.cpp intercepts `#pragma omp` and constructs specialized AST Nodes (`OMPExecutableDirective`). |
+| **Sema** | SemaOpenMP.cpp verifies clause validity, variable capture traits (`shared`, `private`), and scope boundaries. |
+| **CodeGen** | `CGOpenMPRuntime.cpp` outlines regional AST blocks into `.omp_outlined.` functions and inserts runtime API calls (`__kmpc_fork_call`). |
+
+---
+
+<KeyFacts 
+  args={[
+    { name: "-fopenmp", desc: "Enable OpenMP language extensions and runtime generation" },
+    { name: "-fno-openmp", desc: "Disable OpenMP support" }
+  ]}
+  stage="Frontend Parsing & IR CodeGen"
+  category="Parallelism / Multi-threading"
+/>
 
 </FlagArticleShell>

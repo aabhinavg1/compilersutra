@@ -1,0 +1,1292 @@
+{
+  "generated_at": "2026-11-09T04:14:35.380Z",
+  "site_root": "/home/aitr/compilersutra/FixIt_Compilersutra",
+  "totals": {
+    "inventoried": 30,
+    "hand_authored_on_disk": 27,
+    "bot_state_stub_only": 3,
+    "bot_state_missing_file": 0,
+    "by_category": {
+      "A": 9,
+      "B": 12,
+      "C": 3,
+      "D": 2,
+      "E": 4
+    }
+  },
+  "priority_batch": [
+    {
+      "flag": "-fPIC",
+      "origin": "bot_state_stub_only",
+      "completeness": 44,
+      "category": "B",
+      "top_issues": [
+        "missing HAND_AUTHORED marker"
+      ]
+    },
+    {
+      "flag": "-ffast-math",
+      "origin": "bot_state_stub_only",
+      "completeness": 44,
+      "category": "A",
+      "top_issues": [
+        "missing HAND_AUTHORED marker"
+      ]
+    },
+    {
+      "flag": "-fno-exceptions",
+      "origin": "bot_state_stub_only",
+      "completeness": 44,
+      "category": "B",
+      "top_issues": [
+        "missing HAND_AUTHORED marker"
+      ]
+    },
+    {
+      "flag": "-Os",
+      "origin": "bot_published_present",
+      "completeness": 76,
+      "category": "A",
+      "top_issues": [
+        "placeholder / invented-language markers",
+        "over-universal performance wording"
+      ]
+    },
+    {
+      "flag": "-fpic",
+      "origin": "bot_published_present",
+      "completeness": 81,
+      "category": "B",
+      "top_issues": []
+    },
+    {
+      "flag": "-fomit-frame-pointer",
+      "origin": "bot_published_present",
+      "completeness": 89,
+      "category": "A",
+      "top_issues": []
+    },
+    {
+      "flag": "-O2",
+      "origin": "bot_published_present",
+      "completeness": 92,
+      "category": "A",
+      "top_issues": []
+    },
+    {
+      "flag": "-Ofast",
+      "origin": "bot_published_present",
+      "completeness": 92,
+      "category": "A",
+      "top_issues": []
+    },
+    {
+      "flag": "-fno-omit-frame-pointer",
+      "origin": "bot_published_present",
+      "completeness": 92,
+      "category": "A",
+      "top_issues": []
+    },
+    {
+      "flag": "-fopenmp",
+      "origin": "bot_published_present",
+      "completeness": 92,
+      "category": "A",
+      "top_issues": []
+    }
+  ],
+  "articles": [
+    {
+      "title": "-fPIC",
+      "flag": "-fPIC",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66504943.mdx",
+      "route": "/tools/clang-flags/-fPIC/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "",
+      "documentation": "",
+      "origin": "bot_state_stub_only",
+      "hand_authored": false,
+      "technical_completeness": 44,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [
+        "missing HAND_AUTHORED marker"
+      ],
+      "missing_sections": [
+        "at_a_glance",
+        "internals"
+      ],
+      "words": 127,
+      "evidence_score": 3
+    },
+    {
+      "title": "-ffast-math",
+      "flag": "-ffast-math",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66666173742d6d617468.mdx",
+      "route": "/tools/clang-flags/-ffast-math/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Allow aggressive, lossy floating-point optimizations",
+      "documentation": "",
+      "origin": "bot_state_stub_only",
+      "hand_authored": false,
+      "technical_completeness": 44,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [
+        "missing HAND_AUTHORED marker"
+      ],
+      "missing_sections": [
+        "at_a_glance",
+        "internals"
+      ],
+      "words": 123,
+      "evidence_score": 3
+    },
+    {
+      "title": "-fno-exceptions",
+      "flag": "-fno-exceptions",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666e6f2d657863657074696f6e73.mdx",
+      "route": "/tools/clang-flags/-fno-exceptions/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Disable support for exception handling",
+      "documentation": "",
+      "origin": "bot_state_stub_only",
+      "hand_authored": false,
+      "technical_completeness": 44,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [
+        "missing HAND_AUTHORED marker"
+      ],
+      "missing_sections": [
+        "at_a_glance",
+        "internals"
+      ],
+      "words": 119,
+      "evidence_score": 3
+    },
+    {
+      "title": "-Os",
+      "flag": "-Os",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d4f73.mdx",
+      "route": "/tools/clang-flags/-Os/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Optimize for size (like clang -Os)",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 76,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "pass_mention"
+      ],
+      "audit_issues": [
+        "placeholder / invented-language markers",
+        "over-universal performance wording"
+      ],
+      "missing_sections": [
+        "what_it_does",
+        "usage"
+      ],
+      "words": 2397,
+      "evidence_score": 11
+    },
+    {
+      "title": "-fpic",
+      "flag": "-fpic",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66706963.mdx",
+      "route": "/tools/clang-flags/-fpic/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 81,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "ir_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [
+        "usage"
+      ],
+      "words": 1594,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fomit-frame-pointer",
+      "flag": "-fomit-frame-pointer",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666f6d69742d6672616d652d706f696e746572.mdx",
+      "route": "/tools/clang-flags/-fomit-frame-pointer/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Omit the frame pointer from functions that don't need it. Some stack unwinding cases, such as profilers and sanitizers, may prefer specifying -fno-omit-frame-pointer. On many targets, -O1 and higher omit the frame pointer by default. -m[no-]omit-leaf-frame-pointer takes precedence for leaf functions",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 89,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "source_code",
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1040,
+      "evidence_score": 8
+    },
+    {
+      "title": "-O2",
+      "flag": "-O2",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d4f32.mdx",
+      "route": "/tools/clang-flags/-O2/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Optimize for speed (like /Og /Oi /Ot /Oy /Ob2 /GF /Gy)",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "ir_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1174,
+      "evidence_score": 9
+    },
+    {
+      "title": "-Ofast",
+      "flag": "-Ofast",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d4f66617374.mdx",
+      "route": "/tools/clang-flags/-Ofast/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "O_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Deprecated; use '-O3 -ffast-math' for the same behavior, or '-O3' to enable only conforming optimizations",
+      "documentation": "Flags controlling how much optimization should be performed.",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1204,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fno-omit-frame-pointer",
+      "flag": "-fno-omit-frame-pointer",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666e6f2d6f6d69742d6672616d652d706f696e746572.mdx",
+      "route": "/tools/clang-flags/-fno-omit-frame-pointer/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1423,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fopenmp",
+      "flag": "-fopenmp",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666f70656e6d70.mdx",
+      "route": "/tools/clang-flags/-fopenmp/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Parse OpenMP pragmas and generate parallel code.",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1020,
+      "evidence_score": 9
+    },
+    {
+      "title": "-O",
+      "flag": "-O",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d4f.mdx",
+      "route": "/tools/clang-flags/-O/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Set multiple /O flags at once; e.g. '/O2y-' for '/O2 /Oy-'",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 95,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1114,
+      "evidence_score": 10
+    },
+    {
+      "title": "-fPIE",
+      "flag": "-fPIE",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66504945.mdx",
+      "route": "/tools/clang-flags/-fPIE/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 95,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1293,
+      "evidence_score": 10
+    },
+    {
+      "title": "-flto",
+      "flag": "-flto",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666c746f.mdx",
+      "route": "/tools/clang-flags/-flto/",
+      "flag_category": "A",
+      "flag_category_label": "Performance-sensitive",
+      "compiler_phase": "optimizer+codegen",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Enable LTO in 'full' mode",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 95,
+      "experiment_would_add_value": true,
+      "experiment_mode": "csperf+ir+asm",
+      "csperf_useful": true,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1419,
+      "evidence_score": 10
+    },
+    {
+      "title": "-Wextra",
+      "flag": "-Wextra",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d576578747261.mdx",
+      "route": "/tools/clang-flags/-Wextra/",
+      "flag_category": "E",
+      "flag_category_label": "Diagnostic / frontend",
+      "compiler_phase": "frontend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "flang_ignored_w_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 86,
+      "experiment_would_add_value": true,
+      "experiment_mode": "frontend+diagnostics",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1003,
+      "evidence_score": 7
+    },
+    {
+      "title": "-march=",
+      "flag": "-march=",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d6d617263683d.mdx",
+      "route": "/tools/clang-flags/-march%3D/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "target-dependent"
+      ],
+      "group": "m_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "For a list of available architectures for the target use '-mcpu=help'",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 86,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "ir_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1312,
+      "evidence_score": 7
+    },
+    {
+      "title": "-pthread",
+      "flag": "-pthread",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d70746872656164.mdx",
+      "route": "/tools/clang-flags/-pthread/",
+      "flag_category": "D",
+      "flag_category_label": "ABI / compatibility",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "",
+      "driver": true,
+      "cc1": true,
+      "help": "Support POSIX threads in generated code",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 86,
+      "experiment_would_add_value": true,
+      "experiment_mode": "abi+object(+nm)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 933,
+      "evidence_score": 7
+    },
+    {
+      "title": "-fbounds-safety",
+      "flag": "-fbounds-safety",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66626f756e64732d736166657479.mdx",
+      "route": "/tools/clang-flags/-fbounds-safety/",
+      "flag_category": "C",
+      "flag_category_label": "Debugging / instrumentation",
+      "compiler_phase": "frontend+codegen+runtime",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": false,
+      "cc1": true,
+      "help": "Enable experimental bounds safety extension for C",
+      "documentation": "Public name: -fbounds-safety (https://clang.llvm.org/docs/BoundsSafety.html). CC1-only today; forward with -Xclang -fexperimental-bounds-safety on preview Clang builds.",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 89,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+size(+runtime overhead)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "asm_diff",
+        "perf_report"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1606,
+      "evidence_score": 8
+    },
+    {
+      "title": "-D",
+      "flag": "-D",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d44.mdx",
+      "route": "/tools/clang-flags/-D/",
+      "flag_category": "E",
+      "flag_category_label": "Diagnostic / frontend",
+      "compiler_phase": "frontend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Define macro",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "frontend+diagnostics",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 830,
+      "evidence_score": 9
+    },
+    {
+      "title": "-I",
+      "flag": "-I",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d49.mdx",
+      "route": "/tools/clang-flags/-I/",
+      "flag_category": "E",
+      "flag_category_label": "Diagnostic / frontend",
+      "compiler_phase": "frontend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Add directory to include search path",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "frontend+diagnostics",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 845,
+      "evidence_score": 9
+    },
+    {
+      "title": "-Wall",
+      "flag": "-Wall",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d57616c6c.mdx",
+      "route": "/tools/clang-flags/-Wall/",
+      "flag_category": "E",
+      "flag_category_label": "Diagnostic / frontend",
+      "compiler_phase": "frontend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Enable -Weverything",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "frontend+diagnostics",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 878,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fcall-saved-x10",
+      "flag": "-fcall-saved-x10",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d6663616c6c2d73617665642d783130.mdx",
+      "route": "/tools/clang-flags/-fcall-saved-x10/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "AArch64"
+      ],
+      "group": "m_aarch64_Features_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Make the x10 register call-saved (AArch64 only)",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "ir_mention",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 2022,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fno-rtti",
+      "flag": "-fno-rtti",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666e6f2d72747469.mdx",
+      "route": "/tools/clang-flags/-fno-rtti/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Disable generation of rtti information",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1264,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fsanitize=address",
+      "flag": "-fsanitize=address",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d6673616e6974697a653d61646472657373.mdx",
+      "route": "/tools/clang-flags/-fsanitize%3Daddress/",
+      "flag_category": "C",
+      "flag_category_label": "Debugging / instrumentation",
+      "compiler_phase": "frontend+codegen+runtime",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "cl_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Enable AddressSanitizer",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": true,
+      "experiment_mode": "ir+size(+runtime overhead)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 950,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fstack-protector-all",
+      "flag": "-fstack-protector-all",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66737461636b2d70726f746563746f722d616c6c.mdx",
+      "route": "/tools/clang-flags/-fstack-protector-all/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Enable stack protectors for all functions",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1311,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fstack-protector-strong",
+      "flag": "-fstack-protector-strong",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d66737461636b2d70726f746563746f722d7374726f6e67.mdx",
+      "route": "/tools/clang-flags/-fstack-protector-strong/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Enable stack protectors for some functions vulnerable to stack smashing. Compared to -fstack-protector, this uses a stronger heuristic that includes functions containing arrays of any size (and any type), as well as any calls to alloca or the taking of an address from a local variable",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1421,
+      "evidence_score": 9
+    },
+    {
+      "title": "-g",
+      "flag": "-g",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d67.mdx",
+      "route": "/tools/clang-flags/-g/",
+      "flag_category": "C",
+      "flag_category_label": "Debugging / instrumentation",
+      "compiler_phase": "frontend+codegen+runtime",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "g_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Generate source-level debug information",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+size(+runtime overhead)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 877,
+      "evidence_score": 9
+    },
+    {
+      "title": "-mcpu=",
+      "flag": "-mcpu=",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d6d6370753d.mdx",
+      "route": "/tools/clang-flags/-mcpu%3D/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "target-dependent"
+      ],
+      "group": "m_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "For a list of available CPUs for the target use '-mcpu=help'",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1251,
+      "evidence_score": 9
+    },
+    {
+      "title": "-mtune=",
+      "flag": "-mtune=",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d6d74756e653d.mdx",
+      "route": "/tools/clang-flags/-mtune%3D/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "codegen+backend",
+      "target_architectures": [
+        "target-dependent"
+      ],
+      "group": "m_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Only supported on AArch64, PowerPC, RISC-V, SPARC, SystemZ, and X86",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 1242,
+      "evidence_score": 9
+    },
+    {
+      "title": "-std=",
+      "flag": "-std=",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d7374643d.mdx",
+      "route": "/tools/clang-flags/-std%3D/",
+      "flag_category": "D",
+      "flag_category_label": "ABI / compatibility",
+      "compiler_phase": "frontend",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "CompileOnly_Group",
+      "driver": true,
+      "cc1": true,
+      "help": "Language standard to compile for",
+      "documentation": "Flags controlling the behavior of Clang during compilation. These flags have no effect during actions that do not perform compilation.",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 92,
+      "experiment_would_add_value": false,
+      "experiment_mode": "abi+object(+nm)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "ir_mention",
+        "assembly_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [
+        "perf_report",
+        "pass_mention"
+      ],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 863,
+      "evidence_score": 9
+    },
+    {
+      "title": "-fno-strict-aliasing",
+      "flag": "-fno-strict-aliasing",
+      "article_path": "src/pages/tools/clang-flags/flags/flag-2d666e6f2d7374726963742d616c696173696e67.mdx",
+      "route": "/tools/clang-flags/-fno-strict-aliasing/",
+      "flag_category": "B",
+      "flag_category_label": "Code-generation",
+      "compiler_phase": "driver",
+      "target_architectures": [
+        "portable / target-agnostic intent"
+      ],
+      "group": "f_Group",
+      "driver": true,
+      "cc1": false,
+      "help": "Disable optimizations based on strict aliasing rules",
+      "documentation": "",
+      "origin": "bot_published_present",
+      "hand_authored": true,
+      "technical_completeness": 100,
+      "experiment_would_add_value": false,
+      "experiment_mode": "ir+asm(+csperf)",
+      "csperf_useful": false,
+      "existing_evidence": [
+        "asm_diff",
+        "source_code",
+        "perf_report",
+        "ir_mention",
+        "assembly_mention",
+        "pass_mention",
+        "source_ref",
+        "repro_cmds"
+      ],
+      "missing_evidence": [],
+      "audit_issues": [],
+      "missing_sections": [],
+      "words": 2011,
+      "evidence_score": 12
+    }
+  ]
+}
