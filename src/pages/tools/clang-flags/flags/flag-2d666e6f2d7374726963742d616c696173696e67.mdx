@@ -86,7 +86,7 @@ import PerfReport from '@site/src/components/clang-flags/PerfReport';
 | **Category** | Language semantics / optimization |
 | **Compiler** | Clang, including the C and C++ drivers |
 | **Optimization** | Relaxes type-based alias analysis (TBAA) |
-| **Risk** | Usually slower; can hide violations of the language aliasing rules |
+| **Risk** | May reduce optimization opportunities; can also mask code that relies on language aliasing rules |
 
 :::note One-line summary
   Tell Clang not to use incompatible pointer types as proof that two memory accesses cannot refer to the same object.
@@ -201,7 +201,8 @@ int main(void) {
 ```
 
 <PerfReport
-  beforeTitle="Without flag"
+  withinNoise={true}
+beforeTitle="Without flag"
   afterTitle="With -fno-strict-aliasing"
   without={[20.300, 20.288, 20.306, 20.322, 20.268, 20.304, 20.295]}
   with={[20.291, 20.288, 20.285, 25.377, 20.381, 20.311, 20.313]}
@@ -337,6 +338,10 @@ rg 'TBA|!tbaa' strict.ll nostrict.ll
 - `clang/lib/CodeGen/CodeGenTBAA.cpp` (verify on tip)
 
 ---
+
+:::note Present by
+`-fno-strict-aliasing` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3636). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

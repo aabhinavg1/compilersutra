@@ -40,6 +40,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ---
 
+:::note Present by
+`-fPIE` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L6505). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
 The `-fPIE` flag instructs the compiler to generate position-independent code suitable for linking into a Position-Independent Executable (PIE). Unlike general position-independent code (`-fPIC`), `-fPIE` assumes that symbol definitions originating in the current translation unit will **not** be interprosed by dynamic libraries at runtime.
@@ -114,7 +118,7 @@ get_ext:
 
 ### Why use it
 - **Address Space Layout Randomization (ASLR)**: Required by modern OS security standards (Linux distros, macOS, Android) to harden binaries against return-oriented programming (ROP) and buffer overflow exploits.
-- **Executable Optimization over PIC**: Faster than `-fPIC` for main executables because local functions and data do not suffer from dynamic symbol interposition overhead.
+- **Executable vs DSO PIC**: Often cheaper than `-fPIC` for main executables because local functions and data do not suffer from dynamic symbol interposition overhead.
 
 ### When not to use it
 - **Building Shared Libraries (`.so` / `.dylib`)**: Do not use `-fPIE` when building shared objects; use `-fPIC` instead. `-fPIE` assumes symbols are bound to the main binary, which causes dynamic linker errors or invalid relocations inside shared objects.

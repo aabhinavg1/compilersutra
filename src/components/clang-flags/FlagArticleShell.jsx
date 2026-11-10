@@ -136,6 +136,55 @@ const RELATED_HELP_FALLBACKS = {
   '-mframe-pointer=': 'Select FP policy: all, non-leaf, reserved, or none.',
   '-momit-leaf-frame-pointer': 'Prefer omitting frame-pointer setup in leaf functions.',
   '-mno-omit-leaf-frame-pointer': 'Prefer keeping frame-pointer setup in leaf functions.',
+  '-O0': 'Disable most optimizations; preserve straightforward codegen for debugging.',
+  '-O1': 'Enable a basic optimization pipeline.',
+  '-O2': 'Optimize more; common release default.',
+  '-O3': 'Optimize further; may increase code size.',
+  '-Os': 'Optimize for code size while keeping profitable speed opts.',
+  '-Oz': 'Optimize aggressively for minimum code size.',
+  '-Ofast': 'Deprecated umbrella historically similar to -O3 plus fast-math relaxations.',
+  '-Og': 'Optimize with experience aimed at debuggability.',
+  '-ffast-math': 'Allow aggressive, lossy floating-point optimizations.',
+  '-fno-fast-math': 'Disable -ffast-math floating-point relaxations.',
+  '-fpic': 'Generate position-independent code for shared libraries (small model where applicable).',
+  '-fPIC': 'Generate position-independent code for shared libraries (large model where applicable).',
+  '-fpie': 'Generate position-independent code suitable for executables.',
+  '-fPIE': 'Generate position-independent code for executables (large model where applicable).',
+  '-fno-pic': 'Disable -fpic.',
+  '-fno-PIE': 'Disable -fPIE.',
+  '-fstack-protector': 'Enable stack protectors for some vulnerable functions.',
+  '-fstack-protector-strong': 'Enable stack protectors for a stronger set of functions.',
+  '-fstack-protector-all': 'Enable stack protectors for all functions.',
+  '-fno-stack-protector': 'Disable stack protectors.',
+  '-fstrict-aliasing': 'Enable optimizations based on language aliasing rules.',
+  '-fno-strict-aliasing': 'Disable optimizations based on strict aliasing rules.',
+  '-flto': "Enable link-time optimization (default 'full' mode spelling).",
+  '-fno-lto': 'Disable LTO.',
+  '-flto=thin': 'Enable ThinLTO.',
+  '-flto=full': 'Enable full LTO.',
+  '-fopenmp': 'Parse OpenMP pragmas and generate parallel code.',
+  '-fno-openmp': 'Disable OpenMP.',
+  '-fopenmp-simd': 'Emit OpenMP code only for SIMD constructs.',
+  '-frtti': 'Enable C++ RTTI generation.',
+  '-fno-rtti': 'Disable C++ RTTI generation.',
+  '-fexceptions': 'Enable exception-handling support.',
+  '-fno-exceptions': 'Disable exception-handling support.',
+  '-fsanitize=address': 'Enable AddressSanitizer.',
+  '-fno-sanitize=address': 'Disable AddressSanitizer.',
+  '-Wall': 'Enable a broad set of useful warning groups.',
+  '-Wextra': 'Enable additional warning groups beyond -Wall.',
+  '-Werror': 'Treat warnings as errors.',
+  '-std=': 'Select the language standard.',
+  '-g': 'Generate source-level debug information.',
+  '-g0': 'Disable debug information.',
+  '-gline-tables-only': 'Emit line-table-only debug information.',
+  '-pthread': 'Enable POSIX threads support via the driver/toolchain.',
+  '-march=': 'Select the target architecture / ISA level.',
+  '-mcpu=': 'Select the target CPU.',
+  '-mtune=': 'Tune scheduling/codegen for a CPU without changing the base ISA requirement.',
+  '-D': 'Define a preprocessor macro.',
+  '-U': 'Undefine a preprocessor macro.',
+  '-I': 'Add a directory to the include search path.',
 };
 
 function shortenCategoryLabel(category) {
@@ -153,7 +202,7 @@ function relatedFlagSummary(item) {
   if (fromData && fromData.toLowerCase() !== 'no help text available.') {
     return fromData;
   }
-  return RELATED_HELP_FALLBACKS[item?.flag] || RELATED_HELP_FALLBACKS[item?.publicFlag] || 'Adjacent Clang frame-pointer option.';
+  return RELATED_HELP_FALLBACKS[item?.flag] || RELATED_HELP_FALLBACKS[item?.publicFlag] || 'Adjacent Clang option.';
 }
 
 function buildArchitecture(flag) {

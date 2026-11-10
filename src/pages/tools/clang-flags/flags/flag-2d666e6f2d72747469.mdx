@@ -19,7 +19,7 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-fno-rtti" summary="Disables standard C++ Run-Time Type Information (RTTI). Omits type_info structures and vtable RTTI pointers, while causing dynamic_cast and typeid on polymorphic types to produce compilation errors.">
 
-<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Deep dives on LLVM backend optimizations, ABI subtleties, and Clang internals.</p></div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
@@ -32,6 +32,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | **Safety / Risk** | Breaks code relying on standard C++ `dynamic_cast` or `typeid` |
 
 ---
+
+:::note Present by
+`-fno-rtti` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L533). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## What this flag actually does
 

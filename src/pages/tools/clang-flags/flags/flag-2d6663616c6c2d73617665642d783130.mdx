@@ -23,6 +23,9 @@ import RegisterLayout from '@site/src/components/clang-flags/RegisterLayout';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-fcall-saved-x10" summary="Promote register x10 from caller-saved (volatile) to callee-saved on AArch64, so compiler-generated code preserves it across calls.">
 
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
 ## At a glance
 
 | | |
@@ -167,7 +170,8 @@ In practice, for a value that survives only one or two calls, the flag is a wash
 The loop above was run 100 times over a 2,000,000-element array with `clang++ -O3` on an Apple M1 Pro (`arm64`), once with the default ABI and once with `-fcall-saved-x10`. Wall-clock time was measured with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) (`csperf run --backend cpu`, 3 warmup runs, 7 measured trials):
 
 <PerfReport
-  beforeTitle="Without flag"
+  withinNoise={true}
+beforeTitle="Without flag"
   afterTitle="With -fcall-saved-x10"
   without={[193.026, 193.65, 192.88, 192.481, 193.229, 193.279, 193.225]}
   with={[193.204, 194.244, 196.97, 195.863, 196.887, 196.761, 192.819]}
@@ -293,6 +297,10 @@ clang --target=aarch64-linux-gnu -O2 -S example.c -o default.s
 - AArch64 target register info / calling convention under `llvm/lib/Target/AArch64/` (verify symbols on tip)
 
 ---
+
+:::note Present by
+`-fcall-saved-x10` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5371). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 
