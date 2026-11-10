@@ -77,6 +77,11 @@ function isFramePointerFlag(flag) {
   return FRAME_POINTER_FLAGS.has(name) || name.includes('frame-pointer');
 }
 
+function isStackProtectorFlag(flag) {
+  const name = String(flag?.flag || '');
+  return name.includes('stack-protector');
+}
+
 export function buildPipelineTrail(flag) {
   if (BOUNDS_SAFETY_FLAGS.has(flag.flag)) {
     return [
@@ -97,6 +102,16 @@ export function buildPipelineTrail(flag) {
       { title: 'TargetFrameLowering', note: 'hasFP() may still require an FP (VLA, EH, …)' },
       { title: 'Prologue / Epilogue', note: 'Reserve or free the FP register in machine code' },
       { title: 'Machine code + unwind', note: 'Optional .eh_frame / CFI — orthogonal to FP policy' },
+    ];
+  }
+
+  if (isStackProtectorFlag(flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -fstack-protector / -strong / -all / -fno-stack-protector' },
+      { title: 'CC1 / CodeGenOptions', note: 'Record stack-protector level for CodeGen' },
+      { title: 'IR attribute', note: 'Emit ssp / sspstrong / sspreq function attributes where applicable' },
+      { title: 'Backend prologue', note: 'Insert canary setup/check in selected functions' },
+      { title: 'Object code', note: 'Guard variable references — not AddressSanitizer instrumentation' },
     ];
   }
 

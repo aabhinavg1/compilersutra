@@ -57,7 +57,8 @@ This option does not repair invalid source, undefined behavior, data races, or a
 The following measurements were produced with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) using `csperf` 0.3.0, Ubuntu clang 18.1.3, x86_64-pc-linux-gnu, CPU affinity 0, one warmup run, five measured trials, profiling disabled:
 
 <PerfReport
-  beforeTitle="Clang -O2"
+  withinNoise={true}
+beforeTitle="Clang -O2"
   afterTitle="Clang -O2 -g"
   without={[30.743, 31.231, 30.547, 31.212, 30.648]}
   with={[31.221, 31.212, 31.319, 31.198, 31.126]}
@@ -128,6 +129,10 @@ rg 'DILocation|!dbg' w.ll | head
 - Options.td debug flags; `clang/lib/CodeGen/CGDebugInfo.cpp`
 
 ---
+
+:::note Present by
+`-g` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4709). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

@@ -32,6 +32,34 @@ export function getFlagSearchNames(option) {
   ]).map((item) => normalizeText(item));
 }
 
+function scoreExactFlagMatch(option, queryVariants) {
+  const flag = normalizeText(option?.flag);
+  const publicFlag = normalizeText(getPublicFlag(option));
+  const spellings = (option?.spellings || []).map((item) => normalizeText(item));
+  let score = 0;
+
+  if (queryVariants.some((variant) => variant === flag || variant === publicFlag || spellings.includes(variant))) {
+    score += 100;
+  } else {
+    // searchAliases / other names — weaker than an exact spelling match
+    score += 10;
+  }
+
+  // Prefer real Clang driver options over clang-cl compatibility spellings
+  // when both share a surface form (e.g. -O2).
+  if (option?.category === 'CL Compatibility' || option?.group === 'cl_Group') {
+    score -= 40;
+  }
+  if ((option?.visibility || []).includes('ClangOption')) {
+    score += 5;
+  }
+  if (option?.group === 'O_Group' || option?.category === 'Optimization') {
+    score += 8;
+  }
+
+  return score;
+}
+
 export function findFlagOption(options, requestedFlag) {
   const query = normalizeText(requestedFlag);
   if (!query || !Array.isArray(options)) {
@@ -43,10 +71,17 @@ export function findFlagOption(options, requestedFlag) {
     query.startsWith('-') ? query.slice(1) : `-${query}`,
   ]).map((item) => normalizeText(item));
 
-  return options.find((option) => {
+  const matches = options.filter((option) => {
     const names = getFlagSearchNames(option);
     return queryVariants.some((variant) => names.includes(variant));
-  }) || null;
+  });
+  if (!matches.length) {
+    return null;
+  }
+
+  return matches
+    .slice()
+    .sort((a, b) => scoreExactFlagMatch(b, queryVariants) - scoreExactFlagMatch(a, queryVariants))[0];
 }
 
 export function scoreFlagOption(option, query, tokens = []) {

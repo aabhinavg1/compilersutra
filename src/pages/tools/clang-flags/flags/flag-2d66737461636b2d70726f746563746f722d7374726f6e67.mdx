@@ -31,13 +31,17 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | **Compiler** | Clang / LLVM (Driver option mapped to `-stack-protector 2` in cc1) |
 | **Default** | Disabled by default in raw Clang (often enabled by Linux distros/toolchain wrappers) |
 | **Optimization impact** | Minor stack overhead (extra pushes, reads, comparison, and fail blocks) |
-| **Safety / ABI Risk** | Low risk; ABI preserved, but modifies stack layout and adds TLS / guard symbol dependency |
+| **Risk** | Low correctness risk; adds canary/prologue cost and a `__stack_chk_*` runtime dependency — **not** AddressSanitizer |
 
 ---
 
+:::note Present by
+`-fstack-protector-strong` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4132). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
-`-fstack-protector-strong` instructs the compiler to insert a stack canary (guard variable) into frame layouts for functions matching specific vulnerability criteria.
+`-fstack-protector-strong` instructs the compiler to insert a stack canary (guard variable) into frame layouts for functions matching specific vulnerability criteria. This is **backend stack-protector codegen** (`ssp` / `sspstrong` / `sspreq`), not sanitizer instrumentation.
 
 Compared to `-fstack-protector` (which only triggers on character arrays larger than 8 bytes by default) and `-fstack-protector-all` (which instruments *every* function regardless of structure), `-fstack-protector-strong` strikes a balance between security coverage and performance.
 

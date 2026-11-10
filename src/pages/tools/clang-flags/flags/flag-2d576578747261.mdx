@@ -134,6 +134,10 @@ clang -### -Wextra -c w.c 2>&1 | head
 
 ---
 
+:::note Present by
+`-Wextra` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L6962). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## Key facts
 
 <KeyFacts items={[{label:'Flag',value:'-Wextra'},{label:'Category',value:'Diagnostics / warnings'},{label:'Primary stage',value:'Clang driver / frontend'},{label:'ABI or semantics',value:'Verify project-wide consistency'},{label:'Evidence',value:'Use -###, -E, -S, IR, or object inspection'}]} />

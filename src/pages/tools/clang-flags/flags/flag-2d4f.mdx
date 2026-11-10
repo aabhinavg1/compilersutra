@@ -36,10 +36,7 @@ import PerfReport from '@site/src/components/clang-flags/PerfReport';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-O" summary="Select the optimization pipeline Clang and LLVM use, trading compile time, debuggability, code size, and runtime performance.">
 
-<div className="text--center margin-bottom--md">
-  <a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">Subscribe to Weekly Compiler Notes</a>
-  <p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p>
-</div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
@@ -49,7 +46,7 @@ import PerfReport from '@site/src/components/clang-flags/PerfReport';
 | **Category** | Optimization level |
 | **Compiler** | Clang driver; levels use common GCC-compatible spellings |
 | **Optimization** | Selects frontend/codegen defaults and the LLVM pass pipeline |
-| **Risk** | Higher levels can increase compile time, code size, or expose undefined behavior |
+| **Risk** | Correctness: higher levels can make undefined behavior more visible; also compile-time / code-size tradeoffs |
 
 :::note One-line summary
 A bare `-O` means `-O1`; use an explicit level when the build policy needs a defined speed, size, or debugability tradeoff.
@@ -117,7 +114,7 @@ paddd %xmm0, %xmm1
 addq $4, %rdx
 cmpq %rdx, %rcx
 jne .LBB0_5`}
-  note="Generated with Clang 18.1.3 using -S for x86_64-pc-linux-gnu. The -O2 excerpt highlights vectorized accumulation; the complete function includes cleanup and reduction."
+  note="Important difference (Clang 18.1.3, x86_64-pc-linux-gnu, -S): -O0 keeps a stack frame and scalar loop; -O2 vectorizes the accumulation (excerpt)."
 />
 
 ## Why use it and when not to
@@ -196,18 +193,11 @@ clang -O2 -### -c sum.c
 
 ## How it works inside Clang
 
-```mermaid
-flowchart LR
-  A["-O level"] --> B["Options.td / generated option table"]
-  B --> C["Clang driver"]
-  C --> D["cc1 CodeGenOpts + LangOpts"]
-  D --> E["LLVM PassBuilder selects pipeline"]
-  E --> F["LLVM IR transforms"]
-  F --> G["Target backend"]
-  G --> H["Object / executable"]
-```
-
 The family is declared in [`Options.td:839-843`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L839-L843), with the driver-facing `-O` form at [`Options.td:9029`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L9029). The driver resolves the effective level and forwards frontend/code-generation state to `cc1`; LLVM PassBuilder then constructs the optimization pipeline. The target backend lowers transformed IR and does not independently interpret `-O2` as a source-language rule.
+
+## Clang version history
+
+Present in current Clang driver options; exact introduction version unresolved. Source: [Options.td (`-O`)](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L839).
 
 ## Related LLVM Optimizations & Backend Mechanisms
 
@@ -236,6 +226,10 @@ clang -O2 -mllvm -print-pipeline-passes -c w.c -o /dev/null 2>&1 | head
 - `clang/lib/CodeGen/BackendUtil.cpp` (pipeline setup from CodeGenOptions)
 
 ---
+
+:::note Present by
+`-O` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L839). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 
