@@ -1,0 +1,20 @@
+---
+title: "The CPU ran out of cheap speed quiz"
+description: "Five questions for The CPU ran out of cheap speed. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# The CPU ran out of cheap speed quiz
+
+Lesson: [The CPU ran out of cheap speed](/docs/parallel-computing/the-cpu-ran-out-of-cheap-speed/)
+
+<Question question="1. What equation governs dynamic power consumption in CMOS digital circuits according to the article?" options={["P_dynamic = C * V^2 * f", "P_dynamic = C^2 * V * f", "P_dynamic = C * V * f^2", "P_dynamic = C * V / f"]} answer="P_dynamic = C * V^2 * f" />
+
+<Question question="2. Which hardware component renames registers to eliminate false dependencies in an out-of-order core?" options={["Register Alias Table", "Reorder Buffer", "Reservation Stations", "Fetch & Decode Engine"]} answer="Register Alias Table" />
+
+<Question question="3. According to the article, how does the logic required to inspect N instructions in flight scale in circuit area and power consumption?" options={["Quadratically (O(N^2))", "Linearly (O(N))", "Logarithmically (O(log N))", "Cubically (O(N^3))"]} answer="Quadratically (O(N^2))" />
+
+<Question question="4. What is the primary architectural goal of a light parallel lane compared to a heavy CPU core?" options={["Maximize arithmetic throughput for many threads", "Minimize instruction latency for one thread", "Eliminate multi-level caching", "Increase single-thread clock frequency"]} answer="Maximize arithmetic throughput for many threads" />
+
+<Question question="5. In the worked code example, what does replacing conditional branching with an unconditional arithmetic mask avoid?" options={["Pipeline flushes caused by mispredicted branches", "Floating-point memory aliasing", "Hardware cache coherence overhead", "Register alias table saturation"]} answer="Pipeline flushes caused by mispredicted branches" />

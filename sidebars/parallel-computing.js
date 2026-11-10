@@ -44,6 +44,7 @@ const parallel = {
             'parallel-computing/mpi-collectives',
             'parallel-computing/overlap-communication-and-computation',
             'parallel-computing/hybrid-mpi-openmp',
+            'parallel-computing/the-cpu-ran-out-of-cheap-speed',
           ],
         },
         {
