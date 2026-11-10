@@ -125,10 +125,46 @@ function buildStatus(flag) {
   return 'Stable';
 }
 
+function isFramePointerFlag(flag) {
+  const name = String(flag?.flag || '').toLowerCase();
+  return name.includes('frame-pointer');
+}
+
+const RELATED_HELP_FALLBACKS = {
+  '-fomit-frame-pointer': 'Request omission of the frame pointer where permitted by the target/backend.',
+  '-fno-omit-frame-pointer': 'Request keeping a frame pointer where permitted by the target/backend.',
+  '-mframe-pointer=': 'Select FP policy: all, non-leaf, reserved, or none.',
+  '-momit-leaf-frame-pointer': 'Prefer omitting frame-pointer setup in leaf functions.',
+  '-mno-omit-leaf-frame-pointer': 'Prefer keeping frame-pointer setup in leaf functions.',
+};
+
+function shortenCategoryLabel(category) {
+  const value = String(category || '').trim();
+  if (!value) return 'General';
+  return value
+    .replace(/^Target-Specific Code Generation$/i, 'Target codegen')
+    .replace(/^Target-independent compilation options$/i, 'Target-sensitive')
+    .replace(/^Code Generation$/i, 'Codegen')
+    .replace(/^Optimization$/i, 'Opt');
+}
+
+function relatedFlagSummary(item) {
+  const fromData = String(item?.help || item?.documentation || '').trim();
+  if (fromData && fromData.toLowerCase() !== 'no help text available.') {
+    return fromData;
+  }
+  return RELATED_HELP_FALLBACKS[item?.flag] || RELATED_HELP_FALLBACKS[item?.publicFlag] || 'Adjacent Clang frame-pointer option.';
+}
+
 function buildArchitecture(flag) {
   const haystack = [flag.flag, flag.help, flag.groupLabel, flag.category].filter(Boolean).join(' ').toUpperCase();
   if (haystack.includes('AARCH64')) {
     return 'AArch64';
+  }
+  // Frame-pointer policy is target- and version-sensitive; do not label it as a
+  // universal / ABI-independent option just because Options.td uses f_Group.
+  if (isFramePointerFlag(flag)) {
+    return 'Target-sensitive codegen';
   }
   if (flag.groupLabel) {
     return String(flag.groupLabel).replace(/^AARCH64$/, 'AArch64');
@@ -138,6 +174,7 @@ function buildArchitecture(flag) {
 
 function buildPipelineLabel(flag) {
   const haystack = [flag.flag, flag.help, flag.groupLabel].filter(Boolean).join(' ').toLowerCase();
+  if (isFramePointerFlag(flag)) return 'Backend / Code generation';
   if (flag.category === 'Warning') return 'Frontend';
   if (flag.category === 'Preprocessor') return 'Frontend';
   if (flag.category === 'Optimization' || /^-o/.test(String(flag.flag || '').toLowerCase())) return 'Optimization';
@@ -149,7 +186,7 @@ function buildPipelineLabel(flag) {
 function buildImpact(flag) {
   const name = String(flag.flag || '').toLowerCase();
   if (/fcall-(saved|used)-/.test(name) || /-f(fixed|reserve)-/.test(name)) return 'Register allocation / ABI';
-  if (name.includes('frame-pointer')) return 'Stack layout';
+  if (name.includes('frame-pointer')) return 'Frame-pointer policy / stack layout';
   if (flag.category === 'Warning') return 'Diagnostics';
   if (flag.category === 'Preprocessor') return 'Preprocessing';
   if (flag.category === 'Linker') return 'Linking';
@@ -381,7 +418,7 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
             <div className={styles.articleBreadcrumbs}>
               <Link to="/tools/clang-flags/">Clang Flags</Link>
               <span>/</span>
-              <span>ABI reference</span>
+              <span>Flag reference</span>
             </div>
             <span className={styles.articleHeroEyebrow}>Compiler option · {architecture}</span>
           </div>
@@ -498,6 +535,13 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
                   </React.Fragment>
                 ))}
               </div>
+              {isFramePointerFlag(flag) ? (
+                <p className={styles.bodyCopy} style={{ marginTop: '0.85rem' }}>
+                  This flag sets <strong>frame-pointer policy</strong> for codegen. It does not insert sanitizer
+                  instrumentation or bind a sanitizer runtime. Backend <code>hasFP()</code> may still keep a frame
+                  pointer for VLAs, EH helpers, or ABI constraints, and unwind tables remain a separate knob.
+                </p>
+              ) : null}
             </ArticleSection>
 
             {groupArticleSections(children).map((section, index) => (
@@ -556,14 +600,21 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
                   <div className={styles.relatedGrid}>
                     {related.map((item) => {
                       const relatedDisplayFlag = getPublicFlag(item);
+                      const tools = joinList(buildToolLabels(item)) || 'clang';
                       return (
                       <Link key={item.flag} className={styles.relatedArticleCard} to={buildFlagArticlePath(relatedDisplayFlag)}>
                         <div className={styles.relatedArticleTop}>
                           <div className={styles.relatedArticleFlag}>{relatedDisplayFlag}</div>
-                          <Badge tone="info">{item.category}</Badge>
+                          <Badge tone="info" className={styles.relatedArticleBadge}>
+                            {shortenCategoryLabel(item.category)}
+                          </Badge>
                         </div>
-                        <div className={styles.relatedArticleSummary}>{item.help || item.documentation || 'No help text available.'}</div>
-                        <div className={styles.relatedArticleMeta}>{item.kind} · {joinList(item.visibility) || 'ClangOption'}</div>
+                        <div className={styles.relatedArticleSummary}>{relatedFlagSummary(item)}</div>
+                        <div className={styles.relatedArticleMeta}>
+                          <span>{item.kind || 'Flag'}</span>
+                          <span aria-hidden="true">·</span>
+                          <span>{tools}</span>
+                        </div>
                       </Link>
                       );
                     })}

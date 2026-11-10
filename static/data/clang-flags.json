@@ -52257,7 +52257,7 @@
         "-fno-omit-frame-pointer"
       ],
       "name": "fno-omit-frame-pointer",
-      "help": "",
+      "help": "Request keeping a frame pointer where permitted by the target/backend.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -52307,13 +52307,9 @@
       ],
       "relatedFlags": [
         "-fomit-frame-pointer",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-mframe-pointer=",
+        "-momit-leaf-frame-pointer",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-fno-omit-frame-pointer flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fomit-frame-pointer -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -151453,7 +151449,7 @@
         "-mframe-pointer="
       ],
       "name": "mframe-pointer=",
-      "help": "Specify which frame pointers to retain.",
+      "help": "Select FP policy: all, non-leaf, reserved, or none.",
       "kind": "Joined",
       "group": null,
       "groupLabel": null,
@@ -151505,14 +151501,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--assert=",
-        "--autocomplete=",
-        "--bootclasspath=",
-        "--classpath=",
-        "--CLASSPATH=",
-        "--config-system-dir=",
-        "--config-user-dir=",
-        "--config="
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-momit-leaf-frame-pointer",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-mframe-pointer= joined other specify which frame pointers to retain. cc1option fc1option cc1 fc1 all non-leaf reserved none all nonleaf reserved none --assert= --autocomplete= --bootclasspath= --classpath= --classpath= --config-system-dir= --config-user-dir= --config= clang/include/clang/driver/options.td"
     },
@@ -182553,11 +182545,11 @@
         "-fomit-frame-pointer"
       ],
       "name": "fomit-frame-pointer",
-      "help": "Omit the frame pointer from functions that don't need it. Some stack unwinding cases, such as profilers and sanitizers, may prefer specifying -fno-omit-frame-pointer. On many targets, -O1 and higher omit the frame pointer by default. -m[no-]omit-leaf-frame-pointer takes precedence for leaf functions",
+      "help": "Request omission of the frame pointer where permitted by the target/backend.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
-      "category": "Sanitizer",
+      "category": "Code Generation",
       "alias": null,
       "aliasTarget": null,
       "aliasTargetFlag": null,
@@ -182593,23 +182585,19 @@
       "exampleClang": "clang++ -fomit-frame-pointer main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Bug hunting",
-        "Test environments",
-        "When validating memory and UB safety"
+        "Linux/ELF production builds that already ship reliable DWARF/.eh_frame unwind and you have measured a benefit",
+        "Register-pressure-sensitive code on a workload that actually stresses the freed frame-pointer register"
       ],
       "whenNotToUse": [
-        "Shipping performance-critical binaries",
-        "When runtime overhead is unacceptable"
+        "FP-based sampling profilers (for example perf --call-graph fp)",
+        "Debugging or crash stacks that you have measured as clearer with a dedicated frame pointer",
+        "Platforms or SDK defaults that expect frame pointers (many Darwin configurations)"
       ],
       "relatedFlags": [
         "-fno-omit-frame-pointer",
-        "-fno-sanitize-memory-param-retval",
-        "-fno-sanitize-stable-abi",
-        "-fsanitize-memory-param-retval",
-        "-fsanitize-stable-abi",
-        "-fexperimental-sanitize-metadata-ignorelist=",
-        "-fexperimental-sanitize-metadata=",
-        "-fno-experimental-sanitize-metadata="
+        "-mframe-pointer=",
+        "-momit-leaf-frame-pointer",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-fomit-frame-pointer flag sanitizer f_group target-independent compilation options omit the frame pointer from functions that don't need it. some stack unwinding cases, such as profilers and sanitizers, may prefer specifying -fno-omit-frame-pointer. on many targets, -o1 and higher omit the frame pointer by default. -m[no-]omit-leaf-frame-pointer takes precedence for leaf functions clangoption flangoption clang flang -fno-omit-frame-pointer -fno-sanitize-memory-param-retval -fno-sanitize-stable-abi -fsanitize-memory-param-retval -fsanitize-stable-abi -fexperimental-sanitize-metadata-ignorelist= -fexperimental-sanitize-metadata= -fno-experimental-sanitize-metadata= clang/include/clang/driver/options.td"
     },
@@ -198350,7 +198338,7 @@
         "-mno-omit-leaf-frame-pointer"
       ],
       "name": "mno-omit-leaf-frame-pointer",
-      "help": "",
+      "help": "Prefer keeping frame-pointer setup in leaf functions.",
       "kind": "Flag",
       "group": "m_Group",
       "groupLabel": "Target-dependent compilation options",
@@ -198390,14 +198378,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--no-wasm-opt",
-        "--wasm-opt",
-        "-ffixed-x1",
-        "-ffixed-x10",
-        "-ffixed-x11",
-        "-ffixed-x12",
-        "-ffixed-x13",
-        "-ffixed-x14"
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-mframe-pointer=",
+        "-momit-leaf-frame-pointer"
       ],
       "searchText": "-mno-omit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14 clang/include/clang/driver/options.td"
     },
@@ -200082,7 +200066,7 @@
         "-momit-leaf-frame-pointer"
       ],
       "name": "momit-leaf-frame-pointer",
-      "help": "Omit frame pointer setup for leaf functions",
+      "help": "Prefer omitting frame-pointer setup in leaf functions.",
       "kind": "Flag",
       "group": "m_Group",
       "groupLabel": "Target-dependent compilation options",
@@ -200122,14 +200106,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--no-wasm-opt",
-        "--wasm-opt",
-        "-ffixed-x1",
-        "-ffixed-x10",
-        "-ffixed-x11",
-        "-ffixed-x12",
-        "-ffixed-x13",
-        "-ffixed-x14"
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-mframe-pointer=",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-momit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options omit frame pointer setup for leaf functions clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14 clang/include/clang/driver/options.td"
     },

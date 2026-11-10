@@ -64,6 +64,19 @@ const BOUNDS_SAFETY_FLAGS = new Set([
   '-fno-experimental-bounds-safety',
 ]);
 
+const FRAME_POINTER_FLAGS = new Set([
+  '-fomit-frame-pointer',
+  '-fno-omit-frame-pointer',
+  '-momit-leaf-frame-pointer',
+  '-mno-omit-leaf-frame-pointer',
+  '-mframe-pointer=',
+]);
+
+function isFramePointerFlag(flag) {
+  const name = String(flag?.flag || '');
+  return FRAME_POINTER_FLAGS.has(name) || name.includes('frame-pointer');
+}
+
 export function buildPipelineTrail(flag) {
   if (BOUNDS_SAFETY_FLAGS.has(flag.flag)) {
     return [
@@ -73,6 +86,17 @@ export function buildPipelineTrail(flag) {
       { title: 'SemaBoundsSafety', note: 'Verified effect: semantic checks and warning→error promotion' },
       { title: 'AST / attributed types', note: 'Bounds annotations in the frontend type system' },
       { title: 'CodeGen / runtime checks', note: 'Evolving — not demonstrated by the diagnostic experiment on this page' },
+    ];
+  }
+
+  if (isFramePointerFlag(flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)omit-frame-pointer / leaf variants and target -O defaults' },
+      { title: 'CC1 / CodeGenOptions', note: 'Emit -mframe-pointer= into FramePointerKind' },
+      { title: 'LLVM IR frame-pointer policy', note: 'Function/module frame-pointer attributes (when keep applies)' },
+      { title: 'TargetFrameLowering', note: 'hasFP() may still require an FP (VLA, EH, …)' },
+      { title: 'Prologue / Epilogue', note: 'Reserve or free the FP register in machine code' },
+      { title: 'Machine code + unwind', note: 'Optional .eh_frame / CFI — orthogonal to FP policy' },
     ];
   }
 
@@ -151,6 +175,41 @@ export function buildImplementationTrail(flag) {
         title: "LLVM pipeline",
         value: "Alias analysis → target backend",
         note: "LLVM optimization passes consume the reduced alias information before lowering IR to machine code.",
+      },
+    ];
+  }
+
+  if (isFramePointerFlag(flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -f(no-)omit-frame-pointer, leaf omit variants, and -mframe-pointer=.',
+      },
+      {
+        title: 'Driver policy',
+        value: 'ToolChains/CommonArgs.cpp',
+        note: 'getFramePointerKind / useFramePointerForTargetByDefault / areOptimizationsEnabled select -mframe-pointer=.',
+      },
+      {
+        title: 'CodeGenOptions',
+        value: 'CodeGenOptions::FramePointerKind',
+        note: 'CC1 stores the keep/omit/non-leaf/reserved policy for codegen.',
+      },
+      {
+        title: 'IR policy attrs',
+        value: 'LLVM IR "frame-pointer" attribute / module flag',
+        note: 'Keep policies commonly emit attributes; omit may leave them absent — inspect IR on your version.',
+      },
+      {
+        title: 'Frame lowering',
+        value: 'TargetFrameLowering::hasFP (e.g. X86FrameLowering)',
+        note: 'Backend may still require an FP for VLAs, realignment, EH helpers, or ABI constraints.',
+      },
+      {
+        title: 'Prologue / unwind',
+        value: 'Machine prologue/epilogue + optional .eh_frame',
+        note: 'FP policy is separate from -funwind-tables / -fasynchronous-unwind-tables and from -g.',
       },
     ];
   }
