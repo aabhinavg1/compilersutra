@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { GitCompareArrows, Minus, Plus } from 'lucide-react';
+import { GitCompareArrows } from 'lucide-react';
 import styles from './clangFlags.module.css';
 
 function diffLines(before, after) {
@@ -92,12 +92,19 @@ function DiffPanel({ title, badge, lines, statuses, side }) {
   );
 }
 
-export default function AsmDiff({ before, after, beforeTitle = 'Without flag', afterTitle = 'With flag', note }) {
-  const { a, b, aStatus, bStatus, removed, added } = useMemo(() => diffLines(before, after), [before, after]);
+export default function AsmDiff({
+  before,
+  after,
+  beforeTitle = 'Without flag',
+  afterTitle = 'With flag',
+  beforeBadge = 'before',
+  afterBadge = 'after',
+  note,
+}) {
+  const { a, b, aStatus, bStatus } = useMemo(() => diffLines(before, after), [before, after]);
   const [view, setView] = useState(() => (
     typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches ? 'after' : 'both'
   ));
-  const afterBadge = afterTitle.replace(/^With\s+/, '') || 'flag';
 
   return (
     <div className={styles.asmDiff}>
@@ -105,11 +112,8 @@ export default function AsmDiff({ before, after, beforeTitle = 'Without flag', a
         <div className={styles.asmDiffTopCopy}>
           <GitCompareArrows size={16} strokeWidth={2.2} className={styles.asmDiffTopIcon} aria-hidden="true" />
           <div>
-            <div className={styles.asmDiffTopTitle}>Assembly diff</div>
-            <div className={styles.asmDiffTopMeta}>
-              <span className={styles.asmDiffStatRemoved}><Minus size={12} strokeWidth={2.5} /> {removed} removed</span>
-              <span className={styles.asmDiffStatAdded}><Plus size={12} strokeWidth={2.5} /> {added} added</span>
-            </div>
+            <div className={styles.asmDiffTopTitle}>Assembly comparison</div>
+            {note ? <div className={styles.asmDiffTopMeta}>{note}</div> : null}
           </div>
         </div>
 
@@ -135,14 +139,12 @@ export default function AsmDiff({ before, after, beforeTitle = 'Without flag', a
 
       <div className={clsx(styles.asmDiffGrid, view !== 'both' && styles.asmDiffGridSingle)}>
         {view === 'before' || view === 'both' ? (
-          <DiffPanel title={beforeTitle} badge="default ABI" lines={a} statuses={aStatus} side="before" />
+          <DiffPanel title={beforeTitle} badge={beforeBadge} lines={a} statuses={aStatus} side="before" />
         ) : null}
         {view === 'after' || view === 'both' ? (
-          <DiffPanel title={afterTitle} badge={`${afterBadge} applied`} lines={b} statuses={bStatus} side="after" />
+          <DiffPanel title={afterTitle} badge={afterBadge} lines={b} statuses={bStatus} side="after" />
         ) : null}
       </div>
-
-      {note ? <p className={styles.asmDiffNote}>{note}</p> : null}
     </div>
   );
 }
