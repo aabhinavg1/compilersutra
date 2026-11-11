@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" width="100%" height="100%">
+  <rect width="760" height="220" fill="#0f172a" rx="8"/>
+  
+  <!-- Vertex Input -->
+  <rect x="20" y="70" width="120" height="80" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="6"/>
+  <text x="80" y="105" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">Vertex Buffer</text>
+  <text x="80" y="125" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Fixed Format</text>
+
+  <!-- Arrow 1 -->
+  <path d="M 140 110 L 175 110" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Vertex Stage FPUs -->
+  <rect x="180" y="70" width="130" height="80" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="6"/>
+  <text x="245" y="100" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">Transform FPUs</text>
+  <text x="245" y="120" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">Matrix Multiply</text>
+  <text x="245" y="135" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">No arbitrary write</text>
+
+  <!-- Arrow 2 -->
+  <path d="M 310 110 L 345 110" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Rasterizer -->
+  <rect x="350" y="70" width="120" height="80" fill="#1e293b" stroke="#f59e0b" stroke-width="2" rx="6"/>
+  <text x="410" y="105" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">Rasterizer</text>
+  <text x="410" y="125" fill="#f59e0b" font-family="monospace" font-size="11" text-anchor="middle">Fixed Logic</text>
+
+  <!-- Arrow 3 -->
+  <path d="M 470 110 L 505 110" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Pixel Stage FPUs -->
+  <rect x="510" y="70" width="130" height="80" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="6"/>
+  <text x="575" y="100" fill="#f8fafc" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">Fragment FPUs</text>
+  <text x="575" y="120" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="middle">Color Arithmetic</text>
+  <text x="575" y="135" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">Texture lookup only</text>
+
+  <!-- Arrow 4 -->
+  <path d="M 640 110 L 675 110" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Framebuffer -->
+  <rect x="680" y="70" width="60" height="80" fill="#1e293b" stroke="#10b981" stroke-width="2" rx="6"/>
+  <text x="710" y="105" fill="#f8fafc" font-family="monospace" font-size="11" text-anchor="middle" font-weight="bold">Frame</text>
+  <text x="710" y="125" fill="#10b981" font-family="monospace" font-size="11" text-anchor="middle">Buffer</text>
+
+  <!-- Defs for arrowheads -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+    </marker>
+  </defs>
+</svg>
