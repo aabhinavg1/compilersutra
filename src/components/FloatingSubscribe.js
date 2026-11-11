@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaYoutube } from "react-icons/fa";
 import styles from "./FloatingSubscribe.module.css";
 
 const COLLAPSED_KEY = "compilersutra-floating-subscribe-collapsed";
 const SHOW_DELAY_MS = 60000;
 const SHOW_SCROLL_RATIO = 0.6;
+const SUBSCRIBE_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform";
 
 export default function FloatingSubscribe() {
   const [visible, setVisible] = useState(false);
@@ -78,9 +79,9 @@ export default function FloatingSubscribe() {
         type="button"
         className={styles.placeholder}
         onClick={() => setCollapsedState(false)}
-        aria-label="Open subscription prompt"
+        aria-label="Open weekly notes subscription"
       >
-        <FaYoutube className={styles.placeholderIcon} />
+        ✎
       </button>
     );
   }
@@ -98,18 +99,18 @@ export default function FloatingSubscribe() {
 
       <div className={styles.content}>
         <div>
-          <h4 className={styles.title}>🚀 Learn Compilers & GPU</h4>
-          <p className={styles.desc}>Join CompilerSutra on YouTube</p>
+          <h4 className={styles.title}>Weekly Compiler Notes</h4>
+          <p className={styles.desc}>Short notes in your inbox — free</p>
         </div>
 
         <a
-          href="https://youtube.com/@compilersutra"
+          href={SUBSCRIBE_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.button}
           onClick={() => setCollapsedState(true)}
         >
-          ▶ Subscribe
+          Subscribe
         </a>
       </div>
     </div>
