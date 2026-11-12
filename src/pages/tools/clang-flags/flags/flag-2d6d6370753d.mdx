@@ -240,4 +240,24 @@ rg 'target-cpu' w.ll
   cc1="Passed down to CC1 via -target-cpu <cpu>"
 />
 
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '\n' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
+
 </FlagArticleShell>

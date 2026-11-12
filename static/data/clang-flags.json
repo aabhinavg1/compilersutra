@@ -52268,21 +52268,19 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fomit-frame-pointer",
-      "documentation": "",
+      "documentation": "Request that Clang keep a conventional frame pointer where permitted. Opposite of -fomit-frame-pointer; interacts with leaf omit flags and target defaults.",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 3615,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3615",
-      "exampleClang": "clang++ -fno-omit-frame-pointer main.cpp -o app",
+      "exampleClang": "clang++ -O2 -fno-omit-frame-pointer -g main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Profiling builds that walk FP chains",
+        "Sanitizer or debug workflows that prefer FP-based stacks"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "When you have measured that omit is required for your size/regalloc constraints and tooling does not need FP"
       ],
       "relatedFlags": [
         "-fomit-frame-pointer",
@@ -52290,7 +52288,7 @@
         "-momit-leaf-frame-pointer",
         "-mno-omit-leaf-frame-pointer"
       ],
-      "searchText": "-fno-omit-frame-pointer flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fomit-frame-pointer -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fno-omit-frame-pointer flag code generation f_group target-independent compilation options keep the frame pointer where permitted by the target and backend (useful for fp-based profilers and some sanitizer/debug stacks). clangoption flangoption clang flang -fomit-frame-pointer -momit-leaf-frame-pointer -mno-omit-leaf-frame-pointer -mframe-pointer="
     },
     {
       "id": "fno_openmp",
@@ -57405,7 +57403,7 @@
         "-fno-slp-vectorize"
       ],
       "name": "fno-slp-vectorize",
-      "help": "",
+      "help": "Disable the superword-level parallelism (SLP) vectorization passes",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -57437,33 +57435,27 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fslp-vectorize",
-      "documentation": "",
+      "documentation": "Request that Clang not enable the SLPVectorizer pass. Independent of loop vectorization (-fno-vectorize / -vectorize-loops).",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 4258,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4258",
-      "exampleClang": "clang++ -fno-slp-vectorize main.cpp -o app",
+      "exampleClang": "clang++ -O2 -fno-slp-vectorize main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Isolating SLP vs loop-vectorizer effects in asm/IR",
+        "Debugging a miscompile suspected in SLPVectorizer"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "When you need to disable LoopVectorize — use -fno-vectorize"
       ],
       "relatedFlags": [
         "-fslp-vectorize",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fno-vectorize",
+        "-fvectorize",
+        "-fno-tree-slp-vectorize"
       ],
-      "searchText": "-fno-slp-vectorize flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fslp-vectorize -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fno-slp-vectorize flag code generation f_group target-independent compilation options disable the superword-level parallelism (slp) vectorization passes clangoption flangoption clang flang -fslp-vectorize -fno-vectorize -fvectorize -fno-tree-slp-vectorize"
     },
     {
       "id": "fno_spell_checking",
@@ -59323,7 +59315,7 @@
         "-fno-unroll-loops"
       ],
       "name": "fno-unroll-loops",
-      "help": "Turn off loop unroller",
+      "help": "Turn off loop unroller (forces CodeGenOptions::UnrollLoops false).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -59359,33 +59351,26 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-funroll-loops",
-      "documentation": "",
+      "documentation": "Request that Clang disable LLVM loop unrolling even at -O2+ where UnrollLoops would otherwise default on.",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 4356,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4356",
-      "exampleClang": "clang++ -fno-unroll-loops main.cpp -o app",
+      "exampleClang": "clang++ -O2 -fno-unroll-loops main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Isolate unroll effects at -O2",
+        "Size-sensitive builds where unroll hurts"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "Expecting it to disable vectorization"
       ],
       "relatedFlags": [
         "-funroll-loops",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-freroll-loops",
+        "-fno-vectorize"
       ],
-      "searchText": "-fno-unroll-loops flag code generation f_group target-independent compilation options turn off loop unroller clangoption cc1option flangoption fc1option clang cc1 flang fc1 -funroll-loops -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fno-unroll-loops flag code generation f_group target-independent compilation options turn off loop unroller (forces codegenoptions::unrollloops false). clangoption cc1option flangoption fc1option clang cc1 flang fc1 -funroll-loops -freroll-loops -fno-vectorize"
     },
     {
       "id": "fno_unsafe_math_optimizations",
@@ -59790,7 +59775,7 @@
         "-fno-vectorize"
       ],
       "name": "fno-vectorize",
-      "help": "",
+      "help": "Disable the loop vectorization passes (driver forwards absence of -vectorize-loops to cc1).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -59822,33 +59807,32 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fvectorize",
-      "documentation": "",
+      "documentation": "Request that Clang not enable the LoopVectorize pass for this translation unit. At -O2/-O3/-Os/-Ofast the driver enables loop vectorization by default; -fno-vectorize suppresses -vectorize-loops. Does not control SLP vectorization (-fno-slp-vectorize).",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 4252,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4252",
-      "exampleClang": "clang++ -fno-vectorize main.cpp -o app",
+      "exampleClang": "clang++ -O2 -fno-vectorize main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Debugging a miscompile or numerical difference you suspect came from LoopVectorize",
+        "Comparing scalar vs vectorized asm/IR for a hot loop at -O2 or higher",
+        "Workloads where auto-vectorization hurts (short trip counts, heavy side effects) and you want a targeted kill-switch without dropping -O2"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "As a substitute for -O0/-O1 when you only want fewer mid-end transforms overall",
+        "When the issue is SLP/basic-block vectorization — use -fno-slp-vectorize instead",
+        "Expecting it to disable OpenMP/pragma SIMD, target intrinsics, or hand-written vector code"
       ],
       "relatedFlags": [
         "-fvectorize",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fno-slp-vectorize",
+        "-fslp-vectorize",
+        "-fno-tree-vectorize",
+        "-ftree-vectorize",
+        "-Qvec-"
       ],
-      "searchText": "-fno-vectorize flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fvectorize -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fno-vectorize flag code generation f_group target-independent compilation options disable the loop vectorization passes (driver forwards absence of -vectorize-loops to cc1). clangoption flangoption clang flang -fvectorize -fno-slp-vectorize -fslp-vectorize -fno-tree-vectorize -ftree-vectorize -Qvec-"
     },
     {
       "id": "fno_verbose_asm",
@@ -71734,15 +71718,11 @@
       ],
       "relatedFlags": [
         "-fno-slp-vectorize",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fvectorize",
+        "-fno-vectorize",
+        "-ftree-slp-vectorize"
       ],
-      "searchText": "-fslp-vectorize flag code generation f_group target-independent compilation options enable the superword-level parallelism vectorization passes clangoption flangoption clang flang -fno-slp-vectorize -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fslp-vectorize flag code generation f_group target-independent compilation options enable the superword-level parallelism vectorization passes clangoption flangoption clang flang -fno-slp-vectorize -fvectorize -fno-vectorize -ftree-slp-vectorize"
     },
     {
       "id": "fspell_checking",
@@ -75674,7 +75654,7 @@
         "-funroll-loops"
       ],
       "name": "funroll-loops",
-      "help": "Turn on loop unroller",
+      "help": "Turn on loop unroller (CodeGenOptions::UnrollLoops; defaults on when OptimizationLevel > 1).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -75710,33 +75690,28 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fno-unroll-loops",
-      "documentation": "",
+      "documentation": "Request that Clang enable LLVM loop unrolling. Default UnrollLoops is true at -O2+ (OptLevel > 1); -funroll-loops forces it on at lower levels. Does not guarantee every loop unrolls.",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 4354,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4354",
-      "exampleClang": "clang++ -funroll-loops main.cpp -o app",
+      "exampleClang": "clang++ -O1 -funroll-loops main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Force unrolling at -O1 for experiments",
+        "Compare rolled vs unrolled asm on fixed-trip loops"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "As a substitute for -O3",
+        "When code size / I-cache pressure dominates — prefer measuring or -fno-unroll-loops"
       ],
       "relatedFlags": [
         "-fno-unroll-loops",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-freroll-loops",
+        "-fno-vectorize",
+        "-fvectorize"
       ],
-      "searchText": "-funroll-loops flag code generation f_group target-independent compilation options turn on loop unroller clangoption cc1option flangoption fc1option clang cc1 flang fc1 -fno-unroll-loops -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-funroll-loops flag code generation f_group target-independent compilation options turn on loop unroller (codegenoptions::unrollloops; defaults on when optimizationlevel > 1). clangoption cc1option flangoption fc1option clang cc1 flang fc1 -fno-unroll-loops -freroll-loops -fno-vectorize -fvectorize"
     },
     {
       "id": "funsafe_math_optimizations",
@@ -76599,7 +76574,7 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fno-vectorize",
-      "documentation": "",
+      "documentation": "Request that Clang enable the LoopVectorize pass. At -O2/-O3/-Os/-Ofast this is already the default on modern Clang; useful to force loop vectorization at -O0/-O1 or after -fno-vectorize.",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 4250,
@@ -76607,25 +76582,21 @@
       "exampleClang": "clang++ -fvectorize main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Code generation tuning",
-        "Frontend lowering experiments",
-        "Target-independent compilation control"
+        "Force loop vectorization at -O0/-O1 for experiments",
+        "Re-enable loop vectorization after an earlier -fno-vectorize on the command line"
       ],
       "whenNotToUse": [
-        "When you are only editing diagnostics or preprocessing",
-        "When the option does not affect your current build phase"
+        "Expecting it to also control SLP vectorization",
+        "Assuming every loop will vectorize — profitability and legality still apply"
       ],
       "relatedFlags": [
         "-fno-vectorize",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fslp-vectorize",
+        "-fno-slp-vectorize",
+        "-ftree-vectorize",
+        "-Qvec"
       ],
-      "searchText": "-fvectorize flag code generation f_group target-independent compilation options enable the loop vectorization passes clangoption flangoption clang flang -fno-vectorize -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
+      "searchText": "-fvectorize flag code generation f_group target-independent compilation options enable the loop vectorization passes clangoption flangoption clang flang -fno-vectorize -fslp-vectorize -fno-slp-vectorize -ftree-vectorize -Qvec"
     },
     {
       "id": "fverbose_asm",
@@ -182466,12 +182437,12 @@
       "deprecated": false,
       "experimental": false,
       "negatedOption": "-fno-omit-frame-pointer",
-      "documentation": "",
+      "documentation": "Request that Clang omit the dedicated frame-pointer register where permitted by the target and backend. Driver policy becomes cc1 -mframe-pointer=; TargetFrameLowering::hasFP() may still keep an FP. Unwind metadata is a separate knob.",
       "source": "clang/include/clang/Driver/Options.td",
       "sourcePath": "clang/include/clang/Driver/Options.td",
       "sourceLine": 3747,
       "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3747",
-      "exampleClang": "clang++ -fomit-frame-pointer main.cpp -o app",
+      "exampleClang": "clang++ -O2 -fomit-frame-pointer main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
         "Linux/ELF production builds that already ship reliable DWARF/.eh_frame unwind and you have measured a benefit",
@@ -182488,7 +182459,7 @@
         "-momit-leaf-frame-pointer",
         "-mno-omit-leaf-frame-pointer"
       ],
-      "searchText": "-fomit-frame-pointer flag sanitizer f_group target-independent compilation options omit the frame pointer from functions that don't need it. some stack unwinding cases, such as profilers and sanitizers, may prefer specifying -fno-omit-frame-pointer. on many targets, -o1 and higher omit the frame pointer by default. -m[no-]omit-leaf-frame-pointer takes precedence for leaf functions clangoption flangoption clang flang -fno-omit-frame-pointer -fno-sanitize-memory-param-retval -fno-sanitize-stable-abi -fsanitize-memory-param-retval -fsanitize-stable-abi -fexperimental-sanitize-metadata-ignorelist= -fexperimental-sanitize-metadata= -fno-experimental-sanitize-metadata= clang/include/clang/driver/options.td"
+      "searchText": "-fomit-frame-pointer flag code generation f_group target-independent compilation options omit the frame pointer from functions that do not need it. some stack unwinding cases, such as profilers and sanitizers, may prefer -fno-omit-frame-pointer. defaults are target- and optimization-level dependent. clangoption flangoption clang flang -fno-omit-frame-pointer -momit-leaf-frame-pointer -mno-omit-leaf-frame-pointer -mframe-pointer="
     },
     {
       "id": "fprofile_list_EQ",
@@ -198257,7 +198228,7 @@
         "-mframe-pointer=",
         "-momit-leaf-frame-pointer"
       ],
-      "searchText": "-mno-omit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14 clang/include/clang/driver/options.td"
+      "searchText": "-mno-omit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options prefer keeping frame-pointer setup in leaf functions. clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14"
     },
     {
       "id": "mno_packed_stack",

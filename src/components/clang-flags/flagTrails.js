@@ -164,6 +164,101 @@ export function buildImplementationTrail(flag) {
     ];
   }
 
+  if (isLoopVectorizeFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -fvectorize / -fno-vectorize and GCC/MSVC aliases (-ftree-vectorize, -Qvec / -Qvec-).',
+      },
+      {
+        title: 'Driver O-level defaults',
+        value: 'ToolChains/Clang.cpp :: shouldEnableVectorizerAtOLevel',
+        note: 'Loop vectorize defaults on for OptLevel > 1 and -Os/-Ofast; off for -O0/-O1; -Oz leaves loops off (SLP still considered separately).',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'hasFlag(-fvectorize, …, -fno-vectorize, EnableVec) emits cc1 -vectorize-loops when enabled.',
+      },
+      {
+        title: 'Invocation setup',
+        value: 'CompilerInvocation.cpp',
+        note: 'Records CodeGenOptions::VectorizeLoop from the cc1 -vectorize-loops option.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil / PassBuilder',
+        note: 'Schedules the LoopVectorize pass when VectorizeLoop is set; -fno-vectorize keeps that pass out of the pipeline.',
+      },
+      {
+        title: 'LoopVectorize',
+        value: 'llvm/lib/Transforms/Vectorize/LoopVectorize.cpp',
+        note: 'Widens legal/profitable loops into vector IR; backend then lowers SIMD or falls back to scalar.',
+      },
+    ];
+  }
+
+  if (isSlpVectorizeFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -fslp-vectorize / -fno-slp-vectorize and tree-slp aliases.',
+      },
+      {
+        title: 'Driver O-level defaults',
+        value: 'ToolChains/Clang.cpp :: shouldEnableVectorizerAtOLevel(isSlpVec=true)',
+        note: 'SLP defaults on for OptLevel > 1, -Os, -Oz, and -Ofast; off for -O0/-O1.',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'Emits cc1 -vectorize-slp when SLP vectorization is enabled.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil / PassBuilder',
+        note: 'Schedules SLPVectorizer independently of LoopVectorize.',
+      },
+      {
+        title: 'SLPVectorizer',
+        value: 'llvm/lib/Transforms/Vectorize/SLPVectorizer.cpp',
+        note: 'Packs straight-line scalar operations into vector operations.',
+      },
+    ];
+  }
+
+  if (isLoopUnrollFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -funroll-loops / -fno-unroll-loops (ClangOption + CC1Option).',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'AddLastArg forwards the last of -funroll-loops / -fno-unroll-loops to cc1 when present.',
+      },
+      {
+        title: 'Invocation setup',
+        value: 'CompilerInvocation.cpp',
+        note: 'CodeGenOptions::UnrollLoops = hasFlag(..., OptimizationLevel > 1). Explicit flags override the O-level default.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil.cpp',
+        note: 'PipelineTuningOptions.LoopUnrolling / LoopInterleaving follow CodeGenOpts.UnrollLoops.',
+      },
+      {
+        title: 'LoopUnrollPass',
+        value: 'llvm/lib/Transforms/Scalar/LoopUnrollPass.cpp',
+        note: 'Cost-model + TTI decide partial/runtime/full unroll; not every loop unrolls.',
+      },
+    ];
+  }
+
   if (flag.flag === "-fno-strict-aliasing" || flag.flag === "-fstrict-aliasing") {
     return [
       {
