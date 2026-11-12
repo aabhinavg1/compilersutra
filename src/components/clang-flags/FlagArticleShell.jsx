@@ -125,10 +125,35 @@ function buildStatus(flag) {
   return 'Stable';
 }
 
+function isVectorizeFlag(flag) {
+  const name = String(flag?.flag || '').toLowerCase();
+  return (
+    name.includes('vectorize') ||
+    name === '-qvec' ||
+    name === '-qvec-' ||
+    name === '/qvec' ||
+    name === '/qvec-'
+  );
+}
+
+function isUnrollFlag(flag) {
+  const name = String(flag?.flag || '').toLowerCase();
+  return name.includes('unroll-loops') || name.includes('reroll-loops');
+}
+
 function buildArchitecture(flag) {
   const haystack = [flag.flag, flag.help, flag.groupLabel, flag.category].filter(Boolean).join(' ').toUpperCase();
   if (haystack.includes('AARCH64')) {
     return 'AArch64';
+  }
+  if (String(flag.flag || '').toLowerCase().includes('frame-pointer')) {
+    return 'Target-sensitive codegen';
+  }
+  if (isVectorizeFlag(flag)) {
+    return 'Target-independent IR';
+  }
+  if (isUnrollFlag(flag)) {
+    return 'Target-independent IR';
   }
   if (flag.groupLabel) {
     return String(flag.groupLabel).replace(/^AARCH64$/, 'AArch64');
@@ -138,6 +163,9 @@ function buildArchitecture(flag) {
 
 function buildPipelineLabel(flag) {
   const haystack = [flag.flag, flag.help, flag.groupLabel].filter(Boolean).join(' ').toLowerCase();
+  if (String(flag.flag || '').toLowerCase().includes('frame-pointer')) return 'Backend / Code generation';
+  if (isVectorizeFlag(flag)) return 'Mid-end / LoopVectorize';
+  if (isUnrollFlag(flag)) return 'Mid-end / LoopUnroll';
   if (flag.category === 'Warning') return 'Frontend';
   if (flag.category === 'Preprocessor') return 'Frontend';
   if (flag.category === 'Optimization' || /^-o/.test(String(flag.flag || '').toLowerCase())) return 'Optimization';
@@ -149,7 +177,11 @@ function buildPipelineLabel(flag) {
 function buildImpact(flag) {
   const name = String(flag.flag || '').toLowerCase();
   if (/fcall-(saved|used)-/.test(name) || /-f(fixed|reserve)-/.test(name)) return 'Register allocation / ABI';
-  if (name.includes('frame-pointer')) return 'Stack layout';
+  if (name.includes('frame-pointer')) return 'Frame-pointer policy / stack layout';
+  if (name.includes('slp-vectorize') || name.includes('tree-slp-vectorize')) return 'SLP vectorization';
+  if (isVectorizeFlag(flag)) return 'Loop vectorization';
+  if (name.includes('reroll-loops')) return 'Loop reroll';
+  if (isUnrollFlag(flag)) return 'Loop unrolling';
   if (flag.category === 'Warning') return 'Diagnostics';
   if (flag.category === 'Preprocessor') return 'Preprocessing';
   if (flag.category === 'Linker') return 'Linking';

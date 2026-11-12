@@ -367,6 +367,26 @@ GCC also supports `-Os`, but its pipeline and codegen are not identical to Clang
 
 References: [Clang command guide](https://clang.llvm.org/docs/CommandGuide/clang.html), [Users Manual](https://clang.llvm.org/docs/UsersManual.html), [LLVM LangRef](https://llvm.org/docs/LangRef.html). Verify pass details against the LLVM version you are discussing.
 
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '
+' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 ## Key facts
 
 <KeyFacts

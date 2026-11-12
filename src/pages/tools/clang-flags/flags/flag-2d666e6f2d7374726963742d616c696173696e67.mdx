@@ -313,6 +313,26 @@ clang -O2 -fstrict-aliasing -S -emit-llvm alias.c -o alias-strict.ll
 
 The important implementation detail is that the flag does not make incompatible type-punning defined. It changes the TBAA facts attached during Clang code generation, which limits the alias-based transformations available to LLVM. `TargetInfo`, instruction selection, object emission, and linking proceed normally after that IR-level decision.
 
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '
+' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 ## Key facts
 
 <KeyFacts items={[

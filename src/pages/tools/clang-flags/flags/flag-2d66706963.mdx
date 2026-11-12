@@ -24,6 +24,9 @@ import TabItem from '@theme/TabItem';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-fpic" summary="Emit position-independent code (small PIC model) so text and data references work when the load address is unknown — the usual compile flag for .so shared libraries.">
 
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
 ## At a glance
 
 | | |
@@ -257,6 +260,26 @@ clang -fpic -O2 -### -c file.c 2>&1 | rg 'pic|relocation|code-model'
 - **`-fno-pic`** — disable PIC code generation.
 - **`-shared`** — linker flag to produce a shared object (used after `-fpic` compile).
 - **`-fvisibility=hidden`** — often combined with shared libraries to trim exported symbols.
+
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '
+' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
 
 ## Key facts
 

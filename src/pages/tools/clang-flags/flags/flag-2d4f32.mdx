@@ -174,6 +174,26 @@ flowchart LR
 ~~~
 
 The option spelling is parsed by the Clang driver, converted into structured frontend/code-generation state, mapped to LLVM’s O2 pipeline, and only then lowered for the target. It is not an LLVM backend command-line option by itself.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '
+' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 ## Key facts
 
 <KeyFacts items={[{label:'Flag',value:'-O2'},{label:'Category',value:'Optimization level'},{label:'Primary stage',value:'Clang driver / frontend'},{label:'ABI or semantics',value:'Verify project-wide consistency'},{label:'Evidence',value:'Use -###, -E, -S, IR, or object inspection'}]} />

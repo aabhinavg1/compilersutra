@@ -1,45 +1,306 @@
 ---
 title: "-funroll-loops"
 slug: "/tools/clang-flags/-funroll-loops/"
-description: "Turn on loop unroller"
+description: "Turn on Clang/LLVM loop unrolling (CodeGenOptions::UnrollLoops → PassBuilder LoopUnroll). O-level defaults, option map, verified asm, and history."
+keywords:
+  - -funroll-loops
+  - -fno-unroll-loops
+  - LoopUnrollPass
+  - loop unrolling
+  - clang
+  - llvm
+  - PassBuilder
+  - -freroll-loops
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-funroll-loops">
+<Head>
+  <title>-funroll-loops | Clang Flags Explorer</title>
+  <meta name="description" content="Turn on Clang/LLVM loop unrolling (CodeGenOptions::UnrollLoops → PassBuilder LoopUnroll). O-level defaults, option map, verified asm, and history." />
+  <meta name="keywords" content="-funroll-loops,-fno-unroll-loops,LoopUnrollPass,loop unrolling,clang,llvm,PassBuilder,-freroll-loops" />
+  <meta property="og:title" content="-funroll-loops — Clang flag reference" />
+  <meta property="og:description" content="Request loop unrolling in Clang’s mid-end: OptLevel defaults, -fno-unroll-loops, LoopUnrollPass, and verified O1 asm." />
+  <meta property="og:type" content="article" />
+  <meta name="twitter:title" content="-funroll-loops — Clang flag reference" />
+  <meta name="twitter:description" content="Enable LLVM loop unrolling with verified O-level defaults and before/after assembly." />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-funroll-loops" summary="Request that Clang enable loop unrolling in the LLVM mid-end (CodeGenOptions::UnrollLoops → PassBuilder LoopUnroll); defaults follow OptLevel > 1 unless overridden.">
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+## At a glance
+
+| Attribute | Details |
+| :--- | :--- |
+| **Architecture** | Target-independent IR policy — profitability still uses target TTI cost models |
+| **Category** | Code Generation / mid-end loop unrolling — not a backend ABI knob |
+| **Pipeline** | Driver → cc1 `-funroll-loops` → `CodeGenOpts.UnrollLoops` → PassBuilder `LoopUnrolling` → LoopUnrollPass |
+| **Compiler** | Clang (C/C++); CC1Option; FlangOption / FC1Option visibility in Options.td |
+| **Optimization Level** | Default `UnrollLoops` is **on** when `OptimizationLevel > 1` (`-O2`+); **off** at `-O0`/`-O1` unless you pass `-funroll-loops` |
+| **Risk Level** | Low correctness risk; code-size / I-cache / register-pressure impact can be large |
+
+**In one sentence:** `-funroll-loops` asks Clang to set `CodeGenOptions::UnrollLoops`, which turns on PassBuilder loop-unrolling; the unroller still applies cost heuristics and may leave some loops rolled.
+
+---
 
 ## What this flag actually does
 
-Turn on loop unroller
+On modern Clang (verified with Ubuntu clang 18.1.3, triple `x86_64-pc-linux-gnu`):
 
+1. **Driver** — `Args.AddLastArg(..., OPT_funroll_loops, OPT_fno_unroll_loops)` forwards the **last** of those spellings to cc1 when present. At default `-O2`, `-###` often shows **neither** spelling — the default is applied inside CompilerInvocation from the optimization level, not by injecting `-funroll-loops` into the cc1 command line.
+2. **CC1 / CodeGenOptions** — `UnrollLoops = Args.hasFlag(OPT_funroll_loops, OPT_fno_unroll_loops, OptimizationLevel > 1)` ([CompilerInvocation.cpp @ llvmorg-18.1.3](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Frontend/CompilerInvocation.cpp)).
+3. **Pass pipeline** — `BackendUtil` sets `PipelineTuningOptions::LoopUnrolling` (and `LoopInterleaving`) from `CodeGenOpts.UnrollLoops`.
+4. **LoopUnrollPass / LoopFullUnrollPass** — may partially, runtime-, or fully unroll when trip count + TTI cost allow. This flag is **not** “always fully unroll every loop.”
 
+:::caution
+`-funroll-loops` is not `-fvectorize`, not `-O3`, and not a guarantee of full unroll. `-mllvm -unroll-threshold=` is a separate internal knob. Size modes (`-Os`/`-Oz`) still interact with cost models even when `UnrollLoops` is true.
+:::
 
-It can be negated with -fno-unroll-loops.
+### Option map and precedence
 
-## When to use it
+| Flag | Role |
+| :--- | :--- |
+| `-funroll-loops` | Prefer enabling `CodeGenOptions::UnrollLoops` |
+| `-fno-unroll-loops` | Prefer disabling loop unrolling (`UnrollLoops = false`) |
+| `-freroll-loops` | Separate flag: try to reroll previously unrolled patterns |
+| `-mllvm -unroll-threshold=N` | Internal LLVM cost threshold (not a driver `-f` flag) |
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+**Precedence:** among `-funroll-loops` / `-fno-unroll-loops`, the last on the command line wins (`hasFlag` / `AddLastArg`). If neither appears, the default is `OptimizationLevel > 1`.
 
-## When not to use it
+---
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+## Defaults by optimization level (which `-O` introduces it)
+
+Verified from source (`llvmorg-18.1.3`) and experimentally on Ubuntu clang 18.1.3:
+
+| Last `-O` | Default `CodeGenOpts.UnrollLoops` | Driver shows `-funroll-loops` in `-###`? |
+| :--- | :--- | :--- |
+| (none) / `-O0` | **off** (`OptLevel` 0) | only if you pass `-funroll-loops` |
+| `-O1` | **off** | only if you pass `-funroll-loops` |
+| **`-O2` / `-O3` / `-Ofast`** | **on** (`OptLevel > 1`) | usually **no** — default is implicit |
+| `-Os` / `-Oz` | **on** at CodeGenOpts when OptLevel > 1 (clang 18.1.3) | size cost models may still refuse profitable unroll |
+
+**Which optimization introduces it?** On this baseline, **`-O2` is the first standard numeric level** where `UnrollLoops` defaults to true (`OptimizationLevel > 1`). Pass `-funroll-loops` at `-O1` to force the same knob on; pass `-fno-unroll-loops` at `-O2`+ to force it off.
+
+:::note
+Older Clang (present by 3.3–3.8) also gated the default with `!OptimizeSize`, so size opts defaulted `UnrollLoops` off. That gate is **gone** by llvmorg-3.9.0+ (see version history). Always verify your version.
+:::
+
+:::important
+Do not confuse “default UnrollLoops true” with “`-###` prints `-funroll-loops`.” Check both `clang -###` and whether LoopUnroll actually changed IR/asm for your loop.
+:::
+
+---
+
+## Minimal realistic example
+
+<SourceCode
+  file="unroll.c"
+  flag="-funroll-loops"
+  language="c"
+  code={`void scale4(float *restrict out, const float *restrict in) {
+  for (int i = 0; i < 4; ++i)
+    out[i] = in[i] * 2.0f;
+}`}
+  note="Fixed trip count 4 — easy full-unroll candidate at -O1 -funroll-loops. At -O2 the same loop may vectorize instead; use -fno-vectorize if you want to isolate unrolling."
+/>
+
+```bash
+clang -O1 -S unroll.c -o rolled.s
+clang -O1 -funroll-loops -S unroll.c -o unrolled.s
+clang -### -O1 -funroll-loops -c unroll.c 2>&1 | tr ' ' '\n' | grep unroll
+```
+
+---
+
+## Before vs. after assembly
+
+Verified: Ubuntu clang 18.1.3, `x86_64-pc-linux-gnu`, `-O1` vs `-O1 -funroll-loops`, source above.
+
+<Tabs>
+  <TabItem value="asm" label="x86_64 assembly">
+    <AsmDiff
+      beforeTitle="-O1 (rolled)"
+      afterTitle="-O1 -funroll-loops"
+      before={`f:
+        xorl    %eax, %eax
+.LBB0_1:
+        movss   (%rsi,%rax,4), %xmm0
+        addss   %xmm0, %xmm0
+        movss   %xmm0, (%rdi,%rax,4)
+        incq    %rax
+        cmpq    $4, %rax
+        jne     .LBB0_1
+        retq`}
+      after={`f:
+        movss   (%rsi), %xmm0
+        addss   %xmm0, %xmm0
+        movss   %xmm0, (%rdi)
+        movss   4(%rsi), %xmm0
+        addss   %xmm0, %xmm0
+        movss   %xmm0, 4(%rdi)
+        movss   8(%rsi), %xmm0
+        addss   %xmm0, %xmm0
+        movss   %xmm0, 8(%rdi)
+        movss   12(%rsi), %xmm0
+        addss   %xmm0, %xmm0
+        movss   %xmm0, 12(%rdi)
+        retq`}
+    />
+  </TabItem>
+  <TabItem value="note" label="O2 note">
+    At `-O2` on this host the same loop often becomes a single `movups`/`addps` (vectorized). `-O2 -fno-unroll-loops` may still vectorize — unrolling and vectorization are separate knobs. To study unroll alone, prefer `-O1 -funroll-loops` or add `-fno-vectorize`.
+  </TabItem>
+</Tabs>
+
+---
+
+## Why use it / when not to use it
+
+### When to use
+
+- Force unrolling at `-O0`/`-O1` for experiments or tiny fixed-trip kernels.
+- Compare rolled vs unrolled asm/IR without bumping the whole `-O` level.
+
+### When not to use
+
+- Size-constrained builds where duplication hurts (`-Os`/`-Oz` workflows) — measure; consider `-fno-unroll-loops`.
+- Assuming it overrides profitability — large bodies / unknown trip counts may stay rolled.
+- As a substitute for `-O3` or for enabling vectorization.
+
+---
+
+## Performance impact
+
+Unrolling can remove loop-branch overhead and expose ILP, but it grows code and can increase register pressure / I-cache misses. Measure with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) on your kernel; no `PerfReport` numbers are published on this page yet.
+
+---
+
+## Compatibility
+
+| Layer | Behavior |
+| :--- | :--- |
+| **Clang driver** | Forwards last of `-funroll-loops` / `-fno-unroll-loops` to cc1 |
+| **CC1** | Sets `CodeGenOptions::UnrollLoops` |
+| **GCC** | Related `-funroll-loops` spelling exists; heuristics differ — do not assume identical asm |
+| **Flang** | Options.td marks Flang/FC1 visibility; verify Fortran defaults separately |
+
+---
 
 ## Usage example
 
 ```bash
-clang++ -funroll-loops -c main.cpp
+# Force unroll at -O1
+clang -O1 -funroll-loops -S kernel.c -o - | less
+
+# Disable unroll at -O2
+clang -O2 -fno-unroll-loops -S -emit-llvm kernel.c -o - | less
+
+# See whether the driver spelled the flag (may be empty at default -O2)
+clang -### -O2 -c kernel.c 2>&1 | tr ' ' '\n' | grep unroll || echo "no explicit unroll flag on cc1"
 ```
+
+---
+
+## Adjacent options
+
+- `-fno-unroll-loops` — force `UnrollLoops = false`.
+- `-freroll-loops` — separate mid-end reroll request.
+- `-fno-vectorize` / `-fvectorize` — loop vectorization; orthogonal but often confuses O2 asm diffs.
+- `-mllvm -unroll-threshold=N` — internal cost threshold (escape hatch; not a stable driver UI).
+
+---
+
+## How it works inside Clang
+
+```mermaid
+flowchart LR
+  A["Driver<br/>-f(no-)unroll-loops"] --> B["CC1"]
+  B --> C["CodeGenOpts.UnrollLoops<br/>default OptLevel > 1"]
+  C --> D["PassBuilder PTO.LoopUnrolling"]
+  D --> E["LoopUnrollPass / FullUnroll"]
+  E --> F["Expanded or rolled IR"]
+  F --> G["Target backend"]
+```
+
+| Pipeline stage | Implementation detail |
+| :--- | :--- |
+| **Options.td** | `funroll_loops` / `fno_unroll_loops` — [llvmorg-18.1.3 Options.td](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/include/clang/Driver/Options.td) |
+| **Driver** | `AddLastArg` in [Clang.cpp](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Driver/ToolChains/Clang.cpp) |
+| **Invocation** | `UnrollLoops = hasFlag(..., OptimizationLevel > 1)` |
+| **BackendUtil** | `PTO.LoopUnrolling = CodeGenOpts.UnrollLoops` |
+| **LLVM** | `LoopUnrollPass` / full-unroll variants + TTI |
+
+---
+
+## Clang version history
+
+Research leads checked against Options.td tags and `CompilerInvocation.cpp` / `BackendUtil.cpp` source tags. Chronological; only verified milestones.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9 | `-funroll-loops` appears in `clang/include/clang/Driver/Options.td` | Driver-visible user flag exists in this release tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td). Exact introduction commit and first released version remain unresolved — do not claim “introduced in 2.9,” only “present by 2.9.” |
+| Present by LLVM/Clang 3.2 | HelpText `"Turn on loop unroller"`; flag marked `CC1Option` | Driver/cc1 documentation and cc1 visibility are present in this tag | [Options.td @ llvmorg-3.2.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.2.0/clang/include/clang/Driver/Options.td) |
+| Present by LLVM/Clang 3.3 | `CodeGenOptions::UnrollLoops` defaults from `hasArg(-funroll-loops)` **or** `(OptimizationLevel > 1 && !OptimizeSize)` | Mid-end unroll enablement is tied to `-O2+` and was **off by default under size opts** (`-Os`/`-Oz`) in this era | [CompilerInvocation.cpp @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/lib/Frontend/CompilerInvocation.cpp) |
+| Present by LLVM/Clang 3.4 | `-fno-unroll-loops` appears; default uses `hasFlag(-funroll-loops, -fno-unroll-loops, OptLevel > 1 && !OptimizeSize)`; `-freroll-loops` also present | Explicit disable spelling + last-wins override; reroll is a **separate** adjacent flag from this tag onward | [Options.td @ llvmorg-3.4.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.4.0/clang/include/clang/Driver/Options.td); [CompilerInvocation.cpp @ llvmorg-3.4.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.4.0/clang/lib/Frontend/CompilerInvocation.cpp) |
+| Present by LLVM/Clang 3.9 | Default becomes `hasFlag(..., OptimizationLevel > 1)` — **`!OptimizeSize` gate removed** | `-Os`/`-Oz` no longer force `UnrollLoops = false` at CodeGenOpts solely via that gate (cost models may still refuse unroll) | [CompilerInvocation.cpp @ llvmorg-3.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.9.0/clang/lib/Frontend/CompilerInvocation.cpp) (still present with `OptimizeSize` in 3.8.0; gone in 3.9.0) |
+| Present by LLVM/Clang 9 | New-pass-manager path sets `PipelineTuningOptions::LoopUnrolling = CodeGenOpts.UnrollLoops` in BackendUtil (legacy PM still used `DisableUnrollLoops`) | Clear wiring from Clang `UnrollLoops` into PassBuilder tuning options | [BackendUtil.cpp @ llvmorg-9.0.0](https://github.com/llvm/llvm-project/blob/llvmorg-9.0.0/clang/lib/CodeGen/BackendUtil.cpp) |
+| llvmorg-18.1.3 (verified host baseline) | Same `OptLevel > 1` default; driver `AddLastArg` only emits `-funroll-loops` / `-fno-unroll-loops` when spelled on the command line | Explains why `-O2` enables unroll by default **without** `-###` always printing `-funroll-loops`; `-O1 -funroll-loops` still forces full-unroll of a fixed trip-count-4 loop on the verified host | [CompilerInvocation.cpp @ llvmorg-18.1.3](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Frontend/CompilerInvocation.cpp); experimental `clang -S` / `-###` on Ubuntu clang 18.1.3 |
+
+Documentation-only mentions of “unroll” in unrelated makefiles are not Clang user-option introductions. Flang/FC1 visibility exists in modern Options.td — treat Fortran defaults as separately verified.
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| `CodeGenOptions::UnrollLoops` | CC1 / CodeGen | Directly controlled | Master enable for PassBuilder loop unrolling |
+| `PipelineTuningOptions::LoopUnrolling` | PassBuilder | Directly controlled | Schedules unroll-related passes |
+| `LoopUnrollPass` / full unroll | Mid-end | Directly controlled | Transforms eligible loops |
+| `TargetTransformInfo` | Analysis / target | Backend mechanism | Cost model / target limits |
+| `LoopVectorize` | Mid-end | Related mechanism | Separate flag family (`-f(no-)vectorize`) |
+| Sanitizer instrumentation | Instrumentation | No direct pass | Not controlled by this flag |
+
+#### How to verify
+
+```bash
+clang -O1 -funroll-loops -### -c t.c 2>&1 | tr ' ' '\n' | grep unroll
+clang -O1 -S t.c -o rolled.s
+clang -O1 -funroll-loops -S t.c -o unrolled.s
+diff -u rolled.s unrolled.s | head
+```
+
+#### Source investigation
+
+- `clang/include/clang/Driver/Options.td` — `funroll_loops`
+- `clang/lib/Driver/ToolChains/Clang.cpp` — `AddLastArg` for unroll flags
+- `clang/lib/Frontend/CompilerInvocation.cpp` — `UnrollLoops` default
+- `clang/lib/CodeGen/BackendUtil.cpp` — `PTO.LoopUnrolling`
+- `llvm/lib/Transforms/Scalar/LoopUnrollPass.cpp`
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option, FlangOption, FC1Option
-- **Stage**: cc1 (frontend), category `Code Generation`
-- **Negated by**: `-fno-unroll-loops`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  items={[
+    { label: 'Arguments', value: 'None (flag)', icon: 'info' },
+    { label: 'Accepted by', value: 'ClangOption, CC1Option, FlangOption, FC1Option', icon: 'check' },
+    { label: 'Stage', value: 'Driver → CodeGenOpts.UnrollLoops → PassBuilder LoopUnroll', icon: 'info' },
+    { label: 'Negated by', value: '-fno-unroll-loops', icon: 'check' },
+    { label: 'Defined in', value: 'clang/include/clang/Driver/Options.td', icon: 'info' },
+  ]}
+/>
 
 </FlagArticleShell>

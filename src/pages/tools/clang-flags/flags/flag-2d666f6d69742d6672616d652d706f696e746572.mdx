@@ -1,8 +1,18 @@
 ---
 title: "-fomit-frame-pointer"
 slug: "/tools/clang-flags/-fomit-frame-pointer/"
-description: "Disables the maintenance of frame pointers in generated machine code, freeing up a general-purpose register and eliminating frame setup/teardown instructions."
-keywords: [-fomit-frame-pointer, -fno-omit-frame-pointer, clang, llvm, frame-pointer, rbp, fp, call-stack, profiling]
+description: "Request that Clang omit the dedicated frame-pointer register where permitted; target-sensitive codegen, O-level defaults, IR attrs, and TargetFrameLowering."
+keywords:
+  - -fomit-frame-pointer
+  - -fno-omit-frame-pointer
+  - -mframe-pointer
+  - clang
+  - llvm
+  - frame-pointer
+  - rbp
+  - x29
+  - call-stack
+  - profiling
 ---
 
 import Head from '@docusaurus/Head';
@@ -17,11 +27,17 @@ import TabItem from '@theme/TabItem';
 
 <Head>
   <title>-fomit-frame-pointer | Clang Flags Explorer</title>
-  <meta name="description" content="Disables the maintenance of frame pointers in generated machine code, freeing up a general-purpose register and eliminating frame setup/teardown instructions." />
+  <meta name="description" content="Request that Clang omit the dedicated frame-pointer register where permitted; target-sensitive codegen, O-level defaults, IR attrs, and TargetFrameLowering." />
+  <meta name="keywords" content="-fomit-frame-pointer,-fno-omit-frame-pointer,-mframe-pointer,clang,llvm,frame-pointer,rbp,x29,call-stack,profiling" />
+  <meta property="og:title" content="-fomit-frame-pointer — Clang flag reference" />
+  <meta property="og:description" content="Frame-pointer policy for Clang codegen: driver defaults, -mframe-pointer=, TargetFrameLowering, and verified asm." />
+  <meta property="og:type" content="article" />
+  <meta name="twitter:title" content="-fomit-frame-pointer — Clang flag reference" />
+  <meta name="twitter:description" content="Omit the frame-pointer register where the target/backend permits — with verified O-level defaults and pipeline stages." />
 </Head>
 
 {/* HAND_AUTHORED */}
-<FlagArticleShell flagPath="-fomit-frame-pointer" summary="Omits frame pointer register allocation and maintenance instructions, freeing a general-purpose register at the cost of register-based unwinding.">
+<FlagArticleShell flagPath="-fomit-frame-pointer" summary="Request that Clang omit the dedicated frame-pointer register where permitted by the target and backend; defaults and asm are target- and version-dependent.">
 
 <div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
@@ -29,41 +45,77 @@ import TabItem from '@theme/TabItem';
 
 | Attribute | Details |
 | :--- | :--- |
-| **Architecture** | Architecture-independent (x86_64, AArch64, RISC-V, ARM) |
-| **Category** | Code Generation / Frame Allocation |
-| **Compiler** | Clang, GCC |
-| **Optimization Level** | Defaults to enabled at `-O1` and higher on most non-Darwin, non-Windows targets |
-| **Risk Level** | Low (code correctness), High (tooling ecosystem: frame-pointer-based profilers and debuggers) |
+| **Architecture** | Target-sensitive codegen (`rbp`, `x29`, ARM FP, …) — not an ABI specification |
+| **Category** | Optimization / stack layout via backend frame lowering — not an IR optimization pass |
+| **Pipeline** | Driver policy → CC1 `-mframe-pointer=` → IR attrs → TargetFrameLowering → prologue |
+| **Compiler** | Clang (C/C++); related GCC flag; Flang has separate driver work (see history) |
+| **Optimization Level** | Defaults depend on target + Clang version; do not treat one distro clang as universal |
+| **Risk Level** | Low correctness risk; observability impact for FP-based profilers and some stack-trace workflows |
 
-**Summary**: `-fomit-frame-pointer` instructs the backend to avoid establishing a dedicated frame pointer register (such as `rbp` on x86_64 or `x29` on AArch64) for function stack frames unless dynamic stack allocation (`alloca`, variable-length arrays) or architectural requirements strictly demand it.
+**In one sentence:** a frame pointer is a dedicated register that points at a stable place in the current function’s stack frame. `-fomit-frame-pointer` requests omission of that register where the target/backend permits, which can free the register and shrink some prologues — without deleting the stack itself.
 
 ---
 
 ## What this flag actually does
 
-When frame pointer omission is active:
+On modern Clang (verified with Ubuntu clang 18.1.3):
 
-1. **Register Liberation**: The frame pointer register (`rbp` on x86_64, `x29` on AArch64) is returned to the general-purpose register allocator pool.
-2. **Preamble & Postamble Reduction**: Eliminates setup instructions (`push rbp; mov rbp, rsp`) and teardown instructions (`pop rbp` or `leave`).
-3. **CFI / DWARF Unwinding**: Stack unwinding relies entirely on DWARF `.eh_frame` call frame information tables (`CFA = rsp + offset`), rather than following the frame pointer linked-list chain in memory.
+1. **Driver policy** — `-fomit-frame-pointer` / `-fno-omit-frame-pointer` (and leaf variants) feed `getFramePointerKind()` and become cc1 `-mframe-pointer=`. On the verified host (clang 18.1.3) the kinds are `none` / `non-leaf` / `all`. `reserved` appears in Clang/LLVM 19+ (see option map).
+2. **CodeGen / IR** — keep policies commonly emit a `"frame-pointer"` function attribute (e.g. `"all"`). Omit often means that keep attribute is absent on 18.1.3 rather than always printing `"none"` — inspect your IR.
+3. **Backend** — `TargetFrameLowering::hasFP()` (e.g. `X86FrameLowering::hasFP`) can still require an FP for VLAs, realignment, EH helpers, Win64 constraints, etc., even when policy is omit.
+4. **Unwind / debug** — unwind metadata, exception tables, and `-g` debug sections are controlled by other flags; they are not the same knob as FP policy.
 
-### Defaults and Precedence
+:::caution
+Omitting the frame pointer is not “no stack frame,” not “no unwind info,” and not an LLVM PassBuilder optimization pass. Sanitizer instrumentation and runtimes are separate optional concerns.
+:::
 
-- **Optimization Levels**: Under `-O0`, Clang defaults to `-fno-omit-frame-pointer` to preserve straightforward stack frames for debugging. At `-O1` and above, `-fomit-frame-pointer` is enabled by default on Linux/ELF targets.
-- **Darwin / macOS**: macOS and iOS defaults keep frame pointers enabled (`-fno-omit-frame-pointer`) even at high optimization levels to support System Integrity Protection and continuous OS sampling profilers.
-- **Interaction with Leaf Functions**: Flags like `-momit-leaf-frame-pointer` or `-mno-omit-leaf-frame-pointer` override frame pointer retention specifically for leaf functions (functions that do not call any other function).
+### Option map and precedence
+
+| Flag | Role |
+| :--- | :--- |
+| `-fomit-frame-pointer` | Request omission of the frame pointer where permitted (`none` when it wins) |
+| `-fno-omit-frame-pointer` | Request keeping a frame pointer where permitted (`all` or `non-leaf`, depending on leaf defaults) |
+| `-mframe-pointer=all` | Keep a conventional FP / frame record in all functions (leaf + non-leaf) |
+| `-mframe-pointer=non-leaf` | Keep a conventional FP in non-leaf functions only |
+| `-mframe-pointer=none` | Prefer omitting the FP (backend `hasFP()` may still force one) |
+| `-mframe-pointer=reserved` | Reserve the FP register for target-specific frame-chain semantics without necessarily requesting the normal `all` / `non-leaf` setup. Target/backend-specific. On Clang, mainly reached through options such as ARM `-mframe-chain=`; kind exists from Clang/LLVM 19+ (not in 18.1.3). |
+| `-momit-leaf-frame-pointer` | Prefer omitting frame-pointer setup in leaf functions |
+| `-mno-omit-leaf-frame-pointer` | Prefer keeping frame-pointer setup in leaf functions |
+
+**Precedence (simplified, from `getFramePointerKind`):** among `-fomit-frame-pointer` / `-fno-omit-frame-pointer`, the last wins. Leaf omit flags can turn an “all” keep into `non-leaf`. Target defaults also matter (AArch64 often defaults leaf-omit / `non-leaf`). A frontend policy still does not guarantee identical assembly on every architecture.
+
+---
+
+## Defaults by optimization level (which `-O` introduces omit)
+
+Verified experimentally — Ubuntu clang 18.1.3, via `clang -###`:
+
+| Target triple | Last `-O` | Default `-mframe-pointer=` |
+| :--- | :--- | :--- |
+| `x86_64-pc-linux-gnu` | (none) / `-O0` | `all` (keep) |
+| `x86_64-pc-linux-gnu` | `-O1` `-O2` `-O3` … | `none` (omit) |
+| `aarch64-linux-gnu` (via `--target`) | `-O0` and `-O2` | `non-leaf` (keep non-leaf; omit leaf) |
+
+On Linux x86/x86_64, optimized builds (`areOptimizationsEnabled()` true when the last `-O*` is not `-O0`) default toward omit. **Which `-O` introduces omit on this x86_64 host?** **`-O1`** is the first standard level that defaults to `-mframe-pointer=none`.
+
+:::important
+This table is not a universal Clang rule. AArch64 on the same clang often defaults to `non-leaf` even at `-O2`. Darwin often defaults to keep. Always check `clang -###` on your triple and version.
+:::
 
 ---
 
 ## Minimal realistic example
 
-```cpp
-// example.c
-int compute_sum(int a, int b, int c, int d) {
-    int temp = a + b;
-    return temp * (c - d);
-}
-```
+<SourceCode
+  file="example.c"
+  flag="-fomit-frame-pointer"
+  language="c"
+  code={`int compute_sum(int a, int b, int c, int d) {
+  int temp = a + b;
+  return temp * (c - d);
+}`}
+  note="Small leaf-like function: with FP kept you typically see push/mov of rbp (x86_64) or stp/mov of x29 (AArch64); with omit those disappear when hasFP() allows."
+/>
 
 ```bash
 clang -O1 -fno-omit-frame-pointer -S example.c -o with_fp.s
@@ -74,9 +126,13 @@ clang -O1 -fomit-frame-pointer -S example.c -o no_fp.s
 
 ## Before vs. after assembly
 
+Illustrative of the usual leaf prologue difference on targets that honor omit (verify on your triple). Captured style matches Ubuntu clang 18.1.3 / x86_64 and AArch64 lowering.
+
 <Tabs>
-  <TabItem value="x86_64" label="x86_64 (GCC/Clang syntax)">
+  <TabItem value="x86_64" label="x86_64">
     <AsmDiff
+      beforeTitle="-fno-omit-frame-pointer"
+      afterTitle="-fomit-frame-pointer"
       before={`compute_sum:
     push    rbp
     mov     rbp, rsp
@@ -96,6 +152,8 @@ clang -O1 -fomit-frame-pointer -S example.c -o no_fp.s
   </TabItem>
   <TabItem value="aarch64" label="AArch64">
     <AsmDiff
+      beforeTitle="FP kept"
+      afterTitle="FP omitted (when policy + hasFP allow)"
       before={`compute_sum:
     stp     x29, x30, [sp, #-16]!
     mov     x29, sp
@@ -113,7 +171,7 @@ clang -O1 -fomit-frame-pointer -S example.c -o no_fp.s
   </TabItem>
 </Tabs>
 
-Notice how `-fomit-frame-pointer` completely eliminates stack allocation, saved register pair spills, and frame pointer assignment on leaf functions.
+That removes the dedicated FP setup/teardown on this leaf shape — not the abstract “stack frame” concept, and not unwind metadata.
 
 ---
 
@@ -121,13 +179,13 @@ Notice how `-fomit-frame-pointer` completely eliminates stack allocation, saved 
 
 ### When to use
 
-- **Production Performance Builds**: In tightly constrained register architectures (especially x86-32, but also heavily unrolled modern x86_64 loops), releasing an extra register reduces stack spills.
-- **Binary Size Reduction**: Micro-benchmarks and embedded binaries benefit from removing function prologue/epilogue bloat.
+- Production builds where an extra GPR and smaller prologues matter and your tooling does not require FP stacks.
+- Embedded / size-sensitive binaries once you have measured the effect.
 
-### When NOT to use
+### When not to use
 
-- **Sampling Profilers**: Low-overhead profilers (`perf record -g --call-graph fp`, eBPF stack samplers) require frame pointers to walk call stacks without parsing expensive or unsafe DWARF `.eh_frame` entries at interrupt time.
-- **Sanitizers**: AddressSanitizer (`-fsanitize=address`) and ThreadSanitizer prefer `-fno-omit-frame-pointer` to print fast, readable crash stack traces without depending on unwind tables.
+- Sampling profilers that walk FP chains (`perf --call-graph fp`, some eBPF samplers).
+- Workflows that prefer fast, readable sanitizer/debugger stacks without relying solely on unwind tables — prefer `-fno-omit-frame-pointer`.
 
 ---
 
@@ -145,46 +203,100 @@ The following measurements were produced with [CompilerSutraPerf](/docs/project/
   note="Mean wall time: 41.087 ms with frame pointers kept versus 41.029 ms with -fomit-frame-pointer on pic_bench.c. On this run the difference is within noise — publish FP policy from your own profiled workload."
 />
 
+---
 
-## Compatibility table
+## Compatibility
 
-| Target / Architecture | Default at `-O0` | Default at `-O2` | Support Status |
-| :--- | :--- | :--- | :--- |
-| **x86_64-linux-gnu** | Frame pointer kept | Omitted | Fully supported |
-| **aarch64-linux-gnu** | Frame pointer kept | Omitted | Fully supported |
-| **x86_64-apple-darwin** | Frame pointer kept | Frame pointer kept | Fully supported |
-| **x86_64-windows-msvc** | SEH Frame required | SEH Frame optimized | Managed via SEH primitives |
+| Target / Architecture | Driver default note (verify with `-###`) | Support |
+| :--- | :--- | :--- |
+| **x86_64-linux-gnu** | Keep at `-O0`; omit from `-O1` up (clang 18.1.3 host) | Fully supported |
+| **aarch64-linux-gnu** | Often `non-leaf` even at `-O2` on the same clang | Fully supported; defaults differ |
+| **x86_64-apple-darwin** | Often keep for sampling / platform conventions | Fully supported |
+| **Windows / SEH** | Frame requirements interact with SEH; do not assume Linux defaults | Supported via target rules |
 
 ---
 
 ## Usage example
 
 ```bash
-# Enable frame pointer omission explicitly
+# Request omit explicitly
 clang++ -O2 -fomit-frame-pointer -c engine.cpp -o engine.o
 
-# Force preservation of frame pointers for profiling builds
+# Keep FP for profiling builds
 clang++ -O3 -fno-omit-frame-pointer -g benchmark.cpp -o benchmark
+
+# Inspect driver policy
+clang -### -O2 -c engine.cpp 2>&1 | tr ' ' '\n' | grep frame-pointer
 ```
 
 ---
 
 ## Adjacent options
 
-- `-fno-omit-frame-pointer`: Forces generation of frame pointers across all functions.
-- `-momit-leaf-frame-pointer`: Omits the frame pointer only in leaf functions, retaining it for non-leaf calls.
-- `-mno-omit-leaf-frame-pointer`: Keeps frame pointers in leaf functions even if non-leaf functions omit them.
+- `-fno-omit-frame-pointer` — prefer keeping a frame pointer where permitted.
+- `-momit-leaf-frame-pointer` / `-mno-omit-leaf-frame-pointer` — leaf-only policy knobs.
+- `-mframe-pointer=` — explicit cc1-facing kind (`all` / `non-leaf` / `none`; `reserved` on newer Clang).
 
 ---
 
 ## How it works inside Clang
 
-| Pipeline Stage | Implementation Detail |
+| Pipeline stage | Implementation detail |
 | :--- | :--- |
-| **Driver** | Translates `-fomit-frame-pointer` into frontend TargetOptions/CodeGenOptions flags. Verify against `clang/lib/Driver/ToolChains/Clang.cpp`. |
-| **Frontend (CC1)** | Populates `CodeGenOptions::FramePointer` enum (e.g., `CodeGenOptions::FramePointerKind::None` vs `All` or `NonLeaf`). |
-| **LLVM IR** | Attaches the function attribute `"frame-pointer"="none"` (or `"all"`, `"non-leaf"`) to generated IR functions. |
-| **LLVM Target Lowering** | `TargetFrameLowering::hasFP()` queries function attributes and dynamic allocation requirements (`hasVarSizedObjects`) to decide whether to dedicate the frame register. |
+| **Driver** | Parse `-f(no-)omit-frame-pointer` / leaf variants and target `-O` defaults → `-mframe-pointer=` |
+| **CC1 / CodeGenOptions** | `FramePointerKind` (`None` / `NonLeaf` / `All`; `Reserved` on 19+) |
+| **LLVM IR** | `"frame-pointer"` function/module attributes when keep applies |
+| **TargetFrameLowering** | `hasFP()` may still require an FP (VLA, EH, ABI constraints) |
+| **Prologue / epilogue** | Reserve or free the FP register in machine code |
+| **Unwind** | Optional unwind metadata / CFI — orthogonal to FP policy |
+
+This flag sets frame-pointer policy for codegen. It does not insert sanitizer instrumentation or bind a sanitizer runtime.
+
+---
+
+## Clang version history
+
+Research leads checked against Options.td tags, LLVM/Clang release notes, and primary commits. Chronological; only verified milestones.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9 | `-fomit-frame-pointer` / `-fno-omit-frame-pointer` appear in `clang/include/clang/Driver/Options.td` | Driver-visible user flags exist in this release tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td). Exact introduction commit and first released version remain unresolved — do not claim “introduced in 2.9,” only “present by 2.9.” |
+| LLVM 10 (2020) | IR attrs `no-frame-pointer-elim` / `no-frame-pointer-elim-non-leaf` replaced by tri-state `"frame-pointer"` (`none`/`non-leaf`/`all`); Clang cc1 migrates to `-mframe-pointer=` | Uniform policy encoding across driver, IR, and codegen | [LLVM 10 ReleaseNotes](https://releases.llvm.org/10.0.0/docs/ReleaseNotes.html); [D56353](https://reviews.llvm.org/D56353); [commit ff22ec3d70](https://github.com/llvm/llvm-project/commit/ff22ec3d70) (2019-07-20) |
+| Clang 11 | Defaults to `-fomit-frame-pointer` for non-Android Linux arm/thumb when optimizations are enabled (GCC-compatible) | ARM Linux optimized builds omit FP unless you pass `-fno-omit-frame-pointer` | [Clang 11.0.0 Release Notes (ARM)](https://releases.llvm.org/11.0.0/tools/clang/docs/ReleaseNotes.html); [ReleaseNotes.rst @ llvmorg-11.0.0](https://github.com/llvm/llvm-project/blob/llvmorg-11.0.0/clang/docs/ReleaseNotes.rst) |
+| LLVM 13 era (2021-04-23) | Module flag `"frame-pointer"` records frame-pointer policy for IR consumers/tooling when cc1 uses `-mframe-pointer={non-leaf,all}` | IR metadata about policy — not part of this flag’s normal compile path. (Historical note: the introducing commit also helped instrumentation/objtool consumers that previously missed command-line FP intent; that is secondary context, not a sanitizer stage of `-fomit-frame-pointer`.) | [Commit 2786e673c7](https://github.com/llvm/llvm-project/commit/2786e673c7) (2021-04-23) |
+| Clang 20.1 (ARM target) | On the ARM target, a leaf function’s FP can be retained with `-fno-omit-frame-pointer`; add `-momit-leaf-frame-pointer` to drop leaf FP again | ARM-specific leaf/non-leaf control at the 20.1.0 baseline — not a universal change for every architecture | [ReleaseNotes.rst @ llvmorg-20.1.0](https://github.com/llvm/llvm-project/blob/llvmorg-20.1.0/clang/docs/ReleaseNotes.rst) |
+| After Clang 20.1.0 (2025-09) | Darwin/macho ARM driver default toward `-mframe-pointer=non-leaf` | Apple ARM leaf default shift — not in the 20.1.0 release | [PR #154216](https://github.com/llvm/llvm-project/pull/154216); [commit f82023d72e](https://github.com/llvm/llvm-project/commit/f82023d72e) |
+| Flang 2025-07-07 | Flang correctly handles `-mframe-pointer=reserved` in its driver/parser pipeline | Fortran / Flang only — separate from Clang C/C++ | [Commit 71ffa2a4d3](https://github.com/llvm/llvm-project/commit/71ffa2a4d3) (2025-07-07, [PR #146937](https://github.com/llvm/llvm-project/pull/146937)) |
+| Flang 2026-09-12 | Flang driver support for `-momit-leaf-frame-pointer` / `-mno-omit-leaf-frame-pointer` | Fortran / Flang only — leaf FP policy for Flang | [Commit a67c8f208e](https://github.com/llvm/llvm-project/commit/a67c8f208e) (2026-09-12, [PR #216700](https://github.com/llvm/llvm-project/pull/216700)) |
+
+Documentation-only noise and ancient makefile uses of `-fomit-frame-pointer` are not Clang user-option introductions.
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Frame-pointer policy (`-mframe-pointer=`) | Driver / CodeGenOptions | Directly controlled | Selects keep vs omit policy |
+| `"frame-pointer"` IR attribute | LLVM IR | Indirectly affected | Records keep policy for consumers |
+| `TargetFrameLowering::hasFP()` | Backend | Backend mechanism | May still force an FP despite omit |
+| Prologue / epilogue emission | Backend | Backend mechanism | Reserves or frees the FP register |
+| Unwind metadata / CFI | Object / runtime unwind | Related mechanism | Orthogonal to FP policy |
+| LoopVectorize / PassBuilder IR opts | Mid-end | No direct pass | Not controlled by this flag |
+
+#### How to verify
+
+```bash
+clang -### -O2 -c t.c 2>&1 | tr ' ' '\n' | grep frame-pointer
+clang -O2 -fomit-frame-pointer -S -emit-llvm t.c -o - | grep frame-pointer
+clang -O2 -fomit-frame-pointer -S t.c -o - | head
+```
+
+#### Source investigation
+
+- `clang/include/clang/Driver/Options.td` — user flags
+- `clang/lib/Driver/ToolChains/Clang.cpp` — `getFramePointerKind` / defaults
+- LLVM `TargetFrameLowering` / `X86FrameLowering::hasFP`
 
 ---
 
@@ -192,8 +304,8 @@ clang++ -O3 -fno-omit-frame-pointer -g benchmark.cpp -o benchmark
 
 <KeyFacts
   args="None"
-  accepts="Clang Driver, CC1 Option"
-  stage="Driver / CodeGen"
+  accepts="Clang Driver, CC1 (-mframe-pointer=); FlangOption visibility in Options.td"
+  stage="Driver → CC1 FramePointerKind → IR attrs → TargetFrameLowering → prologue"
   negated="-fno-omit-frame-pointer"
   definedIn="clang/include/clang/Driver/Options.td"
 />

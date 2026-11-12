@@ -17,6 +17,8 @@ Bot entrypoint: `run-all.sh` with `MODE=publish|audit|improve`.
 | `evidence-O2.json` | Sample evidence pack (`-O0` vs `-O2`, clang 18 + csperf diff) |
 | `LIMITATIONS.md` | Known limits |
 
+Local authoring prompts under `prompts/` are gitignored. The Jenkins bot falls back to `jenkins_pipeline/prompts/`. Gold article shape: Cursor skill `compilersutra-clang-flags` + twin refs `-fomit-frame-pointer` / `-fno-vectorize`.
+
 ## Refresh inventory
 
 ```bash

@@ -30,3 +30,13 @@ basic_terminology.md
 __pycache__/
 *.py[cod]
 scripts/.compilersutra_fb_bot_state.json
+
+# Local Cursor skills / clang-flag bot prompts (authoring only — do not publish)
+.cursor/skills/
+scripts/clang-flags-bot/prompts/
+
+# Local bot / slide preview outputs
+.agent-slide-preview/
+scripts/basic-terminology-bot/out/
+scripts/live-pdf-bot/out/
+scripts/live-pdf-bot/ref-slides/

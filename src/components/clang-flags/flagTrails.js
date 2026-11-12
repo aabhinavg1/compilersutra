@@ -64,6 +64,40 @@ const BOUNDS_SAFETY_FLAGS = new Set([
   '-fno-experimental-bounds-safety',
 ]);
 
+const FRAME_POINTER_FLAGS = new Set([
+  '-fomit-frame-pointer',
+  '-fno-omit-frame-pointer',
+  '-momit-leaf-frame-pointer',
+  '-mno-omit-leaf-frame-pointer',
+]);
+
+function isLoopVectorizeFlag(flagName) {
+  const name = String(flagName || '').toLowerCase();
+  if (name.includes('slp-vectorize') || name.includes('tree-slp-vectorize')) return false;
+  return (
+    name.includes('vectorize') ||
+    name === '-qvec' ||
+    name === '-qvec-' ||
+    name === '/qvec' ||
+    name === '/qvec-'
+  );
+}
+
+function isSlpVectorizeFlag(flagName) {
+  const name = String(flagName || '').toLowerCase();
+  return name.includes('slp-vectorize') || name.includes('tree-slp-vectorize');
+}
+
+function isLoopUnrollFlag(flagName) {
+  const name = String(flagName || '').toLowerCase();
+  return name.includes('unroll-loops') && !name.includes('variable-expansion');
+}
+
+function isLoopRerollFlag(flagName) {
+  const name = String(flagName || '').toLowerCase();
+  return name.includes('reroll-loops');
+}
+
 export function buildPipelineTrail(flag) {
   if (BOUNDS_SAFETY_FLAGS.has(flag.flag)) {
     return [
@@ -73,6 +107,60 @@ export function buildPipelineTrail(flag) {
       { title: 'SemaBoundsSafety', note: 'Verified effect: semantic checks and warning→error promotion' },
       { title: 'AST / attributed types', note: 'Bounds annotations in the frontend type system' },
       { title: 'CodeGen / runtime checks', note: 'Evolving — not demonstrated by the diagnostic experiment on this page' },
+    ];
+  }
+
+  if (FRAME_POINTER_FLAGS.has(flag.flag) || String(flag.flag || '').includes('frame-pointer')) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)omit-frame-pointer / leaf variants and target -O defaults' },
+      { title: 'CC1 / CodeGenOptions', note: 'Emit -mframe-pointer= into FramePointerKind' },
+      { title: 'LLVM IR frame-pointer policy', note: 'Function/module frame-pointer attributes (when keep applies)' },
+      { title: 'TargetFrameLowering', note: 'hasFP() may still require an FP (VLA, EH, …)' },
+      { title: 'Prologue / Epilogue', note: 'Reserve or free the FP register in machine code' },
+      { title: 'Machine code + unwind', note: 'Optional unwind metadata / CFI — orthogonal to FP policy' },
+    ];
+  }
+
+  if (isLoopVectorizeFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)vectorize; apply shouldEnableVectorizerAtOLevel defaults' },
+      { title: 'CC1', note: 'Forward -vectorize-loops when enabled (absent when disabled)' },
+      { title: 'CodeGenOpts', note: 'CompilerInvocation records VectorizeLoop for the mid-end' },
+      { title: 'PassBuilder', note: 'Schedule LoopVectorize in the optimization pipeline when enabled' },
+      { title: 'LoopVectorize', note: 'Widen profitable/legal loops into vector IR' },
+      { title: 'Target backend', note: 'Lower vector IR to SIMD / scalar machine code' },
+    ];
+  }
+
+  if (isSlpVectorizeFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)slp-vectorize; apply SLP O-level defaults' },
+      { title: 'CC1', note: 'Forward -vectorize-slp when enabled' },
+      { title: 'CodeGenOpts', note: 'CompilerInvocation records VectorizeSLP' },
+      { title: 'PassBuilder', note: 'Schedule SLPVectorizer when enabled' },
+      { title: 'SLPVectorizer', note: 'Pack independent scalar ops into vector ops' },
+      { title: 'Target backend', note: 'Lower vector IR to SIMD / scalar machine code' },
+    ];
+  }
+
+  if (isLoopUnrollFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)unroll-loops; forward last arg to cc1' },
+      { title: 'CC1 / CodeGenOpts', note: 'UnrollLoops defaults true when OptLevel > 1; flags override' },
+      { title: 'BackendUtil / PassBuilder', note: 'PipelineTuningOptions.LoopUnrolling ← UnrollLoops' },
+      { title: 'LoopUnrollPass', note: 'Partial/runtime unroll under cost model + TTI' },
+      { title: 'LoopFullUnrollPass', note: 'Full unroll when trip count/cost allow' },
+      { title: 'Target backend', note: 'Lower expanded scalar/vector IR to machine code' },
+    ];
+  }
+
+  if (isLoopRerollFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)reroll-loops' },
+      { title: 'CC1 / CodeGenOpts', note: 'RerollLoops option state' },
+      { title: 'PassBuilder', note: 'Schedule loop-reroll when enabled' },
+      { title: 'LoopReroll', note: 'Try to collapse unrolled patterns back to compact loops' },
+      { title: 'Target backend', note: 'Lower resulting IR' },
     ];
   }
 
@@ -121,6 +209,101 @@ export function buildImplementationTrail(flag) {
         title: 'CodeGen (design target)',
         value: 'clang/lib/CodeGen/CodeGenFunction.cpp',
         note: 'Not verified by the -fsyntax-only diagnostic experiment on this page.',
+      },
+    ];
+  }
+
+  if (isLoopVectorizeFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -fvectorize / -fno-vectorize and GCC/MSVC aliases (-ftree-vectorize, -Qvec / -Qvec-).',
+      },
+      {
+        title: 'Driver O-level defaults',
+        value: 'ToolChains/Clang.cpp :: shouldEnableVectorizerAtOLevel',
+        note: 'Loop vectorize defaults on for OptLevel > 1 and -Os/-Ofast; off for -O0/-O1; -Oz leaves loops off (SLP still considered separately).',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'hasFlag(-fvectorize, …, -fno-vectorize, EnableVec) emits cc1 -vectorize-loops when enabled.',
+      },
+      {
+        title: 'Invocation setup',
+        value: 'CompilerInvocation.cpp',
+        note: 'Records CodeGenOptions::VectorizeLoop from the cc1 -vectorize-loops option.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil / PassBuilder',
+        note: 'Schedules the LoopVectorize pass when VectorizeLoop is set; -fno-vectorize keeps that pass out of the pipeline.',
+      },
+      {
+        title: 'LoopVectorize',
+        value: 'llvm/lib/Transforms/Vectorize/LoopVectorize.cpp',
+        note: 'Widens legal/profitable loops into vector IR; backend then lowers SIMD or falls back to scalar.',
+      },
+    ];
+  }
+
+  if (isSlpVectorizeFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -fslp-vectorize / -fno-slp-vectorize and tree-slp aliases.',
+      },
+      {
+        title: 'Driver O-level defaults',
+        value: 'ToolChains/Clang.cpp :: shouldEnableVectorizerAtOLevel(isSlpVec=true)',
+        note: 'SLP defaults on for OptLevel > 1, -Os, -Oz, and -Ofast; off for -O0/-O1.',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'Emits cc1 -vectorize-slp when SLP vectorization is enabled.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil / PassBuilder',
+        note: 'Schedules SLPVectorizer independently of LoopVectorize.',
+      },
+      {
+        title: 'SLPVectorizer',
+        value: 'llvm/lib/Transforms/Vectorize/SLPVectorizer.cpp',
+        note: 'Packs straight-line scalar operations into vector operations.',
+      },
+    ];
+  }
+
+  if (isLoopUnrollFlag(flag.flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -funroll-loops / -fno-unroll-loops (ClangOption + CC1Option).',
+      },
+      {
+        title: 'Driver forwarding',
+        value: 'ToolChains/Clang.cpp',
+        note: 'AddLastArg forwards the last of -funroll-loops / -fno-unroll-loops to cc1 when present.',
+      },
+      {
+        title: 'Invocation setup',
+        value: 'CompilerInvocation.cpp',
+        note: 'CodeGenOptions::UnrollLoops = hasFlag(..., OptimizationLevel > 1). Explicit flags override the O-level default.',
+      },
+      {
+        title: 'Pass pipeline',
+        value: 'BackendUtil.cpp',
+        note: 'PipelineTuningOptions.LoopUnrolling / LoopInterleaving follow CodeGenOpts.UnrollLoops.',
+      },
+      {
+        title: 'LoopUnrollPass',
+        value: 'llvm/lib/Transforms/Scalar/LoopUnrollPass.cpp',
+        note: 'Cost-model + TTI decide partial/runtime/full unroll; not every loop unrolls.',
       },
     ];
   }
