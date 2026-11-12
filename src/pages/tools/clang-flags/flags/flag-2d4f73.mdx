@@ -288,7 +288,7 @@ Per-trial wall times from `execution.trial_results` (ms). Mean `-Os` is about **
   afterTitle="-Os"
   without={[10.193, 10.216, 10.202, 10.22, 10.213, 10.211, 10.212, 10.23, 10.211, 10.216]}
   with={[30.393, 30.42, 30.438, 30.431, 30.442, 30.433, 30.437, 30.449, 30.448, 30.456]}
-  note="csperf 0.3.0 · warmup 2 · repeat 10 · process_buffer_bench.cpp · Clang 18.1.3 · Ryzen 7 9700X. Source: results/O2-vs-Os/*.json"
+  note="csperf 0.3.0 · warmup 2 · repeat 10 · process_buffer_bench.cpp · Clang 18.1.3 · x86_64 · Ryzen 7 9700X. Large Δ here is this vectorized vs scalar buffer kernel — not a universal “-Os is slower” rule."
 />
 
 ### Results table (measured)
@@ -367,25 +367,34 @@ GCC also supports `-Os`, but its pipeline and codegen are not identical to Clang
 
 References: [Clang command guide](https://clang.llvm.org/docs/CommandGuide/clang.html), [Users Manual](https://clang.llvm.org/docs/UsersManual.html), [LLVM LangRef](https://llvm.org/docs/LangRef.html). Verify pass details against the LLVM version you are discussing.
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** LLVM IR optimization pipeline tuned for size (`Os`).
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Size-oriented pipeline | PassBuilder | Directly controlled | Prefers size-friendly pass choices vs O2/O3 |
+| Inlining / unrolling thresholds | LLVM IR | Indirectly affected | Typically more conservative than O3 |
+| Codegen size heuristics | Machine backend | Indirectly affected | May favor smaller sequences |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -Os -S -emit-llvm w.c -o Os.ll
+clang -O2 -S -emit-llvm w.c -o O2.ll
+llvm-size Os.o O2.o   # after compiling objects
+clang -Os -mllvm -print-pipeline-passes -c w.c -o /dev/null 2>&1 | head
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- `PassBuilderPipelines.cpp` size pipelines; Options.td optimization aliases
+
+---
+
+:::note Present by
+`-Os` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

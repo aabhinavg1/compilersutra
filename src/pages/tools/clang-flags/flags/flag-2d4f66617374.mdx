@@ -19,7 +19,7 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-Ofast" summary="Enables -O3 optimization level along with non-conforming fast-math floating-point optimizations. Deprecated in favor of -O3 -ffast-math.">
 
-<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Deep dives into LLVM architecture, backend code generation, and optimization flag mechanics.</p></div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
@@ -32,6 +32,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | **Recommended Replacement** | `-O3 -ffast-math` (if aggressive math optimization is needed) or plain `-O3` |
 
 ---
+
+:::note Present by
+`-Ofast` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L843). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## What this flag actually does
 
@@ -176,25 +180,28 @@ Verify flag translation logic against tip of `llvm-project` in `clang/lib/Driver
 
 ---
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Optimization umbrella + fast-math / standards tradeoffs. Not a single IR pass.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Aggressive opt level (typically O3-class) | PassBuilder | Directly controlled | Selects an aggressive pipeline |
+| Fast-math / non-standards-compliant FP modes | Frontend / IR attrs | Directly controlled / related | Often implies flags like `-ffast-math` family — verify with `-###` |
+| Individual math/loop passes | LLVM IR | Indirectly affected | May transform FP math under relaxed flags |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -### -Ofast -c w.c 2>&1 | tr ' ' '\n' | rg 'ffast|ffinite|O3|Ofast'
+clang -Ofast -S -emit-llvm w.c -o Ofast.ll
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- Driver expansion of `-Ofast` in `Clang.cpp` / Options.td — expand with `-###` before claiming exact implied flags for your Clang version.
+
+---
 
 ## Key facts
 

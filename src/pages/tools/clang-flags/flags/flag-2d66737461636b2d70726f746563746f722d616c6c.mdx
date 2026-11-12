@@ -32,7 +32,7 @@ import TabItem from '@theme/TabItem';
 | **Category** | Code Generation / Security |
 | **Compiler** | Clang, GCC |
 | **Optimization Level** | Compatible with all (`-O0` through `-O3`, `-Os`, `-Oz`) |
-| **Risk / Overhead** | High code size overhead; non-negligible CPU runtime cost for leaf/tiny functions |
+| **Risk** | Code-size and runtime overhead on many functions; observability/perf tradeoff, not a sanitizer |
 
 ## What this flag actually does
 
@@ -181,6 +181,32 @@ To verify the exact frontend translation logic in the LLVM source tree:
 * Attribute emission: `clang/lib/CodeGen/CGCall.cpp`
 * Target-independent canary insertion: `llvm/lib/CodeGen/StackProtector.cpp`
 *(Verify against tip of llvm-project).*
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Instrumentation / codegen hardening (`all` functions).
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Stack protector for all functions | CodeGen | Directly controlled | Broader canary coverage than `strong` |
+| Canary runtime hook | Link/runtime | Related mechanism | Uses `__stack_chk_fail` / guard symbols |
+
+### How to verify
+
+```bash
+clang -O2 -fstack-protector-all -S w.c -o ssp.s
+rg 'stack_chk' ssp.s
+```
+
+### Source investigation
+
+- Options.td; CodeGen stack protector
+
+---
+
+:::note Present by
+`-fstack-protector-all` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4124). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 <KeyFacts
   args="Flag (no argument)"

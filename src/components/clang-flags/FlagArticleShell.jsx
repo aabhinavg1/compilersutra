@@ -125,20 +125,84 @@ function buildStatus(flag) {
   return 'Stable';
 }
 
-function isVectorizeFlag(flag) {
+function isFramePointerFlag(flag) {
   const name = String(flag?.flag || '').toLowerCase();
-  return (
-    name.includes('vectorize') ||
-    name === '-qvec' ||
-    name === '-qvec-' ||
-    name === '/qvec' ||
-    name === '/qvec-'
-  );
+  return name.includes('frame-pointer');
 }
 
-function isUnrollFlag(flag) {
-  const name = String(flag?.flag || '').toLowerCase();
-  return name.includes('unroll-loops') || name.includes('reroll-loops');
+const RELATED_HELP_FALLBACKS = {
+  '-fomit-frame-pointer': 'Request omission of the frame pointer where permitted by the target/backend.',
+  '-fno-omit-frame-pointer': 'Request keeping a frame pointer where permitted by the target/backend.',
+  '-mframe-pointer=': 'Select FP policy: all, non-leaf, reserved, or none.',
+  '-momit-leaf-frame-pointer': 'Prefer omitting frame-pointer setup in leaf functions.',
+  '-mno-omit-leaf-frame-pointer': 'Prefer keeping frame-pointer setup in leaf functions.',
+  '-O0': 'Disable most optimizations; preserve straightforward codegen for debugging.',
+  '-O1': 'Enable a basic optimization pipeline.',
+  '-O2': 'Optimize more; common release default.',
+  '-O3': 'Optimize further; may increase code size.',
+  '-Os': 'Optimize for code size while keeping profitable speed opts.',
+  '-Oz': 'Optimize aggressively for minimum code size.',
+  '-Ofast': 'Deprecated umbrella historically similar to -O3 plus fast-math relaxations.',
+  '-Og': 'Optimize with experience aimed at debuggability.',
+  '-ffast-math': 'Allow aggressive, lossy floating-point optimizations.',
+  '-fno-fast-math': 'Disable -ffast-math floating-point relaxations.',
+  '-fpic': 'Generate position-independent code for shared libraries (small model where applicable).',
+  '-fPIC': 'Generate position-independent code for shared libraries (large model where applicable).',
+  '-fpie': 'Generate position-independent code suitable for executables.',
+  '-fPIE': 'Generate position-independent code for executables (large model where applicable).',
+  '-fno-pic': 'Disable -fpic.',
+  '-fno-PIE': 'Disable -fPIE.',
+  '-fstack-protector': 'Enable stack protectors for some vulnerable functions.',
+  '-fstack-protector-strong': 'Enable stack protectors for a stronger set of functions.',
+  '-fstack-protector-all': 'Enable stack protectors for all functions.',
+  '-fno-stack-protector': 'Disable stack protectors.',
+  '-fstrict-aliasing': 'Enable optimizations based on language aliasing rules.',
+  '-fno-strict-aliasing': 'Disable optimizations based on strict aliasing rules.',
+  '-flto': "Enable link-time optimization (default 'full' mode spelling).",
+  '-fno-lto': 'Disable LTO.',
+  '-flto=thin': 'Enable ThinLTO.',
+  '-flto=full': 'Enable full LTO.',
+  '-fopenmp': 'Parse OpenMP pragmas and generate parallel code.',
+  '-fno-openmp': 'Disable OpenMP.',
+  '-fopenmp-simd': 'Emit OpenMP code only for SIMD constructs.',
+  '-frtti': 'Enable C++ RTTI generation.',
+  '-fno-rtti': 'Disable C++ RTTI generation.',
+  '-fexceptions': 'Enable exception-handling support.',
+  '-fno-exceptions': 'Disable exception-handling support.',
+  '-fsanitize=address': 'Enable AddressSanitizer.',
+  '-fno-sanitize=address': 'Disable AddressSanitizer.',
+  '-Wall': 'Enable a broad set of useful warning groups.',
+  '-Wextra': 'Enable additional warning groups beyond -Wall.',
+  '-Werror': 'Treat warnings as errors.',
+  '-std=': 'Select the language standard.',
+  '-g': 'Generate source-level debug information.',
+  '-g0': 'Disable debug information.',
+  '-gline-tables-only': 'Emit line-table-only debug information.',
+  '-pthread': 'Enable POSIX threads support via the driver/toolchain.',
+  '-march=': 'Select the target architecture / ISA level.',
+  '-mcpu=': 'Select the target CPU.',
+  '-mtune=': 'Tune scheduling/codegen for a CPU without changing the base ISA requirement.',
+  '-D': 'Define a preprocessor macro.',
+  '-U': 'Undefine a preprocessor macro.',
+  '-I': 'Add a directory to the include search path.',
+};
+
+function shortenCategoryLabel(category) {
+  const value = String(category || '').trim();
+  if (!value) return 'General';
+  return value
+    .replace(/^Target-Specific Code Generation$/i, 'Target codegen')
+    .replace(/^Target-independent compilation options$/i, 'Target-sensitive')
+    .replace(/^Code Generation$/i, 'Codegen')
+    .replace(/^Optimization$/i, 'Opt');
+}
+
+function relatedFlagSummary(item) {
+  const fromData = String(item?.help || item?.documentation || '').trim();
+  if (fromData && fromData.toLowerCase() !== 'no help text available.') {
+    return fromData;
+  }
+  return RELATED_HELP_FALLBACKS[item?.flag] || RELATED_HELP_FALLBACKS[item?.publicFlag] || 'Adjacent Clang option.';
 }
 
 function buildArchitecture(flag) {
@@ -146,14 +210,10 @@ function buildArchitecture(flag) {
   if (haystack.includes('AARCH64')) {
     return 'AArch64';
   }
-  if (String(flag.flag || '').toLowerCase().includes('frame-pointer')) {
+  // Frame-pointer policy is target- and version-sensitive; do not label it as a
+  // universal / ABI-independent option just because Options.td uses f_Group.
+  if (isFramePointerFlag(flag)) {
     return 'Target-sensitive codegen';
-  }
-  if (isVectorizeFlag(flag)) {
-    return 'Target-independent IR';
-  }
-  if (isUnrollFlag(flag)) {
-    return 'Target-independent IR';
   }
   if (flag.groupLabel) {
     return String(flag.groupLabel).replace(/^AARCH64$/, 'AArch64');
@@ -163,9 +223,7 @@ function buildArchitecture(flag) {
 
 function buildPipelineLabel(flag) {
   const haystack = [flag.flag, flag.help, flag.groupLabel].filter(Boolean).join(' ').toLowerCase();
-  if (String(flag.flag || '').toLowerCase().includes('frame-pointer')) return 'Backend / Code generation';
-  if (isVectorizeFlag(flag)) return 'Mid-end / LoopVectorize';
-  if (isUnrollFlag(flag)) return 'Mid-end / LoopUnroll';
+  if (isFramePointerFlag(flag)) return 'Backend / Code generation';
   if (flag.category === 'Warning') return 'Frontend';
   if (flag.category === 'Preprocessor') return 'Frontend';
   if (flag.category === 'Optimization' || /^-o/.test(String(flag.flag || '').toLowerCase())) return 'Optimization';
@@ -178,10 +236,6 @@ function buildImpact(flag) {
   const name = String(flag.flag || '').toLowerCase();
   if (/fcall-(saved|used)-/.test(name) || /-f(fixed|reserve)-/.test(name)) return 'Register allocation / ABI';
   if (name.includes('frame-pointer')) return 'Frame-pointer policy / stack layout';
-  if (name.includes('slp-vectorize') || name.includes('tree-slp-vectorize')) return 'SLP vectorization';
-  if (isVectorizeFlag(flag)) return 'Loop vectorization';
-  if (name.includes('reroll-loops')) return 'Loop reroll';
-  if (isUnrollFlag(flag)) return 'Loop unrolling';
   if (flag.category === 'Warning') return 'Diagnostics';
   if (flag.category === 'Preprocessor') return 'Preprocessing';
   if (flag.category === 'Linker') return 'Linking';
@@ -413,7 +467,7 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
             <div className={styles.articleBreadcrumbs}>
               <Link to="/tools/clang-flags/">Clang Flags</Link>
               <span>/</span>
-              <span>ABI reference</span>
+              <span>Flag reference</span>
             </div>
             <span className={styles.articleHeroEyebrow}>Compiler option · {architecture}</span>
           </div>
@@ -530,6 +584,13 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
                   </React.Fragment>
                 ))}
               </div>
+              {isFramePointerFlag(flag) ? (
+                <p className={styles.bodyCopy} style={{ marginTop: '0.85rem' }}>
+                  This flag sets <strong>frame-pointer policy</strong> for codegen. It does not insert sanitizer
+                  instrumentation or bind a sanitizer runtime. Backend <code>hasFP()</code> may still keep a frame
+                  pointer for VLAs, EH helpers, or ABI constraints, and unwind tables remain a separate knob.
+                </p>
+              ) : null}
             </ArticleSection>
 
             {groupArticleSections(children).map((section, index) => (
@@ -588,14 +649,21 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
                   <div className={styles.relatedGrid}>
                     {related.map((item) => {
                       const relatedDisplayFlag = getPublicFlag(item);
+                      const tools = joinList(buildToolLabels(item)) || 'clang';
                       return (
                       <Link key={item.flag} className={styles.relatedArticleCard} to={buildFlagArticlePath(relatedDisplayFlag)}>
                         <div className={styles.relatedArticleTop}>
                           <div className={styles.relatedArticleFlag}>{relatedDisplayFlag}</div>
-                          <Badge tone="info">{item.category}</Badge>
+                          <Badge tone="info" className={styles.relatedArticleBadge}>
+                            {shortenCategoryLabel(item.category)}
+                          </Badge>
                         </div>
-                        <div className={styles.relatedArticleSummary}>{item.help || item.documentation || 'No help text available.'}</div>
-                        <div className={styles.relatedArticleMeta}>{item.kind} · {joinList(item.visibility) || 'ClangOption'}</div>
+                        <div className={styles.relatedArticleSummary}>{relatedFlagSummary(item)}</div>
+                        <div className={styles.relatedArticleMeta}>
+                          <span>{item.kind || 'Flag'}</span>
+                          <span aria-hidden="true">·</span>
+                          <span>{tools}</span>
+                        </div>
                       </Link>
                       );
                     })}

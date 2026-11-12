@@ -194,25 +194,33 @@ Key driver-generated flags observed:
 | **LLVM IR Generation** | `clang::EmitBackendOutput` writes bitcode to the destination `.o` file instead of passing the module to the target machine code generator. |
 | **Linker Integration** | During link step, LTO plugin (`libLTO` or LLD internal LTO engine) invokes `llvm::lto::LTO::run()` to merge modules, run IR pass pipeline, and emit final object. |
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Link-time optimization / IR linking. Changes **when** and **where** optimization runs.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Emit LLVM bitcode instead of final machine code at compile step | Driver / CodeGen | Directly controlled | `.o` files contain bitcode (full/thin depending on mode) |
+| LTO/ThinLTO pipelines at link time | Linker + LLVMLTO | Directly controlled | Cross-TU optimization happens at link |
+| Regular per-TU O2/O3 pipeline | Compile-time Passes | Related mechanism | Still relevant, but whole-program opts move to LTO |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -O2 -flto -c w.c -o w.o
+llvm-readobj -file-headers w.o   # or file(1) / llvm-bcanalyzer for bitcode
+clang -O2 -flto w.c -o w -### 2>&1 | rg -i 'lto|lld'
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- Options.td LTO flags; `llvm/lib/LTO/`; linker plugin / lld LTO paths for your toolchain
+
+---
+
+:::note Present by
+`-flto` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3165). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

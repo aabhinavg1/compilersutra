@@ -243,25 +243,31 @@ flowchart TD
 | Sema | [`SemaBoundsSafety.cpp`](https://github.com/compilersutra/llvm-project/blob/debad8323724adb0682eb3d9cb0940b137b24e8a/clang/lib/Sema/SemaBoundsSafety.cpp) | Verified diagnostic promotion (~L157–176) |
 | Backend | LLVM IR pipeline | Consumes generated IR; bounds safety is configured in the **frontend/CC1** layer, not via a driver `-fbounds-safety` spelling |
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Frontend safety / instrumentation (Clang bounds-safety). Not a generic LLVM opt pass.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Bounds-safety semantic checks / codegen | Clang Frontend/CodeGen | Directly controlled | Enforces/checks pointer bounds attributes |
+| Runtime traps / checks | Codegen | Related mechanism | May insert checks — verify with IR/asm for your Clang version |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -fbounds-safety -S -emit-llvm w.c -o bs.ll
+# Inspect checks; feature availability depends on Clang version.
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- Options.td bounds-safety; Clang bounds-safety CodeGen (version-sensitive)
+
+---
+
+:::note Present by
+`-fbounds-safety` is present in Clang’s driver [`Options.td`](https://github.com/compilersutra/llvm-project/blob/debad8323724adb0682eb3d9cb0940b137b24e8a/clang/include/clang/Options/Options.td#L2070-L2076). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

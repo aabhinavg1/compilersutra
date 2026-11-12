@@ -128,25 +128,35 @@ flowchart LR
 ~~~
 
 The -fsanitize=address spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Instrumentation (frontend + IR + runtime). Not a classical optimization pass.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| ASan instrumentation passes / checks | LLVM instrumentation | Directly controlled | Inserts shadow checks and poison/redzone logic |
+| Frontend sanitizer args / ignores | Clang Driver/Frontend | Directly controlled | Enables ASan mode and related cc1 options |
+| ASan runtime library | Link | Directly controlled | Links `asan` runtime |
+| Frame pointer preference | Codegen interaction | Related mechanism | Stack traces often want `-fno-omit-frame-pointer` |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -O1 -fsanitize=address -S -emit-llvm w.c -o asan.ll
+rg 'asan|__asan' asan.ll | head
+clang -### -fsanitize=address -c w.c 2>&1 | rg asan
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- [Options.td sanitizer group](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L8988)
+- `llvm/lib/Transforms/Instrumentation/AddressSanitizer.cpp` (verify on tip)
+
+---
+
+:::note Present by
+`-fsanitize=address` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L8988). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

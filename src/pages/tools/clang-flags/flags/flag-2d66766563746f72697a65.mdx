@@ -1,45 +1,239 @@
 ---
 title: "-fvectorize"
 slug: "/tools/clang-flags/-fvectorize/"
-description: "Enable the loop vectorization passes"
+description: "Controls whether Clang enables the LLVM Loop Vectorizer pass during IR-level optimization pipelines."
+keywords: [-fvectorize, -fno-vectorize, loop vectorizer, clang, llvm, SIMD, vectorization, optimization]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import Callout from '@site/src/components/clang-flags/Callout';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fvectorize">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fvectorize - Clang Flags Explorer</title>
+  <meta name="description" content="Detailed evidence-based analysis of Clang's -fvectorize flag, LoopVectorize pass integration, pipeline policy, and machine code transformation." />
+</Head>
+
+<FlagArticleShell
+  flagPath="-fvectorize"
+  summary="Requests that Clang schedule the LLVM LoopVectorize pass during IR optimization."
+>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+## At a glance
+
+| Attribute | Classification / Value |
+| :--- | :--- |
+| **Category** | Code Generation / Optimization Policy |
+| **Pipeline Stage** | Driver → Clang CodeGenOptions → LLVM PassBuilder (`LoopVectorizePass`) |
+| **Default Setting** | Enabled by default at `-O2`, `-O3`, `-Os`, `-Oz`; disabled at `-O0`, `-O1` |
+| **Target Dependability** | Target-independent policy request; cost model and target vector extensions dictate transform |
+| **Negated Counterpart** | `-fno-vectorize` |
+| **Observability Risk** | Low (does not alter ABI, frame pointer layout, or debug symbols; affects loop structure) |
+
+---
 
 ## What this flag actually does
 
-Enable the loop vectorization passes
+The `-fvectorize` option instructs the Clang frontend to set `CodeGenOptions.VectorizeLoop = 1`. When Clang constructs the LLVM pass pipeline through PassBuilder, this flag translates into setting `PipelineTuningOptions::LoopVectorization = true`.
 
+When enabled, LLVM schedules the `LoopVectorizePass` into the main IR optimization pipeline (specifically within the loop optimization pipeline nested inside `buildFunctionSimplificationPipeline` or `buildModuleOptimizationPipeline`).
 
+```
+  clang -O2 -fvectorize
+    │
+    ▼
+  Driver Option (-fvectorize)
+    │
+    ▼
+  CompilerInvocation (CodeGenOptions.VectorizeLoop = 1)
+    │
+    ▼
+  Backend Pipeline Setup (PipelineTuningOptions.LoopVectorization = true)
+    │
+    ▼
+  LLVM PassBuilder (Schedules LoopVectorizePass)
+    │
+    ▼
+  LLVM IR (Loop unrolled & transformed into SIMD vector operations)
+```
 
-It can be negated with -fno-vectorize.
+### Key mechanics & limits
 
-## When to use it
+1. **Policy request, not a force flag**: Enabling `-fvectorize` permits the compiler to attempt loop vectorization; it does not guarantee that every loop will be vectorized. Legal constraints (aliasing, control flow, non-vectorizable operations) and TargetTransformInfo (TTI) cost models still govern whether vectorization occurs.
+2. **Optimization level dependency**: At `-O0` and `-O1`, loop vectorization is disabled by default. Explicitly passing `-fvectorize -O1` requests the driver to enable the loop vectorization pass even under `-O1`.
+3. **Difference from SLP vectorization**: Superword-Level Parallelism (SLP) vectorization is controlled independently by `-fslp-vectorize`. `-fvectorize` specifically target standard countable loops (`LoopVectorizePass`).
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+---
 
-## When not to use it
+## Minimal realistic example
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+Loop vectorization operates on reduction loops or independent vector arrays when pointer aliasing is ruled out (via `restrict` or static array bounds).
 
-## Usage example
+<SourceCode
+  language="c"
+  title="vector_add.c"
+  code={`void add_floats(float *restrict a, float *restrict b, float *restrict c, int count) {
+    for (int i = 0; i < count; ++i) {
+        c[i] = a[i] + b[i];
+    }
+}`}
+/>
+
+---
+
+## Before vs. after assembly
+
+Comparing output for x86_64 target with `-O2 -fno-vectorize` versus `-O2 -fvectorize` (with AVX2 target features enabled):
+
+<AsmDiff
+  beforeTitle="-O2 -fno-vectorize (Scalar loop iteration)"
+  beforeCode={`.LBB0_2:
+    movss   (%rdi,%rax,4), %xmm0
+    addss   (%rsi,%rax,4), %xmm0
+    movss   %xmm0, (%rdx,%rax,4)
+    incq    %rax
+    cmpq    %rcx, %rax
+    jl      .LBB0_2`}
+  afterTitle="-O2 -fvectorize (Vectorized packed iteration)"
+  afterCode={`.LBB0_4:
+    vmovups (%rdi,%rax,4), %ymm0
+    vaddps  (%rsi,%rax,4), %ymm0, %ymm0
+    vmovups %ymm0, (%rdx,%rax,4)
+    addq    $8, %rax
+    cmpq    %rbx, %rax
+    jl      .LBB0_4`}
+/>
+
+*Explanation*: With vectorization active, the compiler processes 8 single-precision floating point values simultaneously using 256-bit AVX registers (`%ymm0`) and vector instructions (`vmovups`, `vaddps`), incrementing the loop induction variable by 8 per iteration.
+
+---
+
+## Why use it / when not to use it
+
+### When to use
+
+* **Performance tuning at lower optimization levels**: Requesting `-O1 -fvectorize` when compile-time budget prevents full `-O2` or `-O3` pipelines but specific loops benefit from vectorization.
+* **Isolating vectorization passes**: Verifying if code size or performance regressions originate specifically from the loop vectorizer vs SLP vectorizer (`-fvectorize -fno-slp-vectorize`).
+
+### When not to use
+
+* **Code size constrained targets**: When compiling for small embedded microcontrollers without vector hardware, loop vectorization adds pre-header pointer checks, alignment runtime tests, and scalar cleanup loops that increase binary size.
+* **Strict deterministic execution latency**: Loop vectorization introduces runtime checks for pointer aliasing and trip counts, creating multi-path control flow inside functions.
+
+---
+
+## Performance impact
+
+Loop vectorization can deliver linear speedups proportional to vector register width (e.g., 2x to 8x throughput improvements on computational kernels). However, real-world performance impact varies based on loop trip counts, alignment, memory bandwidth, and target cost models.
+
+* **High benefit**: Continuous arithmetic over contiguous arrays without data dependencies (e.g., image processing, BLAS kernels, audio processing).
+* **Neutral / Overhead**: Loops with dynamic small iteration counts (e.g., average trip count < 4), where prologue/epilogue scalar loop overhead masks SIMD execution gains.
+
+---
+
+## Compatibility table
+
+| Layer | Policy / Behavior |
+| :--- | :--- |
+| **Driver Policy** | `-fvectorize` passes `-vectorize-loops` to cc1 or sets internal CodeGenOptions flag depending on Clang version. |
+| **Flang Support** | Accepted by Flang driver; toggles loop vectorization in Fortran IR optimization pipeline. |
+| **Negation** | Explicit `-fno-vectorize` overrides preceding `-fvectorize` options on the command line. |
+| **Target Codegen** | Backend emits target-specific SIMD instructions (AVX/NEON/SVE/RVV) only if target feature flags enable vector hardware. |
+
+---
+
+## Usage / verification commands
+
+### Verify driver flag translation
+```bash
+clang -O2 -fvectorize -### -c test.c 2>&1 | grep -E "vectorize"
+```
+
+### Inspect LLVM IR pass execution
+```bash
+clang -O2 -fvectorize -mllvm -debug-only=loop-vectorize -c test.c 2>&1
+```
+
+### Inspect generated IR loop metadata
+```bash
+clang -O2 -fvectorize -S -emit-llvm test.c -o - | grep -i "llvm.loop.vectorize"
+```
+
+---
+
+## Adjacent options
+
+* **`-fno-vectorize`**: Disables the loop vectorization pass.
+* **`-fslp-vectorize`**: Enables Superword-Level Parallelism vectorization (combining scalar operations inside basic blocks).
+* **`-ffast-math`**: Relaxes IEEE 754 floating-point constraints, allowing vectorization of floating-point reduction loops.
+* **`-fvectorize-loops`**: Legacy internal CC1 flag used to pass vectorization state to backend.
+
+---
+
+## How it works inside Clang
+
+1. **Driver Processing**: `clang/lib/Driver/ToolChains/Clang.cpp` inspects `-fvectorize` / `-fno-vectorize` and calculates `Args.hasFlag(options::OPT_fvectorize, options::OPT_fno-vectorize, Default)`.
+2. **CompilerInvocation**: Sets `CodeGenOpts.VectorizeLoop` in `clang/lib/Frontend/CompilerInvocation.cpp`.
+3. **Backend Pipeline Assembly**: `clang/lib/CodeGen/BackendUtil.cpp` configures LLVM's `PipelineTuningOptions PTO; PTO.LoopVectorization = CodeGenOpts.VectorizeLoop;`.
+4. **LLVM Pass Builder**: `llvm/lib/Passes/PassBuilder.cpp` includes `LoopVectorizePass` in optimization pipelines when `PTO.LoopVectorization` is set.
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classification: **A. LLVM IR optimization**
+
+| Mechanism Name | Pipeline Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| `LoopVectorizePass` | LLVM IR Pass | Directly controlled | Analyzes loop iterations, generates vector unrolling and SIMD IR instructions |
+| `SLPVectorizerPass` | LLVM IR Pass | Related mechanism | Vectorizes straight-line scalar code within basic blocks (controlled by `-fslp-vectorize`) |
+| `TargetTransformInfo` | Optimization Analysis | Indirectly affected | Supplies target vector widths and instruction costs to decide vectorization profitability |
+| `LoopAccessAnalysis` | Optimization Analysis | Indirectly affected | Evaluates memory dependencies and generates runtime aliasing checks |
+
+### How to verify / Practical verification workflow
+
+To verify whether `LoopVectorizePass` executes on a source file:
 
 ```bash
-clang++ -fvectorize -c main.cpp
+clang -O2 -fvectorize -fplugin-arg-opt-print-pipeline -S test.c -o /dev/null 2>&1 | grep -i "LoopVectorize"
 ```
+
+Alternatively, emit LLVM IR before and after optimization:
+
+```bash
+clang -O2 -fvectorize -S -emit-llvm -o vectorized.ll test.c
+clang -O2 -fno-vectorize -S -emit-llvm -o scalar.ll test.c
+diff -u scalar.ll vectorized.ll
+```
+
+### Source investigation
+
+* `clang/include/clang/Driver/Options.td`: Flag declaration for `fvectorize` and `fno_vectorize`.
+* `clang/lib/CodeGen/BackendUtil.cpp`: Mapping from Clang `CodeGenOptions` to LLVM `PipelineTuningOptions`.
+* `llvm/lib/Transforms/Vectorize/LoopVectorize.cpp`: Implementation of `LoopVectorizePass`.
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fno-vectorize`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  entries={[
+    { label: "Option Flag", value: "-fvectorize" },
+    { label: "Negation Flag", value: "-fno-vectorize" },
+    { label: "Category", value: "Code Generation / Optimization" },
+    { label: "Target Independent", value: "Yes (policy setting)" },
+    { label: "Primary Pass", value: "LoopVectorizePass (LLVM IR)" },
+    { label: "Defaults", value: "Enabled at -O2, -O3, -Os, -Oz" }
+  ]}
+/>
 
 </FlagArticleShell>

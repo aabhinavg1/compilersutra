@@ -20,19 +20,21 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
   <meta name="description" content="Detailed guide on Clang's -march= driver flag: target ISA selection, backend feature lowering, cross-architecture behavior, and assembly differences." />
 </Head>
 
-<div style={{ marginBottom: '1.5rem', padding: '0.75rem 1rem', background: 'var(--ifm-color-emphasis-100)', borderRadius: '6px' }}>
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>✉ Subscribe to Weekly Compiler Notes</a> — Deep dives into LLVM backend code generation, ABI mechanics, and optimization flags.
-</div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
 | Property | Value |
 | :--- | :--- |
-| **Architectures** | x86/x86-64, ARM, AArch64, RISC-V, SystemZ, WebAssembly, etc. |
+| **Architectures** | x86/x86-64, ARM, AArch64, RISC-V, SystemZ, WebAssembly, etc. — **target-sensitive** |
 | **Category** | Code Generation / Target Selection |
 | **Compiler Interface** | Clang Driver (Translates to `-target-cpu` / `-target-feature` for `cc1`) |
 | **Optimization Level** | Enables target-specific instructions, vector extensions, and autovectorization |
-| **Binary Risk** | High — Generating instructions unsupported by the execution host causes `SIGILL` |
+| **Risk** | Portability / target mismatch: opcodes beyond the execution CPU can trap (`SIGILL`) — not silent undefined behavior by itself |
+
+:::note Present by
+`-march=` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5037). Exact introduction commit / first release remain unresolved — do not invent an “introduced in” date.
+:::
 
 ---
 
@@ -70,8 +72,8 @@ Driver Translation (-cc1 invocation):
     ...
 ```
 
-:::caution Portability Risk
-Binaries compiled with aggressive `-march=` flags (such as `-march=native` or target architectures newer than the execution host) will crash with an Illegal Instruction signal (`SIGILL`) if an unsupported opcode path is hit.
+:::caution Portability / target mismatch
+Binaries built with a newer ISA than the execution CPU (including `-march=native` on a developer host that is richer than production) can trap with `SIGILL` when an unsupported opcode path runs. That is a **deployment / target mismatch**, not a silent correctness UB from the flag itself. `-march=native` is **host-specific** — never treat one machine’s feature set as universal.
 :::
 
 ---
@@ -95,7 +97,7 @@ When compiled for baseline x86-64 (`-march=x86-64`), the auto-vectorizer emits S
 
 ## Before vs. after assembly
 
-Comparing x86-64 baseline (`-march=x86-64`) against AVX2/FMA baseline (`-march=x86-64-v3`):
+Illustrative **x86_64** shape comparing baseline (`-march=x86-64`) against AVX2/FMA (`-march=x86-64-v3`). Exact instruction selection is **compiler-version and triple dependent** — verify with your `clang -S` before citing counts or latencies.
 
 <AsmDiff 
   before={`# -march=x86-64 -O2 (Baseline x86-64 / SSE2)
@@ -124,10 +126,8 @@ Comparing x86-64 baseline (`-march=x86-64`) against AVX2/FMA baseline (`-march=x
     jl      .LBB0_2`}
 />
 
-### Key Assembly Differences
-1. **Register Width**: The baseline uses 128-bit `%xmm` registers (4 floats per register). The `-march=x86-64-v3` target unlocks 256-bit `%ymm` registers (8 floats per register), doubling loop unrolling throughput.
-2. **Instruction Fusing**: Unlocks FMA3 instructions (`vfmadd213ps`), merging multiplication and addition into single-cycle pipeline executions with higher precision.
-3. **VEX Encoding**: Enforces three-operand VEX-encoded AVX instructions, removing non-destructive register copy operations.
+### Important difference
+On this x86-64 example, baseline keeps 128-bit `%xmm` SSE ops; `-march=x86-64-v3` can use 256-bit `%ymm` AVX2 plus FMA (`vfmadd213ps`). That changes **instruction availability and register width**, not a universal “2× faster” guarantee — measure on the real deployment CPU.
 
 ---
 
@@ -149,11 +149,11 @@ Comparing x86-64 baseline (`-march=x86-64`) against AVX2/FMA baseline (`-march=x
 
 ## Performance impact
 
-Target ISA selection via `-march=` is often the single most influential driver flag for numerical and vector performance:
+`-march=` changes **which instructions the backend may emit**. Wider SIMD or specialty opcodes can help vector-heavy code on matching hardware, but gains are **workload- and CPU-specific** — do not treat one host’s `-march=native` result as portable evidence.
 
-*   **Vectorization Scaling**: Moving from SSE4.2 (`-march=nehalem`) to AVX2 (`-march=haswell`) or AVX-512 (`-march=skylake-avx512`) increases SIMD register widths from 128 to 256 or 512 bits, unlocking proportional throughput improvements in SIMD-heavy loops.
-*   **Bit Manipulation & Cryptography**: Subtarget expansions like `+bmi2`, `+crypto`, or `+zbb` substitute multi-instruction logic sequences with single-cycle dedicated opcodes.
-*   **Pipeline Frequency Throttling**: On older x86 hardware (e.g., Haswell/Skylake), enabling heavy AVX-512 code via `-march=` can trigger core frequency downclocking (AVX offset). Profile workloads carefully on the specific hardware generation.
+*   **Vectorization capacity**: Newer ISA levels can expose wider registers (e.g. SSE → AVX2 → AVX-512 on x86). Whether that improves wall time depends on the loop, memory bandwidth, and the execution CPU.
+*   **Specialty ops**: Features like `+bmi2`, `+crypto`, or `+zbb` can replace multi-instruction sequences when the target and CPU both support them.
+*   **Frequency / thermal effects**: Some x86 generations downclock under heavy AVX-512; profile on the **deployment** microarchitecture, not only the build host.
 
 ---
 
@@ -199,25 +199,29 @@ clang -march=native -### -E - < /dev/null 2>&1 | grep -E "(-target-cpu|-target-f
 
 ---
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Backend / target CPU feature selection. Not an IR “optimization pass”, though it enables ISA-specific codegen and may unlock vectorization profitability.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Target CPU / feature flags | Driver → TargetMachine | Directly controlled | Sets `target-cpu` / `target-features` |
+| Instruction selection | Machine backend | Backend mechanism | May emit ISA-specific instructions |
+| Cost models for vectorize/unroll | LLVM IR | Indirectly affected | Passes still run; profitability changes with features |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -O2 -march=native -S -emit-llvm w.c -o n.ll
+rg 'target-cpu|target-features' n.ll
+clang -### -march=haswell -c w.c 2>&1 | rg target-cpu\|target-feature
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- Options.td `-march=`; target `MCTargetOptions` / Subtarget feature tables
+
+---
 
 ## Key facts
 

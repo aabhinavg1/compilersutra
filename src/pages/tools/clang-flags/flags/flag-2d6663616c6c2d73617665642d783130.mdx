@@ -170,7 +170,8 @@ In practice, for a value that survives only one or two calls, the flag is a wash
 The loop above was run 100 times over a 2,000,000-element array with `clang++ -O3` on an Apple M1 Pro (`arm64`), once with the default ABI and once with `-fcall-saved-x10`. Wall-clock time was measured with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) (`csperf run --backend cpu`, 3 warmup runs, 7 measured trials):
 
 <PerfReport
-  beforeTitle="Without flag"
+  withinNoise={true}
+beforeTitle="Without flag"
   afterTitle="With -fcall-saved-x10"
   without={[193.026, 193.65, 192.88, 192.481, 193.229, 193.279, 193.225]}
   with={[193.204, 194.244, 196.97, 195.863, 196.887, 196.761, 192.819]}
@@ -271,25 +272,35 @@ def fcall_saved_x10 : Flag<["-"], "fcall-saved-x10">,
 
 At driver time, `getAArch64TargetFeatures()` in `clang/lib/Driver/ToolChains/Arch/AArch64.cpp` translates the presence of the option into the subtarget feature string `+call-saved-x10`, which is passed to the backend. There it is parsed by `AArch64Subtarget`, which records the register in its `CustomCallSavedXRegs` bit vector. Finally, in `AArch64RegisterInfo::UpdateCustomCalleeSavedRegs()` and `UpdateCustomCallPreservedMask()`, `x10` is appended to both the callee-saved register list (so the prologue/epilogue spills it) and the call-preserved mask (so the register allocator and call lowering treat it as preserved).
 
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** ABI / calling convention (AArch64 register). **No direct LLVM IR optimization pass.**
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| Call-saved register assignment for `x10` | Clang driver / target options | Directly controlled | Treats `x10` as callee-saved for code generation |
+| Register allocation constraints | Machine backend | Backend mechanism | Allocator / prolog-epilog must preserve `x10` across calls as required |
+| Caller/callee contract | ABI | Related mechanism | Changes which side saves `x10`; mismatches across TUs are ABI bugs |
+| AArch64 instruction selection | Machine backend | Indirectly affected | May alter spill/reload patterns around `x10` |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang --target=aarch64-linux-gnu -O2 -fcall-saved-x10 -S example.c -o with.s
+clang --target=aarch64-linux-gnu -O2 -S example.c -o default.s
+# Compare callee-saved saves involving x10; IR opt pipelines are the wrong tool.
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- [Options.td](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5371)
+- AArch64 target register info / calling convention under `llvm/lib/Target/AArch64/` (verify symbols on tip)
+
+---
+
+:::note Present by
+`-fcall-saved-x10` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5371). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

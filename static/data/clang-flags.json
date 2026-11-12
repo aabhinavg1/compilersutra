@@ -54,14 +54,9 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
+        "-fcall-saved-x9",
         "-fcall-saved-x11",
-        "-fcall-saved-x12",
-        "-fcall-saved-x13",
-        "-fcall-saved-x14",
-        "-fcall-saved-x15",
-        "-fcall-saved-x18",
-        "-fcall-saved-x8",
-        "-fcall-saved-x9"
+        "-fcall-saved-x18"
       ],
       "searchText": "-fcall-saved-x10 flag aarch64 m_aarch64_features_group aarch64 make the x10 register call-saved (aarch64 only) targetspecific clangoption clang -fcall-saved-x11 -fcall-saved-x12 -fcall-saved-x13 -fcall-saved-x14 -fcall-saved-x15 -fcall-saved-x18 -fcall-saved-x8 -fcall-saved-x9 clang/include/clang/driver/options.td"
     },
@@ -31606,13 +31601,8 @@
       ],
       "relatedFlags": [
         "-fno-experimental-bounds-safety",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fsanitize=address",
+        "-fstack-protector-strong"
       ],
       "searchText": "-fexperimental-bounds-safety -fbounds-safety -fbounds-safety flag code generation f_group target-independent compilation options enable experimental bounds safety extension for c cc1option cc1 -fno-experimental-bounds-safety -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -37248,13 +37238,9 @@
       ],
       "relatedFlags": [
         "-fno-lto",
-        "-flto=auto",
-        "-flto=jobserver",
         "-flto=",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions"
+        "-flto-jobs=",
+        "-fuse-ld="
       ],
       "searchText": "-flto flto_eq flto= -flto= flag code generation f_group target-independent compilation options enable lto in 'full' mode clangoption cloption cc1option fc1option flangoption clang cl cc1 fc1 flang -fno-lto -flto=auto -flto=jobserver -flto= -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions clang/include/clang/driver/options.td"
     },
@@ -46775,14 +46761,7 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fexperimental-bounds-safety",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fexperimental-bounds-safety"
       ],
       "searchText": "-fno-experimental-bounds-safety -fno-bounds-safety -fno-bounds-safety flag code generation f_group target-independent compilation options disable experimental bounds safety extension for c cc1option cc1 -fexperimental-bounds-safety -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -47388,7 +47367,7 @@
         "-fno-fast-math"
       ],
       "name": "fno-fast-math",
-      "help": "",
+      "help": "Disable -ffast-math aggressive floating-point relaxations.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -52257,7 +52236,7 @@
         "-fno-omit-frame-pointer"
       ],
       "name": "fno-omit-frame-pointer",
-      "help": "Keep the frame pointer where permitted by the target and backend (useful for FP-based profilers and some sanitizer/debug stacks).",
+      "help": "Request keeping a frame pointer where permitted by the target/backend.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -52305,9 +52284,9 @@
       ],
       "relatedFlags": [
         "-fomit-frame-pointer",
+        "-mframe-pointer=",
         "-momit-leaf-frame-pointer",
-        "-mno-omit-leaf-frame-pointer",
-        "-mframe-pointer="
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-fno-omit-frame-pointer flag code generation f_group target-independent compilation options keep the frame pointer where permitted by the target and backend (useful for fp-based profilers and some sanitizer/debug stacks). clangoption flangoption clang flang -fomit-frame-pointer -momit-leaf-frame-pointer -mno-omit-leaf-frame-pointer -mframe-pointer="
     },
@@ -52318,7 +52297,7 @@
         "-fno-openmp"
       ],
       "name": "fno-openmp",
-      "help": "",
+      "help": "Disable OpenMP pragma parsing and parallel codegen.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -53488,7 +53467,7 @@
         "-fno-pic"
       ],
       "name": "fno-pic",
-      "help": "",
+      "help": "Disable -fpic position-independent code generation.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -53555,7 +53534,7 @@
         "-fno-PIC"
       ],
       "name": "fno-PIC",
-      "help": "",
+      "help": "Disable -fPIC position-independent code generation.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -53622,7 +53601,7 @@
         "-fno-pie"
       ],
       "name": "fno-pie",
-      "help": "",
+      "help": "Disable -fpie position-independent executable codegen.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -53689,7 +53668,7 @@
         "-fno-PIE"
       ],
       "name": "fno-PIE",
-      "help": "",
+      "help": "Disable -fPIE position-independent executable codegen.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -56346,13 +56325,8 @@
       ],
       "relatedFlags": [
         "-frtti",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fno-exceptions",
+        "-fexceptions"
       ],
       "searchText": "-fno-rtti flag code generation f_group target-independent compilation options disable generation of rtti information clangoption cc1option clang cc1 -frtti -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -58134,14 +58108,7 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fstrict-aliasing",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fstrict-aliasing"
       ],
       "searchText": "-fno-strict-aliasing flag code generation f_group target-independent compilation options disable optimizations based on strict aliasing rules clangoption cloption dxcoption clang cl dxc -fstrict-aliasing -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -58349,7 +58316,7 @@
         "-fno-strict-overflow"
       ],
       "name": "fno-strict-overflow",
-      "help": "",
+      "help": "Do not assume signed overflow is undefined for optimization purposes.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -62997,13 +62964,7 @@
       ],
       "relatedFlags": [
         "-fno-openmp",
-        "-fopenmp=",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders"
+        "-fopenmp-simd"
       ],
       "searchText": "-fopenmp flag code generation f_group target-independent compilation options parse openmp pragmas and generate parallel code. noargumentunused clangoption cc1option flangoption fc1option clang cc1 flang fc1 -fno-openmp -fopenmp= -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders clang/include/clang/driver/options.td"
     },
@@ -65848,7 +65809,7 @@
         "-fpic"
       ],
       "name": "fpic",
-      "help": "",
+      "help": "Generate position-independent code suitable for use in a shared library (small GOT / small model where applicable).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -65897,14 +65858,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-pic",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fPIC",
+        "-fpie",
+        "-fPIE",
+        "-fno-pic"
       ],
       "searchText": "-fpic flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fno-pic -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -65915,7 +65872,7 @@
         "-fPIC"
       ],
       "name": "fPIC",
-      "help": "",
+      "help": "Generate position-independent code for a shared library using a larger GOT / large model where applicable.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -65964,14 +65921,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-PIC",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fpic",
+        "-fpie",
+        "-fPIE",
+        "-fno-PIC"
       ],
       "searchText": "-fpic flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fno-pic -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -65982,7 +65935,7 @@
         "-fpie"
       ],
       "name": "fpie",
-      "help": "",
+      "help": "Generate position-independent code suitable for executables (PIE).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -66031,14 +65984,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-pie",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fPIE",
+        "-fpic",
+        "-fPIC",
+        "-fno-pie"
       ],
       "searchText": "-fpie flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fno-pie -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -66049,7 +65998,7 @@
         "-fPIE"
       ],
       "name": "fPIE",
-      "help": "",
+      "help": "Generate position-independent code for executables using a larger model where applicable.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -66098,14 +66047,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-PIE",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fpie",
+        "-fpic",
+        "-fPIC",
+        "-fno-PIE"
       ],
       "searchText": "-fpie flag code generation f_group target-independent compilation options clangoption flangoption clang flang -fno-pie -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -70257,7 +70202,7 @@
         "-frtti"
       ],
       "name": "frtti",
-      "help": "",
+      "help": "Enable generation of C++ RTTI information (default for C++).",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -72302,14 +72247,9 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-stack-protector",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fstack-protector-strong",
+        "-fstack-protector-all",
+        "-fno-stack-protector"
       ],
       "searchText": "-fstack-protector flag code generation f_group target-independent compilation options enable stack protectors for some functions vulnerable to stack smashing. this uses a loose heuristic which considers functions vulnerable if they contain a char (or 8bit integer) array or constant sized calls to alloca , which are of greater size than ssp-buffer-size (default: 8 bytes). all variable sized calls to alloca are considered vulnerable. a function with a stack protector has a guard value added to the stack frame that is checked on function exit. the guard value must be positioned in the stack frame such that a buffer overflow from a vulnerable variable will overwrite the guard value before overwriting the function's return address. the reference stack guard value is stored in a global variable. clangoption clang -fno-stack-protector -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -72367,14 +72307,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported",
-        "-falternative-parameter-statement"
+        "-fstack-protector",
+        "-fstack-protector-strong",
+        "-fno-stack-protector",
+        "-fstack-clash-protection"
       ],
       "searchText": "-fstack-protector-all flag code generation f_group target-independent compilation options enable stack protectors for all functions clangoption clang -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported -falternative-parameter-statement clang/include/clang/driver/options.td"
     },
@@ -72432,14 +72368,10 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported",
-        "-falternative-parameter-statement"
+        "-fstack-protector",
+        "-fstack-protector-all",
+        "-fno-stack-protector",
+        "-fstack-clash-protection"
       ],
       "searchText": "-fstack-protector-strong flag code generation f_group target-independent compilation options enable stack protectors for some functions vulnerable to stack smashing. compared to -fstack-protector, this uses a stronger heuristic that includes functions containing arrays of any size (and any type), as well as any calls to alloca or the taking of an address from a local variable clangoption clang -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported -falternative-parameter-statement clang/include/clang/driver/options.td"
     },
@@ -72702,14 +72634,7 @@
         "When the option does not affect your current build phase"
       ],
       "relatedFlags": [
-        "-fno-strict-aliasing",
-        "-faarch64-jump-table-hardening",
-        "-faccess-control",
-        "-faddrsig",
-        "-falign-functions",
-        "-faligned-allocation",
-        "-fallow-editor-placeholders",
-        "-fallow-unsupported"
+        "-fno-strict-aliasing"
       ],
       "searchText": "-fstrict-aliasing flag code generation f_group target-independent compilation options enable optimizations based on strict aliasing rules clangoption cloption dxcoption clang cl dxc -fno-strict-aliasing -faarch64-jump-table-hardening -faccess-control -faddrsig -falign-functions -faligned-allocation -fallow-editor-placeholders -fallow-unsupported clang/include/clang/driver/options.td"
     },
@@ -81987,14 +81912,8 @@
         "When the flag belongs in a later build phase"
       ],
       "relatedFlags": [
-        "-Xclang=",
-        "-Xclangas=",
-        "--param",
-        "-ansi",
-        "-print-supported-cpus",
-        "-Xassembler",
-        "-Xclang",
-        "-Xclangas"
+        "-x",
+        "-ansi"
       ],
       "searchText": "-std= joined compilation compileonly_group compilation options language standard to compile for flags controlling the behavior of clang during compilation. these flags have no effect during actions that do not perform compilation. clangoption cc1option flangoption fc1option clang cc1 flang fc1 -xclang= -xclangas= --param -ansi -print-supported-cpus -xassembler -xclang -xclangas clang/include/clang/driver/options.td"
     },
@@ -85920,14 +85839,10 @@
         "When size or startup time matters more than observability"
       ],
       "relatedFlags": [
-        "-gdwarf",
-        "-gdwarf-2",
-        "-gdwarf-3",
+        "-g0",
+        "-gline-tables-only",
         "-gdwarf-4",
-        "-gdwarf-5",
-        "-gdwarf-6",
-        "-gdwarf32",
-        "-gdwarf64"
+        "-gdwarf-5"
       ],
       "searchText": "-g flag debugging g_group kind and level of debug information generate source-level debug information clangoption cloption dxcoption flangoption clang cl dxc flang -gdwarf -gdwarf-2 -gdwarf-3 -gdwarf-4 -gdwarf-5 -gdwarf-6 -gdwarf32 -gdwarf64 clang/include/clang/driver/options.td"
     },
@@ -85938,7 +85853,7 @@
         "-g0"
       ],
       "name": "g0",
-      "help": "",
+      "help": "Disable generation of debug information.",
       "kind": "Flag",
       "group": "gN_Group",
       "groupLabel": "Debug level",
@@ -104736,7 +104651,7 @@
         "-pie"
       ],
       "name": "pie",
-      "help": "",
+      "help": "Produce a position-independent executable (linker/driver).",
       "kind": "Flag",
       "group": "Link_Group",
       "groupLabel": "Linker options",
@@ -105281,7 +105196,7 @@
         "--shared"
       ],
       "name": "shared",
-      "help": "",
+      "help": "Create a shared library (linker/driver mode).",
       "kind": "Flag",
       "group": "Link_Group",
       "groupLabel": "Linker options",
@@ -120880,7 +120795,7 @@
         "-O"
       ],
       "name": "O",
-      "help": "",
+      "help": "Set the optimization level (joined forms -O0/-O1/-O2/-O3/-Os/-Oz/-Ofast are common).",
       "kind": "Joined",
       "group": "O_Group",
       "groupLabel": "Optimization level",
@@ -120945,14 +120860,14 @@
         "When compile time is more important than runtime speed"
       ],
       "relatedFlags": [
-        "-Ofast",
         "-O0",
-        "-O4",
-        "-falign-jumps=",
-        "-falign-labels=",
-        "-finline-limit=",
-        "-Rpass-analysis=",
-        "-Rpass-missed="
+        "-O1",
+        "-O2",
+        "-O3",
+        "-Os",
+        "-Oz",
+        "-Ofast",
+        "-Og"
       ],
       "searchText": "-o -o0 -o1 -o2 -o3 -o4 -ofast -og -os -oz -ot -ox joined optimization o_group optimization level flags controlling how much optimization should be performed. clangoption cc1option fc1option flangoption clang cc1 fc1 flang -ofast -o0 -o4 -falign-jumps= -falign-labels= -finline-limit= -rpass-analysis= -rpass-missed= clang/include/clang/driver/options.td"
     },
@@ -120963,7 +120878,7 @@
         "-O0"
       ],
       "name": "O0",
-      "help": "",
+      "help": "Disable most optimizations; preserve straightforward codegen for debugging.",
       "kind": "Flag",
       "group": "O_Group",
       "groupLabel": "Optimization level",
@@ -121018,14 +120933,13 @@
         "When compile time is more important than runtime speed"
       ],
       "relatedFlags": [
-        "-O4",
-        "-O",
+        "-O1",
+        "-O2",
+        "-O3",
+        "-Os",
+        "-Oz",
         "-Ofast",
-        "-disable-lifetime-markers",
-        "-falign-jumps",
-        "-falign-labels",
-        "-falign-loops",
-        "-fbranch-count-reg"
+        "-Og"
       ],
       "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
     },
@@ -121162,14 +121076,12 @@
         "When compile time is more important than runtime speed"
       ],
       "relatedFlags": [
-        "-O",
+        "-O3",
+        "-ffast-math",
+        "-O2",
+        "-Os",
         "-O0",
-        "-O4",
-        "-falign-jumps=",
-        "-falign-labels=",
-        "-finline-limit=",
-        "-Rpass-analysis=",
-        "-Rpass-missed="
+        "-fno-fast-math"
       ],
       "searchText": "-ofast joined optimization o_group optimization level deprecated; use '-o3 -ffast-math' for the same behavior, or '-o3' to enable only conforming optimizations flags controlling how much optimization should be performed. clangoption cc1option flangoption fc1option clang cc1 flang fc1 -o -o0 -o4 -falign-jumps= -falign-labels= -finline-limit= -rpass-analysis= -rpass-missed= clang/include/clang/driver/options.td"
     },
@@ -151420,7 +151332,7 @@
         "-mframe-pointer="
       ],
       "name": "mframe-pointer=",
-      "help": "Specify which frame pointers to retain.",
+      "help": "Select FP policy: all, non-leaf, reserved, or none.",
       "kind": "Joined",
       "group": null,
       "groupLabel": null,
@@ -151472,14 +151384,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--assert=",
-        "--autocomplete=",
-        "--bootclasspath=",
-        "--classpath=",
-        "--CLASSPATH=",
-        "--config-system-dir=",
-        "--config-user-dir=",
-        "--config="
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-momit-leaf-frame-pointer",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-mframe-pointer= joined other specify which frame pointers to retain. cc1option fc1option cc1 fc1 all non-leaf reserved none all nonleaf reserved none --assert= --autocomplete= --bootclasspath= --classpath= --classpath= --config-system-dir= --config-user-dir= --config= clang/include/clang/driver/options.td"
     },
@@ -159653,7 +159561,7 @@
       "kind": "Flag",
       "group": null,
       "groupLabel": null,
-      "category": "Other",
+      "category": "Code Generation",
       "alias": null,
       "aliasTarget": null,
       "aliasTargetFlag": null,
@@ -159695,14 +159603,7 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--analyze",
-        "--analyzer-no-default-checks",
-        "--assemble",
-        "--comments",
-        "--compile",
-        "--constant-cfstrings",
-        "--crel",
-        "--dependencies"
+        "-mthread-model"
       ],
       "searchText": "-pthread flag other support posix threads in generated code clangoption cc1option flangoption fc1option clang cc1 flang fc1 --analyze --analyzer-no-default-checks --assemble --comments --compile --constant-cfstrings --crel --dependencies clang/include/clang/driver/options.td"
     },
@@ -166603,11 +166504,11 @@
         "--Wextra"
       ],
       "name": "Wextra",
-      "help": "",
+      "help": "Enable additional warning groups beyond -Wall.",
       "kind": "Flag",
       "group": "flang_ignored_w_Group",
       "groupLabel": "<flang ignored W group>",
-      "category": "Other",
+      "category": "Warning",
       "alias": null,
       "aliasTarget": null,
       "aliasTargetFlag": null,
@@ -166643,14 +166544,7 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "-Waliasing",
-        "-Wampersand",
-        "-Warray-bounds",
-        "-Wc-binding-type",
-        "-Wcharacter-truncation",
-        "-Wconversion",
-        "-Wdo-subscript",
-        "-Wfrontend-loop-interchange"
+        "-Wall"
       ],
       "searchText": "-wextra flag other flang_ignored_w_group <flang ignored w group> flangoption flang -waliasing -wampersand -warray-bounds -wc-binding-type -wcharacter-truncation -wconversion -wdo-subscript -wfrontend-loop-interchange clang/include/clang/driver/options.td"
     },
@@ -175612,13 +175506,8 @@
       ],
       "relatedFlags": [
         "-U",
-        "--embed-dir=",
-        "-C",
-        "-CC",
-        "-fno-reformat",
-        "-fpreprocess-include-lines",
-        "-H",
-        "-P"
+        "-include",
+        "-E"
       ],
       "searchText": "-d joinedorseparate preprocessor preprocessor_group preprocessor options define <macro> to <value> (or 1 if <value> omitted) flags controlling the behavior of the clang preprocessor. clangoption cc1option flangoption fc1option dxcoption clang cc1 flang fc1 dxc -u --embed-dir= -c -cc -fno-reformat -fpreprocess-include-lines -h -p clang/include/clang/driver/options.td"
     },
@@ -177015,14 +176904,10 @@
         "When you do not want preprocessing behavior changed"
       ],
       "relatedFlags": [
-        "-I-",
-        "-cxx-isystem",
-        "-D",
-        "-F",
+        "-isystem",
+        "-iquote",
         "-idirafter",
-        "-imacros",
-        "-include",
-        "-iquote"
+        "-F"
       ],
       "searchText": "-i joinedorseparate preprocessor i_group <i group> add directory to the end of the list of include search paths add directory to include search path. for c++ inputs, if there are multiple -i options, these directories are searched in the order they are given before the standard system directories are searched. if the same directory is in the system include search paths, for example if also specified with -isystem, the -i option will be ignored clangoption cc1option cc1asoption flangoption fc1option clang cc1 cc1as flang fc1 -i- -cxx-isystem -d -f -idirafter -imacros -include -iquote clang/include/clang/driver/options.td"
     },
@@ -182520,7 +182405,7 @@
         "-fomit-frame-pointer"
       ],
       "name": "fomit-frame-pointer",
-      "help": "Omit the frame pointer from functions that do not need it. Some stack unwinding cases, such as profilers and sanitizers, may prefer -fno-omit-frame-pointer. Defaults are target- and optimization-level dependent.",
+      "help": "Request omission of the frame pointer where permitted by the target/backend.",
       "kind": "Flag",
       "group": "f_Group",
       "groupLabel": "Target-independent compilation options",
@@ -182560,18 +182445,19 @@
       "exampleClang": "clang++ -O2 -fomit-frame-pointer main.cpp -o app",
       "exampleGCC": null,
       "whenToUse": [
-        "Production builds where an extra GPR / smaller prologues matter and tooling does not require FP stacks",
-        "Comparing keep vs omit prologue asm on your triple"
+        "Linux/ELF production builds that already ship reliable DWARF/.eh_frame unwind and you have measured a benefit",
+        "Register-pressure-sensitive code on a workload that actually stresses the freed frame-pointer register"
       ],
       "whenNotToUse": [
-        "FP-based sampling profilers (perf --call-graph fp)",
-        "Sanitizer/debug workflows that prefer FP-based stacks"
+        "FP-based sampling profilers (for example perf --call-graph fp)",
+        "Debugging or crash stacks that you have measured as clearer with a dedicated frame pointer",
+        "Platforms or SDK defaults that expect frame pointers (many Darwin configurations)"
       ],
       "relatedFlags": [
         "-fno-omit-frame-pointer",
+        "-mframe-pointer=",
         "-momit-leaf-frame-pointer",
-        "-mno-omit-leaf-frame-pointer",
-        "-mframe-pointer="
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-fomit-frame-pointer flag code generation f_group target-independent compilation options omit the frame pointer from functions that do not need it. some stack unwinding cases, such as profilers and sanitizers, may prefer -fno-omit-frame-pointer. defaults are target- and optimization-level dependent. clangoption flangoption clang flang -fno-omit-frame-pointer -momit-leaf-frame-pointer -mno-omit-leaf-frame-pointer -mframe-pointer="
     },
@@ -187509,14 +187395,11 @@
         "When runtime overhead is unacceptable"
       ],
       "relatedFlags": [
-        "-fno-sanitize-address-vcasan-lib",
-        "-fsanitize-address-use-after-return",
-        "-fp:contract",
-        "-fp:except",
-        "-fp:except-",
-        "-fp:fast",
-        "-fp:precise",
-        "-fp:strict"
+        "-fsanitize=",
+        "-fno-sanitize=",
+        "-fsanitize-recover=",
+        "-fsanitize-address-use-after-scope",
+        "-fno-omit-frame-pointer"
       ],
       "searchText": "-fsanitize=address fsanitize_eq fsanitize= -fsanitize= flag sanitizer cl_group <clang-cl options> enable addresssanitizer noxarchoption cloption cl -fno-sanitize-address-vcasan-lib -fsanitize-address-use-after-return -fp:contract -fp:except -fp:except- -fp:fast -fp:precise -fp:strict clang/include/clang/driver/options.td"
     },
@@ -193792,14 +193675,8 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "-ffuchsia-api-level=",
-        "-G=",
-        "-inline-asm=",
-        "-mabi=",
-        "-malign-branch-boundary=",
-        "-marm64x",
-        "-masm=",
-        "-mbranch-protection="
+        "-mcpu=",
+        "-mtune="
       ],
       "searchText": "-march= joined target-specific code generation m_group target-dependent compilation options for a list of available architectures for the target use '-mcpu=help' targetspecific clangoption cloption dxcoption flangoption clang cl dxc flang -ffuchsia-api-level= -g= -inline-asm= -mabi= -malign-branch-boundary= -marm64x -masm= -mbranch-protection= clang/include/clang/driver/options.td"
     },
@@ -194596,14 +194473,8 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "-ffuchsia-api-level=",
-        "-G=",
-        "-inline-asm=",
-        "-mabi=",
-        "-malign-branch-boundary=",
         "-march=",
-        "-marm64x",
-        "-masm="
+        "-mtune="
       ],
       "searchText": "-mcpu= joined target-specific code generation m_group target-dependent compilation options for a list of available cpus for the target use '-mcpu=help' targetspecific clangoption flangoption clang flang -ffuchsia-api-level= -g= -inline-asm= -mabi= -malign-branch-boundary= -march= -marm64x -masm= clang/include/clang/driver/options.td"
     },
@@ -198352,14 +198223,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--no-wasm-opt",
-        "--wasm-opt",
-        "-ffixed-x1",
-        "-ffixed-x10",
-        "-ffixed-x11",
-        "-ffixed-x12",
-        "-ffixed-x13",
-        "-ffixed-x14"
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-mframe-pointer=",
+        "-momit-leaf-frame-pointer"
       ],
       "searchText": "-mno-omit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options prefer keeping frame-pointer setup in leaf functions. clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14"
     },
@@ -200044,7 +199911,7 @@
         "-momit-leaf-frame-pointer"
       ],
       "name": "momit-leaf-frame-pointer",
-      "help": "Omit frame pointer setup for leaf functions",
+      "help": "Prefer omitting frame-pointer setup in leaf functions.",
       "kind": "Flag",
       "group": "m_Group",
       "groupLabel": "Target-dependent compilation options",
@@ -200084,14 +199951,10 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "--no-wasm-opt",
-        "--wasm-opt",
-        "-ffixed-x1",
-        "-ffixed-x10",
-        "-ffixed-x11",
-        "-ffixed-x12",
-        "-ffixed-x13",
-        "-ffixed-x14"
+        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
+        "-mframe-pointer=",
+        "-mno-omit-leaf-frame-pointer"
       ],
       "searchText": "-momit-leaf-frame-pointer flag target-specific code generation m_group target-dependent compilation options omit frame pointer setup for leaf functions clangoption clang --no-wasm-opt --wasm-opt -ffixed-x1 -ffixed-x10 -ffixed-x11 -ffixed-x12 -ffixed-x13 -ffixed-x14 clang/include/clang/driver/options.td"
     },
@@ -203114,14 +202977,8 @@
       "whenToUse": [],
       "whenNotToUse": [],
       "relatedFlags": [
-        "-ffuchsia-api-level=",
-        "-G=",
-        "-inline-asm=",
-        "-mabi=",
-        "-malign-branch-boundary=",
         "-march=",
-        "-marm64x",
-        "-masm="
+        "-mcpu="
       ],
       "searchText": "-mtune= joined target-specific code generation m_group target-dependent compilation options only supported on aarch64, powerpc, risc-v, sparc, systemz, and x86 clangoption flangoption clang flang -ffuchsia-api-level= -g= -inline-asm= -mabi= -malign-branch-boundary= -march= -marm64x -masm= clang/include/clang/driver/options.td"
     },
@@ -206186,7 +206043,7 @@
         "-Wall"
       ],
       "name": "Wall",
-      "help": "",
+      "help": "Enable a broad set of useful Clang warning groups (not literally every warning).",
       "kind": "Flag",
       "group": "W_Group",
       "groupLabel": "<W group>",
@@ -206239,14 +206096,7 @@
         "When you are not ready to fix all warnings"
       ],
       "relatedFlags": [
-        "-WCL4",
-        "-Wdeprecated",
-        "-Winvalid-constexpr",
-        "-Winvalid-gnu-asm-cast",
-        "-Wno-deprecated",
-        "-Wno-invalid-constexpr",
-        "-Wno-system-headers",
-        "-Wno-write-strings"
+        "-Wextra"
       ],
       "searchText": "-wall flag warning w_group <w group> helphidden clangoption cc1option flangoption clang cc1 flang -wcl4 -wdeprecated -winvalid-constexpr -winvalid-gnu-asm-cast -wno-deprecated -wno-invalid-constexpr -wno-system-headers -wno-write-strings clang/include/clang/driver/options.td"
     },
@@ -222379,6 +222229,414 @@
         "-mamx-int8"
       ],
       "searchText": "-mxsaves flag x86 m_x86_features_group x86 targetspecific clangoption clang -madx -maes -mamx-avx512 -mamx-bf16 -mamx-complex -mamx-fp16 -mamx-fp8 -mamx-int8 clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_O1",
+      "flag": "-O1",
+      "spellings": [
+        "-O1"
+      ],
+      "name": "O1",
+      "help": "Optimize; enables a basic optimization pipeline (less aggressive than -O2/-O3).",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -O1 main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-O2",
+        "-O3",
+        "-Os",
+        "-Oz",
+        "-Ofast",
+        "-Og"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_O2",
+      "flag": "-O2",
+      "spellings": [
+        "-O2"
+      ],
+      "name": "O2",
+      "help": "Optimize more; common release default balancing compile time and runtime performance.",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -O2 main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-O1",
+        "-O3",
+        "-Os",
+        "-Oz",
+        "-Ofast",
+        "-Og"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_O3",
+      "flag": "-O3",
+      "spellings": [
+        "-O3"
+      ],
+      "name": "O3",
+      "help": "Optimize further; may increase code size via more aggressive inlining/vectorization.",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -O3 main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-O1",
+        "-O2",
+        "-Os",
+        "-Oz",
+        "-Ofast",
+        "-Og"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_Os",
+      "flag": "-Os",
+      "spellings": [
+        "-Os"
+      ],
+      "name": "Os",
+      "help": "Optimize for code size while still applying profitable speed optimizations.",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -Os main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-O2",
+        "-O3",
+        "-Oz",
+        "-Ofast",
+        "-Og"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_Oz",
+      "flag": "-Oz",
+      "spellings": [
+        "-Oz"
+      ],
+      "name": "Oz",
+      "help": "Optimize aggressively for minimum code size (more size-focused than -Os).",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -Oz main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-Os",
+        "-O2",
+        "-O3",
+        "-Ofast"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
+    },
+    {
+      "id": "opt_Og",
+      "flag": "-Og",
+      "spellings": [
+        "-Og"
+      ],
+      "name": "Og",
+      "help": "Optimize with experience aimed at debuggability (behavior is implementation-defined).",
+      "kind": "Flag",
+      "group": "O_Group",
+      "groupLabel": "Optimization level",
+      "category": "Optimization",
+      "alias": null,
+      "aliasTarget": null,
+      "aliasTargetFlag": null,
+      "metaVarName": null,
+      "visibility": [
+        "ClangOption",
+        "CC1Option",
+        "FC1Option",
+        "FlangOption"
+      ],
+      "supportedCompilers": [
+        "Clang",
+        "CC1",
+        "FC1",
+        "Flang"
+      ],
+      "flags": [
+        "HelpHidden"
+      ],
+      "values": [],
+      "enumValues": [],
+      "aliasArgs": [],
+      "searchAliases": [],
+      "publicFlag": null,
+      "takesArgument": false,
+      "cc1": true,
+      "driver": true,
+      "driverOnly": false,
+      "clangOnly": false,
+      "hidden": true,
+      "deprecated": false,
+      "experimental": false,
+      "negatedOption": null,
+      "documentation": "",
+      "source": "clang/include/clang/Driver/Options.td",
+      "sourcePath": "clang/include/clang/Driver/Options.td",
+      "sourceLine": 831,
+      "sourceUrl": "https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831",
+      "exampleClang": "clang -Og main.c -o app",
+      "exampleGCC": null,
+      "whenToUse": [
+        "Selecting an optimization pipeline"
+      ],
+      "whenNotToUse": [
+        "When you need a different -O level for the same TU"
+      ],
+      "relatedFlags": [
+        "-O0",
+        "-O1",
+        "-O2",
+        "-g"
+      ],
+      "searchText": "-o0 flag optimization o_group optimization level flags controlling how much optimization should be performed. helphidden clangoption cc1option fc1option flangoption clang cc1 fc1 flang -o4 -o -ofast -disable-lifetime-markers -falign-jumps -falign-labels -falign-loops -fbranch-count-reg clang/include/clang/driver/options.td"
     }
   ],
   "groups": [

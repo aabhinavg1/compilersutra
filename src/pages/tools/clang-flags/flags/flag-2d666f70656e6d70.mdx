@@ -37,6 +37,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ---
 
+:::note Present by
+`-fopenmp` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L3753). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
 The `-fopenmp` flag instructs Clang to recognize, parse, and semantically analyze `#pragma omp` directives in C/C++ source code. Without this flag, Clang treats unrecognized OpenMP directives as unknown pragmas and ignores them (emitting `-Wunknown-pragmas` warnings by default).
@@ -172,6 +176,30 @@ clang++ -O3 -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda main.cpp -o main_gpu
 | **Frontend (Parser)** | ParseOMP.cpp intercepts `#pragma omp` and constructs specialized AST Nodes (`OMPExecutableDirective`). |
 | **Sema** | SemaOpenMP.cpp verifies clause validity, variable capture traits (`shared`, `private`), and scope boundaries. |
 | **CodeGen** | `CGOpenMPRuntime.cpp` outlines regional AST blocks into `.omp_outlined.` functions and inserts runtime API calls (`__kmpc_fork_call`). |
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Frontend + runtime parallelization. Opens OpenMP lowering; not a single PassBuilder opt pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| OpenMP semantic analysis / codegen | Clang Frontend/CodeGen | Directly controlled | Lowers `#pragma omp` to runtime calls / outlined functions |
+| OpenMP IR transforms / passes (when enabled) | LLVM | Related / conditionally controlled | Depends on version and offloading configuration — verify before naming |
+| `libomp` link | Link | Directly controlled | Needs OpenMP runtime |
+
+### How to verify
+
+```bash
+clang -O2 -fopenmp -S -emit-llvm omp.c -o omp.ll
+rg 'omp_|__kmpc' omp.ll | head
+clang -### -fopenmp -c omp.c 2>&1 | rg omp
+```
+
+### Source investigation
+
+- Options.td OpenMP flags; `clang/lib/CodeGen/CGOpenMP*.cpp`; OpenMP IR passes only if present in your revision
 
 ---
 

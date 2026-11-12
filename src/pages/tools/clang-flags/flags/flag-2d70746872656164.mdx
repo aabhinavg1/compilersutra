@@ -73,7 +73,8 @@ This option does not repair invalid source, undefined behavior, data races, or a
 The following measurements were produced with [CompilerSutraPerf](/docs/project/compilersutra-perf/) ([PyPI](https://pypi.org/project/compilersutra-perf/)) using `csperf` 0.3.0, Ubuntu clang 18.1.3, x86_64-pc-linux-gnu, CPU affinity 0, one warmup run, five measured trials, profiling disabled:
 
 <PerfReport
-  beforeTitle="Clang -O2 -pthread (1 thread)"
+  withinNoise={true}
+beforeTitle="Clang -O2 -pthread (1 thread)"
   afterTitle="Clang -O2 -pthread (4 threads)"
   without={[5.378, 5.168, 5.144, 5.172, 5.261]}
   with={[5.127, 5.125, 5.115, 5.119, 5.136]}
@@ -120,25 +121,31 @@ flowchart LR
 ~~~
 
 The -pthread spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** Diagnostic / frontend (or driver glue). **No direct LLVM IR optimization pass.**
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| driver compile+link thread options | Frontend / Driver | Directly controlled | Changes inputs, language mode, diagnostics, or link libs — not PassBuilder membership |
+| Downstream optimization pipeline | LLVM IR | Related mechanism | May see different IR only if the flag changes which code is compiled |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -### -pthread -c w.c 2>&1 | head
+# Do not map this flag to InstCombine/GVN/etc. without evidence it gates those passes.
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- Options.td entry for this flag in the Clang Flags Explorer inventory
+
+---
+
+:::note Present by
+`-pthread` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L533). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

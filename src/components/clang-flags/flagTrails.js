@@ -69,33 +69,17 @@ const FRAME_POINTER_FLAGS = new Set([
   '-fno-omit-frame-pointer',
   '-momit-leaf-frame-pointer',
   '-mno-omit-leaf-frame-pointer',
+  '-mframe-pointer=',
 ]);
 
-function isLoopVectorizeFlag(flagName) {
-  const name = String(flagName || '').toLowerCase();
-  if (name.includes('slp-vectorize') || name.includes('tree-slp-vectorize')) return false;
-  return (
-    name.includes('vectorize') ||
-    name === '-qvec' ||
-    name === '-qvec-' ||
-    name === '/qvec' ||
-    name === '/qvec-'
-  );
+function isFramePointerFlag(flag) {
+  const name = String(flag?.flag || '');
+  return FRAME_POINTER_FLAGS.has(name) || name.includes('frame-pointer');
 }
 
-function isSlpVectorizeFlag(flagName) {
-  const name = String(flagName || '').toLowerCase();
-  return name.includes('slp-vectorize') || name.includes('tree-slp-vectorize');
-}
-
-function isLoopUnrollFlag(flagName) {
-  const name = String(flagName || '').toLowerCase();
-  return name.includes('unroll-loops') && !name.includes('variable-expansion');
-}
-
-function isLoopRerollFlag(flagName) {
-  const name = String(flagName || '').toLowerCase();
-  return name.includes('reroll-loops');
+function isStackProtectorFlag(flag) {
+  const name = String(flag?.flag || '');
+  return name.includes('stack-protector');
 }
 
 export function buildPipelineTrail(flag) {
@@ -110,57 +94,24 @@ export function buildPipelineTrail(flag) {
     ];
   }
 
-  if (FRAME_POINTER_FLAGS.has(flag.flag) || String(flag.flag || '').includes('frame-pointer')) {
+  if (isFramePointerFlag(flag)) {
     return [
       { title: 'Clang Driver', note: 'Parse -f(no-)omit-frame-pointer / leaf variants and target -O defaults' },
       { title: 'CC1 / CodeGenOptions', note: 'Emit -mframe-pointer= into FramePointerKind' },
       { title: 'LLVM IR frame-pointer policy', note: 'Function/module frame-pointer attributes (when keep applies)' },
       { title: 'TargetFrameLowering', note: 'hasFP() may still require an FP (VLA, EH, …)' },
       { title: 'Prologue / Epilogue', note: 'Reserve or free the FP register in machine code' },
-      { title: 'Machine code + unwind', note: 'Optional unwind metadata / CFI — orthogonal to FP policy' },
+      { title: 'Machine code + unwind', note: 'Optional .eh_frame / CFI — orthogonal to FP policy' },
     ];
   }
 
-  if (isLoopVectorizeFlag(flag.flag)) {
+  if (isStackProtectorFlag(flag)) {
     return [
-      { title: 'Clang Driver', note: 'Parse -f(no-)vectorize; apply shouldEnableVectorizerAtOLevel defaults' },
-      { title: 'CC1', note: 'Forward -vectorize-loops when enabled (absent when disabled)' },
-      { title: 'CodeGenOpts', note: 'CompilerInvocation records VectorizeLoop for the mid-end' },
-      { title: 'PassBuilder', note: 'Schedule LoopVectorize in the optimization pipeline when enabled' },
-      { title: 'LoopVectorize', note: 'Widen profitable/legal loops into vector IR' },
-      { title: 'Target backend', note: 'Lower vector IR to SIMD / scalar machine code' },
-    ];
-  }
-
-  if (isSlpVectorizeFlag(flag.flag)) {
-    return [
-      { title: 'Clang Driver', note: 'Parse -f(no-)slp-vectorize; apply SLP O-level defaults' },
-      { title: 'CC1', note: 'Forward -vectorize-slp when enabled' },
-      { title: 'CodeGenOpts', note: 'CompilerInvocation records VectorizeSLP' },
-      { title: 'PassBuilder', note: 'Schedule SLPVectorizer when enabled' },
-      { title: 'SLPVectorizer', note: 'Pack independent scalar ops into vector ops' },
-      { title: 'Target backend', note: 'Lower vector IR to SIMD / scalar machine code' },
-    ];
-  }
-
-  if (isLoopUnrollFlag(flag.flag)) {
-    return [
-      { title: 'Clang Driver', note: 'Parse -f(no-)unroll-loops; forward last arg to cc1' },
-      { title: 'CC1 / CodeGenOpts', note: 'UnrollLoops defaults true when OptLevel > 1; flags override' },
-      { title: 'BackendUtil / PassBuilder', note: 'PipelineTuningOptions.LoopUnrolling ← UnrollLoops' },
-      { title: 'LoopUnrollPass', note: 'Partial/runtime unroll under cost model + TTI' },
-      { title: 'LoopFullUnrollPass', note: 'Full unroll when trip count/cost allow' },
-      { title: 'Target backend', note: 'Lower expanded scalar/vector IR to machine code' },
-    ];
-  }
-
-  if (isLoopRerollFlag(flag.flag)) {
-    return [
-      { title: 'Clang Driver', note: 'Parse -f(no-)reroll-loops' },
-      { title: 'CC1 / CodeGenOpts', note: 'RerollLoops option state' },
-      { title: 'PassBuilder', note: 'Schedule loop-reroll when enabled' },
-      { title: 'LoopReroll', note: 'Try to collapse unrolled patterns back to compact loops' },
-      { title: 'Target backend', note: 'Lower resulting IR' },
+      { title: 'Clang Driver', note: 'Parse -fstack-protector / -strong / -all / -fno-stack-protector' },
+      { title: 'CC1 / CodeGenOptions', note: 'Record stack-protector level for CodeGen' },
+      { title: 'IR attribute', note: 'Emit ssp / sspstrong / sspreq function attributes where applicable' },
+      { title: 'Backend prologue', note: 'Insert canary setup/check in selected functions' },
+      { title: 'Object code', note: 'Guard variable references — not AddressSanitizer instrumentation' },
     ];
   }
 
@@ -334,6 +285,41 @@ export function buildImplementationTrail(flag) {
         title: "LLVM pipeline",
         value: "Alias analysis → target backend",
         note: "LLVM optimization passes consume the reduced alias information before lowering IR to machine code.",
+      },
+    ];
+  }
+
+  if (isFramePointerFlag(flag)) {
+    return [
+      {
+        title: 'Options.td',
+        value: flag.sourcePath || 'clang/include/clang/Driver/Options.td',
+        note: 'Defines -f(no-)omit-frame-pointer, leaf omit variants, and -mframe-pointer=.',
+      },
+      {
+        title: 'Driver policy',
+        value: 'ToolChains/CommonArgs.cpp',
+        note: 'getFramePointerKind / useFramePointerForTargetByDefault / areOptimizationsEnabled select -mframe-pointer=.',
+      },
+      {
+        title: 'CodeGenOptions',
+        value: 'CodeGenOptions::FramePointerKind',
+        note: 'CC1 stores the keep/omit/non-leaf/reserved policy for codegen.',
+      },
+      {
+        title: 'IR policy attrs',
+        value: 'LLVM IR "frame-pointer" attribute / module flag',
+        note: 'Keep policies commonly emit attributes; omit may leave them absent — inspect IR on your version.',
+      },
+      {
+        title: 'Frame lowering',
+        value: 'TargetFrameLowering::hasFP (e.g. X86FrameLowering)',
+        note: 'Backend may still require an FP for VLAs, realignment, EH helpers, or ABI constraints.',
+      },
+      {
+        title: 'Prologue / unwind',
+        value: 'Machine prologue/epilogue + optional .eh_frame',
+        note: 'FP policy is separate from -funwind-tables / -fasynchronous-unwind-tables and from -g.',
       },
     ];
   }

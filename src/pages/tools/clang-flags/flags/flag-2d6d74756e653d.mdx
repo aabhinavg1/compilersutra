@@ -37,6 +37,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ---
 
+:::note Present by
+`-mtune=` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5944). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
 The `-mtune=` flag controls microarchitectural optimizations in LLVM's code generator without altering the target Instruction Set Architecture (ISA). Unlike `-march=` or `-mcpu=`, which enable target-specific vector/crypto extensions and render binaries incompatible with older hardware, `-mtune=` strictly adjusts cost models, instruction scheduling latencies, pipeline hazard avoidance, branch alignment, and machine-level instruction fusion.
@@ -185,6 +189,27 @@ clang -O2 -mtune=znver3 -### -c test.c
 | **Driver Translation** | `clang/lib/Driver/ToolChains/Arch/` | Target-specific driver logic (e.g., `X86.cpp`, `AArch64.cpp`) translates the tuned CPU name into target features (`+tune-cpu=...`) or LLVM IR attributes. |
 | **LLVM IR Generation** | `clang/lib/CodeGen/CodeGenModule.cpp` | Emits `"tune-cpu"="<cpu_name>"` as a function-level IR attribute on generated functions. |
 | **LLVM Target Backend** | `llvm/lib/Target/<Arch>/` | Subtarget features query the core-specific `ProcessorModel` defined in TableGen (`.td`) files to populate `TargetSchedModel` and `TargetTransformInfo`. |
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend tuning. Often affects scheduling/cost without requiring a different ISA.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Tune CPU | Driver → TargetMachine | Directly controlled | Prefer schedule/cost for a CPU while keeping `-march` ISA |
+| Machine scheduler / cost model | Machine backend | Backend mechanism | May change instruction order/selection heuristics |
+
+### How to verify
+
+```bash
+clang -### -march=x86-64 -mtune=generic -c w.c 2>&1 | rg tune\|target-cpu
+```
+
+### Source investigation
+
+- Options.td `-mtune=`; target tune CPU handling
 
 ---
 

@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
 | **Category** | Optimization level |
 | **Compiler** | Clang driver, frontend, LLVM, or runtime as described below |
 | **Optimization** | Moderate inlining, simplification, loop and interprocedural passes |
-| **Risk** | Check build consistency and compiler-version differences |
+| **Risk** | Correctness: does not change language rules; UB can become more visible. Prefer consistent level across TUs and verify per compiler version |
 
 ## What this flag actually does
 
@@ -71,7 +71,8 @@ addl -8(%rbx,%rdx,4), %ecx
 movl %ecx, -8(%rbx,%rdx,4)
 addq $3, %rdx
 jne .LBB0_4`}
-  note="Real excerpts from clang++ 18.1.3, -std=c++17, -S, target x86_64-pc-linux-gnu, using the prefix_sum.cpp workload. -O0 repeatedly calls vector accessors and spills loop state; -O2 vectorizes initialization and unrolls the dependent update loop." />
+  note="Important difference (clang++ 18.1.3, x86_64-pc-linux-gnu, -std=c++17, -S, prefix_sum.cpp): -O0 keeps accessor calls and spills; -O2 vectorizes init and unrolls the update loop." />
+
 ## Why use it / when not to use it
 
 Use it when the optimization level behavior matches the build contract. Do not enable it selectively across mutually dependent translation units when it changes preprocessing, language rules, ABI expectations, or runtime instrumentation. Verify the effect with the exact compiler and target used by CI.
@@ -174,25 +175,34 @@ flowchart LR
 ~~~
 
 The option spelling is parsed by the Clang driver, converted into structured frontend/code-generation state, mapped to LLVM’s O2 pipeline, and only then lowered for the target. It is not an LLVM backend command-line option by itself.
-
 ## Related LLVM Optimizations & Backend Mechanisms
 
-Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+**Flag category:** LLVM IR optimization pipeline (`default<O2>`-class). Not one pass.
 
 | Mechanism | Stage | Relationship | Effect |
 | :--- | :--- | :--- | :--- |
-| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+| O2 pipeline construction | PassBuilder | Directly controlled | Schedules the O2 module/function/loop pipelines |
+| Vectorize / SLP / unroll (when enabled) | LLVM IR | Related mechanism | Present in typical O2 pipelines; also gated by `-f(no-)vectorize` etc. |
+| Backend O2 MI optimizations | Machine backend | Indirectly affected | More aggressive codegen than O0/O1 |
 
-#### How to verify
+### How to verify
 
 ```bash
-clang -### <flags> -c t.c 2>&1 | tr ' ' '
-' | head
+clang -O2 -mllvm -print-pipeline-passes -c w.c -o /dev/null 2>&1 | head -50
+clang -O2 -S -emit-llvm w.c -o O2.ll
+# Confirm specific passes with -mllvm -debug-pass-manager when supported.
 ```
 
-#### Source investigation
+### Source investigation
 
-Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+- PassBuilder pipelines: `llvm/lib/Passes/PassBuilderPipelines.cpp`
+- Clang backend util: `clang/lib/CodeGen/BackendUtil.cpp`
+
+---
+
+:::note Present by
+`-O2` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L831). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## Key facts
 

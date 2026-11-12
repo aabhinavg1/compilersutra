@@ -1,45 +1,266 @@
 ---
 title: "-fslp-vectorize"
 slug: "/tools/clang-flags/-fslp-vectorize/"
-description: "Enable the superword-level parallelism vectorization passes"
+description: "Controls LLVM Superword-Level Parallelism (SLP) basic-block vectorization in Clang."
+keywords:
+  - clang
+  - -fslp-vectorize
+  - -fno-slp-vectorize
+  - slp vectorizer
+  - llvm vectorization
+  - superword level parallelism
+  - auto-vectorization
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fslp-vectorize">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fslp-vectorize — Clang Flags Explorer</title>
+  <meta name="description" content="Detailed analysis of Clang's -fslp-vectorize option, controlling basic-block Superword-Level Parallelism vectorization in LLVM." />
+</Head>
+
+<FlagArticleShell flagPath="-fslp-vectorize" summary="Request that Clang enable Superword-Level Parallelism (SLP) vectorization to combine straight-line scalar operations into vector instructions.">
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+## At a glance
+
+| Attribute | Property |
+| :--- | :--- |
+| **Category** | IR Optimization / Auto-Vectorization |
+| **Primary Pipeline Stage** | LLVM IR Pass Pipeline (`SLPVectorizerPass`) |
+| **Defaults** | Enabled by default at `-O2`, `-O3`, `-Os`, `-Oz`; disabled at `-O0`, `-O1` |
+| **Target Sensitivity** | Target-dependent cost model (requires TargetTransformInfo support for vector types) |
+| **Observability Impact** | Minimal (may alter register allocations and instruction ordering inside basic blocks) |
+| **Correctness Risk** | Low (preserves IEEE-754 semantics unless fast-math flags allow reassociation) |
+
+---
 
 ## What this flag actually does
 
-Enable the superword-level parallelism vectorization passes
+`-fslp-vectorize` directs the Clang driver and C++ frontend to enable LLVM's **Superword-Level Parallelism (SLP)** vectorizer. Unlike the loop vectorizer, which transforms loop iterations, the SLP vectorizer operates **bottom-up on straight-line code inside basic blocks**.
 
+When enabled, LLVM scans scalar operations within a single basic block (or across merged blocks), identifies independent isomorphic instructions (e.g., consecutive scalar loads, stores, or arithmetic ops operating on memory adjacencies), and packs them into vector operations using target vector registers (such as x86 AVX/AVX-512, AArch64 Neon/SVE, or RISC-V Vector).
 
+### Option Map & Driver Translation
 
-It can be negated with -fno-slp-vectorize.
+When invoked on the command line, the driver maps `-fslp-vectorize` to CC1 flags:
 
-## When to use it
+```text
+clang -fslp-vectorize -O2 main.c -###
+  => -cc1 ... -vectorize-slp ...
+```
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+Conversely, `-fno-slp-vectorize` disables the pass:
 
-## When not to use it
+```text
+clang -fno-slp-vectorize -O2 main.c -###
+  => -cc1 ... (omits -vectorize-slp or passes -fno-vectorize-slp depending on optimization level)
+```
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+| Driver Flag | CC1 Flag | `CodeGenOptions` Field | Default Schedule |
+| :--- | :--- | :--- | :--- |
+| `-fslp-vectorize` | `-vectorize-slp` | `VectorizeSLP = 1` | Enabled at `-O2`, `-O3`, `-Os`, `-Oz` |
+| `-fno-slp-vectorize` | (omitted / `-fno-vectorize-slp`) | `VectorizeSLP = 0` | Explicitly disables pass |
 
-## Usage example
+---
+
+## Minimal realistic example
+
+SLP vectorization targets consecutive memory accesses and parallel scalar arithmetic without requiring explicit loops.
+
+<SourceCode
+  language="cpp"
+  title="slp_example.cpp"
+  code={`struct Point4 {
+    float x, y, z, w;
+};
+
+void scale_point(const Point4* src, Point4* dst, float factor) {
+    dst->x = src->x * factor;
+    dst->y = src->y * factor;
+    dst->z = src->z * factor;
+    dst->w = src->w * factor;
+}`}
+/>
+
+At `-O2` with `-fslp-vectorize` (or default `-O2`), LLVM packs the four 32-bit float multiplies into a single 128-bit vector operation. Passing `-fno-slp-vectorize` forces scalar instructions.
+
+---
+
+## Before vs. after assembly
+
+Comparing x86-64 target output (`-O2 -target x86_64-unknown-linux-gnu -mavx2`):
+
+<AsmDiff
+  beforeTitle="-O2 -fno-slp-vectorize (Scalar)"
+  afterTitle="-O2 -fslp-vectorize (SLP Vectorized)"
+  beforeCode={`scale_point:
+    vmovss   (%rdi), %xmm1
+    vmulss   %xmm0, %xmm1, %xmm1
+    vmovss   %xmm1, (%rsi)
+    vmovss   4(%rdi), %xmm1
+    vmulss   %xmm0, %xmm1, %xmm1
+    vmovss   %xmm1, 4(%rsi)
+    vmovss   8(%rdi), %xmm1
+    vmulss   %xmm0, %xmm1, %xmm1
+    vmovss   %xmm1, 8(%rsi)
+    vmovss   12(%rdi), %xmm1
+    vmulss   %xmm0, %xmm1, %xmm1
+    vmovss   %xmm1, 12(%rsi)
+    ret`}
+  afterCode={`scale_point:
+    vbroadcastss %xmm0, %xmm0
+    vmovups      (%rdi), %xmm1
+    vmulps       %xmm0, %xmm1, %xmm1
+    vmovups      %xmm1, (%rsi)
+    ret`}
+/>
+
+### Key Differences
+1. **Instruction Reduction**: Four scalar loads, multiplies, and stores (`vmovss`, `vmulss`) are consolidated into single vector operations (`vmovups`, `vmulps`).
+2. **Splat/Broadcast**: The scalar factor in `%xmm0` is broadcast across vector lanes using `vbroadcastss`.
+3. **Throughput**: Reduces execution latency and instruction decode overhead on modern super-scalar pipelines.
+
+---
+
+## Why use it / when not to use it
+
+### Preferred Scenarios
+- **Unrolled Loops and Matrix Math**: Code where loops have been unrolled or multi-field struct operations are performed sequentially.
+- **Graphic/Physics Kernels**: 3D vector and matrix routines (RGBA processing, Quaternion math, Coordinate transformations).
+- **Embedded DSP Algorithms**: Code with fixed-size FIR filters or audio channel processing inside single basic blocks.
+
+### When to Disable (`-fno-slp-vectorize`)
+- **Code Size Sensitivity**: On targets with restricted vector encoding size, packing/unpacking and gather/scatter cost model heuristics might occasionally increase binary footprint.
+- **Debugging Optimization Pipelines**: When isolating compiler backend bugs or regression testing individual LLVM transformation passes.
+- **Non-Contiguous Memory Accesses**: If basic-block operations require excessive shuffle/extract instructions, SLP can occasionally trigger performance regressions; target cost model checks usually prevent this, but forced disabling aids isolation.
+
+---
+
+## Performance impact
+
+SLP vectorization performance varies with target architecture capabilities, memory alignment, and scalar-to-vector transition costs:
+
+- **Vector Register Utilization**: Maximizes modern SIMD hardware efficiency (SSE/AVX, Neon, SVE, RVV) without needing explicit intrinsics (`<immintrin.h>`).
+- **Memory Alignment Dependencies**: Unaligned packed loads (`vmovups`) might incur small penalties on older CPUs, though modern x86 and AArch64 handle unaligned SIMD loads cleanly.
+- **Cost Model Safety**: LLVM uses `TargetTransformInfo` (TTI) to calculate instruction costs. If vector insertion/extraction overhead outweighs parallel compute savings, `SLPVectorizerPass` aborts the transformation for that basic block.
+
+---
+
+## Compatibility table
+
+| Environment / Target | Driver Policy Support | Final Assembly Effect |
+| :--- | :--- | :--- |
+| **x86 / x86-64** | Supported (`-fslp-vectorize`) | Emits SSE/AVX/AVX-512 packed instructions |
+| **AArch64 (ARM64)** | Supported (`-fslp-vectorize`) | Emits Neon / SVE packed instructions |
+| **ARM (32-bit)** | Supported (with NEON enabled) | Emits NEON vector instructions |
+| **RISC-V (RV64)** | Supported (with `+v` vector extension) | Emits RVV vector instructions |
+| **WebAssembly** | Supported (with `-msimd128`) | Emits WASM SIMD instructions |
+
+:::note
+If the target CPU architecture lacks SIMD/vector hardware support (or if no vector ISA flags like `-mavx2` or `-mfpu=neon` are passed), SLP vectorization runs but finds zero profitable vectorization trees, emitting standard scalar assembly.
+:::
+
+---
+
+## Usage / verification commands
+
+### 1. Verify Driver Option Pass-Through
+```bash
+clang -O2 -fslp-vectorize -### -c main.c 2>&1 | grep -E "vectorize-slp"
+```
+
+### 2. Observe LLVM Pipeline Execution
+Verify `SLPVectorizerPass` runs in the optimization pass pipeline:
+```bash
+clang -O2 -fslp-vectorize -mllvm -debug-pass-manager -c main.c 2>&1 | grep "SLPVectorizerPass"
+```
+
+### 3. Inspect LLVM IR Transformations
+Compare IR generated with and without SLP vectorization:
+```bash
+clang -O2 -fno-slp-vectorize -S -emit-llvm main.c -o scalar.ll
+clang -O2 -fslp-vectorize -S -emit-llvm main.c -o slp.ll
+diff -u scalar.ll slp.ll
+```
+
+---
+
+## Adjacent options
+
+- `-fvectorize` / `-fno-vectorize`: Controls the LLVM **Loop Vectorizer** (`LoopVectorizePass`).
+- `-fautobox-vectorize`: Controls Flang/Fortran specific vectorization transformations.
+- `-mprefer-vector-width=<bits>`: Advises the vectorizer on preferred maximum vector bit-width (e.g., `128`, `256`, `512`).
+- `-ffast-math`: Relaxes IEEE-754 precision constraints, allowing SLP to reassociate floating-point expressions into SIMD vectors.
+
+---
+
+## How it works inside Clang
+
+### Driver & Frontend Processing
+1. **Driver (`clang/lib/Driver/Driver.cpp` & `ToolChains/Clang.cpp`)**:
+   Parses `-fslp-vectorize` / `-fno-slp-vectorize`. If enabled, appends `-vectorize-slp` to the CC1 invocation.
+2. **Compiler Invocation (`clang/lib/Frontend/CompilerInvocation.cpp`)**:
+   Translates `-vectorize-slp` into `CodeGenOpts.VectorizeSLP = 1`.
+
+### Pass Pipeline Construction
+3. **PassBuilder (`llvm/lib/Passes/PassBuilderPipelines.cpp`)**:
+   When building the standard optimization pipeline (`-O2`/`-O3`), LLVM queries `PTO.VectorizationOptions.SLPVectorization`. If enabled, `PassBuilder` schedules `SLPVectorizerPass` late in the IR function optimization pipeline, after scalar optimizations (like GVN and CSEE) have consolidated basic blocks.
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+| Mechanism / Pass Name | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| **`SLPVectorizerPass`** | LLVM IR Pass | Directly controlled | Scans basic blocks bottom-up and forms vector instruction trees |
+| **`LoopVectorizePass`** | LLVM IR Pass | Related mechanism | Vectorizes across loop iterations (controlled via `-fvectorize`) |
+| **`TargetTransformInfo` (TTI)** | Target / IR Analysis | Backend mechanism | Provides vector operation cost estimates to evaluate SLP profitability |
+| **`VectorCombinePass`** | LLVM IR Pass | Related mechanism | Optimizes bitcasts, shuffles, and scalar extraction patterns post-vectorization |
+
+### How to verify / Practical verification workflow
+
+To verify SLP vectorization decisions directly from LLVM pass diagnostics:
 
 ```bash
-clang++ -fslp-vectorize -c main.cpp
+clang -O2 -fslp-vectorize -Rpass=slp-vectorizer -c main.c
 ```
+*Output when vectorization succeeds:*
+```text
+remark: main.c:5:12: vectorized list of size 4 at offset 0 [-Rpass=slp-vectorizer]
+```
+
+To diagnose why SLP rejected a potential transformation:
+```bash
+clang -O2 -fslp-vectorize -Rpass-missed=slp-vectorizer -c main.c
+```
+
+### Source investigation
+
+- **Driver Option Definition**: `clang/include/clang/Driver/Options.td` (search `fslp_vectorize`).
+- **Frontend Mapping**: `clang/lib/Frontend/CompilerInvocation.cpp`.
+- **Pass Implementation**: `llvm/lib/Transforms/Vectorize/SLPVectorizer.cpp`.
+- **Pipeline Insertion**: `llvm/lib/Passes/PassBuilderPipelines.cpp`.
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Negated by**: `-fno-slp-vectorize`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  args={[]}
+  acceptedBy={["ClangOption", "FlangOption"]}
+  stage="driver"
+  category="Code Generation / IR Optimization"
+  negatedBy="-fno-slp-vectorize"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
 
 </FlagArticleShell>
