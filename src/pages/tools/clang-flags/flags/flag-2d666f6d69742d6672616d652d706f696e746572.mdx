@@ -325,6 +325,21 @@ Distinguish **driver policy** (`clang -###`) from **final asm** (`clang -S`).
 
 ---
 
+## Usage / verification
+
+```bash
+# Driver policy (look for -mframe-pointer=)
+clang -O0 -### -c t.c 2>&1 | tr ' ' '\n' | grep frame-pointer
+clang -O2 -### -c t.c 2>&1 | tr ' ' '\n' | grep frame-pointer
+clang -O2 -fno-omit-frame-pointer -### -c t.c 2>&1 | tr ' ' '\n' | grep frame-pointer
+
+# Final asm (name your triple + version in notes)
+clang -O2 -S t.c -o omit.s
+clang -O2 -fno-omit-frame-pointer -S t.c -o keep.s
+```
+
+---
+
 ## Adjacent options
 
 | Option | Affects | Notes |

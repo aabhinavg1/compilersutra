@@ -34,19 +34,28 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ## What this flag actually does
 
-The `-funroll-loops` flag requests that the Clang compiler enable aggressive unrolling of loops during middle-end optimization.
+The `-funroll-loops` flag requests that Clang set `CodeGenOptions::UnrollLoops` so the LLVM middle-end may run loop-unroll transformations (subject to cost models / TTI).
 
-When passed to the Clang driver:
-1. The driver parses `-funroll-loops` and translates it into `-backend-option -unroll-threshold=...` or sets `CodeGenOptions::UnrollLoops = 1` during the CC1 invocation.
-2. In LLVM's `PassBuilder`, `LoopUnrollPass` and `LoopFullUnrollPass` inspect this option flag via `TargetTransformInfo` (TTI) and `LoopAnalysisManager`.
-3. If loop trip counts are known at compile time (or bounded within cost heuristics), the loop body is duplicated multiple times, reducing loop branch overhead and expanding opportunities for instruction-level parallelism (ILP) and scalar replacement.
+**Verified from source (llvmorg-18.1.3):** the driver forwards `-funroll-loops` / `-fno-unroll-loops` to cc1; `CompilerInvocation` sets `Opts.UnrollLoops` from those flags with default `(OptimizationLevel > 1)`; `BackendUtil` copies that into `PipelineTuningOptions::LoopUnrolling` (and loop interleaving). Passes such as `LoopUnrollPass` then decide *whether* a given loop unrolls — the flag enables the policy, not a guarantee for every loop.
 
-### Defaults & Multi-Level Interaction
+### Option map and precedence
 
-* **`-O0`**: Loop unrolling is disabled entirely regardless of `-funroll-loops`.
-* **`-O1`**: Loop unrolling is usually disabled unless explicitly requested via `-funroll-loops` (subject to cost thresholds).
-* **`-O2` / `-O3`**: Loop unrolling heuristics are enabled by default for full and partial unrolling when beneficial. Specifying `-funroll-loops` explicitly sets `UnrollLoops = true`, overriding conservative cost metrics.
-* **`-Os` / `-Oz`**: Loop unrolling is restricted or disabled to minimize code size expansion.
+| Spelling | Role |
+| :--- | :--- |
+| `-funroll-loops` | Request unroll policy on (`CodeGenOpts.UnrollLoops`) |
+| `-fno-unroll-loops` | Negation — force unroll policy off |
+| `-mllvm -unroll-threshold=N` | Separate LLVM cl::opt tuning; not a driver synonym for `-funroll-loops` |
+| `-freroll-loops` | Adjacent reroll request; not an alias |
+
+### Defaults by optimization level
+
+Default for `UnrollLoops` when neither flag is given (llvmorg-18.1.3 `CompilerInvocation.cpp`): **`OptimizationLevel > 1`** → on; otherwise off. Explicit `-funroll-loops` / `-fno-unroll-loops` override that default via `Args.hasFlag`.
+
+| Level | Default `UnrollLoops` (no explicit flag) | Notes |
+| :--- | :--- | :--- |
+| `-O0` / `-O1` | off | `-funroll-loops` can still turn the **policy** on; individual loops may still refuse to unroll |
+| `-O2` / `-O3` / higher numeric | on | `-fno-unroll-loops` forces off |
+| `-Os` / `-Oz` / `-Ofast` | verify on your host (`clang -###`) | Size/fast spellings interact with `OptimizationLevel` / size opts — do not assume from one host alone |
 
 ## Minimal realistic example
 
@@ -149,12 +158,23 @@ clang -O1 -funroll-loops -S test.c -o unrolled.s
 
 ## How it works inside Clang
 
-1. **Driver Processing** (`clang/lib/Driver/Driver.cpp`, `clang/include/clang/Driver/Options.td`):
-   The driver matches `-funroll-loops` and translates the flag into the `-cc1` flag `-funroll-loops`.
-2. **Frontend Option Handlers** (`clang/lib/Frontend/CompilerInvocation.cpp`):
-   `CompilerInvocation` parses the CC1 flag into `CodeGenOptions::UnrollLoops = 1`.
-3. **Backend Pipeline Creation** (`clang/lib/CodeGen/BackendUtil.cpp`):
-   When constructing the LLVM `PassBuilder` optimization pipeline, Clang passes `PipelineTuningOptions::LoopUnrolling = true` to LLVM's pass manager builder.
+| Pipeline stage | Implementation detail (llvmorg-18.1.3) |
+| :--- | :--- |
+| **Options.td** | [`def funroll_loops` / `def fno_unroll_loops`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/include/clang/Driver/Options.td#L3837) (`CC1Option`) |
+| **Driver forwarding** | [`Args.AddLastArg(… OPT_funroll_loops, OPT_fno_unroll_loops)`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Driver/ToolChains/Clang.cpp#L6640) |
+| **CodeGenOptions** | [`CODEGENOPT(UnrollLoops)`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/include/clang/Basic/CodeGenOptions.def#L305) |
+| **CompilerInvocation** | [`Opts.UnrollLoops = Args.hasFlag(…, OptimizationLevel > 1)`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Frontend/CompilerInvocation.cpp#L1813) |
+| **BackendUtil** | [`PTO.LoopUnrolling = CodeGenOpts.UnrollLoops`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/CodeGen/BackendUtil.cpp#L817) (also drives loop interleaving on the same bit) |
+| **Mid-end** | `LoopUnrollPass` / related unroll passes consult PTO + TTI cost models |
+
+## Clang version history
+
+Research against Options.td tags and llvmorg-18.1.3 wiring. Chronological; only verified milestones.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 3.3.0 | `-funroll-loops` defined in Options.td (“Turn on loop unroller”, `CC1Option`) | Driver/cc1-visible user flag exists in this release tag | [`funroll_loops` @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/include/clang/Driver/Options.td#L738). Exact introduction commit / first release unresolved — “present by 3.3,” not “introduced in 3.3.” |
+| llvmorg-18.1.3 (verified wiring) | Default `UnrollLoops` when flags omitted: `OptimizationLevel > 1`; driver `AddLastArg` + BackendUtil `PTO.LoopUnrolling` | Explains why `-O2` commonly enables unroll policy without spelling `-funroll-loops` | [`CompilerInvocation.cpp#L1813`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Frontend/CompilerInvocation.cpp#L1813); [`BackendUtil.cpp#L817`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/CodeGen/BackendUtil.cpp#L817) |
 
 ## Related LLVM Optimizations & Backend Mechanisms
 
