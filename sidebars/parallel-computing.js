@@ -46,6 +46,7 @@ const parallel = {
             'parallel-computing/hybrid-mpi-openmp',
             'parallel-computing/the-cpu-ran-out-of-cheap-speed',
             'parallel-computing/alus-that-could-only-draw',
+            'parallel-computing/no-language-for-those-units',
           ],
         },
         {

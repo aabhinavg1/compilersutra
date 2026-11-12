@@ -1,0 +1,47 @@
+<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .rect-node { fill: #1e293b; stroke: #475569; stroke-width: 2; rx: 6; }
+    .rect-sub { fill: #0f172a; stroke: #334155; stroke-width: 1.5; rx: 4; }
+    .text-title { fill: #f8fafc; font-family: monospace; font-size: 14px; font-weight: bold; }
+    .text-body { fill: #94a3b8; font-family: monospace; font-size: 12px; }
+    .text-accent { fill: #38bdf8; font-family: monospace; font-size: 12px; font-weight: bold; }
+    .arrow { stroke: #64748b; stroke-width: 2; marker-end: url(#arrowhead); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- Graphics Pipeline Wrapper -->
+  <rect x="20" y="20" width="680" height="240" class="rect-node" />
+  <text x="35" y="45" class="text-title">Graphics Rendering Pipeline (GPGPU Era)</text>
+
+  <!-- Texture Inputs -->
+  <rect x="40" y="70" width="180" height="160" class="rect-sub" />
+  <text x="50" y="95" class="text-accent">Input Arrays (Textures)</text>
+  <text x="50" y="125" class="text-body">• 1D/2D Floating Point</text>
+  <text x="50" y="145" class="text-body">• Indexed by (U,V)</text>
+  <text x="50" y="165" class="text-body">• Gather Read Only</text>
+  <text x="50" y="185" class="text-body">• Hardware Samplers</text>
+
+  <!-- Rasterizer & Shader -->
+  <rect x="270" y="70" width="180" height="160" class="rect-sub" />
+  <text x="280" y="95" class="text-accent">Execution (Shader)</text>
+  <text x="280" y="125" class="text-body">• Quad Primitive</text>
+  <text x="280" y="145" class="text-body">• Rasterizer Generates</text>
+  <text x="280" y="165" class="text-body">  1 Fragment per Pixel</text>
+  <text x="280" y="185" class="text-body">• SIMD Vector Units</text>
+
+  <!-- Framebuffer Target -->
+  <rect x="500" y="70" width="180" height="160" class="rect-sub" />
+  <text x="510" y="95" class="text-accent">Output Array (FBO)</text>
+  <text x="510" y="125" class="text-body">• Offscreen Render Target</text>
+  <text x="510" y="145" class="text-body">• Fixed Output Location</text>
+  <text x="510" y="165" class="text-body">• No Scatter Writes</text>
+  <text x="510" y="185" class="text-body">• Read-back to Host CPU</text>
+
+  <!-- Connectors -->
+  <line x1="220" y1="150" x2="262" y2="150" class="arrow" />
+  <line x1="450" y1="150" x2="492" y2="150" class="arrow" />
+</svg>
