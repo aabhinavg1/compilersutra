@@ -39,7 +39,7 @@ Requirements:
    - **Usage example**: exact, copy-pasteable Clang command lines; include `-###` or IR inspection when useful.
    - **Adjacent options**: siblings, inverse/negative form, related optimization controls, and internal options only when clearly labeled.
    - **How it works inside Clang**: include an Implementation subsection and a compact stage table covering option definition, driver parsing/forwarding, invocation setup, code generation, LLVM IR/TBAA or target effect, backend, and linker.
-   - **Clang version history**: primary-source table; prefer “Present by X” when introduction is unresolved; separate Flang rows.
+   - **Clang version history (REQUIRED on every flag)**: 4-column table — Clang/LLVM version | Change | Practical impact | Evidence — placed after How it works, before Related LLVM. Prefer “Present by X” when introduction is unresolved; Evidence cells must be clickable primary sources; separate Flang rows; never invent milestones. Add flag-family extras (ABI/register layout, sanitizer runtime, target CPU, mid-end pass notes) only when the flag needs them — see skill `compilersutra-clang-flags`.
    - **Related LLVM Optimizations & Backend Mechanisms** (required; before Key facts): classify IR-opt / backend / instrumentation / diagnostic / ABI; relationship labels only: Directly controlled | Indirectly affected | Backend mechanism | Related mechanism | No direct pass. Include How to verify + Source investigation. No invented pass names.
    - **Key facts** footer using `KeyFacts`.
 6. Hero “More Support” meta + metadata:
