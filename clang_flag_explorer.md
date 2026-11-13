@@ -125,6 +125,9 @@ Rules:
 - Separate Flang/Fortran rows from Clang C/C++.
 - Never invent milestones. Thin-but-honest verified rows beat a padded table.
 - Place after How it works, before Related LLVM.
+- Keep At a glance / Defaults prose **consistent** with the history table (do not contradict a later milestone).
+
+Skill `compilersutra-clang-flags` must teach this §8 contract (change-only through current llvmorg) on every publish/improve.
 
 ## 9. Related LLVM Optimizations & Backend Mechanisms
 
