@@ -189,6 +189,18 @@ clang -S -emit-llvm -O2 -fno-omit-frame-pointer main.c -o - | grep "frame-pointe
 | **LLVM Target Lowering** | `TargetFrameLowering::hasFP(const MachineFunction &MF)` checks function attributes and enforces physical frame register reservation. |
 | **Asm Printer** | `X86FrameLowering` / `AArch64FrameLowering` emits machine instructions to save and update frame registers (`push rbp; mov rbp, rsp` / `stp x29, x30, [sp, #-16]!`). |
 
+## Clang version history
+
+Change-only rows (shared family with `-fomit-frame-pointer`). Research through **llvmorg-23.1.5**.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9 | `-fno-omit-frame-pointer` appears alongside omit in Options.td | Driver-visible keep-FP request | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td). “Present by 2.9,” not a claimed invention date. |
+| LLVM 10 (2020) | cc1 / IR migrate to tri-state `-mframe-pointer=` / `"frame-pointer"` | Keep policy encoded as `all` / `non-leaf` rather than old elim attrs | [D56353](https://reviews.llvm.org/D56353); commit [ff22ec3d70](https://github.com/llvm/llvm-project/commit/ff22ec3d70) |
+| Clang 20.1 (ARM) | On ARM, `-fno-omit-frame-pointer` can retain leaf FP; `-momit-leaf-frame-pointer` drops leaf FP again | ARM leaf/non-leaf control | [Clang 20.1.0 Release Notes](https://releases.llvm.org/20.1.0/tools/clang/docs/ReleaseNotes.html) |
+
+See also the fuller omit-FP page for Darwin/Flang rows. No additional verified Clang C/C++ driver-semantics change for this spelling through **llvmorg-23.1.5** ([`Options.td#L3936`](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L3936)).
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** Backend / code generation. **No direct LLVM IR optimization pass.** Inverse of `-fomit-frame-pointer`.

@@ -272,6 +272,16 @@ def fcall_saved_x10 : Flag<["-"], "fcall-saved-x10">,
 
 At driver time, `getAArch64TargetFeatures()` in `clang/lib/Driver/ToolChains/Arch/AArch64.cpp` translates the presence of the option into the subtarget feature string `+call-saved-x10`, which is passed to the backend. There it is parsed by `AArch64Subtarget`, which records the register in its `CustomCallSavedXRegs` bit vector. Finally, in `AArch64RegisterInfo::UpdateCustomCalleeSavedRegs()` and `UpdateCustomCallPreservedMask()`, `x10` is appended to both the callee-saved register list (so the prologue/epilogue spills it) and the call-preserved mask (so the register allocator and call lowering treat it as preserved).
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 10.0.0 | AArch64 `fcall_saved_x#i` family (`-fcall-saved-xN`) appears in Options.td | Driver-visible per-register call-saved requests (including x10) | [`fcall_saved_x#i` @ llvmorg-10.0.0](https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Driver/Options.td#L2325). Absent @ llvmorg-7.0.0 — “present by 10.0,” not a claimed first-commit date. |
+
+No additional verified spelling/default change for `-fcall-saved-x10` researched through **llvmorg-23.1.5** ([`Options.td` @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L5794)).
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** ABI / calling convention (AArch64 register). **No direct LLVM IR optimization pass.**

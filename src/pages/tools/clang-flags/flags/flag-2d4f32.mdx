@@ -175,6 +175,16 @@ flowchart LR
 ~~~
 
 The option spelling is parsed by the Clang driver, converted into structured frontend/code-generation state, mapped to LLVM’s O2 pipeline, and only then lowered for the target. It is not an LLVM backend command-line option by itself.
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. `-O2` is the `O` group value `"2"` on the Joined `-O` option (not a separate `def O2` for the Unix driver).
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9 | Joined `-O` option exists in Options.td (`O_Group`) | `-O2` is expressible as `-O` + value `2` | [`def O` @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L149) |
+
+No additional verified **driver-option** milestones for the `-O2` spelling researched on this page through **llvmorg-23.1.5** ([`def O` @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L848)). Pipeline contents inside `-O2` change across releases — document those on the specific pass/flag pages, not as fake `-O2` “every version” rows.
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** LLVM IR optimization pipeline (`default<O2>`-class). Not one pass.

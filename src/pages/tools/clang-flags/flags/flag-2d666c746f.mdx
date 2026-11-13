@@ -194,6 +194,16 @@ Key driver-generated flags observed:
 | **LLVM IR Generation** | `clang::EmitBackendOutput` writes bitcode to the destination `.o` file instead of passing the module to the target machine code generator. |
 | **Linker Integration** | During link step, LTO plugin (`libLTO` or LLD internal LTO engine) invokes `llvm::lto::LTO::run()` to merge modules, run IR pass pipeline, and emit final object. |
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-flto` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L304). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L3444)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** Link-time optimization / IR linking. Changes **when** and **where** optimization runs.
