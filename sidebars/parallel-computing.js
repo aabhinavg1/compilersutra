@@ -47,6 +47,7 @@ const parallel = {
             'parallel-computing/the-cpu-ran-out-of-cheap-speed',
             'parallel-computing/alus-that-could-only-draw',
             'parallel-computing/no-language-for-those-units',
+            'parallel-computing/from-graphics-pipeline-to-a-kernel',
           ],
         },
         {
