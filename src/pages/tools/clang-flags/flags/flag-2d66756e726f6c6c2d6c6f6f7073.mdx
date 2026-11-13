@@ -28,7 +28,7 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | :--- | :--- |
 | **Category** | Code Generation / Middle-End Optimization |
 | **Pipeline Layer** | Driver → CC1 (`CodeGenOptions`) → LLVM PassBuilder (`LoopUnrollPass`) |
-| **Default Policy** | Enabled at `-O2` / `-O3` (target-dependent heuristics); disabled or restricted at `-O1` / `-O0` / `-Os` |
+| **Default Policy** | `UnrollLoops` defaults on when `OptimizationLevel > 1` (typically `-O2`+); off at `-O0`/`-O1` unless `-funroll-loops`; since Clang 3.9 size levels are **not** auto-gated off — verify `-Os`/`-Oz` on your host |
 | **CC1 Option** | `-funroll-loops` / `-fno-unroll-loops` |
 | **Observability & Debug Risk** | Low correctness risk; increases code size, potentially impacting I-cache; changes loop iteration structure in step execution |
 
