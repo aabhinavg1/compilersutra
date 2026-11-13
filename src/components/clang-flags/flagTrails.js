@@ -82,6 +82,31 @@ function isStackProtectorFlag(flag) {
   return name.includes('stack-protector');
 }
 
+function isLoopVectorizeFlag(name) {
+  const flag = String(name || '');
+  return (
+    flag === '-fvectorize' ||
+    flag === '-fno-vectorize' ||
+    flag === '-ftree-vectorize' ||
+    flag === '-fno-tree-vectorize'
+  );
+}
+
+function isSlpVectorizeFlag(name) {
+  const flag = String(name || '');
+  return (
+    flag === '-fslp-vectorize' ||
+    flag === '-fno-slp-vectorize' ||
+    flag === '-ftree-slp-vectorize' ||
+    flag === '-fno-tree-slp-vectorize'
+  );
+}
+
+function isLoopUnrollFlag(name) {
+  const flag = String(name || '');
+  return flag === '-funroll-loops' || flag === '-fno-unroll-loops';
+}
+
 export function buildPipelineTrail(flag) {
   if (BOUNDS_SAFETY_FLAGS.has(flag.flag)) {
     return [
@@ -112,6 +137,36 @@ export function buildPipelineTrail(flag) {
       { title: 'IR attribute', note: 'Emit ssp / sspstrong / sspreq function attributes where applicable' },
       { title: 'Backend prologue', note: 'Insert canary setup/check in selected functions' },
       { title: 'Object code', note: 'Guard variable references — not AddressSanitizer instrumentation' },
+    ];
+  }
+
+  if (isLoopVectorizeFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)vectorize + O-level defaults (shouldEnableVectorizerAtOLevel)' },
+      { title: 'CC1 / CodeGenOptions', note: 'Emit -vectorize-loops → CodeGenOpts.VectorizeLoop' },
+      { title: 'PassBuilder', note: 'Schedule LoopVectorize when VectorizeLoop is set' },
+      { title: 'LoopVectorize', note: 'Widen profitable loops into vector IR' },
+      { title: 'Target backend', note: 'Lower SIMD IR or keep scalar' },
+    ];
+  }
+
+  if (isSlpVectorizeFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)slp-vectorize + O-level SLP defaults' },
+      { title: 'CC1 / CodeGenOptions', note: 'Emit -vectorize-slp → CodeGenOpts.VectorizeSLP' },
+      { title: 'PassBuilder', note: 'Schedule SLPVectorizer independently of LoopVectorize' },
+      { title: 'SLPVectorizer', note: 'Pack straight-line scalar ops into vector ops' },
+      { title: 'Target backend', note: 'Lower SIMD IR or keep scalar' },
+    ];
+  }
+
+  if (isLoopUnrollFlag(flag.flag)) {
+    return [
+      { title: 'Clang Driver', note: 'Parse -f(no-)unroll-loops (AddLastArg to cc1)' },
+      { title: 'CC1 / CodeGenOptions', note: 'UnrollLoops defaults from OptimizationLevel > 1 unless overridden' },
+      { title: 'BackendUtil / PTO', note: 'PipelineTuningOptions.LoopUnrolling follows CodeGenOpts.UnrollLoops' },
+      { title: 'LoopUnrollPass', note: 'Cost model + TTI decide partial/runtime/full unroll' },
+      { title: 'Target backend', note: 'Lower unrolled IR; size/I-cache effects are target-dependent' },
     ];
   }
 
