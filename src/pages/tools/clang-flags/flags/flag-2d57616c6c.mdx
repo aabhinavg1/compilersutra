@@ -93,6 +93,16 @@ flowchart LR
 ~~~
 
 The -Wall spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-Wall` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L167). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L893)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** Diagnostic / frontend (or driver glue). **No direct LLVM IR optimization pass.**

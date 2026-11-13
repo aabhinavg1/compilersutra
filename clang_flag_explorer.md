@@ -118,10 +118,12 @@ When publishing/improving a flag family:
 
 Rules:
 
-- Prefer **“Present by LLVM/Clang X.Y”** when introduction is unresolved.
-- Evidence cells must be **clickable primary sources** (Options.td tags, release notes, commits, PRs, Phabricator).
+- **Change-only rows.** Include a version **only when something actually changed** for this flag (driver defaults, option spelling, cc1 wiring, IR/policy encoding, target-specific default, Flang support, etc.). Do **not** list every LLVM release, and do **not** add filler rows like “no change in N.M.”
+- **Span to current LLVM.** Research through the **latest llvmorg release tag** (check GitHub `llvm/llvm-project` releases). After the last real change, close with one short prose note: presence / same semantics **verified through llvmorg-X.Y.Z** — that closing note is **not** a fake “changed in X” table row.
+- Prefer **“Present by LLVM/Clang X.Y”** when introduction is unresolved (first row is often presence, not a claimed invention date).
+- Evidence cells must be **clickable primary sources** (Options.td tags, release notes, commits, PRs, Phabricator) with `#L` line anchors when pointing at source.
 - Separate Flang/Fortran rows from Clang C/C++.
-- Never invent milestones. Thin-but-honest (2–4 verified rows) beats a fake long table.
+- Never invent milestones. Thin-but-honest verified rows beat a padded table.
 - Place after How it works, before Related LLVM.
 
 ## 9. Related LLVM Optimizations & Backend Mechanisms

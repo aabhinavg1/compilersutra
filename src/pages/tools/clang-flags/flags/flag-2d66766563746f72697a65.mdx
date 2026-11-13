@@ -188,6 +188,19 @@ clang -O2 -fvectorize -S -emit-llvm test.c -o - | grep -i "llvm.loop.vectorize"
 
 ---
 
+## Clang version history
+
+Change-only rows (no empty version padding). Research through **llvmorg-23.1.5**.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 3.3.0 | `-fvectorize` / `-fno-vectorize` (and `-ftree-vectorize` aliases) appear in Options.td | Driver-visible loop-vectorize enable/disable flags exist | [`fvectorize` @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/include/clang/Driver/Options.td#L700). Exact introduction unresolved — “present by 3.3.” |
+| LLVM/Clang 3.4 | Driver `shouldEnableVectorizerAtOLevel`: on for `OptLevel > 1`, `-Os`, `-Ofast`; off for `-O0`/`-O1`/`-Oz` | `-O2` enables loop vectorize by default without spelling `-fvectorize` | [`Tools.cpp` @ llvmorg-3.4.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.4.0/clang/lib/Driver/Tools.cpp) |
+| LLVM/Clang 3.5 (2014-05) | Helper gains `isSlpVec`: at `-Oz`, loop vectorize stays off; SLP defaults on | Loop kill switch remains `-fno-vectorize`; `-Oz` loop default still off | Commit [3ba81bdb45](https://github.com/llvm/llvm-project/commit/3ba81bdb45ad4a9ef603566a4ca222754649b43d) |
+| LLVM/Clang 21 | Helper moves into shared `CommonArgs.cpp` | Same O-level policy; shared with other drivers | [`CommonArgs.cpp` @ llvmorg-21.1.0](https://github.com/llvm/llvm-project/blob/llvmorg-21.1.0/clang/lib/Driver/ToolChains/CommonArgs.cpp) |
+
+No further verified Clang C/C++ driver-default change through **llvmorg-23.1.5** ([`CommonArgs.cpp#L3482`](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/lib/Driver/ToolChains/CommonArgs.cpp#L3482); [`Options.td#L4616`](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L4616)).
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 Classification: **A. LLVM IR optimization**

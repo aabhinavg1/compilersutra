@@ -169,12 +169,15 @@ clang -O1 -funroll-loops -S test.c -o unrolled.s
 
 ## Clang version history
 
-Research against Options.td tags and llvmorg-18.1.3 wiring. Chronological; only verified milestones.
+Change-only rows (no empty version padding). Research through **llvmorg-23.1.5**.
 
 | Clang / LLVM version | Change | Practical impact | Evidence |
 | :--- | :--- | :--- | :--- |
-| Present by LLVM/Clang 3.3.0 | `-funroll-loops` defined in Options.td (“Turn on loop unroller”, `CC1Option`) | Driver/cc1-visible user flag exists in this release tag | [`funroll_loops` @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/include/clang/Driver/Options.td#L738). Exact introduction commit / first release unresolved — “present by 3.3,” not “introduced in 3.3.” |
-| llvmorg-18.1.3 (verified wiring) | Default `UnrollLoops` when flags omitted: `OptimizationLevel > 1`; driver `AddLastArg` + BackendUtil `PTO.LoopUnrolling` | Explains why `-O2` commonly enables unroll policy without spelling `-funroll-loops` | [`CompilerInvocation.cpp#L1813`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/Frontend/CompilerInvocation.cpp#L1813); [`BackendUtil.cpp#L817`](https://github.com/llvm/llvm-project/blob/llvmorg-18.1.3/clang/lib/CodeGen/BackendUtil.cpp#L817) |
+| Present by LLVM/Clang 3.3.0 | `-funroll-loops` defined in Options.td (“Turn on loop unroller”, `CC1Option`) | Driver/cc1-visible user flag exists | [`funroll_loops` @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/include/clang/Driver/Options.td#L738). Exact introduction commit unresolved — “present by 3.3,” not “introduced in 3.3.” |
+| Through LLVM/Clang 3.8 | Default `UnrollLoops` when flags omitted: `OptimizationLevel > 1 && !OptimizeSize` | Size opts (`-Os`/`-Oz`) kept unroll policy **off** by default even at higher opt levels | [`CompilerInvocation.cpp` @ llvmorg-3.8.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.8.0/clang/lib/Frontend/CompilerInvocation.cpp) (`Opts.UnrollLoops = … && !Opts.OptimizeSize`) |
+| LLVM/Clang 3.9 | `OptimizeSize` gate removed from the default expression | Default becomes **`OptimizationLevel > 1` only** — size builds can inherit unroll-on unless `-fno-unroll-loops` | [`CompilerInvocation.cpp` @ llvmorg-3.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.9.0/clang/lib/Frontend/CompilerInvocation.cpp) |
+
+No further verified change to that default expression through **llvmorg-23.1.5** — still `Args.hasFlag(OPT_funroll_loops, OPT_fno_unroll_loops, (Opts.OptimizationLevel > 1))` ([`CompilerInvocation.cpp` @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/lib/Frontend/CompilerInvocation.cpp#L1935)). Option spelling: [`Options.td` @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L4728).
 
 ## Related LLVM Optimizations & Backend Mechanisms
 

@@ -367,6 +367,16 @@ GCC also supports `-Os`, but its pipeline and codegen are not identical to Clang
 
 References: [Clang command guide](https://clang.llvm.org/docs/CommandGuide/clang.html), [Users Manual](https://clang.llvm.org/docs/UsersManual.html), [LLVM LangRef](https://llvm.org/docs/LangRef.html). Verify pass details against the LLVM version you are discussing.
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. `-Os` is an `O_Group` spelling (size-oriented), not a separate invent-every-release table.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9 | Joined `-O` / `O_Group` exists in Options.td | Size level `-Os` is part of the optimization-level group family | [`def O` @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L149) |
+
+Which mid-end defaults `-Os` enables (vectorize on, unroll historically gated, etc.) changed in **other** flags’ histories — cite those pages rather than padding empty `-Os` version rows. Option still present through **llvmorg-23.1.5** ([`Options.td` O group](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L848)).
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** LLVM IR optimization pipeline tuned for size (`Os`).

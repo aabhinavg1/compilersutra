@@ -243,6 +243,16 @@ flowchart TD
 | Sema | [`SemaBoundsSafety.cpp`](https://github.com/compilersutra/llvm-project/blob/debad8323724adb0682eb3d9cb0940b137b24e8a/clang/lib/Sema/SemaBoundsSafety.cpp) | Verified diagnostic promotion (~L157–176) |
 | Backend | LLVM IR pipeline | Consumes generated IR; bounds safety is configured in the **frontend/CC1** layer, not via a driver `-fbounds-safety` spelling |
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Public docs name `-fbounds-safety`; Clang Options.td historically exposes **`-fexperimental-bounds-safety`** (CC1).
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 19.1.0 | `defm bounds_safety` / `-fexperimental-bounds-safety` in Options.td → `LangOpts.BoundsSafety` | CC1 language-mode switch exists for the experimental bounds-safety extension | [`Options.td` @ llvmorg-19.1.0](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/include/clang/Driver/Options.td#L1915). Absent @ llvmorg-18.1.3. |
+
+Still present through **llvmorg-23.1.5** as experimental-bounds-safety ([`Options.td#L2016`](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L2016)). Extend this table only when driver spelling, defaults, or verified Sema/CodeGen behavior for the mode **changes**.
+
 ## Related LLVM Optimizations & Backend Mechanisms
 
 **Flag category:** Frontend safety / instrumentation (Clang bounds-safety). Not a generic LLVM opt pass.
