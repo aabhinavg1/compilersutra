@@ -48,6 +48,7 @@ const parallel = {
             'parallel-computing/alus-that-could-only-draw',
             'parallel-computing/no-language-for-those-units',
             'parallel-computing/from-graphics-pipeline-to-a-kernel',
+            'parallel-computing/cuda-host-device-copy',
           ],
         },
         {
