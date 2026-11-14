@@ -27,10 +27,18 @@ export default function LearningHub() {
   const filteredBySearch = useMemo(() => {
     if (!normalized) return TOPICS;
     return TOPICS.filter((topic) => {
-      const hay = `${topic.title} ${topic.description} ${topic.id}`.toLowerCase();
+      const queries = (topic.searchQueries || []).join(' ');
+      const hay = `${topic.title} ${topic.description} ${topic.id} ${queries}`.toLowerCase();
       return hay.includes(normalized);
     });
   }, [normalized]);
+
+  const popularCompiler = useMemo(() => {
+    return [...TOPICS]
+      .filter((t) => (t.searchDemand || 0) >= 4)
+      .sort((a, b) => (b.searchDemand || 0) - (a.searchDemand || 0) || a.title.localeCompare(b.title))
+      .slice(0, 10);
+  }, []);
 
   const visibleModules = useMemo(() => {
     return MODULES.filter((module) => {
@@ -68,6 +76,22 @@ export default function LearningHub() {
       </header>
 
       <LearningPath />
+
+      <h2 className={styles.sectionTitle}>Most searched (compiler domain)</h2>
+      <p className={styles.sectionHint}>
+        Prioritized by typical beginner and compiler-engineering search interest — then explained in the
+        right module below. Prefer dedicated Basic Terminology pages when they exist.
+      </p>
+      <ul className={styles.metaRow} style={{ flexWrap: 'wrap', listStyle: 'none', padding: 0 }}>
+        {popularCompiler.map((topic) => {
+          const href = topic.resources?.blog || '/docs/basic-terminology/';
+          return (
+            <li key={topic.id} className={styles.metaChip}>
+              <Link to={href}>{topic.title}</Link>
+            </li>
+          );
+        })}
+      </ul>
 
       <h2 className={styles.sectionTitle}>Modules</h2>
       <p className={styles.sectionHint}>
@@ -133,6 +157,12 @@ export default function LearningHub() {
           </li>
           <li>
             <Link to="/docs/basic-terminology/what-is-a-compiler/">What Is a Compiler?</Link>
+          </li>
+          <li>
+            <Link to="/docs/basic-terminology/what-is-an-ast/">What Is an AST?</Link>
+          </li>
+          <li>
+            <Link to="/docs/basic-terminology/what-is-ir/">What Is Intermediate Representation (IR)?</Link>
           </li>
           <li>
             <Link to="/docs/compilers/sourcecode_to_executable/">From Source Code to Binary</Link>

@@ -1,0 +1,111 @@
+---
+title: What Is an AST?
+slug: /basic-terminology/what-is-an-ast
+description: Beginner explanation of an abstract syntax tree (AST) — the structured tree a compiler builds from source after parsing, and how it differs from a parse tree.
+keywords:
+  - what is an AST
+  - abstract syntax tree
+  - AST compiler
+  - parse tree vs AST
+  - compiler frontend
+  - basic terminology
+sidebar_position: 5
+displayed_sidebar: basicTerminologySidebar
+---
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+# What Is an AST?
+
+An **AST (abstract syntax tree)** is a tree-shaped representation of your program’s structure after the compiler has tokenized and parsed the source. Nodes are language constructs (expressions, statements, declarations) — not the raw characters you typed.
+
+Reading time: about 8–10 minutes.
+
+:::info Quick answer
+**AST** = the compiler’s structured view of “what the program means syntactically,” with most grammar noise removed. Later stages (semantics, IR generation) walk this tree.
+:::
+
+## Where the AST sits in the pipeline
+
+```text
+Source characters
+  -> Lexer (tokens)
+  -> Parser (checks grammar)
+  -> AST (structured program)
+  -> Semantic analysis / IR generation
+  -> Optimize / codegen
+```
+
+You do not need to implement a parser on day one. You do need this order: **text → tokens → tree → lower forms**.
+
+## AST vs parse tree (beginner distinction)
+
+| | Parse tree (concrete) | AST (abstract) |
+| :--- | :--- | :--- |
+| Goal | Show how the grammar derived the input | Keep the useful program structure |
+| Detail | Often keeps every grammar production | Drops many punctuation/parenthesis artifacts |
+| Used for | Teaching grammars, some tools | Compiler analyses and transforms |
+
+CompilerSutra’s deeper comparison: [Abstract syntax tree vs parse tree](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree/).
+
+## Tiny example
+
+```c
+int x = a + b * c;
+```
+
+A beginner sketch of an AST for the initializer expression (not a full C AST):
+
+```text
+        =
+       / \
+      x   +
+         / \
+        a   *
+           / \
+          b   c
+```
+
+Multiplication hangs under addition because `*` binds tighter than `+` in C. The AST encodes that structure; the source string alone does not.
+
+Exact Clang AST dumps (`clang -Xclang -ast-dump`) are version- and flag-dependent. Prefer running the dump on your machine over inventing node names.
+
+## How to peek at Clang’s AST (verified workflow)
+
+```bash
+clang --version
+clang -Xclang -ast-dump -fsyntax-only example.c
+```
+
+- `-fsyntax-only` stops after the frontend semantic checks (no full link)
+- `-Xclang -ast-dump` asks Clang to print its AST
+
+If the command fails, fix your Clang install first — do not publish a fabricated dump.
+
+## Why ASTs matter on CompilerSutra
+
+- **Frontend lessons** (lexer/parser) exist to build or consume trees: [Role of the lexer](/docs/compilers/front_end/role_of_lexer/), [Role of the parser](/docs/compilers/front_end/role_of_parser/).
+- **IR** is usually generated *from* (or after) this structured form: [What Is IR?](/docs/basic-terminology/what-is-ir/).
+- Tools like clang-tidy / AST matchers query tree shapes — advanced, but the mental model starts here.
+
+## Common beginner mistakes
+
+- Thinking the AST *is* the executable. It is still an internal compiler structure.
+- Assuming every compiler’s AST looks identical. Designs differ; the *idea* is shared.
+- Mixing AST with IR. AST is usually close to the language; IR is usually closer to a machine-neutral instruction form.
+
+## Practice check
+
+1. What comes before the AST: lexer or backend?
+2. Why drop parentheses into a tree shape?
+3. Name one command family that dumps Clang’s AST.
+4. How is an AST different from LLVM IR?
+
+## Next steps
+
+1. [What Is IR?](/docs/basic-terminology/what-is-ir/) — the form after (or beside) frontend trees  
+2. [AST vs parse tree](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree/) — deeper CompilerSutra article  
+3. [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/)  
+4. [Basic Terminology hub](/docs/basic-terminology/) — Module 03 · Compilation & Execution  
+
+Hub placement: **Module 03 — Compilation & Execution**, with lexer/parser/IR neighbors.

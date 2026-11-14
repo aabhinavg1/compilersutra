@@ -1,0 +1,120 @@
+---
+title: What Is Intermediate Representation (IR)?
+slug: /basic-terminology/what-is-ir
+description: Beginner explanation of compiler intermediate representation (IR) — the internal program form between source and machine code, including how it relates to LLVM IR.
+keywords:
+  - what is IR
+  - intermediate representation
+  - compiler IR
+  - LLVM IR beginner
+  - compiler pipeline
+  - basic terminology
+sidebar_position: 6
+displayed_sidebar: basicTerminologySidebar
+---
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+# What Is Intermediate Representation (IR)?
+
+**Intermediate representation (IR)** is the compiler’s internal form of your program — after source has been understood, before (or while) machine code for a specific CPU is produced. Most modern optimization happens on IR, not on the original C/C++ text.
+
+Reading time: about 8–10 minutes.
+
+:::info Quick answer
+**IR** = a structured, usually language-independent program form the compiler builds so it can analyze and transform code once, then generate machine code for many targets.
+:::
+
+## Why IR exists
+
+A compiler could try to go straight from source characters to x86-64 instructions. That does not scale.
+
+- Frontends for C, C++, Rust, and others would each reinvent optimization.
+- Supporting a new CPU would mean rewriting every language frontend.
+- Analysis (types, control flow, aliasing) needs a clean structure, not raw text.
+
+So real compilers use stages:
+
+```text
+Source
+  -> Frontend (lex, parse, semantics)
+  -> IR
+  -> Optimize IR
+  -> Backend (select instructions, allocate registers)
+  -> Assembly / object / machine code
+```
+
+## What IR is (and is not)
+
+| IR is | IR is not |
+| :--- | :--- |
+| A program form the **compiler** uses internally | The same thing as your `.c` / `.cpp` file |
+| Often designed for analysis and transforms | Always the same spelling across all compilers |
+| Sometimes written to disk (`.ll`, bitcode, GIMPLE dumps) | Always human-friendly |
+
+Examples of IR families (different projects, different designs):
+
+- **LLVM IR** — used by Clang and many other frontends that target LLVM
+- **GCC GIMPLE / RTL** — GCC’s pipeline forms
+- **Bytecode** (JVM, some VMs) — a related idea: portable instructions for a runtime (may still be JIT’d later)
+
+When people on CompilerSutra say “look at the IR,” they usually mean **LLVM IR** from Clang (`clang -emit-llvm -S`), unless they say otherwise.
+
+## Tiny mental model
+
+```c
+int add(int a, int b) {
+  return a + b;
+}
+```
+
+You think in C. The compiler’s IR thinks in typed operations roughly like: “add these two integers and return.” Later, the backend turns that into real ISA instructions (`add`, `lea`, …) for your triple.
+
+Exact IR text depends on the compiler version and flags. Do not memorize one dump as universal truth — verify with your installed toolchain.
+
+## Where IR sits on this site
+
+| Step | Basic Terminology / docs |
+| :--- | :--- |
+| Source & compiler | [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/) |
+| Tree after parsing | [What Is an AST?](/docs/basic-terminology/what-is-an-ast/) |
+| IR deep dive | [IR in Compilers](/docs/compilers/ir_in_compiler/) |
+| Clang vs GCC vs LLVM | [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/) |
+| Full pipeline | [Source to executable](/docs/compilers/sourcecode_to_executable/) |
+
+## How to see LLVM IR (verified workflow)
+
+On a machine with Clang:
+
+```bash
+clang --version
+clang -O0 -emit-llvm -S add.c -o add.ll
+```
+
+- `-emit-llvm` asks for LLVM IR instead of normal object/asm output
+- `-S` emits text (`.ll`) rather than bitcode alone
+- Open `add.ll` in an editor — that file is IR, not the final binary
+
+If Clang is missing, install a toolchain first; do not invent sample IR dumps from memory for publication.
+
+## Common beginner mistakes
+
+- Calling LLVM “a language you write apps in.” **LLVM** is infrastructure; **Clang** is a C/C++ frontend that lowers to LLVM IR.
+- Thinking IR is always slower or always faster. IR is a *stage*; performance comes from later codegen and optimization choices.
+- Confusing IR with assembly. Assembly is already close to one ISA; IR is usually still target-flexible.
+
+## Practice check
+
+1. Why not optimize on raw source text forever?
+2. Name one IR family (LLVM IR, GIMPLE, …).
+3. Which flag family helps you dump LLVM IR from Clang?
+4. How is IR different from an AST?
+
+## Next steps
+
+1. [What Is an AST?](/docs/basic-terminology/what-is-an-ast/) — what the frontend builds before / around IR generation  
+2. [IR in Compilers](/docs/compilers/ir_in_compiler/) — longer CompilerSutra lesson  
+3. [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/) — place IR in the big picture  
+4. [Basic Terminology hub](/docs/basic-terminology/) — Module 03 · Compilation & Execution  
+
+Hub placement: **Module 03 — Compilation & Execution**, after compilation basics and beside AST / object file / linker.
