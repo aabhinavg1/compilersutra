@@ -3,42 +3,61 @@ import Link from '@docusaurus/Link';
 import {
   HUB_META,
   MODULES,
-  TOPICS,
+  ENRICHED_TOPICS,
   topicCount,
   topicsForModule,
+  getStartTopic,
+  getTopicById,
+  recommendedTopics,
 } from '@site/src/data/basicTerminology/topics';
+import ConceptPipeline from './ConceptPipeline';
 import LearningPath from './LearningPath';
 import ModuleSection from './ModuleSection';
+import useBasicTerminologyProgress from './useBasicTerminologyProgress';
 import styles from './basicTerminology.module.css';
-
-const OBJECTIVES = [
-  { title: 'Computer fundamentals', detail: 'Understand the machine.' },
-  { title: 'Programming basics', detail: 'Understand programs and code.' },
-  { title: 'Program execution', detail: 'Understand how code runs.' },
-  { title: 'Computer architecture', detail: 'Understand hardware.' },
-];
 
 export default function LearningHub() {
   const [query, setQuery] = useState('');
   const [moduleFilter, setModuleFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [resourceFilter, setResourceFilter] = useState('all');
+
+  const topicIds = useMemo(() => ENRICHED_TOPICS.map((t) => t.id), []);
+  const progress = useBasicTerminologyProgress(topicIds);
 
   const normalized = query.trim().toLowerCase();
+  const startTopic = getStartTopic();
+  const startHref = startTopic?.resources?.blog || HUB_META.overviewBlog;
+
+  const lastVisited = progress.isHydrated
+    ? getTopicById(progress.lastVisitedId)
+    : null;
+  const continueTopic = lastVisited || startTopic;
+  const continueHref = continueTopic?.resources?.blog || startHref;
 
   const filteredBySearch = useMemo(() => {
-    if (!normalized) return TOPICS;
-    return TOPICS.filter((topic) => {
-      const queries = (topic.searchQueries || []).join(' ');
-      const hay = `${topic.title} ${topic.description} ${topic.id} ${queries}`.toLowerCase();
-      return hay.includes(normalized);
-    });
-  }, [normalized]);
+    let list = ENRICHED_TOPICS;
+    if (normalized) {
+      list = list.filter((topic) => {
+        const queries = (topic.searchQueries || []).join(' ');
+        const hay = `${topic.title} ${topic.description} ${topic.id} ${queries}`.toLowerCase();
+        return hay.includes(normalized);
+      });
+    }
+    if (difficultyFilter !== 'all') {
+      list = list.filter((t) => t.level === difficultyFilter);
+    }
+    if (resourceFilter === 'article') {
+      list = list.filter((t) => t.resources?.blog);
+    } else if (resourceFilter === 'lab') {
+      list = list.filter((t) => t.lab);
+    } else if (resourceFilter === 'pdf') {
+      list = list.filter((t) => t.resources?.pdf);
+    }
+    return list;
+  }, [normalized, difficultyFilter, resourceFilter]);
 
-  const popularCompiler = useMemo(() => {
-    return [...TOPICS]
-      .filter((t) => (t.searchDemand || 0) >= 4)
-      .sort((a, b) => (b.searchDemand || 0) - (a.searchDemand || 0) || a.title.localeCompare(b.title))
-      .slice(0, 10);
-  }, []);
+  const recommended = useMemo(() => recommendedTopics().slice(0, 10), []);
 
   const visibleModules = useMemo(() => {
     return MODULES.filter((module) => {
@@ -49,10 +68,15 @@ export default function LearningHub() {
     });
   }, [filteredBySearch, moduleFilter]);
 
+  const onToggleComplete = (topicId, complete) => {
+    if (complete) progress.markCompleted(topicId);
+    else progress.markIncomplete(topicId);
+  };
+
   return (
     <div className={styles.hub}>
       <header className={styles.hero}>
-        <p className={styles.eyebrow}>Start here · Beginner level</p>
+        <p className={styles.eyebrow}>{HUB_META.trackLabel}</p>
         <h1>{HUB_META.title}</h1>
         <p className={styles.lead}>
           <strong>{HUB_META.subtitle}</strong>
@@ -60,42 +84,120 @@ export default function LearningHub() {
           {HUB_META.blurb}
         </p>
         <ul className={styles.metaRow}>
+          <li className={styles.metaChip}>
+            <strong>{topicCount()}</strong>&nbsp;core concepts
+          </li>
+          <li className={styles.metaChip}>
+            <strong>{MODULES.length}</strong>&nbsp;learning modules
+          </li>
+          <li className={styles.metaChip}>
+            <strong>0</strong>&nbsp;prerequisites
+          </li>
           <li className={styles.metaChip}>{HUB_META.level}</li>
-          <li className={styles.metaChip}>{topicCount()} concepts</li>
-          <li className={styles.metaChip}>Self-paced</li>
-          <li className={styles.metaChip}>{MODULES.length} modules</li>
+          {progress.isHydrated && progress.completedCount > 0 ? (
+            <li className={styles.metaChip}>
+              <strong>{progress.completedCount}</strong>/{progress.totalCount} completed
+            </li>
+          ) : null}
         </ul>
-        <div className={styles.objectives} aria-label="What you will learn">
-          {OBJECTIVES.map((item) => (
-            <div key={item.title} className={styles.objective}>
-              <strong>{item.title}</strong>
-              <span>{item.detail}</span>
-            </div>
-          ))}
+
+        <div className={styles.objectivePanel}>
+          <h2 className={styles.objectiveHeading}>Your learning objective</h2>
+          <p>{HUB_META.learningObjective}</p>
+        </div>
+
+        <div className={styles.heroCta}>
+          <div className={styles.startCard}>
+            <p className={styles.startLabel}>Start your learning journey</p>
+            <p className={styles.startModule}>
+              Module {MODULES[0].num} · {MODULES[0].title}
+            </p>
+            <h3 className={styles.startTitle}>
+              {startTopic ? (
+                <Link to={startHref} onClick={() => progress.markVisited(startTopic.id)}>
+                  {startTopic.title}
+                </Link>
+              ) : (
+                'Begin'
+              )}
+            </h3>
+            <p className={styles.startMeta}>
+              {startTopic?.minutes ? `${startTopic.minutes} minutes` : 'Self-paced'} · Beginner · No
+              prerequisites
+            </p>
+            <Link
+              className={styles.primaryAction}
+              to={startHref}
+              onClick={() => startTopic && progress.markVisited(startTopic.id)}
+            >
+              Start learning
+            </Link>
+          </div>
+
+          <div className={styles.continueCard}>
+            <p className={styles.startLabel}>Continue learning</p>
+            {progress.isHydrated && lastVisited ? (
+              <>
+                <p className={styles.startMeta}>Last visited</p>
+                <h3 className={styles.startTitle}>
+                  <Link
+                    to={continueHref}
+                    onClick={() => progress.markVisited(continueTopic.id)}
+                  >
+                    {continueTopic.title}
+                  </Link>
+                </h3>
+                <Link
+                  className={styles.secondaryAction}
+                  to={continueHref}
+                  onClick={() => progress.markVisited(continueTopic.id)}
+                >
+                  Resume
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className={styles.startMeta}>
+                  Progress is saved in this browser only. Mark concepts complete as you go.
+                </p>
+                <Link className={styles.secondaryAction} to={startHref}>
+                  Begin with Module 01
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
-      <LearningPath />
+      <LearningPath moduleCompletion={progress.moduleCompletion} />
+      <ConceptPipeline />
 
-      <h2 className={styles.sectionTitle}>Most searched (compiler domain)</h2>
+      <h2 className={styles.sectionTitle}>Recommended concepts</h2>
       <p className={styles.sectionHint}>
-        Prioritized by typical beginner and compiler-engineering search interest — then explained in the
-        right module below. Prefer dedicated Basic Terminology pages when they exist.
+        Curated starters for this track — not a search-analytics ranking. Prefer dedicated Basic
+        Terminology pages when they exist.
       </p>
-      <ul className={styles.metaRow} style={{ flexWrap: 'wrap', listStyle: 'none', padding: 0 }}>
-        {popularCompiler.map((topic) => {
+      <ul className={styles.recommendList}>
+        {recommended.map((topic) => {
           const href = topic.resources?.blog || '/docs/basic-terminology/';
           return (
-            <li key={topic.id} className={styles.metaChip}>
-              <Link to={href}>{topic.title}</Link>
+            <li key={topic.id}>
+              <Link
+                className={styles.recommendChip}
+                to={href}
+                onClick={() => progress.markVisited(topic.id)}
+              >
+                {topic.title}
+              </Link>
             </li>
           );
         })}
       </ul>
 
-      <h2 className={styles.sectionTitle}>Modules</h2>
+      <h2 className={styles.sectionTitle}>Learning modules</h2>
       <p className={styles.sectionHint}>
-        Search concepts or filter by module. Only real resources are shown — no placeholder links.
+        Search and filter concepts. Only real articles, videos, and PDFs are shown — no placeholder
+        resources.
       </p>
 
       <div className={styles.controls}>
@@ -116,7 +218,7 @@ export default function LearningHub() {
             className={`${styles.filterBtn} ${moduleFilter === 'all' ? styles.filterBtnActive : ''}`}
             onClick={() => setModuleFilter('all')}
           >
-            All
+            All modules
           </button>
           {MODULES.map((module) => (
             <button
@@ -131,23 +233,72 @@ export default function LearningHub() {
             </button>
           ))}
         </div>
+        <div className={styles.filters} role="group" aria-label="Filter by resource">
+          {[
+            ['all', 'Any resource'],
+            ['article', 'Has article'],
+            ['lab', 'Has lab'],
+            ['pdf', 'Has PDF'],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={`${styles.filterBtn} ${resourceFilter === id ? styles.filterBtnActive : ''}`}
+              onClick={() => setResourceFilter(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className={styles.filters} role="group" aria-label="Filter by difficulty">
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${
+              difficultyFilter === 'all' ? styles.filterBtnActive : ''
+            }`}
+            onClick={() => setDifficultyFilter('all')}
+          >
+            All levels
+          </button>
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${
+              difficultyFilter === 'beginner' ? styles.filterBtnActive : ''
+            }`}
+            onClick={() => setDifficultyFilter('beginner')}
+          >
+            Beginner
+          </button>
+        </div>
       </div>
 
       {visibleModules.length === 0 ? (
-        <div className={styles.empty}>No concepts match that search. Try a shorter word.</div>
+        <div className={styles.empty}>No concepts match those filters. Try clearing a filter.</div>
       ) : (
         visibleModules.map((module) => {
           const topics = topicsForModule(module.id).filter((topic) =>
             filteredBySearch.some((t) => t.id === topic.id),
           );
-          return <ModuleSection key={module.id} module={module} topics={topics} />;
+          const pct = progress.moduleCompletion(topicsForModule(module.id).map((t) => t.id));
+          return (
+            <ModuleSection
+              key={module.id}
+              module={module}
+              topics={topics}
+              statusFor={progress.statusFor}
+              onVisit={progress.markVisited}
+              onToggleComplete={onToggleComplete}
+              completionPercent={pct}
+            />
+          );
         })
       )}
 
       <aside className={styles.nextSteps}>
         <h2>Recommended next steps</h2>
         <p className={styles.sectionHint}>
-          After Module 02, go deeper into compilers. After Module 05–06, open COA or Parallel Computing.
+          Layer 01 is Basic Terminology. Next: Compiler Fundamentals and engineering labs (LLVM,
+          debugging, benchmarking).
         </p>
         <ul>
           <li>
@@ -162,7 +313,9 @@ export default function LearningHub() {
             <Link to="/docs/basic-terminology/what-is-an-ast/">What Is an AST?</Link>
           </li>
           <li>
-            <Link to="/docs/basic-terminology/what-is-ir/">What Is Intermediate Representation (IR)?</Link>
+            <Link to="/docs/basic-terminology/what-is-ir/">
+              What Is Intermediate Representation (IR)?
+            </Link>
           </li>
           <li>
             <Link to="/docs/compilers/sourcecode_to_executable/">From Source Code to Binary</Link>
