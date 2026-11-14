@@ -3,6 +3,11 @@
  * Only include resource URLs that exist. Omit missing keys (do not use "Coming Soon").
  */
 
+import {
+  MODULE_CURRICULUM,
+  applyCurriculum,
+} from './curriculumMeta.js';
+
 const YT_CHANNEL = 'https://www.youtube.com/@compilersutra';
 const YT_OVERVIEW = 'https://www.youtube.com/watch?v=e8wzEZm2d1I';
 const YT_HOW_COMPUTER = 'https://www.youtube.com/watch?v=vN6C7_5uN9s&t=3s';
@@ -26,9 +31,14 @@ const PDF_LLVM = '/papers/llvm_intro.pdf';
  * @property {string[]} related
  * @property {number=} searchDemand 1–5 relative beginner/compiler search interest
  * @property {string[]=} searchQueries example queries people type
+ * @property {string[]=} prerequisites recommended prior topic ids
+ * @property {string[]=} learnings short “you will learn” bullets
+ * @property {string=} outcome what the learner can explain afterwards
+ * @property {{ title: string, commands: string[] }=} lab optional terminal lab
+ * @property {boolean=} recommended curated starter concept
  */
 
-/** @type {{ id: string, num: string, title: string, tagline: string, level: string, description: string }[]} */
+/** @type {{ id: string, num: string, title: string, tagline: string, level: string, description: string, objective?: string, labSummary?: string, labCommands?: string[] }[]} */
 export const MODULES = [
   {
     id: 'computer-fundamentals',
@@ -37,6 +47,7 @@ export const MODULES = [
     tagline: 'Understand the machine',
     level: 'Foundation',
     description: 'Hardware, software, and the operating system that sits between them.',
+    ...MODULE_CURRICULUM['computer-fundamentals'],
   },
   {
     id: 'programming-fundamentals',
@@ -45,6 +56,7 @@ export const MODULES = [
     tagline: 'Understand programs and code',
     level: 'Foundation',
     description: 'Programs, source code, languages, compilers, and interpreters.',
+    ...MODULE_CURRICULUM['programming-fundamentals'],
   },
   {
     id: 'compilation-execution',
@@ -52,7 +64,9 @@ export const MODULES = [
     title: 'Compilation & Execution',
     tagline: 'Understand how code becomes a running program',
     level: 'Core concepts',
-    description: 'Machine code, executables, linking, loading, and what happens at run time.',
+    description:
+      'Frontend stages (lexer, parser, AST, IR), then object files, linking, loading, and run-time start.',
+    ...MODULE_CURRICULUM['compilation-execution'],
   },
   {
     id: 'memory-storage',
@@ -61,6 +75,7 @@ export const MODULES = [
     tagline: 'Understand where data lives',
     level: 'Computer architecture',
     description: 'RAM, storage, cache, virtual memory, and the file system.',
+    ...MODULE_CURRICULUM['memory-storage'],
   },
   {
     id: 'processing-hardware',
@@ -69,6 +84,7 @@ export const MODULES = [
     tagline: 'Understand the chips that execute work',
     level: 'Computer architecture',
     description: 'CPU, GPU, instructions, and the instruction set architecture.',
+    ...MODULE_CURRICULUM['processing-hardware'],
   },
   {
     id: 'operating-systems',
@@ -77,6 +93,7 @@ export const MODULES = [
     tagline: 'Understand the execution model',
     level: 'Execution model',
     description: 'Processes, threads, system calls, the kernel, and context switching.',
+    ...MODULE_CURRICULUM['operating-systems'],
   },
 ];
 
@@ -784,59 +801,81 @@ export const TOPICS = [
 export const LEARNING_PATH = [
   {
     step: 1,
-    title: 'Understand the computer',
-    detail: 'Hardware → Software → Operating System',
+    title: 'Computer fundamentals',
+    detail: 'Computer → Hardware → Software → OS',
     moduleId: 'computer-fundamentals',
   },
   {
     step: 2,
-    title: 'Understand programming',
-    detail: 'Program → Source Code → Programming Language',
+    title: 'Programming fundamentals',
+    detail: 'Program → Source → Language → Compiler vs interpreter',
     moduleId: 'programming-fundamentals',
   },
   {
     step: 3,
-    title: 'Understand compilation',
-    detail: 'Compiler → Intermediate Representation → Machine Code',
+    title: 'How programs are built & run',
+    detail: 'Lexer → Parser → AST → IR → Object → Linker → Loader',
     moduleId: 'compilation-execution',
   },
   {
     step: 4,
-    title: 'Understand execution',
-    detail: 'Executable → Loader → Process → Thread',
-    moduleId: 'operating-systems',
+    title: 'Memory and data',
+    detail: 'RAM → Cache → Virtual memory → Storage → File system',
+    moduleId: 'memory-storage',
   },
   {
     step: 5,
-    title: 'Understand the hardware',
-    detail: 'CPU → Memory → Cache → GPU → ISA',
+    title: 'CPU and GPU architecture',
+    detail: 'CPU → Instruction → ISA → GPU',
     moduleId: 'processing-hardware',
+  },
+  {
+    step: 6,
+    title: 'Operating systems and runtime',
+    detail: 'Process → Thread → Kernel → System call → Context switch',
+    moduleId: 'operating-systems',
   },
 ];
 
 export const HUB_META = {
   title: 'Basic Terminology',
-  subtitle: 'Understand computers from the ground up.',
+  trackLabel: 'CompilerSutra Learning Track',
+  subtitle: 'Understand how computers turn code into execution.',
   blurb:
-    'Learn how computers work, how programs are created, how they execute, and how hardware and software interact.',
+    'Start with zero assumptions. Explore computer fundamentals, programming, compilers, memory, processors, and operating systems through practical examples.',
+  learningObjective:
+    'By completing this track, you should be able to explain how a computer works, compile a C program, inspect its LLVM IR, understand memory, and follow program execution.',
   level: 'Beginner',
+  prerequisitesLabel: '0 prerequisites',
+  startTopicId: 'what-is-a-computer',
   overviewVideo: YT_OVERVIEW,
   overviewPdf: PDF_SOURCE,
   overviewBlog: '/docs/basic-terminology/overview/',
 };
+
+/** Topics with curriculum fields merged (prereqs, labs, outcomes). */
+export const ENRICHED_TOPICS = TOPICS.map(applyCurriculum);
 
 export function getModuleById(id) {
   return MODULES.find((m) => m.id === id);
 }
 
 export function getTopicById(id) {
-  return TOPICS.find((t) => t.id === id);
+  return ENRICHED_TOPICS.find((t) => t.id === id) || TOPICS.find((t) => t.id === id);
 }
 
 export function topicsForModule(moduleId) {
-  return TOPICS.filter((t) => t.moduleId === moduleId);
+  return ENRICHED_TOPICS.filter((t) => t.moduleId === moduleId);
 }
 
 export function topicCount() {
-  return TOPICS.length;
+  return ENRICHED_TOPICS.length;
+}
+
+export function getStartTopic() {
+  return getTopicById(HUB_META.startTopicId) || ENRICHED_TOPICS[0];
+}
+
+export function recommendedTopics() {
+  return ENRICHED_TOPICS.filter((t) => t.recommended);
 }

@@ -96,9 +96,11 @@ Prereqs, related terms, advanced docs, official references, hub placement.
 
 Do not dump level 5 before the mental model exists.
 
-## 6. Publish what people search (hub)
+## 6. Learning track hub (not a flat catalogue)
 
-Basic Terminology hub cards live in `src/data/basicTerminology/topics.js`:
+Hub UI: `src/components/basicTerminology/LearningHub.jsx`  
+Catalog: `src/data/basicTerminology/topics.js`  
+Curriculum overlay: `src/data/basicTerminology/curriculumMeta.js` (prereqs, learnings, outcomes, labs, module checks, pipeline)
 
 | Field | Role |
 | --- | --- |
@@ -106,6 +108,16 @@ Basic Terminology hub cards live in `src/data/basicTerminology/topics.js`:
 | `searchQueries` | example queries |
 | `moduleId` | correct module (compiler terms → Modules 02/03) |
 | `resources.blog` | prefer `/docs/basic-terminology/…` for high-demand terms |
+| `prerequisites` / `learnings` / `outcome` / `lab` | from `curriculumMeta.js` via `applyCurriculum` |
+
+Hub must:
+
+- Outcome-oriented hero + Start / Continue (localStorage only; no invented auth)
+- Learning roadmap + concept pipeline (Program → … → Process)
+- **Recommended concepts** (curated) — never claim “most searched” without analytics
+- Richer cards: learn / prereqs / lab / outcome / progress status
+- Module labs + knowledge checks only when real content exists
+- Show Watch/PDF/Quiz only for resources that actually exist (no channel-as-video)
 
 **Placement**
 
