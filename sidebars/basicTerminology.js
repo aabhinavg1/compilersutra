@@ -14,6 +14,8 @@ const basicTerminologySidebar = {
           items: [
             'basic-terminology/what-is-a-computer-program',
             'basic-terminology/what-is-a-compiler',
+            'basic-terminology/what-is-an-ast',
+            'basic-terminology/what-is-ir',
           ],
         },
       ],

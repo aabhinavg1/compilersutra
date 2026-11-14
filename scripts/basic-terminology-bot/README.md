@@ -1,6 +1,7 @@
 # Basic Terminology daily bot
 
-Publishes **one beginner concept per day** from the Basic Terminology hub catalog.
+Publishes **one beginner concept per day** from the Basic Terminology hub catalog,
+**weighted by `searchDemand`** so high-search compiler-domain terms (IR, AST, linker, LLVM, …) appear more often than low-demand cards.
 
 ## Generate today’s spotlight
 

@@ -23,9 +23,29 @@ def load_catalog():
 
 
 def pick_topic(topics: list, on: date):
-    # Stable daily rotation from epoch day
-    idx = on.toordinal() % len(topics)
-    return topics[idx], idx
+    """Stable daily pick weighted by searchDemand (default 2).
+
+    High-search compiler terms (IR, AST, linker, LLVM, …) appear more often
+    than low-demand glossary cards, while remaining deterministic per day.
+    """
+    if not topics:
+        raise ValueError("catalog has no topics")
+    weights = []
+    for t in topics:
+        try:
+            d = int(t.get("searchDemand") or 2)
+        except (TypeError, ValueError):
+            d = 2
+        weights.append(max(1, min(5, d)))
+    total = sum(weights)
+    # Day-stable index into the expanded weighted tape
+    slot = on.toordinal() % total
+    acc = 0
+    for i, w in enumerate(weights):
+        acc += w
+        if slot < acc:
+            return topics[i], i
+    return topics[-1], len(topics) - 1
 
 
 def write_markdown(topic: dict, module: dict, on: date, out_path: Path):
