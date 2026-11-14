@@ -354,7 +354,7 @@ export const TOPICS = [
     level: 'beginner',
     searchDemand: 5,
     searchQueries: ['what is an AST', 'abstract syntax tree compiler', 'AST vs parse tree'],
-    minutes: 10,
+    minutes: 30,
     resources: {
       blog: '/docs/basic-terminology/what-is-an-ast/',
       youtube: YT_CHANNEL,

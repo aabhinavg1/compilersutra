@@ -383,7 +383,7 @@
         "abstract syntax tree compiler",
         "AST vs parse tree"
       ],
-      "minutes": 10,
+      "minutes": 30,
       "resources": {
         "blog": "/docs/basic-terminology/what-is-an-ast/",
         "youtube": "https://www.youtube.com/@compilersutra",
