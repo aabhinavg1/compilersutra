@@ -1,111 +1,450 @@
 ---
 title: What Is an AST?
 slug: /basic-terminology/what-is-an-ast
-description: Beginner explanation of an abstract syntax tree (AST) — the structured tree a compiler builds from source after parsing, and how it differs from a parse tree.
+description: Practical Clang tutorial on abstract syntax trees (AST) — dump, filter, and read real AST nodes, compare with LLVM IR, and try hands-on labs.
 keywords:
   - what is an AST
   - abstract syntax tree
-  - AST compiler
-  - parse tree vs AST
+  - clang ast-dump
+  - AST vs parse tree
+  - AST vs LLVM IR
+  - clang AST matchers
   - compiler frontend
   - basic terminology
 sidebar_position: 5
 displayed_sidebar: basicTerminologySidebar
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 <div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 # What Is an AST?
 
-An **AST (abstract syntax tree)** is a tree-shaped representation of your program’s structure after the compiler has tokenized and parsed the source. Nodes are language constructs (expressions, statements, declarations) — not the raw characters you typed.
+An **AST (abstract syntax tree)** is the compiler’s structured tree view of your program after lexical analysis and parsing. Nodes represent language constructs — functions, statements, expressions — not the raw characters in the file.
 
-Reading time: about 8–10 minutes.
+This page is a **learn-by-doing** tutorial. You will create a C file, dump Clang’s AST, read real node names, change the source, and compare the AST with LLVM IR.
+
+Reading time: about 25–35 minutes (with labs).
 
 :::info Quick answer
-**AST** = the compiler’s structured view of “what the program means syntactically,” with most grammar noise removed. Later stages (semantics, IR generation) walk this tree.
+**AST** = structured program tree the frontend builds from source. In Clang, that tree is **semantically enriched** (types and many conversions are already present). It is **not** LLVM IR and **not** the final executable.
 :::
 
-## Where the AST sits in the pipeline
+:::note Verified on this machine
+Commands and dumps below were executed with **Ubuntu clang 18.1.3 (1ubuntu1)**, target `x86_64-pc-linux-gnu`. Node shapes can change across Clang versions. Hex addresses in dumps are **nondeterministic** — redacted here as `0x…`.
+:::
+
+## What you'll learn
+
+- What an AST is and why compilers use one
+- Where it sits in the compilation pipeline
+- AST vs parse tree (and what Clang actually keeps)
+- How to create a file and dump / filter Clang’s AST
+- How to read `FunctionDecl`, `CompoundStmt`, `DeclStmt`, `VarDecl`, `IntegerLiteral`, `BinaryOperator`, `ImplicitCastExpr`, `DeclRefExpr`, `ReturnStmt`
+- How parentheses change the tree (`ParenExpr` in Clang)
+- JSON AST dumps and a first look at LLVM IR
+- Where AST Matchers / clang-tidy fit in real tools
+- Three practical exercises
+
+## A. Concept — What is an AST?
+
+### Simple definition
+
+When you write C, the file is a string of characters. The compiler cannot optimize or type-check characters forever. It builds a **tree** that says: “this is a function; its body is a block; inside is a return of an add of two parameters.”
+
+That tree is the AST.
+
+### Precise definition
+
+An AST is a hierarchical representation of a program’s syntactic structure in which:
+
+- interior nodes are constructs (declarations, statements, expressions),
+- leaves are names, literals, and similar terminals,
+- many concrete grammar details (redundant productions) are abstracted away — **though Clang deliberately keeps some concrete forms** such as parentheses (`ParenExpr`) for tooling.
+
+Official overview: [Introduction to the Clang AST](https://clang.llvm.org/docs/IntroductionToTheClangAST.html).
+
+### Why it exists
+
+| Problem | How the AST helps |
+| :--- | :--- |
+| Source text is hard to analyze | Tree walks are regular |
+| Precedence / nesting are implicit in text | Nesting is explicit in the tree |
+| Tools need to find “all returns” or “all calls” | Match on node kinds |
+| Lowering to IR needs structure | Codegen walks declarations and statements |
+
+## B. Mental model
+
+```text
+Source text          Tokens              AST (Clang)           Later forms
+-----------          ------              -----------           -----------
+"int add..."   ->  int, add, (   ->   FunctionDecl          ->  LLVM IR
+                   ), {, return         CompoundStmt            machine code
+                   a, +, b, ;, }        ReturnStmt / ...
+```
+
+Analogy (limited): a sentence diagram shows subjects and verbs; the AST diagrams declarations and expressions. The analogy stops there — Clang’s AST also carries **types** and **implicit casts**.
+
+## C. Where the AST fits in compilation
 
 ```text
 Source characters
   -> Lexer (tokens)
-  -> Parser (checks grammar)
-  -> AST (structured program)
-  -> Semantic analysis / IR generation
-  -> Optimize / codegen
+  -> Parser + semantic analysis (Clang integrates these closely)
+  -> AST  (TranslationUnitDecl at the top)
+  -> IR generation (e.g. LLVM IR from Clang)
+  -> Optimize IR / backend
+  -> Object / link / run
 ```
 
-You do not need to implement a parser on day one. You do need this order: **text → tokens → tree → lower forms**.
+Important Clang fact (from Clang’s own docs): Clang’s AST **closely resembles the written code and the language rules**, and is a good fit for **refactoring tools**. Semantic information is not a totally separate “phase you never see” — dumps already show types and `ImplicitCastExpr` nodes.
 
-## AST vs parse tree (beginner distinction)
+Different compilers implement trees differently. Do **not** assume GCC’s or another frontend’s dump looks like Clang’s.
 
-| | Parse tree (concrete) | AST (abstract) |
-| :--- | :--- | :--- |
-| Goal | Show how the grammar derived the input | Keep the useful program structure |
-| Detail | Often keeps every grammar production | Drops many punctuation/parenthesis artifacts |
-| Used for | Teaching grammars, some tools | Compiler analyses and transforms |
-
-CompilerSutra’s deeper comparison: [Abstract syntax tree vs parse tree](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree/).
-
-## Tiny example
-
-```c
-int x = a + b * c;
-```
-
-A beginner sketch of an AST for the initializer expression (not a full C AST):
-
-```text
-        =
-       / \
-      x   +
-         / \
-        a   *
-           / \
-          b   c
-```
-
-Multiplication hangs under addition because `*` binds tighter than `+` in C. The AST encodes that structure; the source string alone does not.
-
-Exact Clang AST dumps (`clang -Xclang -ast-dump`) are version- and flag-dependent. Prefer running the dump on your machine over inventing node names.
-
-## How to peek at Clang’s AST (verified workflow)
+## D–E. Lab setup — create a file and check Clang
 
 ```bash
+mkdir -p ~/cs-ast-lab && cd ~/cs-ast-lab
+
+cat > example.c <<'EOF'
+int add(int a, int b) {
+  return a + b;
+}
+EOF
+
 clang --version
+```
+
+**Observed on the authoring host:**
+
+```text
+Ubuntu clang version 18.1.3 (1ubuntu1)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+```
+
+If `clang` is missing, install a Clang package for your OS first. Do not continue with invented dumps.
+
+## F. Generate an AST dump
+
+```bash
 clang -Xclang -ast-dump -fsyntax-only example.c
 ```
 
-- `-fsyntax-only` stops after the frontend semantic checks (no full link)
-- `-Xclang -ast-dump` asks Clang to print its AST
+| Flag | Role |
+| :--- | :--- |
+| `-Xclang …` | Pass the next option to the Clang **cc1** frontend |
+| `-ast-dump` | Print the AST after building it |
+| `-fsyntax-only` | Stop after frontend semantic analysis (no object file / link) |
 
-If the command fails, fix your Clang install first — do not publish a fabricated dump.
+The dump starts with a `TranslationUnitDecl` and many **implicit** builtin typedefs Clang injects. Your code appears as a `FunctionDecl` near the end.
 
-## Why ASTs matter on CompilerSutra
+## G. Filter to one declaration
 
-- **Frontend lessons** (lexer/parser) exist to build or consume trees: [Role of the lexer](/docs/compilers/front_end/role_of_lexer/), [Role of the parser](/docs/compilers/front_end/role_of_parser/).
-- **IR** is usually generated *from* (or after) this structured form: [What Is IR?](/docs/basic-terminology/what-is-ir/).
-- Tools like clang-tidy / AST matchers query tree shapes — advanced, but the mental model starts here.
+Full dumps are noisy. Filter by a substring of a declaration name:
 
-## Common beginner mistakes
+```bash
+clang -Xclang -ast-dump -Xclang -ast-dump-filter=add -fsyntax-only example.c
+```
 
-- Thinking the AST *is* the executable. It is still an internal compiler structure.
-- Assuming every compiler’s AST looks identical. Designs differ; the *idea* is shared.
-- Mixing AST with IR. AST is usually close to the language; IR is usually closer to a machine-neutral instruction form.
+Equivalent form (also verified):
 
-## Practice check
+```bash
+clang -Xclang -ast-dump -Xclang -ast-dump-filter -Xclang add -fsyntax-only example.c
+```
 
-1. What comes before the AST: lexer or backend?
-2. Why drop parentheses into a tree shape?
-3. Name one command family that dumps Clang’s AST.
-4. How is an AST different from LLVM IR?
+### Actual output (excerpt, addresses redacted)
 
-## Next steps
+```text
+Dumping add:
+FunctionDecl 0x… <example.c:1:1, line:3:1> line:1:5 add 'int (int, int)'
+|-ParmVarDecl 0x… <col:9, col:13> col:13 used a 'int'
+|-ParmVarDecl 0x… <col:16, col:20> col:20 used b 'int'
+`-CompoundStmt 0x… <col:23, line:3:1>
+  `-ReturnStmt 0x… <line:2:3, col:14>
+    `-BinaryOperator 0x… <col:10, col:14> 'int' '+'
+      |-ImplicitCastExpr 0x… <col:10> 'int' <LValueToRValue>
+      | `-DeclRefExpr 0x… <col:10> 'int' lvalue ParmVar 0x… 'a' 'int'
+      `-ImplicitCastExpr 0x… <col:14> 'int' <LValueToRValue>
+        `-DeclRefExpr 0x… <col:14> 'int' lvalue ParmVar 0x… 'b' 'int'
+```
 
-1. [What Is IR?](/docs/basic-terminology/what-is-ir/) — the form after (or beside) frontend trees  
-2. [AST vs parse tree](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree/) — deeper CompilerSutra article  
-3. [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/)  
-4. [Basic Terminology hub](/docs/basic-terminology/) — Module 03 · Compilation & Execution  
+:::caution This is not a full translation-unit AST
+The filter shows **one declaration** (`add`). The real top of the TU is still `TranslationUnitDecl` with implicit builtins. Always remember: filtered dumps are excerpts.
+:::
 
-Hub placement: **Module 03 — Compilation & Execution**, with lexer/parser/IR neighbors.
+## H. Read the nodes (line-by-line)
+
+| Node | What it means in this dump |
+| :--- | :--- |
+| `FunctionDecl` | Function `add` with type `int (int, int)` |
+| `ParmVarDecl` | Parameters `a` and `b` |
+| `CompoundStmt` | The `{ … }` body |
+| `ReturnStmt` | The `return` statement |
+| `BinaryOperator` `'+'` | The `a + b` expression |
+| `DeclRefExpr` | A reference to a declared name (`a` / `b`) |
+| `ImplicitCastExpr` `<LValueToRValue>` | Clang inserts a read of the variable’s value (semantic enrichment) |
+
+Nodes you will meet next in the labs:
+
+| Node | Typical meaning |
+| :--- | :--- |
+| `DeclStmt` | A statement that holds a declaration (e.g. `int x = 42;`) |
+| `VarDecl` | A variable declaration |
+| `IntegerLiteral` | An integer constant like `42` |
+| `IfStmt` | An `if` statement |
+| `UnaryOperator` | e.g. unary `-` |
+| `ParenExpr` | Explicit parentheses in the source (Clang keeps these) |
+
+## I. Operator precedence — watch the tree change
+
+### Source A — `a + b * c`
+
+```bash
+cat > expr.c <<'EOF'
+int expr(int a, int b, int c) {
+  return a + b * c;
+}
+EOF
+
+clang -Xclang -ast-dump -Xclang -ast-dump-filter=expr -fsyntax-only expr.c
+```
+
+**Actual excerpt (18.1.3):** the outer operator is `'+'`; its right child is a `'*'` `BinaryOperator`. So the tree encodes **`a + (b * c)`** even without parentheses in the source.
+
+### Source B — `(a + b) * c`
+
+```bash
+cat > expr_paren.c <<'EOF'
+int expr_paren(int a, int b, int c) {
+  return (a + b) * c;
+}
+EOF
+
+clang -Xclang -ast-dump -Xclang -ast-dump-filter=expr_paren -fsyntax-only expr_paren.c
+```
+
+**Actual excerpt (18.1.3):** the outer operator is `'*'`; its left child is a **`ParenExpr`** wrapping a `'+'` `BinaryOperator`.
+
+:::tip Clang vs “generic textbook AST”
+Many textbooks say parentheses “disappear” into tree shape. **Clang keeps `ParenExpr`** so tools can see the written grouping ([Clang AST intro](https://clang.llvm.org/docs/IntroductionToTheClangAST.html)). Grouping still changes which `BinaryOperator` is the root of the expression.
+:::
+
+## J. JSON AST output
+
+```bash
+clang -Xclang -ast-dump=json -Xclang -ast-dump-filter=add -fsyntax-only example.c | head
+```
+
+**Actual start of output (18.1.3, truncated):**
+
+```json
+{
+  "id": "0x…",
+  "kind": "FunctionDecl",
+  "loc": {
+    "offset": 4,
+    "file": "example.c",
+    "line": 1,
+    "col": 5,
+    "tokLen": 3
+  },
+  "name": "add",
+  "type": {
+    "qualType": "int (int, int)"
+  },
+  "inner": [
+    …
+  ]
+}
+```
+
+JSON is useful for scripts. The text dump is usually better for learning by eye. Supported formats via cc1 help include `default` and `json` (verified with `clang -cc1 -help` on 18.1.3).
+
+## K–L. Generate LLVM IR and compare with the AST
+
+```bash
+clang -S -emit-llvm -O0 example.c -o example.ll
+cat example.ll
+```
+
+**Actual IR excerpt (18.1.3, `-O0`, same `example.c`):**
+
+```llvm
+define dso_local i32 @add(i32 noundef %0, i32 noundef %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  store i32 %0, ptr %3, align 4
+  store i32 %1, ptr %4, align 4
+  %5 = load i32, ptr %3, align 4
+  %6 = load i32, ptr %4, align 4
+  %7 = add nsw i32 %5, %6
+  ret i32 %7
+}
+```
+
+| | Clang AST | LLVM IR |
+| :--- | :--- | :--- |
+| Level | Language-oriented tree (`FunctionDecl`, `ReturnStmt`, …) | SSA-ish instructions (`load`, `add`, `ret`) |
+| Types | C types on nodes (`'int'`) | LLVM types (`i32`) |
+| Purpose | Understand / check / refactor source structure | Optimize and lower toward machine code |
+| Dump | `-Xclang -ast-dump` | `-S -emit-llvm` |
+
+Same program, two different representations. See also [What Is Intermediate Representation (IR)?](/docs/basic-terminology/what-is-ir/).
+
+## M. Real-world applications — AST Matchers and clang-tidy
+
+Production tools walk or match the Clang AST:
+
+- **AST Matchers** — C++ combinators to find AST shapes ([LibASTMatchers](https://clang.llvm.org/docs/LibASTMatchers.html))
+- **clang-tidy** — linters/refactors built on Clang’s AST libraries
+- **clang-query** — interactive matcher experimentation (when installed)
+
+:::note Not installed on the authoring host
+`clang-tidy` was **not** available in `PATH` when this article was verified (`command not found`). Install `clang-tidy` from your distribution’s LLVM/Clang packages to try matchers locally. The documentation links above remain authoritative.
+:::
+
+## Practical lab — three exercises
+
+### Exercise 1 — Variable declarations and literals
+
+**Goal:** Find `DeclStmt`, `VarDecl`, `IntegerLiteral`, `ReturnStmt`.
+
+```bash
+cat > vars.c <<'EOF'
+int main(void) {
+  int x = 42;
+  return x;
+}
+EOF
+
+clang -Xclang -ast-dump -Xclang -ast-dump-filter=main -fsyntax-only vars.c
+```
+
+**Inspect:** the `DeclStmt` wrapping `VarDecl x`, the `IntegerLiteral 42`, and the `ImplicitCastExpr` on `return x`.
+
+**Learning outcome:** declarations and statements are distinct node kinds; reading a variable inserts an lvalue-to-rvalue cast in Clang’s AST.
+
+<details>
+<summary>Verified excerpt (clang 18.1.3)</summary>
+
+```text
+Dumping main:
+FunctionDecl 0x… <vars.c:1:1, line:4:1> line:1:5 main 'int (void)'
+`-CompoundStmt 0x… <col:16, line:4:1>
+  |-DeclStmt 0x… <line:2:3, col:13>
+  | `-VarDecl 0x… <col:3, col:11> col:7 used x 'int' cinit
+  |   `-IntegerLiteral 0x… <col:11> 'int' 42
+  `-ReturnStmt 0x… <line:3:3, col:10>
+    `-ImplicitCastExpr 0x… <col:10> 'int' <LValueToRValue>
+      `-DeclRefExpr 0x… <col:10> 'int' lvalue Var 0x… 'x' 'int'
+```
+
+</details>
+
+### Exercise 2 — Arithmetic and precedence
+
+**Goal:** Compare `a + b * c` vs `(a + b) * c`.
+
+Use the `expr.c` / `expr_paren.c` commands from section I.
+
+**Inspect:** which `BinaryOperator` is outer; whether a `ParenExpr` appears.
+
+**Learning outcome:** precedence and parentheses change tree shape; Clang records parentheses explicitly.
+
+### Exercise 3 — Conditions, comparisons, returns
+
+**Goal:** Read `IfStmt`, comparison `BinaryOperator`, `UnaryOperator`, two `ReturnStmt`s.
+
+```bash
+cat > cond.c <<'EOF'
+int abs_like(int x) {
+  if (x < 0)
+    return -x;
+  return x;
+}
+EOF
+
+clang -Xclang -ast-dump -Xclang -ast-dump-filter=abs_like -fsyntax-only cond.c
+```
+
+**Inspect:** `IfStmt` children (condition + then); `'<'` operator; prefix `'-'`; the final `return x`.
+
+**Learning outcome:** control flow is structured in the AST before IR; comparisons and unary ops are first-class nodes.
+
+<details>
+<summary>Verified excerpt (clang 18.1.3)</summary>
+
+```text
+Dumping abs_like:
+FunctionDecl 0x… <cond.c:1:1, line:5:1> line:1:5 abs_like 'int (int)'
+|-ParmVarDecl 0x… <col:14, col:18> col:18 used x 'int'
+`-CompoundStmt 0x… <col:21, line:5:1>
+  |-IfStmt 0x… <line:2:3, line:3:13>
+  | |-BinaryOperator 0x… <line:2:7, col:11> 'int' '<'
+  | | |-ImplicitCastExpr 0x… <col:7> 'int' <LValueToRValue>
+  | | | `-DeclRefExpr 0x… <col:7> 'int' lvalue ParmVar 0x… 'x' 'int'
+  | | `-IntegerLiteral 0x… <col:11> 'int' 0
+  | `-ReturnStmt 0x… <line:3:5, col:13>
+  |   `-UnaryOperator 0x… <col:12, col:13> 'int' prefix '-'
+  |     `-ImplicitCastExpr 0x… <col:13> 'int' <LValueToRValue>
+  |       `-DeclRefExpr 0x… <col:13> 'int' lvalue ParmVar 0x… 'x' 'int'
+  `-ReturnStmt 0x… <line:4:3, col:10>
+    `-ImplicitCastExpr 0x… <col:10> 'int' <LValueToRValue>
+      `-DeclRefExpr 0x… <col:10> 'int' lvalue ParmVar 0x… 'x' 'int'
+```
+
+</details>
+
+## Common misconceptions
+
+| Misconception | Correction |
+| :--- | :--- |
+| “The AST is the executable.” | No — it is an internal frontend structure. |
+| “Every compiler’s AST looks like Clang’s.” | Node sets and dumps differ by implementation. |
+| “AST = LLVM IR.” | IR is a later, usually language-neutral instruction form. |
+| “This filtered dump is the whole TU.” | Filters omit `TranslationUnitDecl` builtins and other decls. |
+| “Parentheses never appear as nodes.” | In **Clang**, `ParenExpr` exists (verified + documented). |
+| “Addresses in dumps are stable IDs.” | Pointers change between runs — do not key on them. |
+
+## Knowledge check
+
+1. **Concept:** What problem does an AST solve that raw source text does not?
+2. **Practical:** Which flags dump Clang’s AST without producing a binary?
+3. **Reasoning:** In `a + b * c`, why is `*` deeper than `+` in the AST?
+4. **Application:** You are writing a tool to find every `return` in a function. Do you match AST nodes or grep the `.c` file? Why?
+
+<details>
+<summary>Answers</summary>
+
+1. It makes structure (decls/stmts/exprs), nesting, and (in Clang) types/casts explicit for analysis and tooling.  
+2. `clang -Xclang -ast-dump -fsyntax-only file.c` (optionally with `-ast-dump-filter=…`).  
+3. C precedence binds `*` tighter; the dump shows a `'+'` whose RHS is a `'*'` operator.  
+4. Prefer AST (or matchers): grepping misses macros, formatting, and nested contexts; AST nodes are structured.
+
+</details>
+
+## Further learning
+
+| Resource | Why |
+| :--- | :--- |
+| [What Is IR?](/docs/basic-terminology/what-is-ir/) | Next representation after the frontend tree |
+| [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/) | Big-picture placement |
+| [AST vs parse tree](/docs/compilers/parsers/abstract-syntax-tree-vs-parse-tree/) | Deeper CompilerSutra comparison |
+| [Role of the lexer](/docs/compilers/front_end/role_of_lexer/) / [parser](/docs/compilers/front_end/role_of_parser/) | How tokens and trees are produced |
+| [Clang AST intro](https://clang.llvm.org/docs/IntroductionToTheClangAST.html) | Official dump walkthrough |
+| [LibASTMatchers](https://clang.llvm.org/docs/LibASTMatchers.html) | Real tooling API |
+| [LLVM Language Reference](https://llvm.org/docs/LangRef.html) | What IR instructions mean |
+| [Basic Terminology hub](/docs/basic-terminology/) | Module 03 · Compilation & Execution |
+
+<Tabs>
+  <TabItem value="path" label="Hub placement" default>
+    Module 03 — Compilation & Execution, beside lexer / parser / IR / object-file cards.
+  </TabItem>
+  <TabItem value="levels" label="Progression">
+    1. Concept → 2. Pipeline → 3. Dump & read nodes → 4. Precedence labs → 5. IR comparison → 6. Matchers / tidy (install tools)
+  </TabItem>
+</Tabs>
