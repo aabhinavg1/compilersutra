@@ -234,7 +234,7 @@ const config = {
             items: [
               {
                 label: 'CompilerSutra Weekly',
-                href: 'https://compilersutra.github.io/compilersutra-weekly/index.html',
+                href: '/weekly/',
               },
               { label: 'All Articles', to: '/docs/articles' },
               { label: 'Weekly Problems', to: '/docs/weekly-problems/' },
@@ -326,7 +326,7 @@ const config = {
             items: [
               {
                 label: 'CompilerSutra Weekly',
-                href: 'https://compilersutra.github.io/compilersutra-weekly/index.html',
+                href: '/weekly/',
               },
               { label: 'WhatsApp Community', href: 'https://chat.whatsapp.com/C5lBzje4CjvLTZBhS0O92x' },
               { label: 'YouTube Channel', href: 'https://www.youtube.com/@compilersutra' },
