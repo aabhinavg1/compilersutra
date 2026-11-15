@@ -14,16 +14,19 @@ sidebar_position: 7
 displayed_sidebar: basicTerminologySidebar
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 <div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 # What Is LLVM?
 
 **LLVM** is a **compiler infrastructure**: a shared intermediate representation (LLVM IR), a library of analysis and transform passes, and backends that turn that IR into machine code for many CPUs. You usually meet it through **Clang**, a C/C++ frontend that lowers your source into LLVM IR and then uses the rest of the LLVM stack.
 
-This page is a learn-by-doing tutorial. You will emit real LLVM IR, compare `-O0` vs `-O1`, run `llc` to assembly, and see why Clang ≠ LLVM.
+This Basic Terminology page is the **short, hands-on entry**. You will emit real LLVM IR, compare `-O0` vs `-O1`, run `llc` to assembly, and see why Clang ≠ LLVM. For the full architecture story (history, design rationale, deeper examples), use the existing longform article — do not treat this page as a second copy of it:
+
+:::tip Same topic — go deeper next
+**Longform (already on the site):** [LLVM Explained: Architecture, IR, and Clang](/docs/llvm/llvm_basic/intro-to-llvm/)  
+**Curriculum map:** [LLVM Roadmap](/docs/llvm/intro-to-llvm/)  
+**Hands-on IR path:** [How Clang Converts C/C++ Into LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir/) · [Your First LLVM IR File](/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/)
+:::
 
 Reading time: about 20–30 minutes (with labs).
 
@@ -37,14 +40,14 @@ Commands and dumps below were executed with **Ubuntu clang / LLVM 18.1.3 (1ubunt
 
 ## What you'll learn
 
-- What LLVM is and why it exists
+- What LLVM is and why it exists (beginner framing)
 - How Clang, LLVM IR, `opt`, and `llc` relate
 - Where LLVM sits after the AST / IR story on this hub
 - How to emit `.ll` text and bitcode with Clang
 - How to read a tiny `@add` function in LLVM IR
 - How `-O0` and `-O1` change the IR (verified)
 - How `llc` lowers IR to assembly
-- Common misconceptions and a short knowledge check
+- Which existing CompilerSutra LLVM articles to open next (no duplicated long essays)
 
 ## Prerequisites
 
@@ -69,7 +72,9 @@ In practice, “LLVM” refers to:
 | **LLVM IR** | Typed SSA-friendly intermediate language (text `.ll` or bitcode `.bc`) |
 | **Pass pipeline** | Analyses and transforms (`opt`, and passes inside Clang/`llc`) |
 | **Codegen / backends** | Lower IR toward a machine (`llc`, target libraries) |
-| **Tooling** | Disassemblers, linkers helpers, sanitizers, JIT APIs, and more |
+| **Tooling** | Disassemblers, linker helpers, sanitizers, JIT APIs, and more |
+
+**Name note:** LLVM originally stood for *Low-Level Virtual Machine*. Today it is treated as a proper name for the whole infrastructure — not a traditional VM you “install and run apps on.” Details and history live in [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/).
 
 Official overview: [The LLVM Compiler Infrastructure](https://llvm.org/).
 
@@ -81,6 +86,8 @@ Official overview: [The LLVM Compiler Infrastructure](https://llvm.org/).
 | New CPU support per language | Add/maintain a backend once for many frontends |
 | Hard to inspect “what the compiler sees” | Dump LLVM IR and run passes yourself |
 | Research / tooling need a stable mid-level form | IR is a common engineering surface |
+
+For “why LLVM won” and architecture depth, prefer the existing pages: [Why LLVM?](/docs/llvm/llvm_basic/Why_LLVM/) · [High-Level LLVM Architecture](/docs/llvm/llvm_basic/LLVM_Architecture/) · [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/).
 
 ## B. Mental model
 
@@ -259,15 +266,15 @@ Verified: with Clang 18 `-O0` IR, `mem2reg` left the alloca form in place becaus
 
 ## I. Real-world applications
 
-| Tool / workflow | How LLVM shows up |
-| :--- | :--- |
-| **Clang / clang++** | Daily C/C++ builds on LLVM |
-| **clang-tidy / clangd** | Clang tooling on the AST; often shipped with LLVM releases |
-| **Sanitizers** (ASan, UBSan, …) | Instrumentation passes in the LLVM/Clang stack |
-| **Rust, Zig, and others** | Different frontends, same idea: lower to LLVM IR (project-dependent) |
-| **GPU / research compilers** | Many reuse LLVM or LLVM-like IRs (details vary — verify per project) |
+| Tool / workflow | How LLVM shows up | Existing article |
+| :--- | :--- | :--- |
+| **Clang / clang++** | Daily C/C++ builds on LLVM | [Clang → LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir/) |
+| **IR inspection** | Dump and read `.ll` | [First IR File Line by Line](/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/) · [Intro to LLVM IR](/docs/llvm/llvm_ir/intro_to_llvm_ir/) |
+| **`opt` / `llc`** | Transform IR / emit asm | [LLVM Tools](/docs/llvm/llvm_tools/llvm_tools/) |
+| **Passes** | Custom analysis/transforms | [What Is LLVM Passes?](/docs/llvm/Intermediate/What_Is_LLVM_Passes/) · [Pass Tracker](/docs/llvm/llvm_pass_tracker/llvm_pass/) |
+| **Clang vs GCC** | Different infrastructures | [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/) |
 
-Deeper on this site: [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/), [IR in Compilers](/docs/compilers/ir_in_compiler/), [LLVM tutorials](/docs/llvm/intro-to-llvm).
+Do not rewrite those tutorials here — open them when you finish the labs above.
 
 ## J. Common misconceptions
 
@@ -311,15 +318,34 @@ So optimizers and backends can be reused instead of rewritten per language.
 
 ## L. Further learning
 
-1. [What Is Intermediate Representation (IR)?](/docs/basic-terminology/what-is-ir/) — IR as a general idea  
-2. [What Is an AST?](/docs/basic-terminology/what-is-an-ast/) — Clang’s tree before IR gen  
-3. [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/) — full pipeline  
-4. [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/) — comparisons  
-5. [LLVM tutorials hub](/docs/llvm/intro-to-llvm) — longer track  
-6. Official: [llvm.org](https://llvm.org/) · [Clang AST intro](https://clang.llvm.org/docs/IntroductionToTheClangAST.html)
+### Same topic (preferred next)
+
+1. **[LLVM Explained: Architecture, IR, and Clang](/docs/llvm/llvm_basic/intro-to-llvm/)** — the main longform “What is LLVM?” article on CompilerSutra  
+2. [Why LLVM?](/docs/llvm/llvm_basic/Why_LLVM/) — design motivation  
+3. [High-Level LLVM Architecture](/docs/llvm/llvm_basic/LLVM_Architecture/) — frontend / middle / backend picture  
+
+### Hands-on IR (already written)
+
+4. [How Clang Converts C/C++ Into LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir/)  
+5. [Your First LLVM IR File Line by Line](/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/)  
+6. [Introduction to LLVM IR](/docs/llvm/llvm_ir/intro_to_llvm_ir/)  
+7. [LLVM Tools (`opt`, `llc`, …)](/docs/llvm/llvm_tools/llvm_tools/)  
+
+### Basic Terminology neighbors
+
+8. [What Is Intermediate Representation (IR)?](/docs/basic-terminology/what-is-ir/)  
+9. [What Is an AST?](/docs/basic-terminology/what-is-an-ast/)  
+10. [What Is a Compiler?](/docs/basic-terminology/what-is-a-compiler/)  
+
+### Track maps
+
+11. [LLVM Roadmap (Beginner → Advanced)](/docs/llvm/intro-to-llvm/)  
+12. [LLVM and IR Track](/docs/tracks/llvm-and-ir/)  
+13. [Clang vs GCC vs LLVM](/docs/compilers/clang-vs-gcc-vs-llvm/)  
+14. Official: [llvm.org](https://llvm.org/)
 
 Hub placement: **Module 03 — Compilation & Execution**, after IR / AST, before machine code and linking deep dives.
 
 ---
 
-**Publication status:** READY FOR REVIEW — commands and dumps verified on Ubuntu clang/LLVM 18.1.3 (`x86_64-pc-linux-gnu`).
+**Publication status:** READY FOR REVIEW — labs verified on Ubuntu clang/LLVM 18.1.3 (`x86_64-pc-linux-gnu`); longform content deferred to existing `/docs/llvm/llvm_basic/intro-to-llvm/`.
