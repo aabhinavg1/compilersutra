@@ -9,6 +9,7 @@ import CodeBlock from './CodeBlock';
 import { resolveFlagPathValue, buildFlagArticlePath } from './flagRoutes';
 import { buildPipelineTrail, buildImplementationTrail } from './flagTrails';
 import { findFlagOption, getPublicFlag, joinList, uniqueValues } from './utils';
+import { shouldIndexClangFlagPath } from '@site/src/data/clang-flags/handAuthoredIndex';
 import styles from './clangFlags.module.css';
 
 function buildHeadingId(text, index) {
@@ -455,10 +456,17 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
     }
   };
 
+  const articlePath = buildFlagArticlePath(resolveFlagPathValue(flagPath) || flagPath);
+  const allowIndexing = shouldIndexClangFlagPath(articlePath);
+
   return (
     <>
       <Head>
         <meta name="description" content={heroSummary} />
+        <meta
+          name="robots"
+          content={allowIndexing ? 'index, follow, max-image-preview:large' : 'noindex, follow'}
+        />
       </Head>
 
       <main className={styles.articlePageShell}>

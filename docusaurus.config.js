@@ -36,7 +36,48 @@ const config = {
             '/markdown-page/**',
             '/docs/tags',
             '/docs/tags/**',
+            // Case-duplicate of /about_us/
+            '/About_us',
+            '/About_us/',
           ],
+          async createSitemapItems(params) {
+            const { defaultCreateSitemapItems, ...rest } = params;
+            const items = await defaultCreateSitemapItems(rest);
+            const allowlist = require('./src/data/clang-flags/handAuthoredSitemapPaths.json');
+            const authored = new Set(allowlist.paths || []);
+
+            const normalize = (pathname) => {
+              let p = String(pathname || '');
+              if (!p.startsWith('/')) p = `/${p}`;
+              if (!p.endsWith('/')) p += '/';
+              return p;
+            };
+
+            const seen = new Set();
+            return items.filter((item) => {
+              try {
+                const pathname = normalize(new URL(item.url).pathname);
+                const key = pathname.toLowerCase();
+                if (seen.has(key)) return false;
+                seen.add(key);
+
+                // Drop stub clang-flag pages (keep hub + HAND_AUTHORED only).
+                if (pathname.startsWith('/tools/clang-flags/')) {
+                  if (pathname === '/tools/clang-flags/') return true;
+                  return authored.has(pathname);
+                }
+
+                if (pathname.toLowerCase() === '/about_us/' && pathname !== '/about_us/') {
+                  return false;
+                }
+                if (pathname === '/About_us/') return false;
+
+                return true;
+              } catch {
+                return true;
+              }
+            });
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -108,6 +149,10 @@ const config = {
               '/docs/compilers/inside-a-compiler/',
               '/docs/compilers/inside-a-compiler-source-to-assembly/',
             ],
+          },
+          {
+            to: '/about_us/',
+            from: ['/About_us/'],
           },
         ],
       },

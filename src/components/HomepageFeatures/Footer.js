@@ -30,7 +30,7 @@ const Footer = () => {
     <FooterContainer>
       <p>&copy; 2024 Compiler Education for All. All rights reserved.</p>
       <FooterLinks>
-        <FooterLink href="About_us">
+        <FooterLink href="/about_us/">
           About Us
         </FooterLink>
         <FooterLink href="https://www.linkedin.com/in/abhinavcompilerllvm/">Contact</FooterLink>
