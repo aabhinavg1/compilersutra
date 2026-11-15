@@ -12,6 +12,20 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/weekly",
+      "destination": "https://compilersutra.github.io/compilersutra-weekly/"
+    },
+    {
+      "source": "/weekly/",
+      "destination": "https://compilersutra.github.io/compilersutra-weekly/"
+    },
+    {
+      "source": "/weekly/:path*",
+      "destination": "https://compilersutra.github.io/compilersutra-weekly/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
