@@ -49,6 +49,7 @@ const parallel = {
             'parallel-computing/no-language-for-those-units',
             'parallel-computing/from-graphics-pipeline-to-a-kernel',
             'parallel-computing/cuda-host-device-copy',
+            'parallel-computing/cuda-grids-blocks-threads',
           ],
         },
         {
