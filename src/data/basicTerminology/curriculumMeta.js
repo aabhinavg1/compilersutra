@@ -14,6 +14,7 @@ export const CONCEPT_PIPELINE = [
   { id: 'what-is-a-parser', label: 'Parser' },
   { id: 'what-is-an-ast', label: 'AST' },
   { id: 'what-is-ir', label: 'IR' },
+  { id: 'what-is-llvm', label: 'LLVM' },
   { id: 'what-is-machine-code', label: 'Machine code' },
   { id: 'what-is-a-linker', label: 'Linker' },
   { id: 'what-is-a-loader', label: 'Loader' },
@@ -299,8 +300,20 @@ export const TOPIC_CURRICULUM = {
   },
   'what-is-llvm': {
     prerequisites: ['what-is-ir', 'what-is-a-compiler'],
-    learnings: ['LLVM as a compiler infrastructure', 'Clang + LLVM IR relationship'],
-    outcome: 'Place LLVM in the modern compiler toolchain.',
+    learnings: [
+      'LLVM as compiler infrastructure (IR, passes, backends)',
+      'How Clang relates to LLVM',
+      'How to emit and inspect LLVM IR with Clang',
+    ],
+    outcome: 'Explain LLVM vs Clang and dump / compare LLVM IR at -O0 and -O1.',
+    lab: {
+      title: 'Emit LLVM IR and compare -O0 vs -O1',
+      commands: [
+        'printf \'int add(int a,int b){return a+b;}\\n\' > add.c',
+        'clang -S -emit-llvm -O0 add.c -o add.O0.ll',
+        'clang -S -emit-llvm -O1 add.c -o add.O1.ll && cat add.O1.ll',
+      ],
+    },
     recommended: true,
   },
   'what-is-memory-ram': {

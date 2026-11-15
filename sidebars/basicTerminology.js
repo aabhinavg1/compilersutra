@@ -16,6 +16,7 @@ const basicTerminologySidebar = {
             'basic-terminology/what-is-a-compiler',
             'basic-terminology/what-is-an-ast',
             'basic-terminology/what-is-ir',
+            'basic-terminology/what-is-llvm',
           ],
         },
       ],

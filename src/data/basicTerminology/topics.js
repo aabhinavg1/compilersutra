@@ -394,7 +394,7 @@ export const TOPICS = [
       youtube: YT_CHANNEL,
       pdf: PDF_LLVM,
     },
-    related: ['what-is-an-ast', 'what-is-a-compiler', 'what-is-machine-code'],
+    related: ['what-is-an-ast', 'what-is-a-compiler', 'what-is-llvm', 'what-is-machine-code'],
   },
   {
     id: 'what-is-an-object-file',
@@ -537,17 +537,16 @@ export const TOPICS = [
     slug: 'what-is-llvm',
     title: 'What Is LLVM?',
     description: 'Compiler infrastructure (IR, passes, backends) — Clang is a frontend that targets LLVM, not “the LLVM language.”',
-    moduleId: 'programming-fundamentals',
+    moduleId: 'compilation-execution',
     level: 'beginner',
     searchDemand: 5,
     searchQueries: ['what is LLVM', 'LLVM vs Clang', 'LLVM IR'],
-    minutes: 10,
+    minutes: 25,
     resources: {
-      blog: '/docs/compilers/clang-vs-gcc-vs-llvm/',
-      youtube: YT_CHANNEL,
+      blog: '/docs/basic-terminology/what-is-llvm/',
       pdf: PDF_LLVM,
     },
-    related: ['what-is-a-compiler', 'what-is-ir', 'what-is-machine-code'],
+    related: ['what-is-a-compiler', 'what-is-ir', 'what-is-an-ast', 'what-is-machine-code'],
   },
 
   // Module 04
