@@ -6,7 +6,14 @@
       "title": "Computer Fundamentals",
       "tagline": "Understand the machine",
       "level": "Foundation",
-      "description": "Hardware, software, and the operating system that sits between them."
+      "description": "Hardware, software, and the operating system that sits between them.",
+      "objective": "Explain what a computer is, how hardware and software cooperate, and why binary representation matters.",
+      "labSummary": "Convert a small decimal value to binary and inspect your machine with free/lscpu.",
+      "labCommands": [
+        "printf \"%d → \" 13; echo \"obase=2; 13\" | bc",
+        "lscpu | head -n 20",
+        "free -h"
+      ]
     },
     {
       "id": "programming-fundamentals",
@@ -14,7 +21,13 @@
       "title": "Programming Fundamentals",
       "tagline": "Understand programs and code",
       "level": "Foundation",
-      "description": "Programs, source code, languages, compilers, and interpreters."
+      "description": "Programs, source code, languages, compilers, and interpreters.",
+      "objective": "Describe a program, source code, and languages — and distinguish compilers from interpreters.",
+      "labSummary": "Write and run a tiny C program with Clang.",
+      "labCommands": [
+        "printf '#include <stdio.h>\\nint main(void){puts(\"hello\");}\\n' > hello.c",
+        "clang hello.c -o hello && ./hello"
+      ]
     },
     {
       "id": "compilation-execution",
@@ -22,7 +35,14 @@
       "title": "Compilation & Execution",
       "tagline": "Understand how code becomes a running program",
       "level": "Core concepts",
-      "description": "Machine code, executables, linking, loading, and what happens at run time."
+      "description": "Frontend stages (lexer, parser, AST, IR), then object files, linking, loading, and run-time start.",
+      "objective": "Trace source code through frontend stages, IR, object files, linking, loading, and process start.",
+      "labSummary": "Compile with Clang, emit AST and LLVM IR, then inspect the binary.",
+      "labCommands": [
+        "clang -Xclang -ast-dump -fsyntax-only hello.c | head",
+        "clang -S -emit-llvm hello.c -o hello.ll && head hello.ll",
+        "clang -c hello.c -o hello.o && file hello.o hello"
+      ]
     },
     {
       "id": "memory-storage",
@@ -30,7 +50,13 @@
       "title": "Memory & Storage",
       "tagline": "Understand where data lives",
       "level": "Computer architecture",
-      "description": "RAM, storage, cache, virtual memory, and the file system."
+      "description": "RAM, storage, cache, virtual memory, and the file system.",
+      "objective": "Explain where program data lives: RAM, cache, virtual memory, storage, and the file system.",
+      "labSummary": "Inspect system memory and process address-space clues.",
+      "labCommands": [
+        "free -h",
+        "cat /proc/self/maps | head"
+      ]
     },
     {
       "id": "processing-hardware",
@@ -38,7 +64,13 @@
       "title": "Processing & Hardware",
       "tagline": "Understand the chips that execute work",
       "level": "Computer architecture",
-      "description": "CPU, GPU, instructions, and the instruction set architecture."
+      "description": "CPU, GPU, instructions, and the instruction set architecture.",
+      "objective": "Describe CPU vs GPU roles, instructions, and ISA — enough to read architecture docs.",
+      "labSummary": "Explore CPU identity and instruction-set features on Linux.",
+      "labCommands": [
+        "lscpu",
+        "grep -m1 \"^model name\" /proc/cpuinfo"
+      ]
     },
     {
       "id": "operating-systems",
@@ -46,7 +78,13 @@
       "title": "Operating Systems & Processes",
       "tagline": "Understand the execution model",
       "level": "Execution model",
-      "description": "Processes, threads, system calls, the kernel, and context switching."
+      "description": "Processes, threads, system calls, the kernel, and context switching.",
+      "objective": "Connect processes, threads, system calls, the kernel, and context switching to real program execution.",
+      "labSummary": "Inspect processes and a live process status file.",
+      "labCommands": [
+        "ps aux | head",
+        "cat /proc/self/status | head"
+      ]
     }
   ],
   "topics": [
@@ -417,6 +455,7 @@
       "related": [
         "what-is-an-ast",
         "what-is-a-compiler",
+        "what-is-llvm",
         "what-is-machine-code"
       ]
     },
@@ -625,7 +664,7 @@
       "slug": "what-is-llvm",
       "title": "What Is LLVM?",
       "description": "Compiler infrastructure (IR, passes, backends) — Clang is a frontend that targets LLVM, not “the LLVM language.”",
-      "moduleId": "programming-fundamentals",
+      "moduleId": "compilation-execution",
       "level": "beginner",
       "searchDemand": 5,
       "searchQueries": [
@@ -633,15 +672,15 @@
         "LLVM vs Clang",
         "LLVM IR"
       ],
-      "minutes": 10,
+      "minutes": 25,
       "resources": {
-        "blog": "/docs/compilers/clang-vs-gcc-vs-llvm/",
-        "youtube": "https://www.youtube.com/@compilersutra",
+        "blog": "/docs/basic-terminology/what-is-llvm/",
         "pdf": "/papers/llvm_intro.pdf"
       },
       "related": [
         "what-is-a-compiler",
         "what-is-ir",
+        "what-is-an-ast",
         "what-is-machine-code"
       ]
     },
@@ -950,40 +989,50 @@
   "learningPath": [
     {
       "step": 1,
-      "title": "Understand the computer",
-      "detail": "Hardware → Software → Operating System",
+      "title": "Computer fundamentals",
+      "detail": "Computer → Hardware → Software → OS",
       "moduleId": "computer-fundamentals"
     },
     {
       "step": 2,
-      "title": "Understand programming",
-      "detail": "Program → Source Code → Programming Language",
+      "title": "Programming fundamentals",
+      "detail": "Program → Source → Language → Compiler vs interpreter",
       "moduleId": "programming-fundamentals"
     },
     {
       "step": 3,
-      "title": "Understand compilation",
-      "detail": "Compiler → Intermediate Representation → Machine Code",
+      "title": "How programs are built & run",
+      "detail": "Lexer → Parser → AST → IR → Object → Linker → Loader",
       "moduleId": "compilation-execution"
     },
     {
       "step": 4,
-      "title": "Understand execution",
-      "detail": "Executable → Loader → Process → Thread",
-      "moduleId": "operating-systems"
+      "title": "Memory and data",
+      "detail": "RAM → Cache → Virtual memory → Storage → File system",
+      "moduleId": "memory-storage"
     },
     {
       "step": 5,
-      "title": "Understand the hardware",
-      "detail": "CPU → Memory → Cache → GPU → ISA",
+      "title": "CPU and GPU architecture",
+      "detail": "CPU → Instruction → ISA → GPU",
       "moduleId": "processing-hardware"
+    },
+    {
+      "step": 6,
+      "title": "Operating systems and runtime",
+      "detail": "Process → Thread → Kernel → System call → Context switch",
+      "moduleId": "operating-systems"
     }
   ],
   "hub": {
     "title": "Basic Terminology",
-    "subtitle": "Understand computers from the ground up.",
-    "blurb": "Learn how computers work, how programs are created, how they execute, and how hardware and software interact.",
+    "trackLabel": "CompilerSutra Learning Track",
+    "subtitle": "Understand how computers turn code into execution.",
+    "blurb": "Start with zero assumptions. Explore computer fundamentals, programming, compilers, memory, processors, and operating systems through practical examples.",
+    "learningObjective": "By completing this track, you should be able to explain how a computer works, compile a C program, inspect its LLVM IR, understand memory, and follow program execution.",
     "level": "Beginner",
+    "prerequisitesLabel": "0 prerequisites",
+    "startTopicId": "what-is-a-computer",
     "overviewVideo": "https://www.youtube.com/watch?v=e8wzEZm2d1I",
     "overviewPdf": "/ppt/live/sourcetobinary.pdf",
     "overviewBlog": "/docs/basic-terminology/overview/"
