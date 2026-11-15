@@ -7,6 +7,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 // import AdSenseScript from "@site/src/components/AdSenseScript";
 import GoogleAnalyticsScript from "@site/src/components/GoogleAnalyticsScript";
 import { getSocialImageForPath, SOCIAL_IMAGE_VERSION } from "@site/src/utils/socialImage";
+import { shouldIndexClangFlagPath } from "@site/src/data/clang-flags/handAuthoredIndex";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const FloatingSubscribe = lazy(() => import("@site/src/components/FloatingSubscribe"));
@@ -18,6 +19,10 @@ export default function Layout(props) {
     location.pathname.startsWith("/tools/clang-flags/") &&
     location.pathname !== "/tools/clang-flags/" &&
     location.pathname !== "/tools/clang-flags-explorer/";
+  const allowIndexing = shouldIndexClangFlagPath(location.pathname);
+  const robotsContent = allowIndexing
+    ? "index, follow, max-image-preview:large"
+    : "noindex, follow";
   const { siteConfig } = useDocusaurusContext();
   const siteUrl = siteConfig.url.replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}${location.pathname}`;
@@ -67,7 +72,7 @@ export default function Layout(props) {
       <Head>
         <html lang="en" />
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <meta name="robots" content={robotsContent} />
         <meta name="author" content="CompilerSutra" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:title" content={pageTitle} />
