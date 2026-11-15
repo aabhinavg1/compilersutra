@@ -234,7 +234,8 @@ const config = {
             items: [
               {
                 label: 'CompilerSutra Weekly',
-                href: '/weekly/',
+                // Absolute URL so Docusaurus does not client-route to a missing page.
+                href: 'https://www.compilersutra.com/weekly/',
               },
               { label: 'All Articles', to: '/docs/articles' },
               { label: 'Weekly Problems', to: '/docs/weekly-problems/' },
@@ -326,7 +327,7 @@ const config = {
             items: [
               {
                 label: 'CompilerSutra Weekly',
-                href: '/weekly/',
+                href: 'https://www.compilersutra.com/weekly/',
               },
               { label: 'WhatsApp Community', href: 'https://chat.whatsapp.com/C5lBzje4CjvLTZBhS0O92x' },
               { label: 'YouTube Channel', href: 'https://www.youtube.com/@compilersutra' },
