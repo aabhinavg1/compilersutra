@@ -1,0 +1,61 @@
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; background:#1e1e1e; border-radius:8px;">
+  <style>
+    .box { fill: #2d2d2d; stroke: #4f4f4f; stroke-width: 1.5; }
+    .block-box { fill: #1e3a5f; stroke: #3b82f6; stroke-width: 2; }
+    .thread-box { fill: #1e4d2b; stroke: #22c55e; stroke-width: 1.5; }
+    .text-title { fill: #f3f4f6; font-family: monospace; font-size: 14px; font-weight: bold; }
+    .text-sub { fill: #9ca3af; font-family: monospace; font-size: 12px; }
+    .text-accent { fill: #60a5fa; font-family: monospace; font-size: 12px; font-weight: bold; }
+    .text-green { fill: #4ade80; font-family: monospace; font-size: 11px; }
+    .arrow { stroke: #9ca3af; stroke-width: 1.5; marker-end: url(#arrowhead); }
+    .sync-line { stroke: #ef4444; stroke-width: 2; stroke-dasharray: 4,4; }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orientation="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9ca3af" />
+    </marker>
+  </defs>
+
+  <!-- Outer Grid Container -->
+  <rect x="20" y="20" width="680" height="340" rx="6" class="box" />
+  <text x="35" y="45" class="text-title">Grid: gridDim.x = 4</text>
+  <text x="500" y="45" class="text-sub">Global Memory visible to all</text>
+
+  <!-- Block 0 -->
+  <rect x="40" y="75" width="140" height="260" rx="4" class="box" />
+  <text x="50" y="100" class="text-accent">blockIdx.x = 0</text>
+  <text x="50" y="120" class="text-sub">Scheduled on SM 0</text>
+
+  <!-- Block 1 (Expanded) -->
+  <rect x="200" y="75" width="320" height="260" rx="4" class="block-box" />
+  <text x="215" y="100" class="text-accent">blockIdx.x = 1 (blockDim.x = 4)</text>
+  <text x="215" y="120" class="text-sub">Shared Memory &amp; __syncthreads()</text>
+
+  <!-- Threads inside Block 1 -->
+  <rect x="215" y="140" width="290" height="35" rx="3" class="thread-box" />
+  <text x="225" y="162" class="text-green">threadIdx.x = 0 (gtid = 4)</text>
+
+  <rect x="215" y="185" width="290" height="35" rx="3" class="thread-box" />
+  <text x="225" y="207" class="text-green">threadIdx.x = 1 (gtid = 5)</text>
+
+  <rect x="215" y="230" width="290" height="35" rx="3" class="thread-box" />
+  <text x="225" y="252" class="text-green">threadIdx.x = 2 (gtid = 6)</text>
+
+  <rect x="215" y="275" width="290" height="35" rx="3" class="thread-box" />
+  <text x="225" y="297" class="text-green">threadIdx.x = 3 (gtid = 7)</text>
+
+  <!-- Block 2 -->
+  <rect x="540" y="75" width="140" height="120" rx="4" class="box" />
+  <text x="550" y="100" class="text-accent">blockIdx.x = 2</text>
+  <text x="550" y="120" class="text-sub">Scheduled on SM 1</text>
+
+  <!-- Block 3 -->
+  <rect x="540" y="215" width="140" height="120" rx="4" class="box" />
+  <text x="550" y="240" class="text-accent">blockIdx.x = 3</text>
+  <text x="550" y="260" class="text-sub">Scheduled on SM 0</text>
+
+  <!-- Synchronization Barrier line in Block 1 -->
+  <line x1="210" y1="320" x2="510" y2="320" class="sync-line" />
+  <text x="280" y="333" fill="#ef4444" font-family="monospace" font-size="10">__syncthreads() barrier (Block scope only)</text>
+</svg>
