@@ -45,6 +45,11 @@ If your question is simply **"what is LLVM?"**, the shortest useful answer is:
 
 It powers Clang and many modern language toolchains, but it also exists as a reusable system for IR, optimization, analysis, and target-specific code generation.
 
+:::tip New to compilers? Start shorter
+For a beginner Basic Terminology entry with verified `clang` / `llc` labs (and links back here), open **[What Is LLVM? (Basic Terminology)](/docs/basic-terminology/what-is-llvm/)**.  
+This page is the **longform** architecture and design explanation.
+:::
+
 ## What Does LLVM Stand For?
 
 LLVM originally stood for **Low-Level Virtual Machine**. Today, the project uses **LLVM** as a name rather than as a strict expansion, because the modern LLVM ecosystem is much broader than a traditional virtual machine.
@@ -800,7 +805,9 @@ LLVM is one of the most important pieces of modern compiler infrastructure. Its 
 That combination is why LLVM became far more than a backend. It became a compiler platform used across language toolchains, system software, research compilers, and heterogeneous hardware stacks.
 
 ## More Articles
+- [What Is LLVM? (Basic Terminology — short labs)](/docs/basic-terminology/what-is-llvm/)
 - [LLVM roadmap](../intro-to-llvm.md)
+- [How Clang Converts C/C++ Into LLVM IR](../llvm_ir/clang-to-llvm-ir.md)
 - [Introduction to LLVM IR](../llvm_ir/intro_to_llvm_ir.md)
 - [Manage LLVM versions](../llvm_extras/manage_llvm_version.md)
 - [LLVM pass tracker](../llvm_pass_tracker/llvm_pass.md)

@@ -35,7 +35,8 @@ This curriculum is organized into **progressive levels**: foundations → IR →
 
 | Goal | Open |
 | --- | --- |
-| What LLVM is | [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/) |
+| What LLVM is (beginner + labs) | [What Is LLVM? (Basic Terminology)](/docs/basic-terminology/what-is-llvm/) |
+| What LLVM is (longform) | [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/) |
 | Architecture | [High-Level LLVM Architecture](/docs/llvm/llvm_basic/LLVM_Architecture/) |
 | Guided track | [LLVM and IR Track](/docs/tracks/llvm-and-ir/) |
 | Section hub | [LLVM Home](/docs/llvm/) |
@@ -68,9 +69,9 @@ Level hub: [Curriculum Level 0](/docs/llvm/llvm_Curriculum/level0/)
 | # | Title | Link |
 | --- | --- | --- |
 | 1 | What is a Compiler? Phases of Compilation | [Know Your Compiler](/docs/compilers/compiler/) · [Inside a Compiler](/docs/compilers/intro/) |
-| 2 | LLVM Overview: Architecture and Design | [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/) · [Architecture](/docs/llvm/llvm_basic/LLVM_Architecture/) · [Why LLVM?](/docs/llvm/llvm_basic/Why_LLVM/) |
+| 2 | LLVM Overview: Architecture and Design | [Basic Terminology: What Is LLVM?](/docs/basic-terminology/what-is-llvm/) · [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/) · [Architecture](/docs/llvm/llvm_basic/LLVM_Architecture/) · [Why LLVM?](/docs/llvm/llvm_basic/Why_LLVM/) |
 | 3 | Compiler Toolchain: Frontend, Optimizer, Backend | [From Source Code to Binary](/docs/compilers/sourcecode_to_executable/) · Coming Soon (LLVM-specific deep dive) |
-| 4 | First Hands-on with Clang & LLVM IR | [Clang → LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir/) · [First IR File Line by Line](/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/) |
+| 4 | First Hands-on with Clang & LLVM IR | [Basic Terminology labs](/docs/basic-terminology/what-is-llvm/) · [Clang → LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir/) · [First IR File Line by Line](/docs/llvm/llvm_ir/your-first-llvm-ir-file-line-by-line/) |
 | 5 | Using `opt` and `llc` | [LLVM Tools](/docs/llvm/llvm_tools/llvm_tools/) · Coming Soon (`llc` focused guide) |
 | 6 | Build LLVM + manage versions | [Build Instructions](/docs/llvm/llvm_basic/Build/) · [Manage Versions](/docs/llvm/llvm_extras/manage_llvm_version/) |
 

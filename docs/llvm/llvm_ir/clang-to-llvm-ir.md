@@ -631,6 +631,11 @@ If the frontend gets the shape wrong, LLVM can still optimize, but it starts fro
 So when you debug performance, GPU lowering, or backend behavior, the first question is usually not "what did assembly do?"
 The first question is "what did Clang hand to LLVM?"
 
+Related beginner entry points on CompilerSutra:
+
+- [What Is LLVM? (Basic Terminology)](/docs/basic-terminology/what-is-llvm/) — short labs + hub placement  
+- [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/) — longform “what is LLVM?”  
+
 <div>
   <AdBanner />
 </div>

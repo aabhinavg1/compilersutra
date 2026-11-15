@@ -409,7 +409,9 @@ The reason is simple:
 
 ## What to Read Next
 
+- Start with [What Is LLVM? (Basic Terminology)](/docs/basic-terminology/what-is-llvm/) if you still need the infrastructure framing and short labs.
 - Read [How Clang Converts C/C++ Source Into LLVM IR](/docs/llvm/llvm_ir/clang-to-llvm-ir) first if you want the frontend story behind this file.
+- For the long architecture article, open [LLVM Explained](/docs/llvm/llvm_basic/intro-to-llvm/).
 - Run `clang -Xclang -ast-dump -fsyntax-only` on the same `add` function and compare the AST to the IR.
 - Repeat the same example with `-O0` and `-O2` and compare the file shape yourself.
 - If you want another explanation style, compare this post with [A Gentle Introduction to LLVM IR](https://mcyoung.xyz/2023/08/01/llvm-ir/), [Modern Intermediate Representations (IR)](https://llvm.org/devmtg/2017-06/1-Davis-Chisnall-LLVM-2017.pdf), and [Journey to understanding LLVM IR](https://un-devs.github.io/low-level-exploration/journey-to-understanding-llvm-ir/#n).
