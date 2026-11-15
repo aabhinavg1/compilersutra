@@ -1,0 +1,20 @@
+---
+title: "From the graphics pipeline to a processor you can program quiz"
+description: "Five questions for From the graphics pipeline to a processor you can program. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# From the graphics pipeline to a processor you can program quiz
+
+Lesson: [From the graphics pipeline to a processor you can program](/docs/parallel-computing/from-graphics-pipeline-to-a-kernel/)
+
+<Question question="1. In the fixed-function pipeline stage of early graphics hardware, what was the primary limitation of the compiler?" options={["It could only output custom instructions for vertex shaders", "It could not output custom instructions and only configured hardware flags", "It required explicit pointer management for device buffers", "It generated linear buffer pointers instead of viewport settings"]} answer="It could not output custom instructions and only configured hardware flags" />
+
+<Question question="2. What did hardware vendors combine to form a pool of unified processors in the unified architecture stage?" options={["Rasterizers and depth testing units", "Vertex shader and fragment shader compute units", "Texture samplers and framebuffers", "Host CPUs and device command queues"]} answer="Vertex shader and fragment shader compute units" />
+
+<Question question="3. According to the comparison table, what work setup step is used in a Compute Kernel Launch instead of quad primitives, viewports, and textures?" options={["Linear buffer pointers and a 1D/2D/3D work domain", "Pre-allocated framebuffers at assigned pixel locations", "Fixed vertex to raster to fragment path setup", "Raster state validation and viewport settings"]} answer="Linear buffer pointers and a 1D/2D/3D work domain" />
+
+<Question question="4. What memory access restriction existed for fragment shaders in programmable shader hardware that compute kernels do not have?" options={["Fragment shaders could only write to pre-allocated framebuffers at their assigned pixel location", "Fragment shaders could read from arbitrary pointer write addresses", "Fragment shaders were forced to run unrolled loops for index bounds", "Fragment shaders could only read vertex attributes"]} answer="Fragment shaders could only write to pre-allocated framebuffers at their assigned pixel location" />
+
+<Question question="5. Why do kernel launches generally have a simpler setup path compared to graphics draw calls?" options={["Kernel launches bypass state validation for rendering stages like rasterization and depth-stencil states", "Kernel launches remove the physical compute blocks from the hardware", "Kernel launches enforce static template parameters at compile time", "Kernel launches automatically eliminate pointer aliasing risks"]} answer="Kernel launches bypass state validation for rendering stages like rasterization and depth-stencil states" />

@@ -834,6 +834,9 @@
 }
 
 .copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   border: 1px solid rgba(59, 130, 246, 0.35);
   border-radius: 999px;
   background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
@@ -842,6 +845,29 @@
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
   transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.copyButtonLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .copyButton {
+    padding: 0.5rem 0.62rem;
+  }
+
+  .copyButtonLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
 
 .copyButton:hover {
@@ -909,6 +935,26 @@
 
 .sourceCodeFlagBadge {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: min(100%, 18rem);
+}
+
+.sourceCodeFlagLabel {
+  color: inherit;
+  opacity: 0.72;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sourceCodeFlagValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, Liberation Mono, monospace;
 }
 
 .sourceCodeNote {
@@ -2110,9 +2156,9 @@
 
 .relatedArticleCard {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.45rem;
   min-width: 0;
-  padding: 0.9rem;
+  padding: 0.85rem 0.9rem;
   border: 1px solid var(--cf-border);
   border-radius: 12px;
   background: var(--cf-surface-2);
@@ -2130,33 +2176,51 @@
 .relatedArticleTop {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
 }
 
 .relatedArticleFlag {
+  flex: 1 1 auto;
+  min-width: 0;
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+  font-size: clamp(0.86rem, 2.6vw, 0.98rem);
   font-weight: 800;
   letter-spacing: -0.03em;
+  line-height: 1.25;
   color: var(--cf-text);
+  overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.relatedArticleBadge {
+  flex: 0 0 auto;
+  max-width: 9.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .relatedArticleSummary {
   color: var(--cf-text-2);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.88rem;
+  line-height: 1.45;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .relatedArticleMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
   color: var(--cf-text-3);
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .referenceList {
@@ -5056,6 +5120,31 @@
 
   .relatedGrid {
     grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .relatedArticleCard {
+    padding: 0.8rem 0.85rem;
+    border-radius: 10px;
+  }
+
+  .relatedArticleTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .relatedArticleBadge {
+    max-width: 100%;
+  }
+
+  .relatedArticleSummary {
+    -webkit-line-clamp: 3;
+    font-size: 0.86rem;
+  }
+
+  .relatedArticleMeta {
+    font-size: 0.72rem;
   }
 
   .asmDiffGrid {

@@ -40,6 +40,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ---
 
+:::note Present by
+`-fPIE` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L6505). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
 The `-fPIE` flag instructs the compiler to generate position-independent code suitable for linking into a Position-Independent Executable (PIE). Unlike general position-independent code (`-fPIC`), `-fPIE` assumes that symbol definitions originating in the current translation unit will **not** be interprosed by dynamic libraries at runtime.
@@ -114,7 +118,7 @@ get_ext:
 
 ### Why use it
 - **Address Space Layout Randomization (ASLR)**: Required by modern OS security standards (Linux distros, macOS, Android) to harden binaries against return-oriented programming (ROP) and buffer overflow exploits.
-- **Executable Optimization over PIC**: Faster than `-fPIC` for main executables because local functions and data do not suffer from dynamic symbol interposition overhead.
+- **Executable vs DSO PIC**: Often cheaper than `-fPIC` for main executables because local functions and data do not suffer from dynamic symbol interposition overhead.
 
 ### When not to use it
 - **Building Shared Libraries (`.so` / `.dylib`)**: Do not use `-fPIE` when building shared objects; use `-fPIC` instead. `-fPIE` assumes symbols are bound to the main binary, which causes dynamic linker errors or invalid relocations inside shared objects.
@@ -189,6 +193,39 @@ clang -fPIE -S -emit-llvm main.c -o - | grep -E "dso_local|target-features"
 | **LLVM Target Backend** | Inspects `isDSOLocal()` on symbols. Emits target-specific PC-relative relocations (e.g., `R_X86_64_PC32` or `R_X86_64_GOTPCREL`) based on relocation model configuration. |
 
 Verify exact behavior against `clang/lib/Driver/ToolChains/Clang.cpp` and `clang/lib/CodeGen/CodeGenModule.cpp` on tip of `llvm-project`.
+
+---
+
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-fPIE` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L236). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L6994)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Code generation / PIE relocation for executables. **No direct IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| PIE relocation model | Driver → TargetMachine | Directly controlled | Position-independent executable codegen |
+| Dynamic loader / ASLR contract | Link + OS | Related mechanism | Complements linker `-pie` |
+
+### How to verify
+
+```bash
+clang -O2 -fPIE -pie w.c -o w
+readelf -d w | rg FLAGS_1\|PIE || true
+clang -### -fPIE -c w.c 2>&1 | rg -i pie
+```
+
+### Source investigation
+
+- Options.td PIE flags; linker PIE handling for your platform
 
 ---
 

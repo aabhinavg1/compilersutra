@@ -196,17 +196,49 @@ for (int x : numbers)
     </div>
   </section>
 
-- [One core, made busier](one-core-made-busier.md)
-- SIMD, MIMD, and the interconnect
-- [Shared memory versus distributed memory](shared-versus-distributed-memory.md)
-- Cache coherence and false sharing
-- [Decomposition, tasks, and mapping](decomposition-tasks-and-mapping.md)
-- [Cache coherence and false sharing](cache-coherence-and-false-sharing.md)
-- Decomposition, tasks, and mapping
-- Communication cost and granularity
-- [Speedup, efficiency, and scalability](speedup-efficiency-scalability.md)
-- [Communication cost and granularity](communication-cost-and-granularity.md)
-- Speedup, efficiency, and scalability
+  <section className={styles.section} id="projects">
+    <div className={styles.sectionHead}>
+      <span className={styles.sectionStep}>Apply it</span>
+      <h2 className={styles.sectionTitle}>Projects</h2>
+      <p className={styles.sectionDesc}>
+        Each project reuses the course problem. Links open the project pages in this track.
+      </p>
+    </div>
+    <div className={styles.stepList}>
+      <Link className={styles.stepRow} to="/docs/parallel-computing/projects/cpu-project/">
+        <span className={styles.stepNum}>01</span>
+        <span className={styles.stepCopy}>
+          <strong>CPU parallel sum</strong>
+          <em>Start serial, then threads / OpenMP</em>
+        </span>
+        <span className={styles.stepGo} aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.stepRow} to="/docs/parallel-computing/projects/simd-project/">
+        <span className={styles.stepNum}>02</span>
+        <span className={styles.stepCopy}>
+          <strong>SIMD</strong>
+          <em>Same computation with vectorization</em>
+        </span>
+        <span className={styles.stepGo} aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.stepRow} to="/docs/parallel-computing/projects/gpu-project/">
+        <span className={styles.stepNum}>03</span>
+        <span className={styles.stepCopy}>
+          <strong>GPU</strong>
+          <em>Move the computation to a device</em>
+        </span>
+        <span className={styles.stepGo} aria-hidden="true">→</span>
+      </Link>
+      <Link className={styles.stepRow} to="/docs/parallel-computing/projects/final-project/">
+        <span className={styles.stepNum}>04</span>
+        <span className={styles.stepCopy}>
+          <strong>Compare implementations</strong>
+          <em>Correctness, model, runtime, speedup, bottlenecks</em>
+        </span>
+        <span className={styles.stepGo} aria-hidden="true">→</span>
+      </Link>
+    </div>
+  </section>
 
   <section className={styles.section} id="practice">
     <div className={styles.sectionHead}>
@@ -221,13 +253,12 @@ for (int x : numbers)
       <h3 className={styles.subTitle}>Find the race</h3>
       <pre className={styles.codeBlock}><code>{`int total = 0;
 
-- [Pthreads: create, join, mutex, and barrier](pthreads-mutex-and-barrier.md)
-- OpenMP regions, reductions, and loop-carried dependence
-- [OpenMP schedules](openmp-schedules.md)
-- OpenMP tasks and sections
-- C++ atomics and memory order
-- C++ parallel algorithms
-- Thread pools, work stealing, and oneTBB
+#pragma omp parallel for
+for (...) {
+    total += numbers[i];
+}`}</code></pre>
+      <p className={styles.sectionDesc}>Ask why this can produce the wrong answer.</p>
+    </article>
 
     <article className={styles.practiceBlock}>
       <h3 className={styles.subTitle}>Fix it</h3>
@@ -241,12 +272,13 @@ for (int x : numbers)
       </p>
     </article>
 
-- [What a cluster is](what-a-cluster-is.md)
-- [MPI send, receive, and matching](mpi-send-receive-matching.md)
-- Broadcast and reduction as a tree
-- [MPI collectives](mpi-collectives.md)
-- [Overlap communication with computation](overlap-communication-and-computation.md)
-- Hybrid MPI and OpenMP
+    <article className={styles.practiceBlock}>
+      <h3 className={styles.subTitle}>Explain it</h3>
+      <p className={styles.sectionDesc}>
+        Why didn&apos;t 16 threads produce 16× speedup?
+      </p>
+    </article>
+  </section>
 
   <section className={styles.section} id="daily-lessons">
     <div className={styles.sectionHead}>

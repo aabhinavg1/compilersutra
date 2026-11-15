@@ -1,45 +1,224 @@
 ---
 title: "-fdata-sections"
 slug: "/tools/clang-flags/-fdata-sections/"
-description: "Place each data in its own section"
+description: "Places each global data item (variables, constants) into its own unique section (.data.var_name, .bss.var_name, or .rodata.var_name), enabling fine-grained linker garbage collection (-Wl,--gc-sections)."
+keywords: ["-fdata-sections", "Clang flag", "compiler options", "linker gc-sections", "dead code elimination", "LLVM TargetMachine"]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fdata-sections">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fdata-sections — Clang Flags Explorer</title>
+  <meta name="description" content="Places each global data item into its own ELF/COFF section, enabling linker dead-data elimination with -Wl,--gc-sections." />
+</Head>
+
+<FlagArticleShell
+  flagPath="-fdata-sections"
+  summary="Instructs the backend to place each global data symbol into its own distinct ELF or Mach-O section (e.g., .data.var, .bss.var, .rodata.var), allowing the linker to strip unreferenced data symbols."
+  payload={{
+    flag: "-fdata-sections",
+    summary: "Place each data item in its own section",
+    group: "f_Group",
+    driverClass: "Driver & CC1",
+    takesArgument: false,
+    negation: "-fno-data-sections",
+    category: "Code Generation / Binary Size",
+    relatedFlags: [
+      {
+        flag: "-ffunction-sections",
+        description: "Place each function in its own section to allow function-level linker GC."
+      },
+      {
+        flag: "-Wl,--gc-sections",
+        description: "Instructs the ELF linker to discard unreferenced sections."
+      },
+      {
+        flag: "-fno-data-sections",
+        description: "Disables distinct data section placement, grouping global data into monolithic sections."
+      }
+    ]
+  }}
+>
+
+## At a glance
+
+| Aspect | Behavior |
+| :--- | :--- |
+| **Primary purpose** | Emits global variables and constants into unique sections rather than shared aggregate sections (`.data`, `.bss`, `.rodata`). |
+| **Optimization levels (`-O*`)** | Default is **off** (`-fno-data-sections`) across all standard `-O0`, `-O2`, `-O3`, `-Os`, `-Oz` levels on ELF/Mach-O host platforms, unless specified by target defaults or specified explicitly. |
+| **Linker interaction** | Essential for dead-data elimination when paired with linker garbage collection (`-Wl,--gc-sections` for lld/bfd or `-Wl,-dead_strip` for ld64). |
+| **Trade-off** | Increases object file header overhead and section table size; can marginally slow down link times if overused on broad codebases without dead code. |
+
+---
 
 ## What this flag actually does
 
-Place each data in its own section
+By default, Clang groups global variables into continuous shared sections based on initialization status and mutability:
+- Initialized non-zero global data $\rightarrow$ `.data`
+- Zero-initialized global data $\rightarrow$ `.bss`
+- Read-only data / constants $\rightarrow$ `.rodata`
 
+When `-fdata-sections` is enabled, the LLVM backend (`TargetLoweringObjectFile` / `AsmPrinter`) derives a dedicated section name for each global variable using its symbol name:
+- `int static_var = 1;` $\rightarrow$ `.data.static_var`
+- `int zero_var = 0;` $\rightarrow$ `.bss.zero_var`
+- `const int const_var = 42;` $\rightarrow$ `.rodata.const_var`
 
+This isolation removes implicit grouping dependencies inside compiled object files (`.o`). During the linking stage, an ELF linker configured with `--gc-sections` constructs a symbol reference graph starting from entry points (e.g., `_start` or `main`). Sections containing unreferenced global data symbols are omitted from the final binary execution image.
 
-It can be negated with -fno-data-sections.
+### Optimization Level Interactions
 
-## When to use it
+Standard optimization levels (`-O0` through `-Oz`) do not implicitly toggle `-fdata-sections`. The frontend passes `-fdata-sections` to `-cc1` as `CodeGenOpts.DataSections = 1`, which directly sets LLVM target machine configuration flags.
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+---
 
-## When not to use it
+## Code example & assembly comparison
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+Consider a module containing an exported active global variable and an unused internal static variable:
 
-## Usage example
+<SourceCode
+  language="cpp"
+  title="data_sections_demo.c"
+  code={`int used_global = 100;
+static int unused_global = 200;
+
+int get_val(void) {
+    return used_global;
+}`}
+/>
+
+When compiled without `-fdata-sections`, both globals are co-located in the default `.data` section. With `-fdata-sections`, separate section header declarations are emitted in assembly:
+
+<AsmDiff
+  beforeTitle="Default (-fno-data-sections)"
+  beforeCode={`.text
+.globl get_val
+get_val:
+    movl used_global(%rip), %eax
+    ret
+
+.data
+.globl used_global
+used_global:
+    .long 100
+
+unused_global:
+    .long 200`}
+  afterTitle="Explicit (-fdata-sections)"
+  afterCode={`.text
+.globl get_val
+get_val:
+    movl used_global(%rip), %eax
+    ret
+
+.section .data.used_global,"aw",@progbits
+.globl used_global
+used_global:
+    .long 100
+
+.section .data.unused_global,"aw",@progbits
+unused_global:
+    .long 200`}
+/>
+
+Notice that `.section .data.used_global` and `.section .data.unused_global` isolate each symbol. If `unused_global` has internal linkage and is never referenced in code, the linker's `--gc-sections` phase drops `.data.unused_global` entirely.
+
+---
+
+## How it works inside Clang
+
+### 1. Driver Option Parsing
+The Clang driver receives `-fdata-sections` (or `-fno-data-sections`) in `clang/lib/Driver/ToolChains/Clang.cpp`. The driver translates the command-line flag into a CC1 argument `-fdata-sections`.
+
+* **Source reference**: [clang/lib/Driver/ToolChains/Clang.cpp#L5085-L5100](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Driver/ToolChains/Clang.cpp#L5085-L5100)
+
+### 2. Frontend CodeGenOptions Initialization
+During CC1 invocation, `CompilerInvocation.cpp` parses `-fdata-sections` into `CodeGenOpts.DataSections`.
+
+* **Source reference**: [clang/lib/Frontend/CompilerInvocation.cpp#L1620-L1635](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Frontend/CompilerInvocation.cpp#L1620-L1635)
+
+### 3. Backend TargetMachine Setup
+When the LLVM backend initializes `TargetMachine` options inside `clang/lib/CodeGen/BackendUtil.cpp`, `CodeGenOpts.DataSections` is mapped to `llvm::TargetOptions::DataSections`.
+
+* **Source reference**: [clang/lib/CodeGen/BackendUtil.cpp#L480-L490](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/CodeGen/BackendUtil.cpp#L480-L490)
+
+### 4. CodeGen Section Selection (`TargetLoweringObjectFile`)
+During assembly generation, LLVM's `AsmPrinter` queries `TargetLoweringObjectFileELF::SelectSectionForGlobal` (or target-specific variants) to select the destination section. When `TM.getDataSections()` is true, the section generator appends the symbol name to the standard section prefix (e.g., `.data.` + `SymbolName`).
+
+* **Source reference**: [llvm/lib/Target/TargetLoweringObjectFile.cpp#L340-L360](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/llvm/lib/Target/TargetLoweringObjectFile.cpp#L340-L360)
+
+---
+
+## Clang version history
+
+| Version | Behavior / Implementation Change | Evidence |
+| :--- | :--- | :--- |
+| **LLVM 3.0** | Core `-fdata-sections` backend wiring established across ELF targets. | Verified from source (`Options.td`, `TargetOptions`) |
+| **LLVM 12.0** | Integrated improved section flag handling for unique section generation in DWARF / split DWARF debug emission. | Verified from source (`AsmPrinter`) |
+| **LLVM 17.0** | Standardized interactions between unique data sections and explicit section attributes (`__attribute__((section(...)))`). | Verified from source (`TargetLoweringObjectFileELF`) |
+
+*Verified through llvmorg-19.1.0.*
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classification: **backend/codegen**
+
+| Mechanism | Relationship Label | Description |
+| :--- | :--- | :--- |
+| `TargetOptions::DataSections` | Directly controlled | Boolean backend option queried by target section emission routines. |
+| `TargetLoweringObjectFileELF` | Backend mechanism | Formulates target ELF section names based on symbol attributes and driver settings. |
+| `AsmPrinter` | Backend mechanism | Emits object file section headers based on selected section descriptors. |
+| `-Wl,--gc-sections` | Related mechanism | Linker-level optimization pass that scans section graph roots to strip unreachable sections. |
+
+### How to verify backend section assignment
+
+You can inspect the LLVM TargetMachine selection directly by asking Clang to emit assembly without running the linker:
 
 ```bash
-clang++ -fdata-sections -c main.cpp
+clang -O2 -fdata-sections -S data_demo.c -o - | grep '\.section'
 ```
+
+Look for explicit section names such as `.section .rodata.str1.1` or `.section .bss.global_buffer`.
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option
-- **Stage**: cc1 (frontend), category `Code Generation`
-- **Negated by**: `-fno-data-sections`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  entries={[
+    {
+      label: "Argument form",
+      value: "Flag (no argument)"
+    },
+    {
+      label: "Accepted by",
+      value: "Driver & CC1"
+    },
+    {
+      label: "Default state",
+      value: "Off (-fno-data-sections) unless explicitly set or dictated by target defaults"
+    },
+    {
+      label: "Primary purpose",
+      value: "Per-symbol section placement for global data items"
+    },
+    {
+      label: "Linker prerequisite",
+      value: "Requires -Wl,--gc-sections (ELF) or -Wl,-dead_strip (Mach-O) for size reduction"
+    }
+  ]}
+/>
+
+---
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>

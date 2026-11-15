@@ -24,42 +24,23 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
   summary="Selects a target CPU microarchitecture, setting both instruction set features and backend pipeline tuning models simultaneously for targets like Arm, AArch64, RISC-V, and SystemZ."
 >
 
-<div style={{ margin: '1rem 0 1.5rem 0' }}>
-  <a
-    href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform"
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{
-      inlineSize: '100%',
-      boxSizing: 'border-box',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px',
-      fontWeight: 600,
-      backgroundColor: '#1b1b1d',
-      color: '#e3e3e3',
-      border: '1px solid #444446',
-      padding: '10px 16px',
-      borderRadius: '8px',
-      textDecoration: 'none',
-    }}
-  >
-    ✉ Subscribe to Weekly Compiler Notes
-  </a>
-</div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
 | Property | Value |
 | :--- | :--- |
-| **Architecture** | Target-dependent (Arm, AArch64, RISC-V, PowerPC, SystemZ, Sparc, Hexagon, etc.) |
+| **Architecture** | Target-dependent (Arm, AArch64, RISC-V, PowerPC, SystemZ, Sparc, Hexagon, etc.) — **not universal across hosts** |
 | **Category** | Target Selection / Code Generation |
 | **Compiler** | Clang Driver / Flang |
 | **Optimization Level** | Applies across `-O0` through `-O3` / `-Ofast` |
-| **Risk / Impact** | **High**: Emits architecture-specific instructions that will fault (SIGILL) if run on unsupported hardware. |
+| **Risk** | Portability / target mismatch: CPU-specific opcodes can `SIGILL` on older cores; ABI/layout usually unchanged |
 
 **One-line summary**: `-mcpu=` targets a specific microarchitecture implementation (e.g., `cortex-a78`, `neoverse-n1`, `sifive-p550`), configuring both target ISA feature flags and backend instruction scheduling/hazard models.
+
+:::note Present by
+`-mcpu=` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L6520). Exact introduction commit / first release remain unresolved — prefer “present by” over invented dates.
+:::
 
 ---
 
@@ -101,13 +82,13 @@ Consider a simple vector arithmetic function compiled for AArch64:
   title="vec.c"
 />
 
-When targeting generic AArch64 (`-mcpu=generic`), the compiler generates baseline NEON 128-bit SIMD vector instructions. When targeting a modern Neoverse core (`-mcpu=neoverse-v1`), Clang enables SVE (Scalable Vector Extension) automatically and adjusts vector auto-vectorization costing strategies based on VLA/VLS (vector length agnostic/specific) heuristics.
+On **AArch64**, generic (`-mcpu=generic`) typically stays on baseline Advanced SIMD (NEON). A richer CPU name such as `-mcpu=neoverse-v1` may enable additional features (often including SVE) **for that CPU model** and adjust vector cost models — verify with `clang -###` / IR `target-features` on your Clang version; do not treat one host’s feature set as universal.
 
 ---
 
 ## Before vs. after assembly
 
-Compiling for generic AArch64 versus `-mcpu=neoverse-v1`:
+Illustrative **AArch64** shape for generic versus `-mcpu=neoverse-v1` (exact SVE/NEON choice is Clang-version and CPU-definition dependent):
 
 <AsmDiff
   before={`# clang -target aarch64-linux-gnu -O3 -mcpu=generic
@@ -163,8 +144,9 @@ vector_add:
 - **Enabling CPU extensions automatically**: Avoids manually listing individual target flags (e.g., `-mcpu=cortex-a710` automatically enables FP16, DotProd, Atomics, SVE, SVE2, and LSE).
 
 ### When not to use it
-- **Distributing portable binaries**: Binaries built with explicit `-mcpu=` selections for advanced microarchitectures will fail with invalid instruction exceptions on older generations of the architecture.
-- **When tuning only is desired**: If you want a portable binary that runs everywhere on an architecture but performs best on a specific CPU, use `-mtune=<cpu>` without `-mcpu=`.
+- **Distributing portable binaries**: Advanced `-mcpu=` selections can trap (`SIGILL`) on older cores of the same architecture family — a **portability** issue, not silent UB from the flag alone.
+- **When tuning only is desired**: If you want a portable ISA baseline but prefer scheduling for one CPU, use `-mtune=<cpu>` (or the target’s equivalent) without raising the ISA floor via `-mcpu=` / `-march=`.
+- **Assuming one host equals all hosts**: `-mcpu=native` (where accepted) and local CPU help output are machine-specific.
 
 ---
 
@@ -226,6 +208,39 @@ clang -O3 --target=aarch64-unknown-linux-gnu -mcpu=neoverse-v1+nosve -c compute.
 
 ---
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-mcpu=` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L474). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L7011)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend CPU selection (esp. non-x86 and some targets). **No direct IR opt pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Target CPU selection | Driver → TargetMachine | Directly controlled | Sets CPU for ISel/scheduling |
+| Scheduling / latencies | Machine backend | Backend mechanism | CPU-specific itineraries / sched models |
+
+### How to verify
+
+```bash
+clang -### -mcpu=generic -c w.c 2>&1 | rg mcpu\|target-cpu
+clang -O2 -mcpu=generic -S -emit-llvm w.c -o w.ll
+rg 'target-cpu' w.ll
+```
+
+### Source investigation
+
+- Options.td `-mcpu=`; target Subtarget constructors
+
+---
+
 <KeyFacts
   args={[
     { name: "-mcpu=<cpu>", desc: "Target CPU microarchitecture string" }
@@ -234,5 +249,25 @@ clang -O3 --target=aarch64-unknown-linux-gnu -mcpu=neoverse-v1+nosve -c compute.
   driver="clang"
   cc1="Passed down to CC1 via -target-cpu <cpu>"
 />
+
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '\n' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 
 </FlagArticleShell>

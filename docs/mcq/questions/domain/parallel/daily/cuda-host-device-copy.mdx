@@ -1,0 +1,20 @@
+---
+title: "CUDA: host, device, and the copy quiz"
+description: "Five questions for CUDA: host, device, and the copy. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# CUDA: host, device, and the copy quiz
+
+Lesson: [CUDA: host, device, and the copy](/docs/parallel-computing/cuda-host-device-copy/)
+
+<Question question="1. Which CUDA runtime function is used to allocate high-bandwidth device memory on the GPU?" options={["malloc", "cudaMalloc", "cudaFree", "std::vector"]} answer="cudaMalloc" />
+
+<Question question="2. What host function call releases allocated device memory back to the GPU runtime?" options={["free", "cudaFree", "cudaMalloc", "cudaMemcpy"]} answer="cudaFree" />
+
+<Question question="3. Which transfer direction flag is passed to cudaMemcpy to move data from CPU memory into GPU VRAM?" options={["cudaMemcpyHostToDevice", "cudaMemcpyDeviceToHost", "cudaMemcpyDeviceToDevice", "cudaMemcpyHostToHost"]} answer="cudaMemcpyHostToDevice" />
+
+<Question question="4. How does standard cudaMemcpy behave on the host CPU thread during transfer?" options={["It executes asynchronously without blocking the host", "It blocks host execution until the transfer finishes", "It launches a background thread to handle computation", "It relies on unified memory page faulting"]} answer="It blocks host execution until the transfer finishes" />
+
+<Question question="5. What happens if a CPU host memory pointer is passed directly to a CUDA kernel?" options={["The host automatically resizes the memory buffer", "The GPU hardware will fail at runtime due to an invalid memory access", "The compiler automatically converts it into a device pointer", "The CPU executes the kernel sequentially in system RAM"]} answer="The GPU hardware will fail at runtime due to an invalid memory access" />

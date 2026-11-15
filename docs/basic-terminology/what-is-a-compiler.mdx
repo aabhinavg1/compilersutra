@@ -1,0 +1,145 @@
+---
+title: What Is a Compiler?
+slug: /basic-terminology/what-is-a-compiler
+description: A beginner-friendly explanation of what a compiler is, how it differs from an interpreter, and how source code becomes something a CPU can run.
+keywords:
+  - what is a compiler
+  - compiler basics
+  - compiler vs interpreter
+  - source code to machine code
+  - programming basics
+  - computer science fundamentals
+sidebar_position: 4
+displayed_sidebar: basicTerminologySidebar
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+
+# What Is a Compiler?
+
+A compiler is a program that translates source code written in a programming language into another form the machine can use — often machine code, assembly, or an intermediate representation. You write C, C++, Rust, or another language; the compiler turns that text into something a CPU (and the operating system) can actually run.
+
+Reading time: about 8–10 minutes.
+
+:::info Quick answer
+A **compiler** translates a whole program (or translation unit) ahead of time into another representation. An **interpreter** executes the program more directly, usually without producing a standalone binary first.
+:::
+
+## What you'll learn
+
+- What a compiler does in one sentence
+- Why compilers exist
+- Compiler vs interpreter (and why both matter)
+- The rough pipeline from source to executable
+- Where to go next on CompilerSutra
+
+## Start with the problem
+
+Humans like readable names, functions, and loops. CPUs understand opcodes and registers.
+
+Someone has to bridge that gap. That bridge is the compiler (sometimes with an assembler and linker beside it).
+
+Without a compiler (or an interpreter), your source file is just text. It does not run.
+
+## The basic chain
+
+```text
+Idea
+-> Source code (what you write)
+-> Compiler (translation)
+-> Object / IR / machine code
+-> Linker (combine pieces)
+-> Executable
+-> Loader + CPU (run)
+```
+
+You do not need every stage memorized on day one. You do need the shape: **write → translate → run**.
+
+## What a compiler actually does
+
+At a high level, a compiler:
+
+1. **Reads** your source code
+2. **Checks** that it follows the language rules (syntax and many semantic rules)
+3. **Analyzes** the program (types, control flow, data flow — depth varies by language)
+4. **Transforms** it into a lower-level form
+5. **Emits** output: object files, bitcode, assembly, or an executable (toolchains differ)
+
+Modern compilers also optimize. Optimization means transforming the program so it should behave the same but run faster or use less memory — within the language rules.
+
+## Compiler vs interpreter
+
+| | Compiler | Interpreter |
+| --- | --- | --- |
+| When translation happens | Ahead of time (before run, or as a build step) | During execution (or via a short-lived compile) |
+| Typical output | Binary, object file, or IR artifact | Immediate execution of the program |
+| Examples people meet | `clang`, `gcc`, `rustc` | Classic Python / Ruby loops (engines vary) |
+| Mental model | Build, then run | Run the source (or bytecode) directly |
+
+Real systems blur the line. Java and C# compile to bytecode, then a VM may JIT-compile hot code. JavaScript engines parse, interpret, and optimize. For beginners, keep the distinction: **compile-ahead vs execute-through-a-runtime**.
+
+## A tiny example (mental model)
+
+```c
+int add(int a, int b) {
+  return a + b;
+}
+```
+
+You see a function. The compiler eventually turns that into instructions like “add these two registers and return.” The exact instructions depend on the **ISA** (x86-64, AArch64, …) and on optimization settings.
+
+That is why “what is a compiler?” connects immediately to [machine code](/docs/compilers/sourcecode_to_executable/), [CPU](/docs/coa/basic_terminology_in_coa/), and [ISA](/docs/coa/what-is-an-isa/).
+
+## Why this matters for CompilerSutra
+
+Everything later — Clang flags, LLVM IR, GPU offload, parallel runtimes — sits on this idea:
+
+> Source is not what the silicon runs. Something translates it.
+
+If that sentence is clear, the rest of the site gets easier.
+
+## Common beginner mistakes
+
+- Thinking the compiler “is the language.” The language is the rules; the compiler is one implementation of those rules.
+- Ignoring warnings. Warnings are the compiler telling you something suspicious before the CPU finds it the hard way.
+- Skipping the linker. Many “compile errors” are really link errors (`undefined reference`).
+- Treating optimization as magic. Optimizers are aggressive but still bound by language semantics.
+
+## Practice check
+
+Ask yourself:
+
+1. What is the input of a compiler?
+2. What is a typical output?
+3. How is that different from an interpreter?
+4. Where do the linker and loader fit after compilation?
+
+If you can answer those without opening notes, you are ready for the next article.
+
+## Next steps
+
+1. [What Is a Computer Program?](/docs/basic-terminology/what-is-a-computer-program/) — place “program,” “source,” and “binary” correctly
+2. [From Source Code to Binary](/docs/compilers/sourcecode_to_executable/) — full pipeline walkthrough
+3. [Know Your Compiler](/docs/compilers/compiler/) — deeper compiler-fundamentals lesson
+4. Back to the [Basic Terminology hub](/docs/basic-terminology/) — continue Module 03
+
+## Related topics
+
+- [What Is Source Code?](/docs/compilers/sourcecode_to_executable/)
+- [What Is Machine Code?](/docs/compilers/sourcecode_to_executable/)
+- [What Happens When You Run a Program?](/docs/linux/how_program_runs_from_elf_to_main/)
+- [What Is an Instruction Set Architecture?](/docs/coa/what-is-an-isa/)
+
+<Tabs>
+  <TabItem value="resources" label="Learning resources" default>
+    - **Read:** this page, then [Know Your Compiler](/docs/compilers/compiler/)
+    - **Watch:** [CompilerSutra on YouTube](https://www.youtube.com/@compilersutra)
+    - **PDF notes:** [Source to binary](/ppt/live/sourcetobinary.pdf)
+  </TabItem>
+  <TabItem value="path" label="Where this sits in the hub">
+    Module 02 — Programming Fundamentals, after “What Is a Programming Language?” and before “What Is an Interpreter?”
+  </TabItem>
+</Tabs>

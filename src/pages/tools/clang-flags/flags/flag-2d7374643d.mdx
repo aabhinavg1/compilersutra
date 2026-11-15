@@ -93,6 +93,42 @@ flowchart LR
 ~~~
 
 The -std= spelling is handled by the driver and translated into frontend, diagnostic, target, IR, or runtime state as shown above. LLVM and the linker consume the resulting representation; they do not generally parse the original user-facing spelling.
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-std=` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L616). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L1151)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Diagnostic / frontend (or driver glue). **No direct LLVM IR optimization pass.**
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| language standard selection | Frontend / Driver | Directly controlled | Changes inputs, language mode, diagnostics, or link libs — not PassBuilder membership |
+| Downstream optimization pipeline | LLVM IR | Related mechanism | May see different IR only if the flag changes which code is compiled |
+
+### How to verify
+
+```bash
+clang -### -std=c11 -c w.c 2>&1 | head
+# Do not map this flag to InstCombine/GVN/etc. without evidence it gates those passes.
+```
+
+### Source investigation
+
+- Options.td entry for this flag in the Clang Flags Explorer inventory
+
+---
+
+:::note Present by
+`-std=` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L6217). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## Key facts
 
 <KeyFacts items={[{label:'Flag',value:'-std='},{label:'Category',value:'Language mode'},{label:'Primary stage',value:'Clang driver / frontend'},{label:'ABI or semantics',value:'Verify project-wide consistency'},{label:'Evidence',value:'Use -###, -E, -S, IR, or object inspection'}]} />

@@ -43,6 +43,12 @@ const parallel = {
             'parallel-computing/what-a-cluster-is',
             'parallel-computing/mpi-collectives',
             'parallel-computing/overlap-communication-and-computation',
+            'parallel-computing/hybrid-mpi-openmp',
+            'parallel-computing/the-cpu-ran-out-of-cheap-speed',
+            'parallel-computing/alus-that-could-only-draw',
+            'parallel-computing/no-language-for-those-units',
+            'parallel-computing/from-graphics-pipeline-to-a-kernel',
+            'parallel-computing/cuda-host-device-copy',
           ],
         },
         {

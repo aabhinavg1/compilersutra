@@ -11,9 +11,13 @@ const TONE_TO_CLASS = {
   accent: styles.badgeAccent,
 };
 
-export default function Badge({ children, tone = 'neutral', className, title }) {
+export default function Badge({ children, tone = 'neutral', className, title, ...rest }) {
   return (
-    <span className={clsx(styles.badge, TONE_TO_CLASS[tone] || styles.badgeNeutral, className)} title={title}>
+    <span
+      className={clsx(styles.badge, TONE_TO_CLASS[tone] || styles.badgeNeutral, className)}
+      title={title}
+      {...rest}
+    >
       {children}
     </span>
   );

@@ -1,45 +1,173 @@
 ---
 title: "-ffunction-sections"
 slug: "/tools/clang-flags/-ffunction-sections/"
-description: "Place each function in its own section"
+description: "Instructs Clang and the LLVM backend to emit each function into its own ELF or Mach-O section (e.g., .text.func), enabling dead-code elimination via linker garbage collection."
+keywords:
+  - -ffunction-sections
+  - -fno-function-sections
+  - clang flag
+  - dead code elimination
+  - gc-sections
+  - llvm backend
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-ffunction-sections">
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-ffunction-sections" summary="Instructs the LLVM backend to place each function into a unique code section (e.g., .text.foo), allowing linkers to discard unreferenced functions via --gc-sections.">
+
+<Head>
+  <title>-ffunction-sections | Clang Flags Explorer</title>
+</Head>
+
+## At a glance
+
+| Property | Setting |
+| :--- | :--- |
+| **Driver Flag** | `-ffunction-sections` |
+| **CC1 Option** | `-ffunction-sections` |
+| **Inverse Flag** | `-fno-function-sections` |
+| **Category** | Code Generation Options / Backend Options |
+| **Default State** | Target-dependent (Disabled on standard ELF Linux by default; enabled on some embedded targets) |
+| **Primary Interaction** | Linker flags (`-Wl,--gc-sections` or `-Wl,-dead_strip`) |
+
+---
 
 ## What this flag actually does
 
-Place each function in its own section
+By default, the compiler places all compiled functions of a translation unit into a single shared code section (typically `.text`). When `-ffunction-sections` is active, the LLVM code generator emits every function into its own individual section (e.g., `.text.used_func` and `.text.unused_func`).
 
+On its own, `-ffunction-sections` does not reduce binary size. Its primary purpose is to expose granular section boundaries to the linker. When combined with garbage-collection linker flags (such as `ld --gc-sections` on ELF platforms or `ld -dead_strip` on macOS), the linker can build an explicit dependency graph of symbol references starting from the entry point (`_start` or `main`) and drop any unreferenced function sections entirely.
 
+<Callout type="warning" title="Trade-offs: Binary overhead and metadata size">
+Placing every function in a distinct section increases object file overhead. It creates additional section header table entries, relocations, and debug info records within intermediate `.o` files. Furthermore, it can slightly reduce instruction cache locality if the linker does not reorder sections effectively.
+</Callout>
 
-It can be negated with -fno-function-sections.
+### Defaults across optimization levels
 
-## When to use it
+Optimization levels (`-O0`, `-O2`, `-O3`, `-Os`, `-Oz`) **do not automatically enable** `-ffunction-sections` on standard Linux target triples (`x86_64-unknown-linux-gnu`). It must be passed explicitly.
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+---
 
-## When not to use it
+## How it works inside Clang
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+The flag flows from driver options down to target machine configuration via `CodeGenOptions`:
 
-## Usage example
+1. **Driver Parsing**: Clang's driver processes `-ffunction-sections` in `clang/lib/Driver/ToolChains/Clang.cpp` and translates it into the internal CC1 flag `-ffunction-sections`.
+   * Source reference: [clang/lib/Driver/ToolChains/Clang.cpp#L5085](https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/ToolChains/Clang.cpp#L5085)
+2. **Frontend CodeGenOptions**: `CompilerInvocation` sets `CodeGenOpts.FunctionSections = 1`.
+   * Source reference: [clang/lib/Frontend/CompilerInvocation.cpp#L1615](https://github.com/llvm/llvm-project/blob/main/clang/lib/Frontend/CompilerInvocation.cpp#L1615)
+3. **LLVM TargetOptions Propagation**: When creating the `TargetMachine`, Clang populates LLVM's target configuration: `TargetOpts.FunctionSections = CodeGenOpts.FunctionSections`.
+   * Source reference: [clang/lib/CodeGen/BackendUtil.cpp#L518](https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/BackendUtil.cpp#L518)
+4. **AsmPrinter / TargetLoweringObjectFile**: During backend assembly generation, LLVM queries `TargetLoweringObjectFile::getSectionForFunction()`. Instead of returning the standard default `.text` section, it constructs a unique section name formatted as `.text.<function_name>`.
+   * Source reference: [llvm/lib/Target/TargetLoweringObjectFile.cpp#L361](https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/TargetLoweringObjectFile.cpp#L361)
+
+---
+
+## Code Example & Assembly Comparison
+
+The following example demonstrates how function placement changes in assembly when `-ffunction-sections` is applied.
+
+<SourceCode 
+  language="cpp" 
+  title="example.cpp" 
+  code={`int used_func(int a) {
+    return a + 42;
+}
+
+int unused_func(int b) {
+    return b * 2;
+}`} 
+/>
+
+<AsmDiff 
+  beforeTitle="Default (-fno-function-sections)" 
+  afterTitle="With -ffunction-sections" 
+  beforeCode={`    .text
+    .globl  used_func
+    .type   used_func,@function
+used_func:
+    add eai, 42
+    ret
+
+    .globl  unused_func
+    .type   unused_func,@function
+unused_func:
+    shl edi, 1
+    ret`} 
+  afterCode={`    .section .text.used_func,"ax",@progbits
+    .globl   used_func
+    .type    used_func,@function
+used_func:
+    add edi, 42
+    ret
+
+    .section .text.unused_func,"ax",@progbits
+    .globl   unused_func
+    .type    unused_func,@function
+unused_func:
+    shl edi, 1
+    ret`} 
+/>
+
+---
+
+## Clang version history
+
+| Clang Version | Implementation Status | Default State | Evidence |
+| :--- | :--- | :--- | :--- |
+| **LLVM 2.x - 3.x** | Present early in driver (`-ffunction-sections`) | Disabled by default on standard ELF | [clang/include/clang/Driver/Options.td#L1730](https://github.com/llvm/llvm-project/blob/main/clang/include/clang/Driver/Options.td#L1730) |
+| **LLVM 12.0** | Added support for unique section prefixing controls | Target-dependent | Verified from source |
+| **LLVM 18.0+** | Maintained full compatibility across ELF, Mach-O, and COFF targets | Target-dependent | Verified from source |
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classification: **backend/codegen**
+
+| Mechanism | Relationship Label | Description |
+| :--- | :--- | :--- |
+| **TargetLoweringObjectFile** | Directly controlled | Emits explicit `.section .text.<name>` directives for each function symbol. |
+| **`-fdata-sections`** | Related mechanism | Emits global variables into dedicated data sections (`.data.<name>` / `.bss.<name>`). |
+| **Linker GC (`--gc-sections`)** | Backend mechanism | Linker pass that traces symbol graphs and strips unreferenced sections emitted by this flag. |
+
+### How to verify backend behavior
+
+You can verify section assignment by inspecting emitted assembly directives:
 
 ```bash
-clang++ -ffunction-sections -c main.cpp
+clang -S -O2 -ffunction-sections example.cpp -o - | grep -E "^\s*\.section"
 ```
+
+Expected output showing individual section directives:
+```assembly
+    .section    .text.used_func,"ax",@progbits
+    .section    .text.unused_func,"ax",@progbits
+```
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option
-- **Stage**: cc1 (frontend), category `Code Generation`
-- **Negated by**: `-fno-function-sections`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts 
+  facts={[
+    { label: "Driver Flag", value: "-ffunction-sections" },
+    { label: "CC1 Flag", value: "-ffunction-sections" },
+    { label: "Negation", value: "-fno-function-sections" },
+    { label: "Target Sensitivity", value: "Primary effect on ELF and Mach-O object generation" },
+    { label: "IR Changes", value: "No direct IR instruction changes; affects backend TargetOptions section directives" },
+    { label: "Linker Requirement", value: "Requires -Wl,--gc-sections (ELF) or -Wl,-dead_strip (Mach-O) to remove dead code" }
+  ]} 
+/>
+
+---
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>

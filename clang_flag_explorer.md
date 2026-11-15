@@ -1,74 +1,272 @@
-Write a hand-authored Clang flag article matching the quality and structure of:
+# Clang Flags Explorer — source of truth (HAND_AUTHORED articles)
 
-src/pages/tools/clang-flags/flags/flag-2d6663616c6c2d73617665642d783130.mdx
-(-fcall-saved-x10)
+**This file is the single contract** for every new publish and every improve.
 
-Target flag: <FLAG_NAME>
+- Cursor skill `compilersutra-clang-flags` **must follow this file** (skill = short runbook + link here).
+- Jenkins `write-flag` / `improve-flag` / `mdx-audit` **must fail closed** on the hard gates listed in §16.
+- Local prompts (`scripts/clang-flags-bot/prompts/`, gitignored) and `jenkins_pipeline/prompts/` must mirror this contract — do not invent a third checklist.
 
-Requirements:
+Also obey `compilersutra-mdx` for MDX/CTA/`Head` hard build rules.
 
-1. Edit the existing generated MDX for that flag under `src/pages/tools/clang-flags/flags/`. Keep `{/* HAND_AUTHORED */}` exactly so `generate-clang-flag-pages.mjs` does not overwrite it. Do not invent a new path scheme.
-2. Wrap the article in `FlagArticleShell` with the correct `flagPath` and a precise one-line summary.
-3. Keep the article technically exact and evidence-based:
-   - Use compiler-engineering terminology: say accesses may alias, accesses do not normally refer to the same object, or the compiler conservatively assumes they may alias.
-   - Do not describe aliasing as merely a relationship between pointer values.
-   - Do not claim a flag fixes undefined behavior unless the language rules actually say so.
-   - Distinguish driver options, `cc1` options, frontend/codegen state, LLVM IR metadata, backend lowering, and linking.
-4. Use these components where they fit:
-   - `KeyFacts`, `Callout`, `SourceCode`, `AsmDiff`, `PerfReport`
-   - `RegisterLayout` only for ABI/register flags, passing the register name.
-5. Required sections, in this order and with the same practical spirit as `-fcall-saved-x10`:
-   - **At a glance**: table containing architecture, category, compiler, optimization behavior, risk, plus a one-line summary.
-   - **What this flag actually does**: explain mechanics, defaults, interactions, and semantic limits; avoid marketing language.
-   - **Minimal realistic example**: use `SourceCode`; make the compiler-visible effect clear.
-   - **Before vs. after assembly**: use real `clang -S` or `objdump` output; state compiler version, optimization level, target triple, and relevant source/command.
-   - Do not use identical or illustrative before/after assembly as a placeholder. If the flag acts in preprocessing, diagnostics, language selection, or debug metadata, show the appropriate observable artifact (`-E`, diagnostics, `-###`, IR, or object sections) and explain why machine instructions are unchanged.
-   - Keep `SourceCode` examples genuinely multiline and readable in the rendered page; do not pass a long one-line JSX string when formatted source is required.
-   - **Why use it / when not to use it**: include ABI, portability, correctness, and build-consistency warnings where relevant.
-   - **Performance impact**: explain qualitative tradeoffs. Use `PerfReport` only with real measurements obtained by actually running [CompilerSutraPerf](https://www.compilersutra.com/docs/project/compilersutra-perf/) (`csperf`, [PyPI](https://pypi.org/project/compilersutra-perf/)) or its documented CLI. Include the without/with arrays, workload, machine, compiler, trial setup, limitations, and exact reproduction commands. Run the commands in the workspace before reporting any numbers; never invent, estimate, or copy placeholder measurements. If the tool or workload cannot be run, say so and omit `PerfReport` data.
-   - Link the `CompilerSutraPerf` name to the in-site docs and https://pypi.org/project/compilersutra-perf/ whenever measurements are reported.
-   - Format reproduction commands for mobile and desktop: wrap commands line-by-line, avoid repeating long absolute paths, and use tabs or separate compact blocks for comparison variants.
-   - **Compatibility**: table covering Clang, GCC, MSVC where relevant, language modes, and target restrictions.
-   - **Usage example**: exact, copy-pasteable Clang command lines; include `-###` or IR inspection when useful.
-   - **Adjacent options**: siblings, inverse/negative form, related optimization controls, and internal options only when clearly labeled.
-   - **How it works inside Clang**: include an `Implementation` subsection and a compact stage table covering option definition, driver parsing/forwarding, invocation setup, code generation, LLVM IR/TBAA or target effect, backend, and linker.
-   - **Key facts** footer using `KeyFacts`.
-6. Implementation/source-link requirements:
-   - Link directly to the current upstream LLVM source on GitHub, not just plain file paths.
-   - Include concrete symbols and line-numbered links where possible. For this flag family, check the current upstream locations for `clang/include/clang/Options/Options.td`, `clang/lib/Driver/ToolChains/Clang.cpp`, `clang/lib/Frontend/CompilerInvocation.cpp`, `clang/lib/CodeGen/CodeGenTBAA.cpp`, and relevant LLVM documentation.
-   - For optimization-level articles, include an Implementation subsection with a stage table naming current line-linked symbols for option definition, driver parsing, invocation setup, CodeGenOptions, BackendUtil/PassBuilder pipeline selection, LLVM pass behavior, target backend, and linker; verify every line range against upstream before publishing.
-   - For non-optimization flags, make the same table mechanism-specific: identify the actual frontend, diagnostic, preprocessor, target, sanitizer, debug-info, runtime, or linker symbols instead of copying an optimization pipeline. Do not describe a stage as consuming the flag if it only receives transformed state.
-   - Verify line numbers against the current upstream source before writing them; do not guess stale locations.
-   - Use a Mermaid flowchart for multi-stage driver/frontend/IR/backend pipelines whenever the article explains three or more dependent compilation stages. Keep labels concise and technically accurate; do not use Mermaid as decoration.
-7. SEO and page metadata are required:
-   - Add a useful frontmatter `keywords` list with the flag spelling, inverse/sibling spellings, Clang/GCC terms, language terms, LLVM/TBAA terms, and relevant optimization concepts.
-   - Write a descriptive, search-friendly frontmatter `description` that names the flag, Clang, the affected compiler mechanism, and C/C++ or target scope as applicable.
-   - Import Head as a default export only: `import Head from '@docusaurus/Head';`. Never `import { Head }` (undefined → Vercel `Element type is invalid`).
-   - Keep `Head` metadata aligned with the page: `keywords`, `og:title`, `og:description`, `og:type`, and Twitter title/description. Do not keyword-stuff or make claims unsupported by the article.
-8. Use Docusaurus Markdown extensions where they improve clarity:
-   - Use `:::tip` for practical guidance or a safe workflow.
-   - Use `:::caution` for correctness, ABI, portability, or undefined-behavior warnings.
-   - Use `:::important` for build-wide or contract-level requirements.
-   - Use `:::note` for version, target, measurement, or implementation caveats.
-   - Use `tabs` and `tabItem` when presenting equivalent C/C++ commands, compiler variants, target variants, or before/after workflows. Do not force tabs around a single command.
+---
 
-9. Add the existing mailing-list CTA near the top of the article, immediately after `FlagArticleShell` opens:
-   - Use the established Google Forms URL: `https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform`.
-   - Use a centered, visible Docusaurus CTA: `className="button button--primary button--lg"`.
-   - Label it `✉ Subscribe to Weekly Compiler Notes` and add a short supporting line about practical LLVM/Clang/compiler-engineering notes.
-   - Open external links with `target="_blank"` and `rel="noopener noreferrer"`; include an accessible `aria-label`.
-   - MDX-critical: keep the entire `<a>...</a>` on a single line. Do not put the link text on its own line between the tags (MDX treats that as a markdown paragraph and the build fails with `end-tag-mismatch` on `</a>`). Prefer this exact shape:
-     `<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>`
-10. Tone: technical reference for compiler engineers. Concrete, measured, ABI-honest. No hype, no “AI/agent” voice, no filler.
-11. Keep CSS/components as-is unless a small prop/CSS fix is required for this flag’s content.
-12. After writing, sanity-check:
-   - the exact generated page path and slug;
-   - responsive rendering of long commands and comparison blocks on mobile and desktop;
-   - performance claims link to CompilerSutraPerf docs and PyPI when measurements are used;
-   - `{/* HAND_AUTHORED */}` is still present;
-   - all links and source paths are correct;
-   - Mermaid/MDX syntax is valid;
-   - `git diff --check` passes;
-   - no fake measurements or unsupported source claims were introduced.
+## Gold references (mirror discipline, not mechanics)
 
-Deliverable: the completed MDX and only necessary tiny component tweaks.
+| Kind | Flag | Path |
+| :--- | :--- | :--- |
+| Backend / frame policy | `-fomit-frame-pointer` | `src/pages/tools/clang-flags/flags/flag-2d666f6d69742d6672616d652d706f696e746572.mdx` |
+| Mid-end / O-gated vectorize | `-fno-vectorize` | `src/pages/tools/clang-flags/flags/flag-2d666e6f2d766563746f72697a65.mdx` |
+| Mid-end / O-gated unroll | `-funroll-loops` | `src/pages/tools/clang-flags/flags/flag-2d66756e726f6c6c2d6c6f6f7073.mdx` |
+
+Secondary layout-only example: `flag-2d6663616c6c2d73617665642d783130.mdx` (`-fcall-saved-x10`).
+
+Target flag: `<FLAG_NAME>`
+
+---
+
+## 1. Edit path and marker
+
+1. Edit the existing generated MDX under `src/pages/tools/clang-flags/flags/`.
+2. Keep `{/* HAND_AUTHORED */}` exactly so `generate-clang-flag-pages.mjs` does not overwrite it.
+3. Do not invent a new path scheme.
+
+## 2. Shell wrapper
+
+Wrap in `<FlagArticleShell flagPath="..." summary="...">` … `</FlagArticleShell>`.
+
+Use “Request that Clang …” when the flag is a policy request, not a guarantee.
+
+## 3. Technical exactness
+
+- Use compiler-engineering terminology: accesses may alias; accesses do not normally refer to the same object; the compiler conservatively assumes they may alias.
+- Do not describe aliasing as merely a relationship between pointer values.
+- Do not claim a flag fixes undefined behavior unless the language rules say so.
+- Distinguish driver options, `cc1` options, frontend/codegen state, LLVM IR metadata, backend lowering, and linking.
+- Never invent pass names, line numbers, history milestones, or PerfReport timings.
+- Label claims: **Verified experimentally** / **Verified from source** / **Documented** / **Not yet verified**.
+
+## 4. Components
+
+Use where they fit: `KeyFacts`, `Callout`, `SourceCode`, `AsmDiff`, `PerfReport`.  
+`RegisterLayout` only for ABI/register flags.
+
+Prefer:
+
+```mdx
+<KeyFacts
+  items={[
+    { label: 'Arguments', value: '…', icon: 'info' },
+    { label: 'Accepted by', value: '…', icon: 'check' },
+    { label: 'Stage', value: '…', icon: 'info' },
+    { label: 'Negated by', value: '…', icon: 'check' },
+    { label: 'Defined in', value: 'clang/include/clang/Driver/Options.td', icon: 'info' },
+  ]}
+/>
+```
+
+Legacy KeyFacts props still work via `KeyFacts.jsx` — never leave an empty footer.
+
+## 5. Required section order (common gold)
+
+1. **At a glance** — Architecture, Category, Pipeline, Compiler, Optimization Level / behavior, Risk + one-line summary.
+2. **What this flag actually does** — mechanics, defaults, limits; real admonitions where needed.
+3. **Option map and precedence** — siblings/aliases/`-m*` / enums; if alone, say so with evidence.
+4. **Defaults by optimization level** — when `-O*` changes defaults or enables the mechanism: verified table + **which `-O` introduces/flips**. If O-level does not affect the flag, say so with evidence (do not skip the question).
+5. **Minimal realistic example** — `SourceCode` (pure C/C++ in body; flag only in chrome/shell).
+6. **Before vs after** — real `AsmDiff` / IR / `-###` / diagnostics / `-E`. Name compiler version + triple + commands. No illustrative placeholders.
+7. **Why use / when not**
+8. **Performance impact** — qualitative always; `PerfReport` only with real `csperf` arrays. Never noise-as-win.
+9. **Compatibility** — driver policy vs final asm; GCC/MSVC/Flang only when verified.
+10. **Usage / verification** — copy-pasteable (`-###`, `-emit-llvm`, …).
+11. **Adjacent options** — technically adjacent only.
+12. **How it works inside Clang** — `Implementation` subsection + stage table (see §7).
+13. **Clang version history (REQUIRED)** — 4-column table (see §8). After How it works, before Related LLVM.
+14. **Related LLVM Optimizations & Backend Mechanisms (REQUIRED)** — see §9. Before Key facts.
+15. **Key facts** — `<KeyFacts />`.
+
+## 6. Hero “More Support” meta + JSON
+
+Hero cards come from `FlagArticleShell` (Architecture / Category / Optimization / Risk / Pipeline / Driver / Tool / Status), **not** free-form MDX.
+
+When publishing/improving a flag family:
+
+1. Fix `static/data/clang-flags.json`: `category`, `help`, `documentation`, `relatedFlags`, `whenToUse` / `whenNotToUse`, `exampleClang`.
+2. Fill `help` for every related flag (empty → “No help text available”).
+3. Strip junk `relatedFlags` (alphabet soup / unrelated sanitizer options). Cap to technically adjacent spellings.
+4. If Architecture / Optimization / Pipeline would be wrong, add a surgical special-case in `FlagArticleShell.jsx` + matching `flagTrails.js` trails.
+5. Pipeline chrome must match the article. **Never** Instrumentation → Runtime unless the flag is instrumentation.
+6. Do not classify frame-pointer / plain codegen policy as Sanitizer.
+
+## 7. Implementation / source-link requirements
+
+- Link directly to the **current upstream LLVM source on GitHub**, not just plain file paths. Prefer tag-pinned or commit URLs.
+- Include concrete symbols and **line-numbered** links where possible. Check current locations for:
+  - `clang/include/clang/Options/Options.td` and/or `clang/include/clang/Driver/Options.td`
+  - `clang/lib/Driver/ToolChains/Clang.cpp`
+  - `clang/lib/Frontend/CompilerInvocation.cpp`
+  - `clang/lib/CodeGen/CodeGenTBAA.cpp` / `BackendUtil.cpp` as applicable
+  - relevant LLVM documentation
+- **Optimization-level / mid-end articles:** Implementation stage table with current line-linked symbols for option definition → driver parsing → invocation setup → CodeGenOptions → BackendUtil/PassBuilder → LLVM pass behavior → target backend → linker (when relevant). Verify every line range against upstream before publishing.
+- **Non-optimization flags:** same table, but mechanism-specific (frontend / diagnostic / preprocessor / target / sanitizer / debug-info / runtime / linker). Do not describe a stage as consuming the flag if it only receives transformed state.
+- Verify line numbers against current upstream before writing them; do not guess stale locations.
+- Use a Mermaid flowchart for multi-stage driver/frontend/IR/backend pipelines whenever the article explains **three or more** dependent stages. Concise, accurate labels; never decoration; do **not** duplicate the shell overview pipeline.
+
+## 8. Clang version history (REQUIRED on every flag)
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+
+Rules:
+
+- **Change-only rows.** Include a version **only when something actually changed** for this flag (driver defaults, option spelling, cc1 wiring, IR/policy encoding, target-specific default, Flang support, etc.). Do **not** list every LLVM release, and do **not** add filler rows like “no change in N.M.”
+- **Span to current LLVM.** Research through the **latest llvmorg release tag** (check GitHub `llvm/llvm-project` releases). After the last real change, close with one short prose note: presence / same semantics **verified through llvmorg-X.Y.Z** — that closing note is **not** a fake “changed in X” table row.
+- Prefer **“Present by LLVM/Clang X.Y”** when introduction is unresolved (first row is often presence, not a claimed invention date).
+- Evidence cells must be **clickable primary sources** (Options.td tags, release notes, commits, PRs, Phabricator) with `#L` line anchors when pointing at source.
+- Separate Flang/Fortran rows from Clang C/C++.
+- Never invent milestones. Thin-but-honest verified rows beat a padded table.
+- Place after How it works, before Related LLVM.
+- Keep At a glance / Defaults prose **consistent** with the history table (do not contradict a later milestone).
+
+Skill `compilersutra-clang-flags` must teach this §8 contract (change-only through current llvmorg) on every publish/improve.
+
+## 9. Related LLVM Optimizations & Backend Mechanisms
+
+Help the reader trace:
+
+**Clang flag → Driver → Frontend → LLVM IR → Optimization passes / Backend mechanisms → Machine code → Runtime behavior**
+
+Do **not** assume every Clang flag is an LLVM IR optimization pass.
+
+### 9.1 Classify first
+
+| Category | Examples | Investigate |
+| :--- | :--- | :--- |
+| **A. LLVM IR optimization** | `-fvectorize`, `-fslp-vectorize`, `-funroll-loops`, `-fstrict-aliasing`, `-O*` | IR passes / analyses gated or influenced by the flag |
+| **B. Backend / code generation** | `-fomit-frame-pointer`, `-ffixed-x10`, `-fcall-saved-x10` | Frame lowering, regalloc, ISel, prologue — not IR opts by default |
+| **C. Instrumentation** | `-fsanitize=*`, `-fprofile-instr-generate` | Instrumentation, metadata, runtimes, link deps |
+| **D. Diagnostic / frontend** | `-Wall`, `-Wextra`, `-D`, `-I`, `-std=` | Usually **No direct pass** |
+| **E. ABI / calling convention** | register / visibility / ABI flags | Calling convention, `RegisterLayout` when useful |
+
+### 9.2 Relationship labels (exact)
+
+Directly controlled | Indirectly affected | Backend mechanism | Related mechanism | No direct pass
+
+### 9.3 Table + verify + sources
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+
+Then **How to verify** and **Source investigation**.
+
+- `opt` only for IR-level passes; never for machine-only behavior.
+- Three-way rule: source explains why scheduled; pipeline logs what executed; IR/asm diffs what changed. Registered ≠ scheduled ≠ executed ≠ transformed ≠ faster.
+
+### 9.4 Flag-family extras (add only what applies)
+
+**A. Mid-end / PassBuilder** (`-f(no-)vectorize`, `-f(no-)unroll-loops`, `-ffast-math`, `-flto`, …)  
+Separate driver spelling on `-###` from CodeGenOpts/PTO defaults; name passes only with evidence; orthogonal siblings; enable ≠ every loop transforms.
+
+**B. Backend / frame policy** (`-f(no-)omit-frame-pointer`, `-mframe-pointer=`, …)  
+Leaf / `-mframe-pointer=` map; target-sensitive defaults; FP ≠ unwind ≠ “no stack”; risk = observability for FP profilers.
+
+**C. ABI / registers** (`-fcall-saved-*`, `-ffixed-*`, …)  
+`RegisterLayout`; build-wide ABI `:::important`.
+
+**D. Sanitizer / instrumentation**  
+Runtime/link notes; Instrumentation → Runtime only here.
+
+**E. Diagnostics / preprocessor / language**  
+Show diagnostics/`-E`; usually No direct pass; `csperf` usually wrong tool.
+
+**F. Target CPU/arch** (`-march=`, `-mcpu=`, `-mtune=`)  
+Triple+CPU; capture asm on stated triple.
+
+**G. Link / PIC / PIE / pthread**  
+Driver vs linker; when `-c` makes the flag a no-op.
+
+## 10. SEO and page metadata (REQUIRED)
+
+- Frontmatter `keywords`: flag spelling, inverse/siblings, Clang/GCC terms, language/LLVM/mechanism terms.
+- Descriptive, search-friendly frontmatter `description` naming the flag, Clang, mechanism, and C/C++ or target scope.
+- `import Head from '@docusaurus/Head';` only — never `import { Head }` (undefined → Vercel `Element type is invalid`).
+- Align Head: `keywords`, `og:title`, `og:description`, `og:type`, Twitter title/description. No keyword-stuffing; no unsupported claims.
+
+## 11. Docusaurus admonitions and tabs
+
+- `:::tip` — practical guidance / safe workflow  
+- `:::caution` — correctness, ABI, portability, UB  
+- `:::important` — build-wide / contract requirements  
+- `:::note` — version, target, measurement, implementation caveats  
+- `Tabs` / `TabItem` for real variants only — do not force tabs around a single command  
+
+## 12. Subscribe CTA (REQUIRED, exact shape)
+
+Immediately after `<FlagArticleShell ...>` opens:
+
+```mdx
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
+```
+
+MDX-critical: entire `<a>...</a>` on **one line**. Multiline link text → `end-tag-mismatch` on Vercel.
+
+## 13. Tone and CSS
+
+Tone: technical reference for compiler engineers. Concrete, measured, ABI-honest. No hype, no AI/agent voice, no filler.  
+Keep CSS/components as-is unless a tiny prop/CSS fix is required.
+
+## 14. Performance / PerfReport
+
+- Qualitative tradeoffs always.
+- `PerfReport` only with real CompilerSutraPerf / `csperf` trial arrays run in-workspace.
+- Link in-site docs + https://pypi.org/project/compilersutra-perf/ when reporting numbers.
+- Never invent, estimate, or copy placeholders. Never claim a win from noise.
+- Forbidden excuse: any paraphrase of “no controlled CompilerSutraPerf run was performed.”
+
+## 15. Sanity-check before done
+
+- Exact path/slug; mobile-friendly commands  
+- `{/* HAND_AUTHORED */}` + CTA one-liner intact  
+- Hero meta / relatedFlags / trails match mechanism  
+- Version history table with clickable Evidence  
+- Implementation links are `github.com/llvm/llvm-project/...` (prefer `#L…`)  
+- Related LLVM evidence-backed only  
+- `git diff --check`; build or scoped MDX validation  
+- Do not stage gitignored prompts/skills  
+
+## 16. Bot fail-closed gates (publish + improve)
+
+Hard-fail (reject draft / block publish) if any missing:
+
+| Gate | Detection |
+| :--- | :--- |
+| HAND_AUTHORED marker | `{/* HAND_AUTHORED */}` or `HAND_AUTHORED` |
+| FlagArticleShell | `<FlagArticleShell` |
+| At a glance | `## At a glance` |
+| What this flag actually does | `## What this flag actually does` |
+| How it works | `## How it works inside Clang` |
+| Clang version history | `## Clang version history` + table header `Practical impact` / `Evidence` |
+| Related LLVM | `Related LLVM Optimizations` |
+| Key facts | `KeyFacts` or `## Key facts` |
+| Subscribe CTA | `Subscribe to Weekly Compiler Notes` + Google Form URL |
+| Default Head import | fail if `import { Head }` |
+| LLVM GitHub line-links | at least one `github.com/llvm/llvm-project/...#L…` Implementation/source link |
+| No AI credit / placeholders | Cursor co-author, lorem, illustrative-only, invented |
+
+Soft/completeness (score + improve priority; hard-fail for O-sensitive flags):
+
+- Option map section **or** explicit “no sibling spellings”
+- Defaults by optimization level **or** evidenced “O-level does not change this”
+- For `-O*` / vectorize / unroll / omit-frame / fast-math / lto: O-level guidance is **hard-fail**
+
+## 17. Optional `optimizationMapping` JSON
+
+Do not fabricate bulk mappings. Hand-authored MDX remains truth until a generator consumes optional enrichment. Preserve existing option keys.
+
+## 18. Historical research reminders
+
+- Early commit ≠ first release; prefer Present-by when unsure.  
+- Meaningful behavior changes only.  
+- Cite clickable hashes / reviews / release notes.  
+- Separate Flang from Clang C/C++.
+
+Deliverable: completed MDX + only necessary JSON / FlagArticleShell / flagTrails / KeyFacts tweaks.

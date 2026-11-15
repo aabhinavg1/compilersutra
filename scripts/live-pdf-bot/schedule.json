@@ -1,0 +1,48 @@
+{
+  "series": "CompilerSutra Weekly Live",
+  "timezone": "Asia/Kolkata",
+  "defaultDurationMin": 45,
+  "site": "https://www.compilersutra.com",
+  "courseUrl": "https://www.compilersutra.com/docs/parallel-computing/",
+  "lives": [
+    {
+      "id": "2026-11-14-parallel-course-launch",
+      "date": "2026-11-14",
+      "weekday": "Saturday",
+      "title": "Parallel Programming Course Launch",
+      "subtitle": "Curriculum walkthrough: one problem, several machines",
+      "topic": "New Parallel Computing course + full curriculum",
+      "host": "CompilerSutra",
+      "audience": "Students and engineers learning parallel / HPC programming",
+      "course": "parallel-computing",
+      "cta": "Start the free course after the live",
+      "agenda": [
+        "Why this course exists (one problem across many machines)",
+        "How the curriculum is structured (8 chapters, 52 lessons)",
+        "Chapter tour: Thinking \u2192 CPU \u2192 OpenMP \u2192 Algorithms \u2192 SIMD \u2192 GPU \u2192 MPI \u2192 Measuring",
+        "How to study: read one page, do the exercise, take the quiz",
+        "Q&A and what to study next"
+      ],
+      "talkingPoints": [
+        "The course keeps one running example (a list of integers) while the execution model changes.",
+        "Correctness comes first: races, shared memory, and measurement are not optional side topics.",
+        "OpenMP, SIMD, GPU, and MPI are different machines for the same idea \u2014 not separate unrelated courses.",
+        "Every chapter has lessons + a quiz; projects lock the idea in."
+      ],
+      "links": [
+        {
+          "label": "Course hub",
+          "url": "https://www.compilersutra.com/docs/parallel-computing/"
+        },
+        {
+          "label": "Start here",
+          "url": "https://www.compilersutra.com/docs/parallel-computing/start-here/how-to-use-this-course/"
+        },
+        {
+          "label": "Chapter 1",
+          "url": "https://www.compilersutra.com/docs/parallel-computing/chapter-1/"
+        }
+      ]
+    }
+  ]
+}

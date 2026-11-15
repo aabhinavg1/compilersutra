@@ -7,7 +7,17 @@ const basicTerminologySidebar = {
       items: [
         'basic-terminology/index',
         'basic-terminology/overview',
-        'basic-terminology/what-is-a-computer-program',
+        {
+          type: 'category',
+          label: 'Core articles',
+          collapsed: false,
+          items: [
+            'basic-terminology/what-is-a-computer-program',
+            'basic-terminology/what-is-a-compiler',
+            'basic-terminology/what-is-an-ast',
+            'basic-terminology/what-is-ir',
+          ],
+        },
       ],
     },
   ],

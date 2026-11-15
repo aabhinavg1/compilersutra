@@ -1,0 +1,44 @@
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; font-family: monospace;">
+  <!-- Background border -->
+  <rect x="10" y="10" width="700" height="320" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  
+  <!-- Node 0 -->
+  <rect x="30" y="30" width="310" height="280" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  <text x="45" y="55" fill="#f8fafc" font-size="14" font-weight="bold">Node 0 (Distributed Memory Boundary)</text>
+
+  <!-- Process / Rank 0 -->
+  <rect x="45" y="70" width="280" height="225" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="60" y="95" fill="#38bdf8" font-size="13" font-weight="bold">MPI Rank 0 (Process Address Space)</text>
+
+  <!-- OMP Threads Node 0 -->
+  <rect x="60" y="115" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="70" y="142" fill="#f8fafc" font-size="12">OpenMP Thread 0 (Main)</text>
+
+  <rect x="60" y="170" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="70" y="197" fill="#f8fafc" font-size="12">OpenMP Thread 1</text>
+
+  <rect x="60" y="225" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="70" y="252" fill="#f8fafc" font-size="12">OpenMP Thread 2</text>
+
+  <!-- Interconnect Line -->
+  <path d="M 340 180 L 380 180" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6,4"/>
+  <text x="343" y="168" fill="#f59e0b" font-size="11" font-weight="bold">Network</text>
+
+  <!-- Node 1 -->
+  <rect x="380" y="30" width="310" height="280" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  <text x="395" y="55" fill="#f8fafc" font-size="14" font-weight="bold">Node 1 (Distributed Memory Boundary)</text>
+
+  <!-- Process / Rank 1 -->
+  <rect x="395" y="70" width="280" height="225" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="410" y="95" fill="#38bdf8" font-size="13" font-weight="bold">MPI Rank 1 (Process Address Space)</text>
+
+  <!-- OMP Threads Node 1 -->
+  <rect x="410" y="115" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="420" y="142" fill="#f8fafc" font-size="12">OpenMP Thread 0 (Main)</text>
+
+  <rect x="410" y="170" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="420" y="197" fill="#f8fafc" font-size="12">OpenMP Thread 1</text>
+
+  <rect x="410" y="225" width="250" height="45" rx="4" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
+  <text x="420" y="252" fill="#f8fafc" font-size="12">OpenMP Thread 2</text>
+</svg>

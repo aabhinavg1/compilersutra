@@ -37,6 +37,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 ---
 
+:::note Present by
+`-mtune=` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L5944). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
 The `-mtune=` flag controls microarchitectural optimizations in LLVM's code generator without altering the target Instruction Set Architecture (ISA). Unlike `-march=` or `-mcpu=`, which enable target-specific vector/crypto extensions and render binaries incompatible with older hardware, `-mtune=` strictly adjusts cost models, instruction scheduling latencies, pipeline hazard avoidance, branch alignment, and machine-level instruction fusion.
@@ -188,11 +192,62 @@ clang -O2 -mtune=znver3 -### -c test.c
 
 ---
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 2.9.0 | `-mtune=` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-2.9.0](https://github.com/llvm/llvm-project/blob/llvmorg-2.9.0/clang/include/clang/Driver/Options.td#L531). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L6423)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Backend tuning. Often affects scheduling/cost without requiring a different ISA.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Tune CPU | Driver → TargetMachine | Directly controlled | Prefer schedule/cost for a CPU while keeping `-march` ISA |
+| Machine scheduler / cost model | Machine backend | Backend mechanism | May change instruction order/selection heuristics |
+
+### How to verify
+
+```bash
+clang -### -march=x86-64 -mtune=generic -c w.c 2>&1 | rg tune\|target-cpu
+```
+
+### Source investigation
+
+- Options.td `-mtune=`; target tune CPU handling
+
+---
+
 <KeyFacts
   args="Joined (e.g., -mtune=cortex-a78)"
   acceptedBy="Clang, Flang"
   stage="Driver -> Backend Subtarget Parsing"
   definedIn="clang/include/clang/Driver/Options.td"
 />
+
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '\n' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 
 </FlagArticleShell>

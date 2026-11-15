@@ -31,13 +31,17 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | **Compiler** | Clang / LLVM (Driver option mapped to `-stack-protector 2` in cc1) |
 | **Default** | Disabled by default in raw Clang (often enabled by Linux distros/toolchain wrappers) |
 | **Optimization impact** | Minor stack overhead (extra pushes, reads, comparison, and fail blocks) |
-| **Safety / ABI Risk** | Low risk; ABI preserved, but modifies stack layout and adds TLS / guard symbol dependency |
+| **Risk** | Low correctness risk; adds canary/prologue cost and a `__stack_chk_*` runtime dependency — **not** AddressSanitizer |
 
 ---
 
+:::note Present by
+`-fstack-protector-strong` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L4132). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
+
 ## What this flag actually does
 
-`-fstack-protector-strong` instructs the compiler to insert a stack canary (guard variable) into frame layouts for functions matching specific vulnerability criteria.
+`-fstack-protector-strong` instructs the compiler to insert a stack canary (guard variable) into frame layouts for functions matching specific vulnerability criteria. This is **backend stack-protector codegen** (`ssp` / `sspstrong` / `sspreq`), not sanitizer instrumentation.
 
 Compared to `-fstack-protector` (which only triggers on character arrays larger than 8 bytes by default) and `-fstack-protector-all` (which instruments *every* function regardless of structure), `-fstack-protector-strong` strikes a balance between security coverage and performance.
 
@@ -221,11 +225,65 @@ clang -fstack-protector-strong -S -emit-llvm main.c -o - | grep "sspstrong"
 
 ---
 
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 3.5.0 | `-fstack-protector-strong` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-3.5.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.5.0/clang/include/clang/Driver/Options.td#L838). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L4477)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Instrumentation / codegen hardening. Not a classical IR optimization pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Stack protector instrumentation | CodeGen / IR | Directly controlled | Inserts canary checks for selected functions |
+| Prologue/epilogue canary code | Machine backend | Backend mechanism | Loads/compares guard values |
+| SSP level selection | Driver | Directly controlled | `strong` heuristic vs `all` / basic |
+
+### How to verify
+
+```bash
+clang -O2 -fstack-protector-strong -S -emit-llvm w.c -o ssp.ll
+rg 'stackprotect|__stack_chk' ssp.ll | head
+clang -O2 -fstack-protector-strong -S w.c -o ssp.s
+```
+
+### Source investigation
+
+- Options.td stack-protector flags; Clang CodeGen stack protector emission
+
+---
+
 <KeyFacts 
   args="None"
   acceptedBy="Clang Driver, GCC Driver"
   stage="Driver -> Frontend Lowering -> LLVM Target-Independent CodeGen"
   definedIn="clang/include/clang/Driver/Options.td"
 />
+
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classify this flag before treating it as an IR pass. Prefer driver/`clang -###`, IR, and asm evidence over assumed PassBuilder IDs.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| (verify for this flag) | Driver / frontend / mid-end / backend | No direct pass until evidenced | Do not invent pass names — replace this row after verification |
+
+#### How to verify
+
+```bash
+clang -### <flags> -c t.c 2>&1 | tr ' ' '\n' | head
+```
+
+#### Source investigation
+
+Start from `clang/include/clang/Driver/Options.td` and the driver/tool-chain handler for this spelling; confirm mid-end vs backend separately.
+
 
 </FlagArticleShell>

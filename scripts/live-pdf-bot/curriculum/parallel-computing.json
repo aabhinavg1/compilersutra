@@ -1,0 +1,134 @@
+{
+  "name": "Parallel Computing",
+  "tagline": "One problem. Several machines.",
+  "summary": "Take the same computation from one CPU core to threads, OpenMP, SIMD, a GPU, and a cluster. Keep the result correct. Understand the execution model. Measure what actually changed.",
+  "stats": {
+    "lessons": 52,
+    "chapters": 8,
+    "price": "Free"
+  },
+  "startHere": [
+    {
+      "id": "S1",
+      "title": "How to use this course",
+      "covers": "Read one page, then do the short exercise on that page."
+    },
+    {
+      "id": "S2",
+      "title": "The list of numbers we keep reusing",
+      "covers": "One list of integers is the example for the whole course."
+    }
+  ],
+  "chapters": [
+    {
+      "num": "1",
+      "label": "Parallel Thinking",
+      "question": "What does it mean to run work at the same time?",
+      "covers": "Sequential execution, concurrency, parallelism, races.",
+      "lessons": [
+        "A program is a list of steps",
+        "Why one core stops being enough",
+        "Sequential and parallel",
+        "Concurrent, parallel, and distributed",
+        "Your first parallel problem"
+      ]
+    },
+    {
+      "num": "2",
+      "label": "CPU",
+      "question": "How does a CPU run multiple pieces of work?",
+      "covers": "Threads, cores, mutexes, atomics, barriers.",
+      "lessons": [
+        "CPU cores",
+        "Processes and threads",
+        "Shared memory",
+        "Race conditions",
+        "Mutex",
+        "Atomics",
+        "Waiting, and deadlock"
+      ]
+    },
+    {
+      "num": "3",
+      "label": "OpenMP",
+      "question": "How do we parallelize loops without manually managing every thread?",
+      "covers": "Parallel regions, worksharing, reductions, scheduling.",
+      "lessons": [
+        "parallel and for",
+        "reduction",
+        "sections and synchronization",
+        "OpenMP project"
+      ]
+    },
+    {
+      "num": "4",
+      "label": "Algorithms",
+      "question": "Which algorithms are naturally parallel?",
+      "covers": "Map, reduce, histogram, stencil, scan, sort.",
+      "lessons": [
+        "Map",
+        "Reduce",
+        "Histogram",
+        "Matrix multiplication",
+        "Stencil",
+        "Scan",
+        "Parallel sorting"
+      ]
+    },
+    {
+      "num": "5",
+      "label": "SIMD",
+      "question": "What if one instruction processes several values?",
+      "covers": "Vector lanes, vectorization, alignment, SIMD + threads.",
+      "lessons": [
+        "What SIMD is",
+        "Vectorization",
+        "SIMD and threads"
+      ]
+    },
+    {
+      "num": "6",
+      "label": "GPU",
+      "question": "What changes when thousands of workers execute on a device?",
+      "covers": "GPU execution, memory, kernels, CUDA, ROCm, OpenCL, Vulkan.",
+      "lessons": [
+        "Why GPUs",
+        "GPU architecture",
+        "Threads and blocks",
+        "SIMT",
+        "GPU memory",
+        "CUDA",
+        "HIP and ROCm",
+        "OpenCL",
+        "Vulkan",
+        "GPU project"
+      ]
+    },
+    {
+      "num": "7",
+      "label": "Distributed",
+      "question": "What happens when workers do not share memory?",
+      "covers": "Processes, ranks, communication, collectives, MPI.",
+      "lessons": [
+        "Why a cluster",
+        "MPI",
+        "Send and receive",
+        "Collective operations",
+        "Distributed project"
+      ]
+    },
+    {
+      "num": "8",
+      "label": "Measuring",
+      "question": "Did we actually make the program faster?",
+      "covers": "Timing, speedup, efficiency, Amdahl's law, bandwidth, cache, profiling.",
+      "lessons": [
+        "Speedup and Amdahl",
+        "Cache and false sharing",
+        "Memory bandwidth",
+        "Load balancing",
+        "Profiling"
+      ]
+    }
+  ]
+}

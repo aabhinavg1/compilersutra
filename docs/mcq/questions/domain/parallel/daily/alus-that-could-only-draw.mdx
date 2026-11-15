@@ -1,0 +1,20 @@
+---
+title: "Thousands of arithmetic units that could only draw quiz"
+description: "Five questions for Thousands of arithmetic units that could only draw. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Thousands of arithmetic units that could only draw quiz
+
+Lesson: [Thousands of arithmetic units that could only draw](/docs/parallel-computing/alus-that-could-only-draw/)
+
+<Question question="1. Why were general compiler IRs unable to directly target early graphics processors?" options={["They had low floating-point throughput.", "They only supported 64-bit integer arithmetic.", "They lacked a program counter, stack, and dynamic control flow.", "They could only communicate via PCI serial ports."]} answer="They lacked a program counter, stack, and dynamic control flow." />
+
+<Question question="2. Where could a fragment arithmetic unit write its computed output in early fixed graphics hardware?" options={["To any arbitrary memory address", "To its assigned 2D screen coordinate (x, y) in the frame buffer", "To a thread-local stack frame", "To host RAM via direct memory access"]} answer="To its assigned 2D screen coordinate (x, y) in the frame buffer" />
+
+<Question question="3. How did early GPGPU research hacks feed data arrays into early graphics chips?" options={["By disguising data arrays as 2D image textures", "By passing flat C pointers to the GPU driver", "By saving data into raw binary files", "By writing directly to hardware registers"]} answer="By disguising data arrays as 2D image textures" />
+
+<Question question="4. What host API call was required in early GPU hacks to retrieve computed results back to host memory?" options={["glReadPixels", "cudaMemcpy", "omp_get_wtime", "tbb::parallel_for"]} answer="glReadPixels" />
+
+<Question question="5. What did early GPGPU compilers generate to trigger arithmetic work on early graphics hardware?" options={["Standard x86 assembly instructions", "Host-side graphics API calls", "Flat byte-code binaries", "Direct hardware register writes"]} answer="Host-side graphics API calls" />

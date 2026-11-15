@@ -19,7 +19,7 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 {/* HAND_AUTHORED */}
 <FlagArticleShell flagPath="-Ofast" summary="Enables -O3 optimization level along with non-conforming fast-math floating-point optimizations. Deprecated in favor of -O3 -ffast-math.">
 
-<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Deep dives into LLVM architecture, backend code generation, and optimization flag mechanics.</p></div>
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 ## At a glance
 
@@ -32,6 +32,10 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 | **Recommended Replacement** | `-O3 -ffast-math` (if aggressive math optimization is needed) or plain `-O3` |
 
 ---
+
+:::note Present by
+`-Ofast` is present in Clang’s driver [`Options.td`](https://github.com/llvm/llvm-project/blob/59e601a3d5e7669fdf809b9c6494e6f877ea5cd8/clang/include/clang/Driver/Options.td#L843). Exact introduction commit / first release remain unresolved unless cited below — do not invent an “introduced in” date.
+:::
 
 ## What this flag actually does
 
@@ -173,6 +177,39 @@ The `-Ofast` flag is processed at the Driver layer and translated into both opti
 | **LLVM Mid-End (Passes)** | `SLPVectorizer`, `LoopVectorize`, and `InstCombine` utilize fast-math flags on IR instructions to reassociate expressions and vectorize reductions. |
 
 Verify flag translation logic against tip of `llvm-project` in `clang/lib/Driver/ToolChains/Clang.cpp`.
+
+---
+
+## Clang version history
+
+Change-only rows. Research through **llvmorg-23.1.5**. Only verified milestones — do not invent per-release “no change” rows.
+
+| Clang / LLVM version | Change | Practical impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| Present by LLVM/Clang 3.3.0 | `-Ofast` appears in Clang Options.td for this release tag | Driver-visible option exists in this tag | [Options.td @ llvmorg-3.3.0](https://github.com/llvm/llvm-project/blob/llvmorg-3.3.0/clang/include/clang/Driver/Options.td#L184). Exact introduction commit / first release may be earlier — “present by,” not “introduced in.” |
+
+No additional **verified** behavior-change rows researched for this page yet through **llvmorg-23.1.5** (still present: [Options.td @ llvmorg-23.1.5](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.5/clang/include/clang/Options/Options.td#L852)). Prefer thin honesty over a padded table; extend only when a real default/wiring/semantics change is cited.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Flag category:** Optimization umbrella + fast-math / standards tradeoffs. Not a single IR pass.
+
+| Mechanism | Stage | Relationship | Effect |
+| :--- | :--- | :--- | :--- |
+| Aggressive opt level (typically O3-class) | PassBuilder | Directly controlled | Selects an aggressive pipeline |
+| Fast-math / non-standards-compliant FP modes | Frontend / IR attrs | Directly controlled / related | Often implies flags like `-ffast-math` family — verify with `-###` |
+| Individual math/loop passes | LLVM IR | Indirectly affected | May transform FP math under relaxed flags |
+
+### How to verify
+
+```bash
+clang -### -Ofast -c w.c 2>&1 | tr ' ' '\n' | rg 'ffast|ffinite|O3|Ofast'
+clang -Ofast -S -emit-llvm w.c -o Ofast.ll
+```
+
+### Source investigation
+
+- Driver expansion of `-Ofast` in `Clang.cpp` / Options.td — expand with `-###` before claiming exact implied flags for your Clang version.
 
 ---
 
