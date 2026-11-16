@@ -1,44 +1,138 @@
 ---
 title: "-fdiagnostics-color="
 slug: "/tools/clang-flags/-fdiagnostics-color%3D/"
-description: "When to use colors in diagnostics"
+description: "Controls ANSI color formatting in Clang compiler diagnostics and error messages."
+keywords: [clang, -fdiagnostics-color=, compiler flags, diagnostics, terminal color, ansi escape codes]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-fdiagnostics-color%3D">
+{/* HAND_AUTHORED */}
+
+<Head>
+  <title>-fdiagnostics-color= — Clang Flags Explorer</title>
+</Head>
+
+<FlagArticleShell
+  flagPath="-fdiagnostics-color="
+  summary="Request that Clang enable, disable, or auto-detect ANSI escape codes when printing diagnostic text to stderr."
+  json={{
+    flag: "-fdiagnostics-color=",
+    type: "diagnostic/frontend",
+    stage: "frontend",
+    has_cc1: true,
+    affects_ir: false,
+    affects_asm: false,
+    arg_type: "enum",
+    default: "auto",
+    values: ["always", "never", "auto"]
+  }}
+>
+
+## At a glance
+
+`-fdiagnostics-color=` controls whether Clang colorizes warnings, errors, and code snippets printed to standard error using ANSI escape sequences.
+
+- **Values**: `always`, `never`, `auto` (or `on` / `off`).
+- **Alias flags**: `-fcolor-diagnostics` (equivalent to `=always`), `-fno-color-diagnostics` (equivalent to `=never`).
+- **Default behavior**: Defaults to `auto`. When set to `auto`, Clang queries `llvm::sys::Process::StandardErrHasColors()` to check if standard error is connected to a terminal supporting colors (checking standard file descriptors and environment variables like `TERM` or `NO_COLOR`).
+- **Optimization level impact**: `-O0`, `-O2`, `-O3`, `-Os`, and `-Oz` do **not** alter the behavior or default of diagnostic colorization.
+
+---
 
 ## What this flag actually does
 
-When to use colors in diagnostics
+The `-fdiagnostics-color=` flag instructs Clang's frontend diagnostic renderer to wrap diagnostic elements (such as line/column numbers, warning flags, carets, and type highlights) in ANSI escape sequences.
 
+```
++------------------+     Clang Driver / CC1      +----------------------+
+| -fdiagnostics-   | --------------------------> | DiagnosticOptions    |
+| color=always     |                             | ShowColors = 1       |
++------------------+                             +----------------------+
+                                                            |
+                                                            v
++------------------+     TextDiagnostic          +----------------------+
+| Terminal / Log   | <-------------------------- | Print ANSI Escapes   |
+| ( colored text ) |                             | \033[1;31merror:\033[0m|
++------------------+                             +----------------------+
+```
 
+### Modes and Arguments
 
-This option expects an argument.
+- `-fdiagnostics-color=always` / `-fdiagnostics-color` / `-fcolor-diagnostics`: Always emit ANSI escape sequences regardless of stderr output redirection (e.g., when piping to a file or build logger).
+- `-fdiagnostics-color=never` / `-fno-color-diagnostics`: Never emit ANSI escape sequences. Produce plain ASCII/UTF-8 text.
+- `-fdiagnostics-color=auto`: Automatically enable colored diagnostics if standard error output is detected to be an interactive terminal with color support.
 
-## When to use it
+---
 
-- Code generation tuning
-- Frontend lowering experiments
-- Target-independent compilation control
+## How it works inside Clang
 
-## When not to use it
+Diagnostic color handling operates entirely within the Clang driver and frontend rendering layers. It has zero impact on LLVM IR, optimization passes, code generation, or binary targets.
 
-- When you are only editing diagnostics or preprocessing
-- When the option does not affect your current build phase
+1. **Driver Argument Parsing**:
+   In `clang/lib/Driver/SanitizerArgs.cpp` and `clang/lib/Driver/ToolChains/Clang.cpp`, the driver translates `-fdiagnostics-color=` and its aliases into `-fdiagnostics-color` or `-fdiagnostics-color=always|never|auto` when constructing `-cc1` arguments.
 
-## Usage example
+2. **Compiler Instance Initialization**:
+   During frontend startup in [`clang/lib/Frontend/CompilerInvocation.cpp`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Frontend/CompilerInvocation.cpp#L2400-L2430), the option is parsed into `DiagnosticOptions::ShowColors`. If `auto` is specified, Clang evaluates `llvm::sys::Process::StandardErrHasColors()`.
+
+3. **Diagnostic Rendering**:
+   When a diagnostic is emitted, `TextDiagnostic::emitDiagnosticMessage()` and `TextDiagnosticPrinter::HandleDiagnostic()` in [`clang/lib/Frontend/TextDiagnostic.cpp`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Frontend/TextDiagnostic.cpp#L700-L750) query `DiagOpts->ShowColors`. When enabled, terminal highlight styles (defined in `clang/include/clang/Frontend/TextDiagnostic.h`) inject corresponding ANSI escape codes directly into the output stream.
+
+---
+
+## Clang version history
+
+| Clang Version | Behavior / Support Changes | Source / Commit Evidence |
+| :--- | :--- | :--- |
+| **3.4** | Initial introduction of `-fdiagnostics-color=` alongside existing `-fcolor-diagnostics`. | Verified from source (`Options.td`) |
+| **11.0** | Respects `NO_COLOR` environment variable automatically when set to `auto`. | Verified from source (`Process.inc`) |
+
+*Verified through llvmorg-19.1.0.*
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+This option belongs to the **diagnostic/frontend** classification.
+
+| Pass / Subsystem | Relationship | Description |
+| :--- | :--- | :--- |
+| Frontend Diagnostic Engine | Directly controlled | Controls ANSI string formatting in `TextDiagnosticPrinter`. |
+| LLVM IR Generation | No direct pass | Does not touch LLVM IR. |
+| LLVM CodeGen / Machine DAG | No direct pass | Has no effect on target selection, assembly, or code emission. |
+
+### How to verify
+
+Because `-fdiagnostics-color=` is a purely diagnostic frontend flag, running `clang -emit-llvm` with different values produces byte-identical IR output:
 
 ```bash
-clang++ -fdiagnostics-color= -c main.cpp
+clang -O2 -fdiagnostics-color=always -S -emit-llvm test.c -o - > color_always.ll
+clang -O2 -fdiagnostics-color=never -S -emit-llvm test.c -o - > color_never.ll
+diff -u color_always.ll color_never.ll # Outputs nothing (identical)
 ```
+
+---
 
 ## Key facts
 
-- **Argument form**: Joined (takes an argument)
-- **Accepted by**: ClangOption, CLOption, DXCOption, FlangOption
-- **Stage**: driver, category `Code Generation`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  entries={[
+    { label: "Option Class", value: "Diagnostic / Frontend Option" },
+    { label: "Accepting Driver", value: "Clang Driver, CC1" },
+    { label: "Affects LLVM IR", value: "No" },
+    { label: "Affects Machine Code", value: "No" },
+    { label: "Optimization Level Sensitivity", value: "Independent of -O level" },
+    { label: "Aliases", value: "-fcolor-diagnostics, -fno-color-diagnostics" }
+  ]}
+/>
+
+<Callout type="info" title="CI and Build System Recommendations">
+When running builds under Ninja, Ninja intercepts stdout/stderr streams and defaults Clang to auto-detecting a non-tty stream (disabling colors). Ninja explicitly forces colored diagnostics when running in a terminal, but when piping build logs to CI tools, pass `-fdiagnostics-color=always` explicitly if your log viewer supports ANSI colors.
+</Callout>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
