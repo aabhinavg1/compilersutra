@@ -1,0 +1,20 @@
+---
+title: "CUDA memory spaces quiz"
+description: "Five questions for CUDA memory spaces. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# CUDA memory spaces quiz
+
+Lesson: [CUDA memory spaces](/docs/parallel-computing/cuda-memory-spaces/)
+
+<Question question="1. Where does CUDA local memory physically reside in hardware?" options={["On-chip register file", "On-chip SRAM / L1", "Off-chip DRAM", "L2 cache only"]} answer="Off-chip DRAM" />
+
+<Question question="2. Which keyword is explicitly used to declare variables in CUDA shared memory?" options={["__device__", "__shared__", "__local__", "__global__"]} answer="__shared__" />
+
+<Question question="3. What is the scope of CUDA shared memory according to the article?" options={["Thread", "Block", "Grid + Host", "Application"]} answer="Block" />
+
+<Question question="4. Which barrier function ensures all threads in a block wait until shared memory writes complete?" options={["cudaDeviceSynchronize()", "__syncthreads()", "__threadfence()", "cudaStreamSynchronize()"]} answer="__syncthreads()" />
+
+<Question question="5. By default, what memory space do scalar variables declared inside a CUDA kernel map to?" options={["Shared Memory", "Local Memory", "Global Memory", "Registers"]} answer="Registers" />
