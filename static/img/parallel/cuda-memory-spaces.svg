@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" width="100%" height="100%">
+  <rect width="700" height="420" fill="#0f172a" rx="8" />
+  
+  <!-- Global Memory Space -->
+  <rect x="40" y="310" width="620" height="80" fill="#1e293b" stroke="#475569" stroke-width="2" rx="6" />
+  <text x="350" y="340" fill="#f8fafc" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">Global Memory (Off-Chip DRAM)</text>
+  <text x="350" y="365" fill="#94a3b8" font-family="sans-serif" font-size="13" text-anchor="middle">Scope: All Threads | Lifetime: Application | High Latency</text>
+
+  <!-- Block Boundary -->
+  <rect x="40" y="30" width="620" height="250" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6,6" rx="8" />
+  <text x="55" y="55" fill="#60a5fa" font-family="sans-serif" font-size="14" font-weight="bold">Thread Block Scope</text>
+
+  <!-- Shared Memory -->
+  <rect x="60" y="70" width="580" height="60" fill="#1e3a8a" stroke="#3b82f6" stroke-width="1.5" rx="6" />
+  <text x="350" y="95" fill="#93c5fd" font-family="monospace" font-size="15" font-weight="bold" text-anchor="middle">Shared Memory (__shared__)</text>
+  <text x="350" y="115" fill="#bfdbfe" font-family="sans-serif" font-size="12" text-anchor="middle">Scope: Block Threads | Lifetime: Block Execution | Low Latency (On-Chip)</text>
+
+  <!-- Thread 0 -->
+  <rect x="60" y="155" width="270" height="110" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1.5" rx="6" />
+  <text x="195" y="175" fill="#7dd3fc" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Thread 0 Scope</text>
+  <rect x="75" y="185" width="240" height="30" fill="#0369a1" rx="4" />
+  <text x="195" y="205" fill="#f0f9ff" font-family="monospace" font-size="12" text-anchor="middle">Registers (Fastest, On-Chip)</text>
+  <rect x="75" y="225" width="240" height="30" fill="#475569" rx="4" />
+  <text x="195" y="245" fill="#cbd5e1" font-family="monospace" font-size="12" text-anchor="middle">Local Memory (Spilled to DRAM)</text>
+
+  <!-- Thread N -->
+  <rect x="370" y="155" width="270" height="110" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1.5" rx="6" />
+  <text x="505" y="175" fill="#7dd3fc" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Thread N Scope</text>
+  <rect x="385" y="185" width="240" height="30" fill="#0369a1" rx="4" />
+  <text x="505" y="205" fill="#f0f9ff" font-family="monospace" font-size="12" text-anchor="middle">Registers (Fastest, On-Chip)</text>
+  <rect x="385" y="225" width="240" height="30" fill="#475569" rx="4" />
+  <text x="505" y="245" fill="#cbd5e1" font-family="monospace" font-size="12" text-anchor="middle">Local Memory (Spilled to DRAM)</text>
+
+  <!-- Connections -->
+  <line x1="195" y1="265" x2="195" y2="310" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" />
+  <line x1="505" y1="265" x2="505" y2="310" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" />
+  <line x1="350" y1="130" x2="350" y2="310" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" />
+</svg>
