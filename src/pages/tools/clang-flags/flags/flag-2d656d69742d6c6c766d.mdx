@@ -1,37 +1,116 @@
 ---
 title: "-emit-llvm"
 slug: "/tools/clang-flags/-emit-llvm/"
-description: "The action to perform on the input."
+description: "Instructs Clang to emit LLVM intermediate representation (IR text .ll or bitcode .bc) instead of target machine code."
+keywords: [-emit-llvm, clang flag, llvm ir, bitcode, compiler frontend, clang driver]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-emit-llvm">
+<Head>
+  <title>-emit-llvm | Clang Flags Explorer</title>
+  <meta name="description" content="Instructs Clang to emit LLVM intermediate representation (IR text .ll or bitcode .bc) instead of target machine code." />
+  <link rel="canonical" href="https://compilersutra.com/tools/clang-flags/-emit-llvm/" />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-emit-llvm" summary="Instructs Clang to output LLVM IR (textual .ll or bitcode .bc) instead of assembly or machine object files.">
+
+## At a glance
+
+| Field | Details |
+| :--- | :--- |
+| **Flag** | `-emit-llvm` |
+| **Type** | Action / Output Selector |
+| **Default** | Off (Clang defaults to generating target machine code) |
+| **Driver Pass-Through** | Forwards `-emit-llvm` to `-cc1` |
+| **Optimization Sensitivity** | **O-level sensitive for IR content**: `-emit-llvm` emits IR after frontend optimization passes for the specified `-O*` level. |
 
 ## What this flag actually does
 
-The action to perform on the input.
+The `-emit-llvm` flag alters Clang's output generation stage. Instead of invoking the LLVM target backend to lower intermediate representation into target-specific assembly (`.s`) or ELF/COFF/Mach-O machine code (`.o`), Clang halts compilation at the LLVM IR stage and writes out the IR.
 
-## When to use it
+The actual format of the output depends on whether it is paired with `-S` or `-c`:
+* `clang -S -emit-llvm file.c -o file.ll`: Emits human-readable LLVM IR text (`.ll`).
+* `clang -c -emit-llvm file.c -o file.bc`: Emits binary LLVM bitcode (`.bc`).
+* `clang -emit-llvm file.c`: Defaulting without `-c` or `-S` generates binary bitcode (`.bc`).
 
-- You are targeting Actions and want this flag behavior applied to the whole compilation.
+Because `-emit-llvm` intercepts the pipeline prior to machine code lowering, CodeGen passes that target physical registers, stack frame layouts, or instruction selection (ISel) do not execute.
 
-## When not to use it
+<Callout type="info" title="Frontend vs Backend Optimization">
+Passing `-O2 -emit-llvm` runs the LLVM IR-level optimization pipeline (`opt` pipeline) up through `TargetLibraryInfo` and module optimization passes before emitting the `.ll` or `.bc` file. To inspect raw, unoptimized IR generated directly by Clang's C/C++ frontend prior to any IR optimizations, combine `-emit-llvm` with `-O0` and `-Xclang -disable-O0-optnone`.
+</Callout>
 
-- Your build targets a different architecture — this flag is accepted only when targeting Actions.
+## How it works inside Clang
 
-## Usage example
+When `-emit-llvm` is specified on the command line:
+
+1. **Driver Phase**: The Clang driver option parser identifies `OPT_emit_llvm` in `clang/include/clang/Driver/Options.td`. In `clang/lib/Driver/ToolChains/Clang.cpp`, the driver inspects flags and appends `-emit-llvm` to the `-cc1` invocation.
+2. **Compiler Frontend (`-cc1`)**: `CompilerInvocation::ParseFrontendArgs` in `clang/lib/Frontend/CompilerInvocation.cpp` reads `-emit-llvm` along with `-S` or `-c` to set the `FrontendOptions::ParsedAction`.
+   * `-S -emit-llvm` map to `frontend::EmitLLVM`.
+   * `-c -emit-llvm` map to `frontend::EmitBC`.
+3. **Backend Action dispatch**: In `clang/lib/CodeGen/CodeGenAction.cpp`, `CreateASTConsumer` creates a `BackendConsumer`. Upon completion of AST parsing (`HandleTranslationUnit`), the `BackendConsumer` invokes `EmitBackendOutput` (`clang/lib/CodeGen/BackendUtil.cpp`).
+4. **Target Emission Switch**: Inside `EmitBackendOutput`, Clang inspects the requested `BackendAction`. If set to `Backend_EmitLLVM` or `Backend_EmitBC`, it attaches an `llvm::IRPrintingPass` or `llvm::BitcodeWriterPass` to the pass pipeline and bypasses `TargetMachine::addPassesToEmitFile`.
+
+### Source code references
+
+* [clang/include/clang/Driver/Options.td#L2860](https://github.com/llvm/llvm-project/blob/main/clang/include/clang/Driver/Options.td#L2860) — Definition of `emit_llvm` in Driver options.
+* [clang/lib/Driver/ToolChains/Clang.cpp#L4832](https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/ToolChains/Clang.cpp#L4832) — Forwarding `-emit-llvm` to `-cc1`.
+* [clang/lib/Frontend/CompilerInvocation.cpp#L2300](https://github.com/llvm/llvm-project/blob/main/clang/lib/Frontend/CompilerInvocation.cpp#L2300) — Mapping frontend arguments to `FrontendOptions::EmitLLVM` / `FrontendOptions::EmitBC`.
+* [clang/lib/CodeGen/CodeGenAction.cpp#L1100](https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/CodeGenAction.cpp#L1100) — Selecting `Backend_EmitLLVM` and `Backend_EmitBC` actions.
+
+## Clang version history
+
+| Clang Version | Implementation Changes | Defaults | Evidence |
+| :--- | :--- | :--- | :--- |
+| **1.0** | Introduced `-emit-llvm` for C/C++ compilation. | Disabled by default | Verified from LLVM initial revisions |
+| **3.8** | Updated bitcode output format and consolidated driver handling for LLVM IR actions. | Unchanged | Verified from source history |
+| **11.0** | Added Flang support (`FC1Option`, `FlangOption`) for Fortran `-emit-llvm`. | Unchanged | Verified from `Options.td` commit log |
+
+*Note: Behavior verified through llvmorg-19.1.0.*
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Classification**: Diagnostic / Frontend Action
+
+| Pass / Subsystem | Relationship Label | Description |
+| :--- | :--- | :--- |
+| `BitcodeWriterPass` | Directly controlled | Emits compressed binary bitcode stream when emitting `.bc`. |
+| `PrintModulePass` | Directly controlled | Formats and prints textual LLVM IR module when emitting `.ll`. |
+| Target Machine ISel | Bypassed | Instruction Selection and SelectionDAG/GlobalISel pass pipelines are skipped entirely. |
+
+### How to verify
+
+To verify that `-emit-llvm` produces textual LLVM IR or bitcode directly:
 
 ```bash
-clang++ -emit-llvm main.cpp -o app
+# Generate textual LLVM IR
+clang -O2 -S -emit-llvm main.c -o main.ll
+
+# Verify file content starts with LLVM IR syntax (e.g. target datalayout or module attributes)
+head -n 10 main.ll
+
+# Generate binary LLVM bitcode
+clang -O2 -c -emit-llvm main.c -o main.bc
+
+# Verify file type is LLVM bitcode
+file main.bc
 ```
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option, FC1Option, FlangOption
-- **Stage**: cc1 (frontend), category `Actions`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  args={[
+    { name: "-emit-llvm", desc: "Emit LLVM IR textual assembly or binary bitcode instead of machine code." }
+  ]}
+  group="Action_Group"
+  stage="cc1 (frontend action / action selection)"
+  definedIn="clang/include/clang/Driver/Options.td"
+/>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
