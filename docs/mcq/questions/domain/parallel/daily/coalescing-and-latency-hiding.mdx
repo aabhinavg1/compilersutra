@@ -1,0 +1,20 @@
+---
+title: "Coalescing and latency hiding quiz"
+description: "Five questions for Coalescing and latency hiding. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Coalescing and latency hiding quiz
+
+Lesson: [Coalescing and latency hiding](/docs/parallel-computing/coalescing-and-latency-hiding/)
+
+<Question question="1. How many clock cycles can global memory latency span in GPU architectures according to the article?" options={["A few clock cycles", "Hundreds of clock cycles", "Millions of clock cycles", "Exactly 10 clock cycles"]} answer="Hundreds of clock cycles" />
+
+<Question question="2. How many active threads are evaluated across a single warp during global memory coalescing?" options={["8 threads", "16 threads", "32 threads", "64 threads"]} answer="32 threads" />
+
+<Question question="3. How many cycle overheads are incurred when context switching between resident warps on an SM?" options={["Zero cycles", "One cycle", "Ten cycles", "Hundreds of cycles"]} answer="Zero cycles" />
+
+<Question question="4. What is the memory bus efficiency of a coalesced access pattern with 4-byte floats according to the comparison table?" options={["~3.1%", "50%", "75%", "High (100% payload bytes used)"]} answer="High (100% payload bytes used)" />
+
+<Question question="5. What software optimization technique is demonstrated in the worked code example to turn strided global accesses into coalesced accesses?" options={["Branch prediction", "Shared memory tiling", "Out-of-order execution", "Register renaming"]} answer="Shared memory tiling" />

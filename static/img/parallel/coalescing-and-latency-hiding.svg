@@ -1,0 +1,82 @@
+<svg viewBox="0 0 720 310" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg { fill: #0d1117; }
+    .title { font-family: monospace; font-size: 14px; font-weight: bold; fill: #e6edf3; }
+    .text { font-family: monospace; font-size: 12px; fill: #c9d1d9; }
+    .box { stroke-width: 1.5; }
+    .coalesced { fill: #1f6feb; stroke: #388bfd; }
+    .strided { fill: #bd561d; stroke: #f0883e; }
+    .mem-block { fill: #161b22; stroke: #30363d; stroke-width: 1; }
+    .arrow { stroke: #8b949e; stroke-width: 1.5; marker-end: url(#arrowhead); }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <polygon points="0 0, 6 3, 0 6" fill="#8b949e" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" class="bg" />
+
+  <!-- Coalesced Access -->
+  <text x="20" y="30" class="title">Coalesced Access (Consecutive Threads &rarr; Single Memory Segment)</text>
+  
+  <!-- Warp Threads -->
+  <rect x="20" y="55" width="40" height="25" class="box coalesced" />
+  <text x="28" y="72" class="text" fill="#fff">T0</text>
+  <rect x="65" y="55" width="40" height="25" class="box coalesced" />
+  <text x="73" y="72" class="text" fill="#fff">T1</text>
+  <rect x="110" y="55" width="40" height="25" class="box coalesced" />
+  <text x="118" y="72" class="text" fill="#fff">T2</text>
+  <text x="160" y="72" class="text">...</text>
+  <rect x="185" y="55" width="40" height="25" class="box coalesced" />
+  <text x="190" y="72" class="text" fill="#fff">T31</text>
+
+  <!-- Memory Segment -->
+  <line x1="122" y1="80" x2="122" y2="110" class="arrow" />
+  <rect x="20" y="115" width="205" height="30" class="mem-block" stroke="#388bfd" stroke-width="2" />
+  <text x="30" y="135" class="text" fill="#58a6ff">1 Aligned 128-Byte Burst</text>
+
+  <!-- Strided Access -->
+  <text x="380" y="30" class="title">Strided Access (Non-contiguous &rarr; Multiple Memory Segment Requests)</text>
+  
+  <!-- Warp Threads -->
+  <rect x="380" y="55" width="40" height="25" class="box strided" />
+  <text x="388" y="72" class="text" fill="#fff">T0</text>
+  <rect x="445" y="55" width="40" height="25" class="box strided" />
+  <text x="453" y="72" class="text" fill="#fff">T1</text>
+  <rect x="510" y="55" width="40" height="25" class="box strided" />
+  <text x="518" y="72" class="text" fill="#fff">T2</text>
+  <text x="560" y="72" class="text">...</text>
+  <rect x="585" y="55" width="40" height="25" class="box strided" />
+  <text x="590" y="72" class="text" fill="#fff">T31</text>
+
+  <!-- Split Memory Segments -->
+  <line x1="400" y1="80" x2="400" y2="110" class="arrow" />
+  <line x1="465" y1="80" x2="465" y2="110" class="arrow" />
+  <line x1="530" y1="80" x2="530" y2="110" class="arrow" />
+  <line x1="605" y1="80" x2="605" y2="110" class="arrow" />
+
+  <rect x="380" y="115" width="40" height="30" class="mem-block" stroke="#f0883e" />
+  <rect x="445" y="115" width="40" height="30" class="mem-block" stroke="#f0883e" />
+  <rect x="510" y="115" width="40" height="30" class="mem-block" stroke="#f0883e" />
+  <rect x="585" y="115" width="40" height="30" class="mem-block" stroke="#f0883e" />
+  <text x="380" y="165" class="text" fill="#f0883e">32 Separate Memory Transactions</text>
+
+  <!-- Hardware Latency Hiding Model -->
+  <text x="20" y="210" class="title">Latency Hiding via Warp Scheduling</text>
+  
+  <rect x="20" y="230" width="100" height="25" class="mem-block" stroke="#da3633" />
+  <text x="30" y="247" class="text" fill="#f85149">Warp 0: Stall</text>
+  
+  <rect x="130" y="230" width="100" height="25" class="mem-block" stroke="#238636" />
+  <text x="140" y="247" class="text" fill="#7ee787">Warp 1: Exec</text>
+
+  <rect x="240" y="230" width="100" height="25" class="mem-block" stroke="#238636" />
+  <text x="250" y="247" class="text" fill="#7ee787">Warp 2: Exec</text>
+
+  <rect x="350" y="230" width="100" height="25" class="mem-block" stroke="#da3633" />
+  <text x="360" y="247" class="text" fill="#f85149">Warp 3: Stall</text>
+
+  <text x="20" y="280" class="text">Warp schedulers switch to ready warps instantly while stalled warps await global data.</text>
+</svg>
