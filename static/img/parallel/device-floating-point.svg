@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" width="100%" height="100%">
+  <rect width="720" height="250" fill="#0d1117" rx="8"/>
+  
+  <!-- Left Side: Sequential CPU -->
+  <text x="140" y="30" fill="#58a6ff" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Sequential Accumulation (CPU)</text>
+  
+  <rect x="40" y="55" width="200" height="30" fill="#161b22" stroke="#30363d" rx="4"/>
+  <text x="140" y="75" fill="#c9d1d9" font-family="monospace" font-size="11" text-anchor="middle">(((v0 + v1) + v2) + v3)</text>
+  
+  <path d="M 140 85 L 140 115" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arrow)"/>
+  
+  <rect x="40" y="115" width="200" height="30" fill="#161b22" stroke="#30363d" rx="4"/>
+  <text x="140" y="135" fill="#c9d1d9" font-family="monospace" font-size="11" text-anchor="middle">((Acc + v2) + v3)</text>
+
+  <path d="M 140 145 L 140 175" stroke="#8b949e" stroke-width="1.5"/>
+  
+  <rect x="40" y="175" width="200" height="35" fill="#1f6feb" stroke="#58a6ff" rx="4"/>
+  <text x="140" y="197" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Result Bit Pattern A</text>
+
+  <!-- Right Side: Parallel Tree (GPU) -->
+  <text x="500" y="30" fill="#3fb950" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Tree Reduction (GPU Warp)</text>
+  
+  <rect x="360" y="55" width="130" height="30" fill="#161b22" stroke="#30363d" rx="4"/>
+  <text x="425" y="75" fill="#c9d1d9" font-family="monospace" font-size="11" text-anchor="middle">(v0 + v1)</text>
+
+  <rect x="510" y="55" width="130" height="30" fill="#161b22" stroke="#30363d" rx="4"/>
+  <text x="575" y="75" fill="#c9d1d9" font-family="monospace" font-size="11" text-anchor="middle">(v2 + v3)</text>
+
+  <path d="M 425 85 L 490 115" stroke="#8b949e" stroke-width="1.5"/>
+  <path d="M 575 85 L 510 115" stroke="#8b949e" stroke-width="1.5"/>
+
+  <rect x="435" y="115" width="130" height="30" fill="#161b22" stroke="#30363d" rx="4"/>
+  <text x="500" y="135" fill="#c9d1d9" font-family="monospace" font-size="11" text-anchor="middle">Sum Pair A + B</text>
+
+  <path d="M 500 145 L 500 175" stroke="#8b949e" stroke-width="1.5"/>
+
+  <rect x="400" y="175" width="200" height="35" fill="#238636" stroke="#3fb950" rx="4"/>
+  <text x="500" y="197" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Result Bit Pattern B</text>
+
+  <text x="360" y="232" fill="#8b949e" font-family="sans-serif" font-size="11">Exponent shifts occur at different intermediate steps</text>
+</svg>
