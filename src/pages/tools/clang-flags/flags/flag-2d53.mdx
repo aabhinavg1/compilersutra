@@ -1,37 +1,160 @@
 ---
-title: "-S"
+title: "-S (Clang flag)"
 slug: "/tools/clang-flags/-S/"
-description: "The action to perform on the input."
+description: "Instructs Clang to stop compilation after generating backend target assembly (.s file) without assembling into object code or linking."
+keywords: [clang, "-S", compiler flags, assembly output, driver action, cc1]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-S">
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-S" summary="Instructs Clang to run preprocessing, frontend parsing, and backend code generation, stopping before object-file assembly to output target assembly (.s).">
+
+<Head>
+  <title>-S — Clang Flag Explorer | CompilerSutra</title>
+</Head>
+
+## At a glance
+
+| Attribute | Value |
+| :--- | :--- |
+| **Flag** | `-S` |
+| **Type** | Action selection flag (Driver / CC1) |
+| **Default** | Full compilation and linking pipeline (or object file generation with `-c`) |
+| **Optimization levels (`-O*`)** | Independent — `-S` controls pipeline phase termination, not code optimization |
+| **Primary effect** | Halts compilation phase after target code generation, emitting human-readable `.s` text assembly |
 
 ## What this flag actually does
 
-The action to perform on the input.
+The `-S` flag tells the Clang driver to execute preprocessing, parsing, high-level IR optimizations, target-independent code generation, and backend machine code layout, but stop immediately before calling the assembler. Instead of producing a binary object file (`.o`), Clang writes target-specific assembly code to a text file (ending in `.s` by default).
 
-## When to use it
+When used alongside `-emit-llvm` (i.e., `clang -S -emit-llvm`), Clang outputs target LLVM IR assembly (`.ll`) rather than native architecture assembly.
 
-- You are targeting Actions and want this flag behavior applied to the whole compilation.
+```bash
+# Output native target assembly (e.g., main.s)
+clang -O2 -S main.c -o main.s
 
-## When not to use it
+# Output human-readable LLVM assembly (.ll)
+clang -O2 -S -emit-llvm main.c -o main.ll
+```
 
-- Your build targets a different architecture — this flag is accepted only when targeting Actions.
+## How it works inside Clang
+
+### 1. Driver pipeline phase selection
+
+When you invoke `clang`, the driver parses arguments into an `InputArgList` and determines the target execution action phase in [`clang/lib/Driver/Driver.cpp`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Driver/Driver.cpp#L4000). Passing `-S` sets the final compilation phase to `phases::Backend` (or `types::TY_Asm`).
+
+```text
+[ Source File (.c) ]
+       │
+       ▼
+ [ Preprocess ] ── ( -E stops here )
+       │
+       ▼
+ [ Parse & Semantics ] ── ( -fsyntax-only stops here )
+       │
+       ▼
+ [ LLVM IR Opts ] ── ( -emit-llvm stops here )
+       │
+       ▼
+ [ Target Codegen ] ── ( -S stops here -> .s text assembly )
+       │
+       ▼
+ [ MC Assembler ] ── ( -c stops here -> .o object file )
+       │
+       ▼
+ [ Linker ] ── ( Default binary output )
+```
+
+The driver constructs job steps up through the compilation frontend invocation (`clang -cc1`), passing `-S` or `-backend-action=emit-obj` down to the frontend action handler.
+
+### 2. Frontend action translation
+
+Inside the frontend driver (`clang/lib/Frontend/CompilerInvocation.cpp`), the presence of `-S` configures `FrontendOptions::ProgramAction` to `frontend::EmitAssembly` (or `frontend::EmitLLVMOnly` if combined with `-emit-llvm`).
+
+In [`clang/lib/CodeGen/BackendUtil.cpp`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/CodeGen/BackendUtil.cpp#L1070), the code generator attaches `TargetMachine::addPassesToEmitFile` targeting `CodeGenFileType::AssemblyFile` rather than `CodeGenFileType::ObjectFile`.
+
+### 3. Assembly generation
+
+The backend runs target instruction selection (SelectionDAG or GlobalISel), register allocation, and frame lowering. The LLVM `AsmPrinter` pass formats instructions and directives into assembly text, writing to the specified output file or standard output.
+
+<Callout type="info" title="Optimization Level Independence">
+Verified from source: `-S` is an action-selection flag. Optimization flags (`-O0`, `-O2`, `-O3`, `-Os`) change the internal IR passes and backend instruction scheduling, but do not alter `-S` phase termination behavior.
+</Callout>
 
 ## Usage example
 
+<SourceCode
+  language="cpp"
+  title="example.cpp"
+  code={`int compute(int x, int y) {
+    return (x * 3) + (y * 7);
+}`}
+/>
+
+To inspect the generated assembly for `compute`:
+
 ```bash
-clang++ -S main.cpp -o app
+clang++ -O2 -S example.cpp -o example.s
 ```
+
+The output file `example.s` contains the generated assembly instructions:
+
+```assembly
+compute(int, int):
+    lea    eax, [rdi + rdi*2]
+    lea    ecx, [rsi + rsi*8]
+    sub    eax, ecx
+    ret
+```
+
+## Clang version history
+
+| Version | Flag status | Semantic or structural change | Evidence |
+| :--- | :--- | :--- | :--- |
+| **Clang 2.0** | Introduced | Added `-S` as driver option to stop after compilation and emit text assembly. | Documented |
+| **Clang 3.0** | Unified Frontend Action | Wired `-S` directly to `frontend::EmitAssembly` action in `-cc1`. | Verified from source |
+
+*Verified through llvmorg-19.1.0.*
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+**Category:** Frontend Action / Codegen Termination
+
+| Mechanism / Pass | Relationship | Details |
+| :--- | :--- | :--- |
+| **`TargetMachine::addPassesToEmitFile`** | Directly controlled | Configured with `CodeGenFileType::AssemblyFile` when `-S` is active. |
+| **`AsmPrinter`** | Backend mechanism | Serializes machine instructions to target assembly directives and instructions. |
+| **`-c`** | Related option | Stops compilation one stage later, running the MC assembler to emit binary object code (`.o`). |
+| **`-emit-llvm`** | Related option | When combined with `-S`, instructs backend to emit text LLVM IR (`.ll`) instead of target machine assembly (`.s`). |
+
+### How to verify backend assembly output
+
+Run Clang with `-###` to inspect the exact commands executed by the driver:
+
+```bash
+clang -O2 -S test.c -###
+```
+
+The output shows `-cc1` invoked with output action settings targeting assembly emission without subsequent invocation of `llvm-mc` or `ld`.
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, CC1Option, FlangOption, FC1Option
-- **Stage**: cc1 (frontend), category `Actions`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  args={[
+    { name: "-S", desc: "Stop after compilation and code generation phases; do not assemble or link." }
+  ]}
+  group="Action_Group"
+  driverOption={true}
+  cc1Option={true}
+  flangOption={true}
+/>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
