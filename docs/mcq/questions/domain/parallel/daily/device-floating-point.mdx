@@ -1,0 +1,20 @@
+---
+title: "Floating point on the device quiz"
+description: "Five questions for Floating point on the device. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Floating point on the device quiz
+
+Lesson: [Floating point on the device](/docs/parallel-computing/device-floating-point/)
+
+<Question question="1. In single-precision IEEE 754 floating-point representation, how many mantissa bits are specified?" options={["23 bits", "8 bits", "1 bit", "32 bits"]} answer="23 bits" />
+
+<Question question="2. According to the strategy comparison table, what causes bit variance when using global atomicAdd for floating-point summation?" options={["Dynamic warp scheduling and DRAM/L2 latency order", "Fixed binary tree topology", "Truncated lower bits in Kahan summation", "Sequential CPU loop order"]} answer="Dynamic warp scheduling and DRAM/L2 latency order" />
+
+<Question question="3. Which NVCC compiler flag forces the generation of separate multiply and add instructions instead of a hardware FMA instruction?" options={["-fmad=false", "--use_fast_math", "-prec-div=false", "-ftz=true"]} answer="-fmad=false" />
+
+<Question question="4. What behavior occurs regarding denormalized numbers when NVCC compiles code with the --use_fast_math flag?" options={["Flushes denormalized numbers to zero", "Promotes denormalized numbers to double precision", "Preserves denormalized numbers exactly", "Calculates exact reciprocal square roots"]} answer="Flushes denormalized numbers to zero" />
+
+<Question question="5. Which function or intrinsic is used in the worked example to construct a warp-level tree reduction across 32 lanes?" options={["__shfl_down_sync", "atomicAdd", "__syncthreads", "kahan_add"]} answer="__shfl_down_sync" />
