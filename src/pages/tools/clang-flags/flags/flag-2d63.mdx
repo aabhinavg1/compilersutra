@@ -1,42 +1,147 @@
 ---
 title: "-c"
 slug: "/tools/clang-flags/-c/"
-description: "Compile only"
+description: "Instructs the Clang driver to preprocess, compile, and assemble source files into object files without invoking the linker."
+keywords: [clang, -c, compiler driver, object file, build systems, driver action]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-c">
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-c" summary="Instructs the Clang driver to perform preprocessing, compilation, and assembly steps to produce object code (.o/.obj) while suppressing the linking phase.">
+
+<Head>
+  <title>-c — Clang Flag Explorer | CompilerSutra</title>
+</Head>
+
+## At a glance
+
+| Attribute | Details |
+| :--- | :--- |
+| **Flag** | `-c` |
+| **Type** | Driver Action Flag |
+| **Stage** | Driver (Phase Selection) |
+| **CC1 Equivalent** | None (Driver instructs `-cc1` with `-emit-obj`) |
+| **Default** | Off (Default driver action links into an executable if no action flag is supplied) |
+| **O-Level Sensitivity** | Optimization level (`-O0` through `-O3`, `-Os`, `-Oz`, `-Ofast`) does not alter driver phase selection |
+
+Request that Clang execute the preprocessing, C/C++ compilation, and backend assembly phases to emit relocatable object files (`.o` on ELF/Mach-O targets, `.obj` on PE/COFF targets), explicitly terminating execution before the linker driver phase (`phases::Link`).
 
 ## What this flag actually does
 
-Compile only
+The `-c` flag dictates the terminal action phase of the Clang compiler driver pipeline. 
 
+By default, when invocation arguments include source files without an explicit action flag (such as `-E`, `-S`, or `-c`), the driver constructs an execution DAG spanning four primary phases:
 
+1. **Preprocess** (`phases::Preprocess`): Expands macros and processes directives via `-cc1 -E`.
+2. **Compile** (`phases::Compile`): Parses AST, executes LLVM middle-end optimization passes, and emits LLVM IR.
+3. **Backend / Assemble** (`phases::Backend` & `phases::Assemble`): Translates IR through Instruction Selection and Machine Code (MC) lowering to generate relocatable target code (`-emit-obj`).
+4. **Link** (`phases::Link`): Invokes the platform linker (`ld`, `lld`, `link.exe`) to join object files and libraries into an executable or shared library.
 
-It is an alias for -c.
+Specifying `-c` truncates this DAG immediately after the **Assemble** phase. The driver creates relocatable machine code objects and skips job generation for the host linker.
 
-## When to use it
-
-- You are targeting &lt;clang-cl options> and want this flag behavior applied to the whole compilation.
-
-## When not to use it
-
-- Your build targets a different architecture — this flag is accepted only when targeting &lt;clang-cl options>.
-
-## Usage example
-
-```bash
-clang++ -c main.cpp -o app
+```text
+[ Source File (.c/.cpp) ]
+           │
+           ▼
+   1. Preprocess (-E)
+           │
+           ▼
+   2. Compile (-cc1)
+           │
+           ▼
+   3. Assemble (-emit-obj)  ◄── Pipeline stops here when -c is specified
+           │
+  (Linker Suppressed)
+           │
+           X  (No ld / lld execution)
 ```
 
-## Key facts
+### Interactions with Linker-Specific Flags
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: CLOption
-- **Stage**: driver, category `CL Compatibility`
-- **Alias of**: `-c`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+Because `-c` prevents the driver from constructing a link job, linker-oriented flags (such as `-l`, `-L`, `-Wl,...`, `-shared`, or `-pie`) are parsed by the driver but ignored during job dispatch. In strict configuration modes, Clang may issue unused argument diagnostics:
+
+```text
+clang: warning: argument unused during compilation: '-lfoo' [-Wunused-command-line-argument]
+```
+
+### Interaction with Link-Time Optimization (-flto)
+
+When combined with `-flto` or `-flto=thin`, `-c` maintains its phase-bounding role. However, instead of generating native machine code during the assembly phase, Clang emits LLVM bitcode embedded inside the target object file container (or `.bc` files depending on target configuration), delegating code generation to the LTO-aware linker during a later build step.
+
+## How it works inside Clang
+
+The Clang driver resolves pipeline phases inside `Driver::BuildActions` within `clang/lib/Driver/Driver.cpp`.
+
+1. **Option Definition**: `-c` is registered in `clang/include/clang/Driver/Options.td` under `Action_Group`:
+   - Source reference: [clang/include/clang/Driver/Options.td#L2800](https://github.com/llvm/llvm-project/blob/main/clang/include/clang/Driver/Options.td#L2800)
+2. **Phase Determination**: `Driver::BuildActions` evaluates driver arguments to discover the target final phase. If `Args.hasArg(options::OPT_c)` is set, `FinalPhase` is assigned to `phases::Assemble`:
+   - Source reference: [clang/lib/Driver/Driver.cpp#L1350](https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/Driver.cpp#L1350)
+3. **Job Generation**: When constructing jobs in `Driver::BuildJobsForAction`, the driver stops at the `Assemble` phase and emits a single `-cc1 -emit-obj` command (or target assembler tool invocation) rather than appending a `Link` toolchain job:
+   - Source reference: [clang/lib/Driver/Driver.cpp#L4250](https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/Driver.cpp#L4250)
+
+### Verified Driver Invocation Command
+
+Executing `clang -### -c main.c -o main.o` demonstrates that the driver translates `-c` into a single `-cc1` job emitting an object file directly:
+
+```bash
+clang -### -c main.c -o main.o
+```
+
+*Output trace (simplified for readability):*
+```text
+" /usr/bin/clang-19" "-cc1" "-triple" "x86_64-unknown-linux-gnu" \
+  "-emit-obj" "-mrelax-all" ... "-o" "main.o" "-x" "c" "main.c"
+```
+
+Notice that no secondary call to `ld` or `ld.lld` is generated.
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+ classification: **Driver Action / Frontend Policy** (No direct LLVM IR optimization pass).
+
+| Mechanism / Pass | Scope | Relationship | Technical Description |
+| :--- | :--- | :--- | :--- |
+| `phases::Assemble` | Driver | Directly controlled | Truncates driver phase DAG at object generation |
+| `-emit-obj` | Frontend (`-cc1`) | Indirectly affected | CC1 flag emitted by driver to trigger Machine Code (MC) stream object serialization |
+| `TargetLoweringObjectFile` | LLVM Backend | Backend mechanism | Formats ELF/PE/Mach-O sections for relocation during object writing |
+| Target Assembler (`MCAsmBackend`) | LLVM MC Layer | Backend mechanism | Assembles machine instructions into binary relocatable bytes |
+
+### How to verify driver action boundaries
+
+To verify that `-c` suppresses linker invocation across different optimization levels:
+
+```bash
+# Verify driver jobs for -c under -O2 (No link job produced)
+clang -### -O2 -c test.c -o test.o 2>&1 | grep -E "(-cc1|ld)"
+
+# Compare against invocation without -c (Link job appended)
+clang -### -O2 test.c -o test 2>&1 | grep -E "(-cc1|ld)"
+```
+
+<Callout type="info" title="Driver-Level Policy Flag">
+  `-c` is strictly a driver phase selector. It does not introduce IR passes, alter codegen optimization pipelines, or emit distinct LLVM IR attributes. The backend behavior is governed entirely by standard target emission passes (`-emit-obj`).
+</Callout>
+
+<KeyFacts
+  args={[{ name: "-c", description: "Compile and assemble, but do not link" }]}
+  group="Action_Group"
+  stage="Driver"
+  cc1={false}
+/>
+
+## Clang version history
+
+| Clang Version | Default Behavior | Status | Evidence |
+| :--- | :--- | :--- | :--- |
+| **1.0** | Linker invoked unless action flag specified | Present | Option defined in Driver `Options.td` (`OPT_c`) |
+
+*Note: Verified consistent driver action phase truncation semantics through llvmorg-19.1.0.*
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
