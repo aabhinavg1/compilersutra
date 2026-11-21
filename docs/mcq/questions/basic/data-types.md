@@ -474,6 +474,13 @@ import { Question } from '../../Question';  // Adjust the path to your Question.
   answer="char8_t"
 />
 
+
+<Question
+  question="51).Choose the correct declaration of a float variable with the value 3.14."
+  options={['pi = "3.14"', 'pi = int(3.14)', 'pi = 3.14', 'float pi = 3.14']}
+  answer="float pi = 3.14"
+/>
+
 <div>
 <AdBanner />
 </div>
