@@ -1,0 +1,20 @@
+---
+title: "Decomposition for a GPU quiz"
+description: "Five questions for Decomposition for a GPU. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# Decomposition for a GPU quiz
+
+Lesson: [Decomposition for a GPU](/docs/parallel-computing/decomposition-for-a-gpu/)
+
+<Question question="1. What approach does an output-centric model use for data processing according to the article?" options={["Scatter / Push", "Gather / Pull", "Tree Sweep", "Atomic Serialization"]} answer="Gather / Pull" />
+
+<Question question="2. In the provided 1D stencil code example, what value is defined for the RADIUS macro?" options={["1", "2", "4", "256"]} answer="2" />
+
+<Question question="3. What is defined as BLOCK_SIZE in the worked code example?" options={["32", "64", "128", "256"]} answer="256" />
+
+<Question question="4. What does the article state happens when thousands of threads perform atomicAdd on the same memory location?" options={["The kernel crashes", "Execution is serialized, reducing throughput", "Memory is automatically unrolled", "Global synchronization is triggered across all blocks"]} answer="Execution is serialized, reducing throughput" />
+
+<Question question="5. According to the article, what operation can the CUDA compiler automatically perform?" options={["Transform an input-centric kernel with atomicAdd into an output-centric gather kernel", "Guarantee global synchronization across distinct thread blocks", "Unroll static input-gather loops into load instructions", "Resolve deadlocks caused by custom spinlocks across blocks"]} answer="Unroll static input-gather loops into load instructions" />

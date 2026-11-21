@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" width="100%" height="100%">
+  <rect width="720" height="260" fill="#0f172a" rx="8"/>
+  
+  <!-- Left Side: Input-Centric (Scatter) -->
+  <g transform="translate(20, 20)">
+    <text x="160" y="24" fill="#f8fafc" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Input-Centric (Scatter)</text>
+    <text x="160" y="44" fill="#94a3b8" font-family="sans-serif" font-size="12" text-anchor="middle">Threads push to shared outputs (Requires Atomics)</text>
+    
+    <!-- Input Threads -->
+    <rect x="20" y="70" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="90" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 0</text>
+    
+    <rect x="20" y="115" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="135" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 1</text>
+    
+    <rect x="20" y="160" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="180" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 2</text>
+    
+    <!-- Contended Output -->
+    <rect x="220" y="115" width="80" height="30" fill="#450a0a" stroke="#f87171" stroke-width="2" rx="4"/>
+    <text x="260" y="135" fill="#fca5a5" font-family="sans-serif" font-size="12" text-anchor="middle">Output [0]</text>
+    
+    <!-- Colliding Arrows -->
+    <path d="M 80 85 L 220 125" stroke="#ef4444" stroke-width="2" marker-end="url(#red-arrow)"/>
+    <path d="M 80 130 L 220 130" stroke="#ef4444" stroke-width="2" marker-end="url(#red-arrow)"/>
+    <path d="M 80 175 L 220 135" stroke="#ef4444" stroke-width="2" marker-end="url(#red-arrow)"/>
+    
+    <text x="160" y="220" fill="#f87171" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">High Contention Bottleneck</text>
+  </g>
+
+  <!-- Vertical Divider -->
+  <line x1="360" y1="20" x2="360" y2="240" stroke="#334155" stroke-width="2" stroke-dasharray="4"/>
+
+  <!-- Right Side: Output-Centric (Gather) -->
+  <g transform="translate(380, 20)">
+    <text x="160" y="24" fill="#f8fafc" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Output-Centric (Gather)</text>
+    <text x="160" y="44" fill="#94a3b8" font-family="sans-serif" font-size="12" text-anchor="middle">Each thread owns one unique output (Independent)</text>
+    
+    <!-- Threads -->
+    <rect x="20" y="70" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="90" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 0</text>
+    
+    <rect x="20" y="120" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="140" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 1</text>
+    
+    <rect x="20" y="170" width="60" height="30" fill="#1e293b" stroke="#38bdf8" stroke-width="2" rx="4"/>
+    <text x="50" y="190" fill="#e2e8f0" font-family="sans-serif" font-size="12" text-anchor="middle">Thread 2</text>
+    
+    <!-- Independent Outputs -->
+    <rect x="220" y="70" width="80" height="30" fill="#064e3b" stroke="#34d399" stroke-width="2" rx="4"/>
+    <text x="260" y="90" fill="#a7f3d0" font-family="sans-serif" font-size="12" text-anchor="middle">Output [0]</text>
+    
+    <rect x="220" y="120" width="80" height="30" fill="#064e3b" stroke="#34d399" stroke-width="2" rx="4"/>
+    <text x="260" y="140" fill="#a7f3d0" font-family="sans-serif" font-size="12" text-anchor="middle">Output [1]</text>
+    
+    <rect x="220" y="170" width="80" height="30" fill="#064e3b" stroke="#34d399" stroke-width="2" rx="4"/>
+    <text x="260" y="190" fill="#a7f3d0" font-family="sans-serif" font-size="12" text-anchor="middle">Output [2]</text>
+    
+    <!-- Parallel Independent Arrows -->
+    <path d="M 80 85 L 220 85" stroke="#34d399" stroke-width="2" marker-end="url(#green-arrow)"/>
+    <path d="M 80 135 L 220 135" stroke="#34d399" stroke-width="2" marker-end="url(#green-arrow)"/>
+    <path d="M 80 185 L 220 185" stroke="#34d399" stroke-width="2" marker-end="url(#green-arrow)"/>
+    
+    <text x="160" y="220" fill="#34d399" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">100% Lock-Free Parallelism</text>
+  </g>
+  
+  <defs>
+    <marker id="red-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M 0 0 L 6 3 L 0 6 z" fill="#ef4444"/>
+    </marker>
+    <marker id="green-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M 0 0 L 6 3 L 0 6 z" fill="#34d399"/>
+    </marker>
+  </defs>
+</svg>

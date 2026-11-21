@@ -53,6 +53,7 @@ const parallel = {
             'parallel-computing/cuda-memory-spaces',
             'parallel-computing/coalescing-and-latency-hiding',
             'parallel-computing/device-floating-point',
+            'parallel-computing/decomposition-for-a-gpu',
           ],
         },
         {
