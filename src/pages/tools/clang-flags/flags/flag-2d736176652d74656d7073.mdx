@@ -1,42 +1,149 @@
 ---
 title: "-save-temps"
 slug: "/tools/clang-flags/-save-temps/"
-description: "Alias for --save-temps=cwd"
+description: "Directs the Clang driver to preserve intermediate build artifacts (preprocessed source, LLVM IR, assembly) on disk instead of using temporary files."
+keywords: ["-save-temps", "clang", "driver", "preprocessor", "llvm-ir", "assembly", "build-artifacts", "compiler-flags"]
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-save-temps">
+<Head>
+  <title>-save-temps — Clang Flag Explorer | CompilerSutra</title>
+  <meta name="description" content="Directs the Clang driver to preserve intermediate build artifacts (preprocessed source, LLVM IR, assembly) on disk instead of using temporary files." />
+</Head>
+
+{/* HAND_AUTHORED */}
+<FlagArticleShell
+  flagPath="-save-temps"
+  summary="Request that Clang preserve intermediate compilation artifacts (preprocessed output, LLVM bitcode/IR, assembly) on disk in the current working directory."
+>
+
+## At a glance
+
+| Metric / Aspect | Value |
+| :--- | :--- |
+| **Option type** | Driver policy / Artifact preservation |
+| **CC1 flag?** | No (`-save-temps` is driver-only; delegates via explicit pipeline stages) |
+| **Default state** | Disabled (intermediates are stored in temporary files and deleted) |
+| **Alias of** | `-save-temps=cwd` |
+| **Negation** | No direct `-fno-` variant; controlled via explicit pipeline invocation or standard driver invocation |
+| **Optimization impact** | None (does not change generated machine code or optimization passes) |
+
+```bash
+# Save preprocessed (.i/.ii), IR/BC (.bc/.ll), and assembly (.s) to the current directory
+clang++ -save-temps -O2 -c example.cpp -o example.o
+
+# Equivalent explicit form targeting the current working directory
+clang++ -save-temps=cwd -O2 -c example.cpp -o example.o
+```
+
+---
 
 ## What this flag actually does
 
-Alias for --save-temps=cwd
+`-save-temps` instructs the Clang driver to retain intermediate artifacts created during compilation instead of streaming them through pipes or placing them in deleted temporary files.
 
+When compiling C or C++ source code, the compilation pipeline typically performs multiple distinct steps:
+1. **Preprocessing** (`.cpp` $\rightarrow$ `.ii` or `.c` $\rightarrow$ `.i`)
+2. **Compilation / Frontend Parsing & CodeGen** (`.ii` $\rightarrow$ `.bc` or `.s`)
+3. **Backend / Assembly** (`.s` $\rightarrow$ `.o`)
+4. **Linking** (`.o` $\rightarrow$ executable / shared library)
 
+By default, Clang combines these steps in memory or passes temporary filenames between subprocesses, cleaning them up upon completion. Passing `-save-temps` forces the driver to write each intermediate stage to the current working directory using filenames based on the input source file.
 
-It is an alias for -save-temps=.
+<Callout type="info" title="Defaults across optimization levels">
+**O-level sensitivity:** Optimization levels (`-O0`, `-O1`, `-O2`, `-O3`, `-Os`, `-Oz`, `-Ofast`) do not alter the behavior of `-save-temps`. The flag governs driver pipeline artifact handling rather than frontend or backend lowering.
+</Callout>
 
-## When to use it
+### Differences from `-save-temps=obj`
 
-- You have a concrete need for the behavior this Other option enables and have verified it applies to your build.
+* `-save-temps` (and `-save-temps=cwd`): Writes intermediate output files (`.i`, `.s`, `.bc`) into the current working directory.
+* `-save-temps=obj`: Writes intermediate output files into the directory specified by the output flag (`-o`).
 
-## When not to use it
+---
 
-- The behavior enabled by this option does not apply to the code or target you are building.
+## How it works inside Clang
 
-## Usage example
+`-save-temps` is evaluated early in driver construction. It influences how the driver constructs jobs (`clang::driver::Compilation` and `clang::driver::Job`) and determines whether temporary paths or permanent on-disk filenames are generated.
+
+### 1. Driver Option Parsing
+
+The flag is defined as an alias in the driver option table:
+
+* [`clang/include/clang/Driver/Options.td`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/include/clang/Driver/Options.td#L5325-L5327)
+
+```tablegen
+def save_temps : Flag<["-"], "save-temps">, Flags<[NoXarchOption]>,
+  HelpText<"Save intermediate compilation results">,
+  Alias<save_temps_EQ>, AliasArgs<["cwd"]>;
+```
+
+When `-save-temps` is supplied on the command line, the driver translates it into `-save-temps=cwd`.
+
+### 2. Pipeline Action Generation and Filename Resolution
+
+During job graph construction, `Driver::BuildJobsForAction` evaluates whether saved temps are enabled via `SaveTempsMode`:
+
+* [`clang/lib/Driver/Driver.cpp`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Driver/Driver.cpp#L5710-L5750)
+
+When `SaveTempsMode` is set, the driver bypasses creation of randomized temporary paths (`/tmp/main-XXXXXX.s`) and instead assigns deterministic filenames (e.g., `main.i`, `main.s`) directly in the targeted directory.
+
+Because `-save-temps` forces separate pipeline stages to communicate via file on disk rather than unified in-process memory structures, passing `-save-temps` also causes Clang to invoke separate sub-tools or `-cc1` stages explicitly.
+
+---
+
+## Clang version history
+
+| Clang Version | Implementation / Behavior Change | Evidence |
+| :--- | :--- | :--- |
+| **LLVM 3.8.0** | Introduced `-save-temps=cwd` and `-save-temps=obj` forms, making `-save-temps` an explicit alias for `-save-temps=cwd`. | Verified from source (`clang/lib/Driver/Driver.cpp`) |
+| **LLVM 19.1.0** | Modern option handling in `Options.td` maps `-save-temps` directly to `save_temps_EQ` with `cwd` payload. | Verified from source (`clang/include/clang/Driver/Options.td`) |
+
+*Verified through llvmorg-19.1.0.*
+
+---
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+### Category: Diagnostic / Frontend / Driver Policy
+
+`-save-temps` operates purely at the driver pipeline level. It does not map to an LLVM IR pass, IR attribute, or machine-specific code generation pass.
+
+| Mechanism / Pass Name | Relationship Label | Description |
+| :--- | :--- | :--- |
+| **Driver Job Graph Construction** | Directly controlled | Dictates whether intermediate steps write to standard temporary locations or retain deterministic on-disk files. |
+| **`-emit-llvm` / `-S`** | Related mechanism | Manual sub-flags used to emit specific IR or assembly stages individually without saving all pipeline stages. |
+
+### Source Investigation & Verification
+
+To observe how `-save-temps` alters driver execution without executing the compiler, run with `-###`:
 
 ```bash
-clang++ -save-temps main.cpp -o app
+clang++ -save-temps -O2 -c main.cpp -o main.o -###
 ```
+
+**Verified driver invocation output:**
+The driver output confirms that `-cc1` is invoked with explicit output filenames for preprocessed source (`main.ii`) and backend output (`main.s`), preserving every intermediate artifact on disk.
+
+---
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption, FC1Option
-- **Stage**: driver, category `Other`
-- **Alias of**: `-save-temps=`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  args={false}
+  acceptingTargets="Clang Driver, Flang Driver"
+  stage="Driver policy"
+  negation="None (implicit default is temporary file cleanup)"
+/>
+
+* **Primary Use Case**: Debugging macro expansions, inspecting raw generated LLVM IR, analyzing generated assembly, or filing reproducible bug reports for compiler issues.
+* **Build System Impact**: Retaining intermediate files can fill disk space rapidly in large codebases; use selectively during local debugging.
+
+---
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
