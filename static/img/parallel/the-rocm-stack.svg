@@ -1,0 +1,39 @@
+<svg viewBox="0 0 700 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="700" height="380" fill="#0f172a" rx="8" />
+  
+  <!-- Stack Layers -->
+  <!-- Layer 1: Application & HIP Frontend -->
+  <rect x="40" y="30" width="620" height="55" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+  <text x="50" y="52" fill="#38bdf8" font-family="sans-serif" font-weight="bold" font-size="14">Application &amp; HIP C++ Interface</text>
+  <text x="50" y="71" fill="#94a3b8" font-family="sans-serif" font-size="12">hipLaunchKernelGGL, hipMalloc, hipMemcpy (C++ Source Tier)</text>
+
+  <!-- Layer 2: Compiler Layer -->
+  <rect x="40" y="105" width="620" height="65" rx="6" fill="#1e293b" stroke="#818cf8" stroke-width="1.5" />
+  <text x="50" y="127" fill="#818cf8" font-family="sans-serif" font-weight="bold" font-size="14">Compiler Layer (hipcc / Clang LLVM)</text>
+  <text x="50" y="146" fill="#94a3b8" font-family="sans-serif" font-size="12">Host Compilation Pass (x86/ARM) | Device Pass (AMDGPU Target LLVM backend &amp; LLD link)</text>
+  <text x="50" y="162" fill="#64748b" font-family="sans-serif" font-size="11">Output: Executable binary containing embedded Code Object (.hsaco)</text>
+
+  <!-- Layer 3: Language Runtime & HSA Driver Tier -->
+  <rect x="40" y="190" width="620" height="65" rx="6" fill="#1e293b" stroke="#34d399" stroke-width="1.5" />
+  <text x="50" y="212" fill="#34d399" font-family="sans-serif" font-weight="bold" font-size="14">Runtime Tier (ROCR / HSA Driver)</text>
+  <text x="50" y="231" fill="#94a3b8" font-family="sans-serif" font-size="12">Memory Allocations (HSA Signals), Code Object Loading, Queue &amp; AQL Packet Creation</text>
+  <text x="50" y="247" fill="#64748b" font-family="sans-serif" font-size="11">User-space queue management writing directly to hardware ring buffers</text>
+
+  <!-- Layer 4: Kernel Driver & Hardware -->
+  <rect x="40" y="275" width="620" height="65" rx="6" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5" />
+  <text x="50" y="297" fill="#f43f5e" font-family="sans-serif" font-weight="bold" font-size="14">Kernel Space &amp; Hardware Tier</text>
+  <text x="50" y="316" fill="#94a3b8" font-family="sans-serif" font-size="12">AMDKFD (Kernel Fusion Driver) &amp; AMDGPU DRM Driver</text>
+  <text x="50" y="332" fill="#64748b" font-family="sans-serif" font-size="11">AMD GPU Compute Units, Memory Controllers, Command Processors (CP)</text>
+
+  <!-- Connecting Arrows -->
+  <path d="M 350 85 L 350 105" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+  <path d="M 350 170 L 350 190" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+  <path d="M 350 255 L 350 275" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+    </marker>
+  </defs>
+</svg>
