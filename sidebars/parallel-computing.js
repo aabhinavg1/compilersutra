@@ -55,6 +55,7 @@ const parallel = {
             'parallel-computing/device-floating-point',
             'parallel-computing/decomposition-for-a-gpu',
             'parallel-computing/the-rocm-stack',
+            'parallel-computing/hip-next-to-cuda',
           ],
         },
         {
