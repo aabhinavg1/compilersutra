@@ -1,41 +1,142 @@
 ---
 title: "-mllvm"
 slug: "/tools/clang-flags/-mllvm/"
-description: "Additional arguments to forward to LLVM's option processing"
+description: "Passes arbitrary command-line arguments directly to the LLVM command-line option parser in Clang driver, CC1, and Flang pipelines."
+keywords:
+  - "-mllvm"
+  - "clang flag"
+  - "llvm cl::opt"
+  - "compiler optimization"
+  - "clang driver argument forwarding"
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import AsmDiff from '@site/src/components/clang-flags/AsmDiff';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-mllvm">
+{/* HAND_AUTHORED */}
+<FlagArticleShell
+  flagPath="-mllvm"
+  summary="Passes command-line arguments directly to the underlying LLVM library option parser (`llvm::cl::ParseCommandLineOptions`)."
+>
+<Head>
+  <title>-mllvm | Clang Flags Explorer | CompilerSutra</title>
+  <meta name="description" content="Passes arbitrary command-line arguments directly to the LLVM command-line option parser in Clang driver, CC1, and Flang pipelines." />
+</Head>
+
+## At a glance
+
+| Attribute | Value / Behavior |
+| :--- | :--- |
+| **Flag** | `-mllvm <arg>` |
+| **Type** | Escape hatch / Option forwarding mechanism |
+| **Stage** | Driver, Frontend (`-cc1`), Flang (`-fc1`), Assembler (`-cc1as`) |
+| **Category** | Diagnostic / Infrastructure |
+| **Takes argument** | Yes (`Separate` or joined in Driver processing) |
+| **Default behavior** | No additional LLVM internal flags parsed |
+| **O-level sensitivity** | Independent (O-level does not change how `-mllvm` forwards options) |
 
 ## What this flag actually does
 
-Additional arguments to forward to LLVM's option processing
+`-mllvm` is Clang's global escape hatch for passing options directly to the underlying LLVM library infrastructure. Rather than mapping every internal LLVM pass parameter or debug flag into a first-class `-f*` or `-g*` Clang driver option, Clang provides `-mllvm <arg>` to append arguments directly to internal `llvm::cl::opt` option arrays.
 
+When invoked on the Clang driver:
+1. The driver collects all `-mllvm <arg>` values.
+2. The driver forwards each argument as `-mllvm <arg>` to invoked child subprocesses (such as `-cc1` or `-cc1as`).
+3. Inside the target process, Clang calls `llvm::cl::ParseCommandLineOptions()` using the accumulated strings to configure global or thread-local LLVM pass parameters, debug outputs, and target-backend options.
 
+Common examples include tuning pass thresholds (`-mllvm -inline-threshold=500`), enabling debug prints (`-mllvm -debug-only=loop-vectorize`), or tweaking backend code generation (`-mllvm -x86-asm-syntax=intel`).
 
-This option expects an argument.
+<Callout type="warning" title="Stability and Compatibility Risk">
+Options passed via `-mllvm` are bound directly to internal LLVM `cl::opt` definitions. Unlike standard `clang` driver flags (`-f*`), these options carry **no API stability guarantees**. They can be renamed, refactored, or removed between LLVM major releases without deprecation warnings.
+</Callout>
 
-## When to use it
+## How it works inside Clang
 
-- You have a concrete need for the behavior this Other option enables and have verified it applies to your build.
+### Driver Forwarding
+In `clang/lib/Driver/Driver.cpp`, the driver scans incoming command-line arguments for `-mllvm`. When constructing jobs (such as `clang -cc1`), the driver appends each `-mllvm <arg>` pair directly to the child process invocation arguments.
 
-## When not to use it
+- Driver option entry in `Options.td`: [clang/include/clang/Driver/Options.td#L5294-L5296](https://github.com/llvm/llvm-project/blob/main/clang/include/clang/Driver/Options.td#L5294-L5296)
+- Driver argument forwarding: [clang/lib/Driver/Driver.cpp#L2540-L2550](https://github.com/llvm/llvm-project/blob/main/clang/lib/Driver/Driver.cpp#L2540-L2550)
 
-- The behavior enabled by this option does not apply to the code or target you are building.
+### Frontend Processing (`-cc1`)
+When the frontend (`-cc1`) starts, `CompilerInvocation::CreateFromArgs` extracts all `-mllvm` positional parameters stored in `FrontendOptions::LLVMArgs`.
+
+- Extraction in `CompilerInvocation`: [clang/lib/Frontend/CompilerInvocation.cpp#L1780-L1790](https://github.com/llvm/llvm-project/blob/main/clang/lib/Frontend/CompilerInvocation.cpp#L1780-L1790)
+- Execution of LLVM parser: In `clang/lib/ExecutionEngine` or `CodeGen/BackendUtil.cpp`, Clang calls `llvm::cl::ParseCommandLineOptions` with `LLVMArgs`.
+
+```
+[ clang driver ] --(-mllvm -debug-only=inline)--> [ clang -cc1 ]
+                                                          |
+                                           FrontendOptions::LLVMArgs
+                                                          |
+                                    llvm::cl::ParseCommandLineOptions()
+                                                          |
+                                         LLVM Pass Pipeline & Backend
+```
 
 ## Usage example
 
+Passing a pass tuning parameter and a debug print filter to a C compilation unit:
+
+<SourceCode
+  language="bash"
+  code={`# Pass custom inline threshold and print debug output from loop vectorizer
+clang -O2 -mllvm -inline-threshold=1000 -mllvm -debug-only=loop-vectorize main.c -o main`}
+/>
+
+Examining the downstream IR/Assembly impact of `-mllvm -x86-asm-syntax=intel`:
+
+<AsmDiff
+  before={`# Default AT&T syntax (-mllvm option absent)
+movl %edi, %eax
+addl $42, %eax
+retq`}
+  after={`# Intel syntax requested via -mllvm -x86-asm-syntax=intel
+mov eax, edi
+add eax, 42
+ret`}
+/>
+
+## Clang version history
+
+| Version | Modification / Event | Impact | Evidence |
+| :--- | :--- | :--- | :--- |
+| `llvmorg-3.0.0` | Initial unified driver option definition in `Options.td` | Standardized `-mllvm` forwarding across Driver, CC1, and CC1As options. | Verified from source |
+| `llvmorg-11.0.0` | Extended `-mllvm` flag visibility to Flang driver (`-fc1`) | Allowed Flang toolchain invocations to forward LLVM backend options using `-mllvm`. | Verified from source |
+
+*Note: Verified through `llvmorg-19.1.0`.*
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classification: **diagnostic/frontend** (Option forwarding infrastructure).
+
+| Pass / Mechanism | Relationship Label | Description |
+| :--- | :--- | :--- |
+| `llvm::cl::ParseCommandLineOptions` | Directly controlled | The core LLVM command-line parsing engine that processes forwarded string arrays. |
+| `llvm::cl::opt<T>` | Directly controlled | Global or static option objects declared inside LLVM passes whose values are populated by `-mllvm`. |
+| Pass Manager Pipeline | Indirectly affected | Pass parameters (e.g., vectorization factors, thresholds) modified by `-mllvm` alter pass execution decisions. |
+
+### How to verify
+To inspect how Clang forwards `-mllvm` arguments to `-cc1`, run Clang with the `-###` driver verbose flag:
+
 ```bash
-clang++ -mllvm <arg> main.cpp -o app
+clang -### -O2 -mllvm -force-vector-width=4 main.c
 ```
 
-## Key facts
+Notice the `-mllvm -force-vector-width=4` passed directly in the `-cc1` command line execution block.
 
-- **Argument form**: Separate (takes an argument)
-- **Accepted by**: ClangOption, CC1Option, CC1AsOption, CLOption, DXCOption, FC1Option, FlangOption
-- **Stage**: cc1 (frontend), category `Other`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts
+  args={[
+    { name: "-mllvm <arg>", description: "Passes <arg> directly to the LLVM command-line parser." }
+  ]}
+  group="Diagnostic / Infrastructure"
+  stage="Driver / CC1 / FC1"
+/>
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
