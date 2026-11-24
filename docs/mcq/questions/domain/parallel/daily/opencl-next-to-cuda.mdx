@@ -1,0 +1,20 @@
+---
+title: "OpenCL next to CUDA quiz"
+description: "Five questions for OpenCL next to CUDA. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# OpenCL next to CUDA quiz
+
+Lesson: [OpenCL next to CUDA](/docs/parallel-computing/opencl-next-to-cuda/)
+
+<Question question="1. Which OpenCL terminology directly maps to a Thread Block in CUDA?" options={["Work-Item", "Work-Group", "NDRange", "Command Queue"]} answer="Work-Group" />
+
+<Question question="2. What does OpenCL's '__local' address space correspond to in CUDA terminology?" options={["Shared Memory (__shared__)", "Global Memory (__device__)", "Local Memory", "Constant Memory"]} answer="Shared Memory (__shared__)" />
+
+<Question question="3. Which CUDA term corresponds to the OpenCL concept of an NDRange?" options={["Thread Block", "Thread", "Grid", "CUmodule"]} answer="Grid" />
+
+<Question question="4. What OpenCL object corresponds directly to a CUDA stream (cudaStream_t)?" options={["cl_context", "cl_command_queue", "cl_program", "cl_kernel"]} answer="cl_command_queue" />
+
+<Question question="5. What address space keyword does OpenCL use to denote thread-private memory?" options={["__local", "__global", "__private", "__shared"]} answer="__private" />

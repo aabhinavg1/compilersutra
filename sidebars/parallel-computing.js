@@ -56,6 +56,7 @@ const parallel = {
             'parallel-computing/decomposition-for-a-gpu',
             'parallel-computing/the-rocm-stack',
             'parallel-computing/hip-next-to-cuda',
+            'parallel-computing/opencl-next-to-cuda',
           ],
         },
         {
