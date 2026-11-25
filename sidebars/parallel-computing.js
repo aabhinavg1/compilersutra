@@ -57,6 +57,7 @@ const parallel = {
             'parallel-computing/the-rocm-stack',
             'parallel-computing/hip-next-to-cuda',
             'parallel-computing/opencl-next-to-cuda',
+            'parallel-computing/vulkan-compute',
           ],
         },
         {
