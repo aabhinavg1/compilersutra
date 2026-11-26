@@ -118,6 +118,7 @@ function main() {
 
   let written = 0;
   let bytes = 0;
+  const writtenStems = new Set();
   for (const [pageFlag, bucket] of byPageFlag.entries()) {
     const option = pickPreferred(bucket);
     const stem = toFileStem(pageFlag);
@@ -127,13 +128,72 @@ function main() {
     fs.writeFileSync(path.join(outDir, `${stem}.json`), text, 'utf8');
     written += 1;
     bytes += Buffer.byteLength(text);
+    writtenStems.add(stem);
+  }
+
+  // Hand-authored MDX pages whose flagPath is not a catalog pageFlag (e.g. -Werror).
+  // Without a payload, FlagArticleShell falls back to the full catalog and either
+  // mis-resolves via searchAliases (-Werror → -W) or shows "Flag not found".
+  const flagsDir = path.join(repoRoot, 'src', 'pages', 'tools', 'clang-flags', 'flags');
+  let extras = 0;
+  if (fs.existsSync(flagsDir)) {
+    for (const name of fs.readdirSync(flagsDir)) {
+      if (!name.startsWith('flag-') || !name.endsWith('.mdx')) continue;
+      const text = fs.readFileSync(path.join(flagsDir, name), 'utf8');
+      const match = text.match(/flagPath=\{?"([^"]+)"\}?/);
+      if (!match) continue;
+      let flagPath = match[1];
+      try {
+        flagPath = decodeURIComponent(flagPath);
+      } catch {
+        // keep raw
+      }
+      flagPath = String(flagPath ?? '').trim();
+      if (!flagPath) continue;
+      const stem = toFileStem(flagPath);
+      if (!stem || writtenStems.has(stem)) continue;
+
+      const titleMatch = text.match(/^title:\s*"([^"]*)"/m);
+      const descMatch = text.match(/^description:\s*"([^"]*)"/m);
+      const option = {
+        id: `mdx_extra_${stem}`,
+        flag: flagPath,
+        publicFlag: flagPath,
+        name: flagPath.replace(/^-/, ''),
+        help: descMatch?.[1] || titleMatch?.[1] || flagPath,
+        documentation: descMatch?.[1] || '',
+        category: 'Warning',
+        kind: 'mdx-extra',
+        relatedFlags: [],
+        visibility: ['ClangOption'],
+        searchAliases: [flagPath],
+      };
+      const payload = {
+        generatedAt: catalog.generatedAt ?? null,
+        llvmSource: catalog.llvmSource ?? null,
+        llvmCommit: catalog.llvmCommit ?? null,
+        sourceRepository: catalog.sourceRepository ?? null,
+        sourceBaseUrl: catalog.sourceBaseUrl ?? null,
+        payloadKind: 'clang-flag-article',
+        primaryFlag: flagPath,
+        options: [option],
+      };
+      const outText = `${JSON.stringify(payload)}\n`;
+      fs.writeFileSync(path.join(outDir, `${stem}.json`), outText, 'utf8');
+      written += 1;
+      extras += 1;
+      bytes += Buffer.byteLength(outText);
+      writtenStems.add(stem);
+    }
   }
 
   const catalogBytes = fs.statSync(dataPath).size;
   console.log(
     `clang-flag payloads: wrote ${written} files under ${path.relative(repoRoot, outDir)} ` +
       `(${(bytes / 1e6).toFixed(2)} MB total vs catalog ${(catalogBytes / 1e6).toFixed(2)} MB; ` +
-      `${catalog.options.length} catalog options)`,
+      `${catalog.options.length} catalog options` +
+      (extras ? `; ${extras} MDX-only extras` : '') +
+      `)`,
   );
 }
 

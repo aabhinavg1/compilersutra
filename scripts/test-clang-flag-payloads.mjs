@@ -63,10 +63,10 @@ async function main() {
   const pageFlags = new Set(catalog.options.map(getPageFlag));
   const files = fs.readdirSync(payloadDir).filter((name) => name.endsWith('.json'));
 
-  if (files.length !== pageFlags.size) {
-    fail(`payload count ${files.length} != unique page flags ${pageFlags.size}`);
+  if (files.length < pageFlags.size) {
+    fail(`payload count ${files.length} < unique page flags ${pageFlags.size}`);
   } else {
-    ok(`payload count matches unique page flags (${files.length})`);
+    ok(`payload count ${files.length} covers unique page flags (${pageFlags.size})`);
   }
 
   const samples = [
@@ -165,13 +165,14 @@ async function main() {
     server.close();
   }
 
-  // MDX pages that exist should have a payload for their flagPath.
+  // Every MDX article flagPath must have a payload (no silent catalog fallback).
   const flagsDir = path.join(repoRoot, 'src', 'pages', 'tools', 'clang-flags', 'flags');
-  const mdxFiles = fs.readdirSync(flagsDir).filter((name) => name.endsWith('.mdx')).slice(0, 50);
+  const mdxFiles = fs.readdirSync(flagsDir).filter((name) => name.endsWith('.mdx'));
   let checked = 0;
+  let missingMdxPayload = 0;
   for (const name of mdxFiles) {
     const text = fs.readFileSync(path.join(flagsDir, name), 'utf8');
-    const match = text.match(/flagPath="([^"]+)"/) || text.match(/flagPath=\{"([^"]+)"\}/);
+    const match = text.match(/flagPath=\{?"([^"]+)"\}?/);
     if (!match) continue;
     let flagPath = match[1];
     try {
@@ -181,12 +182,33 @@ async function main() {
     }
     const payloadFile = path.join(payloadDir, `${toStem(flagPath)}.json`);
     if (!fs.existsSync(payloadFile)) {
+      missingMdxPayload += 1;
       fail(`MDX ${name} flagPath=${flagPath} missing payload`);
     } else {
       checked += 1;
     }
   }
-  ok(`checked ${checked} MDX flagPath → payload mappings`);
+  if (!missingMdxPayload) {
+    ok(`all ${checked} MDX flagPath → payload mappings present`);
+  }
+
+  // Werror family must resolve from payload (not catalog alias to -W).
+  for (const flag of ['-Werror', '-Werror=', '-Wno-error', '-Wno-error=']) {
+    const file = path.join(payloadDir, `${toStem(flag)}.json`);
+    if (!fs.existsSync(file)) {
+      fail(`expected MDX-extra payload for ${flag}`);
+      continue;
+    }
+    const payload = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const hit = payload.options?.some(
+      (item) => item.flag === flag || item.publicFlag === flag || getPageFlag(item) === flag,
+    );
+    if (!hit) {
+      fail(`${flag}: payload missing exact option`);
+    } else {
+      ok(`${flag}: exact payload option present`);
+    }
+  }
 
   if (process.exitCode) {
     console.error('clang-flag payload tests FAILED');
