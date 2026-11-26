@@ -157,6 +157,18 @@ const config = {
         ],
       },
     ],
+    function ignoreClangFlagPayloadWatch() {
+      return {
+        name: 'ignore-clang-flag-payload-watch',
+        configureWebpack() {
+          return {
+            watchOptions: {
+              ignored: ['**/static/data/clang-flags/by-flag/**'],
+            },
+          };
+        },
+      };
+    },
     [
       '@docusaurus/plugin-vercel-analytics',
       {

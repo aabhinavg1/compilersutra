@@ -2,33 +2,29 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import FlagArticle from '@site/src/components/clang-flags/FlagArticle';
 import { resolveFlagPathValue } from '@site/src/components/clang-flags/flagRoutes';
+import { loadFlagArticleData } from '@site/src/components/clang-flags/loadFlagCatalog';
 import { findFlagOption } from '@site/src/components/clang-flags/utils';
-
-function normalizeIncomingData(data) {
-  if (!data || !Array.isArray(data.options)) {
-    return { options: [], groups: [] };
-  }
-  return data;
-}
 
 export default function FlagArticlePage({ flagPath }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
-  const dataUrl = useBaseUrl('/data/clang-flags.json');
+  const baseUrl = useBaseUrl('/');
   const requestedFlag = resolveFlagPathValue(flagPath);
 
   useEffect(() => {
     let alive = true;
 
     async function loadData() {
+      if (!requestedFlag) {
+        return;
+      }
       try {
-        const response = await fetch(dataUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to load ${dataUrl} (${response.status})`);
-        }
-        const payload = await response.json();
+        const result = await loadFlagArticleData({
+          baseUrl,
+          requestedFlag,
+        });
         if (alive) {
-          setData(normalizeIncomingData(payload));
+          setData(result.data);
         }
       } catch (err) {
         if (alive) {
@@ -41,7 +37,7 @@ export default function FlagArticlePage({ flagPath }) {
     return () => {
       alive = false;
     };
-  }, [dataUrl]);
+  }, [baseUrl, requestedFlag]);
 
   const options = data?.options ?? [];
   const selectedFlag = useMemo(

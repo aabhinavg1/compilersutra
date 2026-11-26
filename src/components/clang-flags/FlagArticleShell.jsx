@@ -8,6 +8,7 @@ import Badge from './Badge';
 import CodeBlock from './CodeBlock';
 import { resolveFlagPathValue, buildFlagArticlePath } from './flagRoutes';
 import { buildPipelineTrail, buildImplementationTrail } from './flagTrails';
+import { loadFlagArticleData } from './loadFlagCatalog';
 import { findFlagOption, getPublicFlag, joinList, uniqueValues } from './utils';
 import { shouldIndexClangFlagPath } from '@site/src/data/clang-flags/handAuthoredIndex';
 import styles from './clangFlags.module.css';
@@ -92,13 +93,6 @@ function ArticleSection({ icon: Icon, title, note, children }) {
       <div className={styles.articleSectionBody}>{children}</div>
     </section>
   );
-}
-
-function normalizeIncomingData(data) {
-  if (!data || !Array.isArray(data.options)) {
-    return { options: [], groups: [] };
-  }
-  return data;
 }
 
 function buildToolLabels(flag) {
@@ -274,7 +268,7 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
   const [activeSection, setActiveSection] = useState('');
   const [copiedFlag, setCopiedFlag] = useState(false);
   const [mobileTocOpen, setMobileTocOpen] = useState(false);
-  const dataUrl = useBaseUrl('/data/clang-flags.json');
+  const baseUrl = useBaseUrl('/');
   const requestedFlag = resolveFlagPathValue(flagPath);
   const articleRef = useRef(null);
 
@@ -282,14 +276,16 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
     let alive = true;
 
     async function loadData() {
+      if (!requestedFlag) {
+        return;
+      }
       try {
-        const response = await fetch(dataUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to load ${dataUrl} (${response.status})`);
-        }
-        const payload = await response.json();
+        const result = await loadFlagArticleData({
+          baseUrl,
+          requestedFlag,
+        });
         if (alive) {
-          setData(normalizeIncomingData(payload));
+          setData(result.data);
         }
       } catch (err) {
         if (alive) {
@@ -302,7 +298,7 @@ export default function FlagArticleShell({ flagPath, children, summary }) {
     return () => {
       alive = false;
     };
-  }, [dataUrl]);
+  }, [baseUrl, requestedFlag]);
 
   const options = data?.options ?? [];
   const meta = data ?? {};
