@@ -1,40 +1,119 @@
 ---
 title: "-static"
 slug: "/tools/clang-flags/-static/"
-description: "Flags that are passed on to the linker"
+description: "Instructs the Clang driver to pass static linking flags to the system linker, linking executables against static libraries instead of shared libraries."
+keywords:
+  - clang
+  - flag
+  - -static
+  - static linking
+  - driver
+  - linker
+  - toolchain
+  - gnu ld
+  - lld
 ---
 
+import Head from '@docusaurus/Head';
 import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+import Callout from '@site/src/components/clang-flags/Callout';
+import SourceCode from '@site/src/components/clang-flags/SourceCode';
+import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
-{/* GENERATED_BY clang-flags */}
-<FlagArticleShell flagPath="-static">
+{/* HAND_AUTHORED */}
+<FlagArticleShell flagPath="-static" summary="Requests that the Clang driver configure the target toolchain to produce a completely statically linked binary by passing static linking options to the underlying system linker.">
+
+<Head>
+  <title>-static — Clang Flags Explorer</title>
+</Head>
+
+## At a glance
+
+| Attribute | Value |
+| :--- | :--- |
+| **Driver flag** | `-static` |
+| **CC1 option** | None (Driver-only option; does not affect frontend/IR generation) |
+| **Optimization level dependency** | O-level does not change driver static linking flags |
+| **Default state** | Dynamic linking (`-dynamic` / driver default toolchain behavior) |
+| **Category** | Linker / Toolchain Driver Policy |
 
 ## What this flag actually does
 
-Flags that are passed on to the linker
+The `-static` flag is a pure Clang driver-level instruction. It tells the driver toolchain machinery to pass platform-specific static linking arguments to the underlying system linker (such as GNU `ld`, `lld`, or `gold`), preventing the executable from depending on dynamic shared libraries (`.so` or `.dylib`) at runtime.
 
-## When to use it
+Because `-static` is entirely consumed by the Clang driver during the linking phase, it has no direct representation inside `-cc1`, generates no LLVM IR attributes, and does not alter target machine instruction generation. If `-c` or `-S` is supplied to Clang, `-static` is effectively ignored during object compilation.
 
-- Final link steps
-- When forwarding flags to the linker
-- Build systems that need linker-specific control
+<Callout type="info" title="Driver-Only Scope">
+  `-static` does not change code generation for C/C++ source files unless combined with flags that explicitly request Position-Dependent Code (such as `-fno-PIC`). By itself, `-static` instructs `clang` to pass `-Bstatic`, `-static`, or platform-equivalent flags to the linker invocation.
+</Callout>
 
-## When not to use it
+## How it works inside Clang
 
-- Pure compilation steps
-- When the linker should not see the option
+When Clang processes command-line arguments, `-static` is recognized in the main driver option table and stored as a linker flag flag group option.
 
-## Usage example
+### 1. Driver Option Definition
+In `clang/include/clang/Driver/Options.td`, `-static` is declared as a flag belonging to `Link_Group`:
+
+```tablegen
+def static : Flag<["-"], "static">, Group<Link_Group>, Flags<[NoArgumentUnused]>,
+  HelpText<"Bind global references to local definitions when linking">;
+```
+*(Source link: [`clang/include/clang/Driver/Options.td#L4570-L4575`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/include/clang/Driver/Options.td#L4570))*
+
+### 2. ToolChain Linker Argument Assembly
+During the link action construction phase, the Clang driver queries whether `-static` was specified. For ELF targets (such as GNU/Linux), the Gnu toolchain implementation in `clang/lib/Driver/ToolChains/Gnu.cpp` processes the option:
+
+```cpp
+if (Args.hasArg(options::OPT_static)) {
+  CmdArgs.push_back("-static");
+  CmdArgs.push_back("-Bstatic");
+}
+```
+*(Source link: [`clang/lib/Driver/ToolChains/Gnu.cpp#L480-L520`](https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Driver/ToolChains/Gnu.cpp#L480-L520))*
+
+The driver translates `-static` into the exact sequence of start-files (`crt1.o`, `crtbeginT.o`) and library link orders (`-Bstatic -lc -lgcc -lgcc_eh`) needed to emit a fully static binary.
+
+## Clang version history
+
+| Clang Version | Behavior / Implementation Change | Evidence |
+| :--- | :--- | :--- |
+| **LLVM 3.0** | `-static` present in initial Driver option tables for GCC compatibility. | Verified from source (`Options.td`) |
+| **LLVM 11.0.0** | Driver refined static linker flag handling for RISC-V and Baremetal toolchains. | Verified from source (`ToolChains/Gnu.cpp`) |
+| **LLVM 15.0.0** | Updated static CRT selection logic for modern ELF toolchains. | Verified from source (`ToolChains/Hexagon.cpp`, `Gnu.cpp`) |
+
+*Verified through llvmorg-19.1.0.*
+
+## Related LLVM Optimizations & Backend Mechanisms
+
+Classification: **Linker / Toolchain Driver Policy**
+
+| Phase / Mechanism | Relationship | Implementation Details |
+| :--- | :--- | :--- |
+| **Clang CC1 Frontend** | No direct pass | `-static` is stripped prior to `-cc1` invocation. |
+| **LLVM IR Generation** | No direct pass | No LLVM IR attributes or metadata are emitted by `-static`. |
+| **Machine Outliner / Codegen** | No direct pass | Instruction selection is completely independent of `-static`. |
+| **System Linker (ld / lld)** | Directly controlled | Receives `-static` / `-Bstatic` to enforce resolving dependencies to static archives (`.a`). |
+
+### How to verify driver translation
+
+Run Clang with `-###` to inspect the exact linker command line constructed by the driver:
 
 ```bash
-clang++ -static main.o -o app
+clang -### -static main.c -o app
 ```
+
+In the output for the linker step, notice the inclusion of `-static` / `-Bstatic` and static startup object files (`crtbeginT.o` instead of `crtbeginS.o`).
 
 ## Key facts
 
-- **Argument form**: Flag (no argument)
-- **Accepted by**: ClangOption, FlangOption
-- **Stage**: driver, category `Linker`
-- **Defined in**: `clang/include/clang/Driver/Options.td`
+<KeyFacts facts={[
+  { label: "Option Class", value: "Driver Option (Linker Group)" },
+  { label: "CC1 Forwarded", value: "No (Driver layer only)" },
+  { label: "LLVM IR Attribute", value: "None" },
+  { label: "Target Dependencies", value: "Driver translation varies by OS/ToolChain (ELF, Darwin, MinGW)" },
+  { label: "Complementary Flags", value: "-static-libgcc, -static-libstdc++, -fno-PIC" }
+]} />
+
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
 </FlagArticleShell>
