@@ -209,6 +209,8 @@ Immediately after `<FlagArticleShell ...>` opens:
 
 MDX-critical: entire `<a>...</a>` on **one line**. Multiline link text → `end-tag-mismatch` on Vercel.
 
+JSON-LD (optional): never put a raw `{ ... }` JSON object as `<script type="application/ld+json">` children in `.mdx` — MDX/acorn treats `{` as an expression and Vercel fails with `Could not parse expression with acorn`. Prefer omit JSON-LD, or emit it only via `dangerouslySetInnerHTML={{ __html: JSON.stringify({...}) }}` inside `<Head>` (see `docs/DSA/foundations/algorithm.mdx`).
+
 ## 13. Tone and CSS
 
 Tone: technical reference for compiler engineers. Concrete, measured, ABI-honest. No hype, no AI/agent voice, no filler.  
@@ -251,6 +253,7 @@ Hard-fail (reject draft / block publish) if any missing:
 | Default Head import | fail if `import { Head }` |
 | LLVM GitHub line-links | at least one `github.com/llvm/llvm-project/...#L…` Implementation/source link |
 | No AI credit / placeholders | Cursor co-author, lorem, illustrative-only, invented |
+| No raw JSON-LD in MDX | fail if `<script type="application/ld+json">` is followed by a bare `{` (use `JSON.stringify` / `dangerouslySetInnerHTML`, or omit) |
 
 Soft/completeness (score + improve priority; hard-fail for O-sensitive flags):
 
