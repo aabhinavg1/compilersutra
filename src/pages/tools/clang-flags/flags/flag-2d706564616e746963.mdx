@@ -16,6 +16,21 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 
 <Head>
   <title>-pedantic — Clang Flag Explorer | CompilerSutra</title>
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        name: '-pedantic',
+        headline: 'Understanding the Clang -pedantic flag',
+        description:
+          "Detailed analysis of Clang's -pedantic flag, its driver mapping to -Wpedantic, diagnostic engine internals, and backend impact.",
+        articleSection: 'Compiler Flags',
+        keywords: ['clang', '-pedantic', '-Wpedantic', 'diagnostics', 'C++', 'C'],
+      }),
+    }}
+  />
 </Head>
 
 ## At a glance
@@ -24,22 +39,6 @@ import KeyFacts from '@site/src/components/clang-flags/KeyFacts';
 - **Driver alias**: In Clang, `-pedantic` is an exact alias for `-Wpedantic`. Passing `-pedantic` forwards `-Wpedantic` to the frontend (`-cc1`).
 - **Optimization level effect**: `-O0`, `-O1`, `-O2`, `-O3`, `-Os`, `-Oz`, and `-Ofast` have **no effect** on `-pedantic`. Diagnostic reporting occurs during frontend parsing and semantic analysis before IR optimization pipelines execute.
 - **IR & Codegen impact**: Zero change to generated LLVM IR or target machine instructions. Valid code compiles to identical bitcode whether `-pedantic` is specified or omitted.
-
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'TechArticle',
-      name: '-pedantic',
-      headline: 'Understanding the Clang -pedantic flag',
-      description:
-        "Detailed analysis of Clang's -pedantic flag, its driver mapping to -Wpedantic, diagnostic engine internals, and backend impact.",
-      articleSection: 'Compiler Flags',
-      keywords: ['clang', '-pedantic', '-Wpedantic', 'diagnostics', 'C++', 'C'],
-    }),
-  }}
-/>
 
 ## What this flag actually does
 

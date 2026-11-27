@@ -1,38 +1,46 @@
-
-.agent-slide-preview/
-basic_terminology.md
-/build
-.cache-loader
-.cursor/skills/
 # Dependencies
-.docusaurus
-dsa_skills.sh
-.DS_Store
-.env.development.local
-.env.local
-.env.production.local
-.env.test.local
-# Generated files
-# Local bot / slide preview outputs
-# Local Cursor skills / clang-flag bot prompts (authoring only — do not publish)
-# Local Netlify folder
-# Misc
-.netlify
 /node_modules
-npm-debug.log*
+
 # Production
+/build
+
+# Generated files
+.docusaurus
+.cache-loader
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+sendgrid.env
+
+# Local Netlify folder
+.netlify
+.qodo
+dsa_skills.sh
+basic_terminology.md
+
+# Python cache
 __pycache__/
 *.py[cod]
-# Python cache
-.qodo
-scripts/basic-terminology-bot/out/
-scripts/clang-flags-bot/prompts/
 scripts/.compilersutra_fb_bot_state.json
+
+# Local Cursor skills / clang-flag bot prompts (authoring only — do not publish)
+.cursor/skills/
+scripts/clang-flags-bot/prompts/
+
+# Local bot / slide preview outputs
+.agent-slide-preview/
+scripts/basic-terminology-bot/out/
 scripts/live-pdf-bot/out/
 scripts/live-pdf-bot/ref-slides/
 scripts/llvm-curriculum-bot/out/
+
 # Generated slim clang-flag article payloads (rebuilt in prebuild)
 static/data/clang-flags/by-flag/
-sendgrid.env
-yarn-debug.log*
-yarn-error.log*
