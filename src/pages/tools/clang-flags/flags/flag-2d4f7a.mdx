@@ -1,0 +1,37 @@
+---
+title: "-Oz"
+slug: "/tools/clang-flags/-Oz/"
+description: "Optimize aggressively for minimum code size (more size-focused than -Os)."
+---
+
+import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+
+{/* GENERATED_BY clang-flags */}
+<FlagArticleShell flagPath="-Oz">
+
+## What this flag actually does
+
+Optimize aggressively for minimum code size (more size-focused than -Os).
+
+## When to use it
+
+- Selecting an optimization pipeline
+
+## When not to use it
+
+- When you need a different -O level for the same TU
+
+## Usage example
+
+```bash
+clang++ -Oz main.cpp -o app
+```
+
+## Key facts
+
+- **Argument form**: Flag (no argument)
+- **Accepted by**: ClangOption, CC1Option, FC1Option, FlangOption
+- **Stage**: cc1 (frontend), category `Optimization`
+- **Defined in**: `clang/include/clang/Driver/Options.td`
+
+</FlagArticleShell>

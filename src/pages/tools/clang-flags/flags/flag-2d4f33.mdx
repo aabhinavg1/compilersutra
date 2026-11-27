@@ -1,0 +1,37 @@
+---
+title: "-O3"
+slug: "/tools/clang-flags/-O3/"
+description: "Optimize further; may increase code size via more aggressive inlining/vectorization."
+---
+
+import FlagArticleShell from '@site/src/components/clang-flags/FlagArticleShell';
+
+{/* GENERATED_BY clang-flags */}
+<FlagArticleShell flagPath="-O3">
+
+## What this flag actually does
+
+Optimize further; may increase code size via more aggressive inlining/vectorization.
+
+## When to use it
+
+- Selecting an optimization pipeline
+
+## When not to use it
+
+- When you need a different -O level for the same TU
+
+## Usage example
+
+```bash
+clang++ -O3 main.cpp -o app
+```
+
+## Key facts
+
+- **Argument form**: Flag (no argument)
+- **Accepted by**: ClangOption, CC1Option, FC1Option, FlangOption
+- **Stage**: cc1 (frontend), category `Optimization`
+- **Defined in**: `clang/include/clang/Driver/Options.td`
+
+</FlagArticleShell>

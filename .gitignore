@@ -40,3 +40,7 @@ scripts/clang-flags-bot/prompts/
 scripts/basic-terminology-bot/out/
 scripts/live-pdf-bot/out/
 scripts/live-pdf-bot/ref-slides/
+scripts/llvm-curriculum-bot/out/
+
+# Generated slim clang-flag article payloads (rebuilt in prebuild)
+static/data/clang-flags/by-flag/
