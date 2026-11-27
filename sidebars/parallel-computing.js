@@ -58,6 +58,7 @@ const parallel = {
             'parallel-computing/hip-next-to-cuda',
             'parallel-computing/opencl-next-to-cuda',
             'parallel-computing/vulkan-compute',
+            'parallel-computing/sycl-for-accelerators',
           ],
         },
         {

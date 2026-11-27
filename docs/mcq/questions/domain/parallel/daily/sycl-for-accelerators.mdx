@@ -1,0 +1,20 @@
+---
+title: "SYCL quiz"
+description: "Five questions for SYCL. Each stem is new."
+---
+
+import { Question } from '../../../../Question';
+
+# SYCL quiz
+
+Lesson: [SYCL](/docs/parallel-computing/sycl-for-accelerators/)
+
+<Question question="1. Which SYCL object serves as the submission portal to an execution context such as a CPU, GPU, or FPGA?" options={["sycl::queue", "sycl::handler", "sycl::accessor", "sycl::buffer"]} answer="sycl::queue" />
+
+<Question question="2. By default, how does work submission to a sycl::queue behave on the host thread?" options={["It blocks until the kernel completes", "It is non-blocking", "It triggers a host system crash", "It synchronously copies data back to host memory"]} answer="It is non-blocking" />
+
+<Question question="3. Which intermediate representation format is mentioned as a target for outlined SYCL device kernels?" options={["SPIR-V", "JVM Bytecode", "WebAssembly", "CIL"]} answer="SPIR-V" />
+
+<Question question="4. What event triggers the automatic host memory update back from a sycl::buffer in the worked example?" options={["Calling q.submit()", "Constructing a sycl::accessor", "The destruction of the sycl::buffer object at scope exit", "Invoking cgh.parallel_for()"]} answer="The destruction of the sycl::buffer object at scope exit" />
+
+<Question question="5. What must developers manually submit to the queue when using Unified Shared Memory (USM) instead of accessors to manage dependencies?" options={["sycl::buffer", "sycl::event", "sycl::handler", "sycl::default_selector_v"]} answer="sycl::event" />

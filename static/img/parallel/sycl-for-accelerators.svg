@@ -1,0 +1,36 @@
+<svg viewBox="0 0 720 280" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="720" height="280" fill="#0f172a" rx="8"/>
+  
+  <!-- Host Region -->
+  <rect x="20" y="20" width="320" height="240" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6"/>
+  <text x="35" y="45" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="bold">HOST C++ EXECUTION</text>
+  
+  <rect x="40" y="65" width="280" height="40" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" rx="4"/>
+  <text x="50" y="90" fill="#f8fafc" font-family="monospace" font-size="12">sycl::queue q;</text>
+  
+  <rect x="40" y="120" width="280" height="60" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" rx="4"/>
+  <text x="50" y="142" fill="#f8fafc" font-family="monospace" font-size="12">q.submit([&amp;](handler&amp; cgh){</text>
+  <text x="65" y="162" fill="#38bdf8" font-family="monospace" font-size="12">accessor acc_a(...);</text>
+  
+  <rect x="40" y="195" width="280" height="50" fill="#0f172a" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+  <text x="50" y="225" fill="#94a3b8" font-family="sans-serif" font-size="12">Builds Dependency Graph Node</text>
+
+  <!-- Device Region -->
+  <rect x="380" y="20" width="320" height="240" fill="#1e293b" stroke="#334155" stroke-width="2" rx="6"/>
+  <text x="395" y="45" fill="#94a3b8" font-family="sans-serif" font-size="14" font-weight="bold">DEVICE EXECUTION</text>
+
+  <rect x="400" y="65" width="280" height="80" fill="#0f172a" stroke="#4ade80" stroke-width="1.5" rx="4"/>
+  <text x="410" y="90" fill="#4ade80" font-family="sans-serif" font-size="12" font-weight="bold">Outlined Device Kernel</text>
+  <text x="410" y="112" fill="#f8fafc" font-family="monospace" font-size="11">parallel_for([=](id idx){</text>
+  <text x="425" y="130" fill="#f8fafc" font-family="monospace" font-size="11">acc_c[idx] = ...</text>
+
+  <rect x="400" y="165" width="280" height="80" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" rx="4"/>
+  <text x="410" y="190" fill="#f59e0b" font-family="sans-serif" font-size="12" font-weight="bold">Runtime Engine</text>
+  <text x="410" y="210" fill="#94a3b8" font-family="sans-serif" font-size="11">Manages implicit transfers &amp;</text>
+  <text x="410" y="228" fill="#94a3b8" font-family="sans-serif" font-size="11">synchronizes execution graph</text>
+
+  <!-- Connectors -->
+  <path d="M 320 150 L 400 105" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <path d="M 320 220 L 400 205" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
