@@ -1,42 +1,25 @@
 ---
-title: LLVM
-description: Explore LLVM fundamentals, architecture, IR, tooling, passes, and the full CompilerSutra LLVM learning path.
+title: "What Is LLVM? IR, Clang, Passes & Learning Path"
+description: "Learn LLVM as compiler infrastructure — how IR, Clang, passes, and backends fit together — then follow a clear hands-on path with labs (clang, opt, llc)."
 slug: /llvm/
+keywords:
+  - LLVM
+  - what is LLVM
+  - LLVM IR
+  - LLVM tutorial
+  - Clang and LLVM
+  - learn LLVM
 ---
 
 import Link from '@docusaurus/Link';
 import AdBanner from '@site/src/components/AdBanner';
 import LlvmSeoBooster from '@site/src/components/llvm/LlvmSeoBooster';
 
-# LLVM
+# What Is LLVM? IR, Clang, Passes & Learning Path
 
+<div className="text--center margin-bottom--md"><a className="button button--primary button--lg" href="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to CompilerSutra Weekly Compiler Notes">✉ Subscribe to Weekly Compiler Notes</a><p className="margin-top--sm">Practical LLVM, Clang, and compiler-engineering notes delivered weekly.</p></div>
 
-
-📩 Interested in deep dives like pipelines, cache, and compiler optimizations?
-
-<div
-  style={{
-    width: '100%',
-    maxWidth: '900px',
-    margin: '1rem auto',
-  }}
->
-  <iframe
-    src="https://docs.google.com/forms/d/e/1FAIpQLSebP1JfLFDp0ckTxOhODKPNVeI1e21rUqMJ0fbBwJoaa-i4Yw/viewform?embedded=true"
-    style={{
-      width: '100%',
-      minHeight: '620px',
-      border: '0',
-      borderRadius: '12px',
-      background: '#fff',
-    }}
-    loading="lazy"
-  >
-    Loading…
-  </iframe>
-</div>
-
-LLVM is the deepest part of the site today. This section is the entry point into LLVM architecture, LLVM IR, SSA, dominance, and pass-oriented reasoning.
+**LLVM** is modular **compiler infrastructure**: a shared IR, optimization/analysis passes, and backends that lower that IR to real machines. This hub is the CompilerSutra entry — architecture, LLVM IR, SSA, dominance, and pass-oriented learning — not a mirror of llvm.org docs.
 
 <div style={{display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1.5rem'}}>
   <div style={{padding: '1rem', borderRadius: '18px', border: '1px solid var(--ifm-color-emphasis-200)', background: 'var(--ifm-background-surface-color)'}}>

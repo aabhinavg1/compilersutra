@@ -4,10 +4,10 @@ import Link from '@docusaurus/Link';
 
 const topics = {
   'llvm-home': {
-    title: 'LLVM Tutorial Hub Explained Simply',
+    title: 'What Is LLVM? IR, Clang, Passes & Learning Path',
     description:
-      'Explore LLVM tutorials, IR, passes, tools, and roadmap articles in one place with guided internal links for faster compiler learning.',
-    keyword: 'LLVM tutorial',
+      'Learn LLVM as compiler infrastructure — how IR, Clang, passes, and backends fit together — then follow a clear hands-on path with labs (clang, opt, llc).',
+    keyword: 'LLVM',
     links: [
       { to: '/docs/llvm/intro-to-llvm', label: 'LLVM roadmap and curriculum' },
       { to: '/docs/llvm/llvm_basic/What_is_LLVM', label: 'what LLVM is and why it matters' },
@@ -240,9 +240,9 @@ const topics = {
     ],
   },
   'what-is-llvm': {
-    title: 'What Is LLVM Explained with Examples',
+    title: 'LLVM Explained: Architecture, IR, and Clang',
     description:
-      'Learn what LLVM is, how Clang and LLVM IR fit together, and why LLVM matters for modern compilers and tooling.',
+      'What is LLVM? See how Clang, LLVM IR, passes, and backends connect — a practical architecture guide for learning compilers, not only reading docs.',
     keyword: 'what is LLVM',
     links: [
       { to: '/docs/llvm/llvm_basic/LLVM_Architecture', label: 'LLVM architecture overview' },
